@@ -1,0 +1,74 @@
+#body {
+    margin: 0 20px 20px 20px;
+}
+
+/* Search */
+
+#menu {
+    padding: 20px 0 70px 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#menu button {
+    background-color: white;
+    border-radius: 7px;
+    padding: 3px 5px 3px 5px;
+}
+
+#select {
+    display: inline-block;
+    margin-right: 7%;
+}
+
+#select button {
+    margin-right: 10px;
+}
+
+#openStudy {
+    border-color: rgb(255, 187, 0);
+    border-style: solid;
+}
+
+#search {
+    display: inline-block;
+    margin-right: 7%;
+}
+
+/* ------------------------------------------------------------ */
+
+.openStudyBox {
+    border: solid 1px;
+    border-radius: 7px;
+    width: 300px;
+    height: 220px;
+    padding: 10px;
+}
+
+#heart {
+    width: 25px;
+    height: 25px;
+}
+
+.openStudyImg {
+    background-color: aqua;
+    margin: 0 -10px 0 -10px;
+    text-align: center;
+    height: 120px;
+}
+
+.participants {
+    float: right;
+}
+
+.roomTitle {
+    margin-top: 5px;
+}
+
+.openStudyTag {
+    border: none;
+    background-color: rgb(205, 231, 255);
+    border-radius: 7px;
+    text-align: center;
+    padding: 1px 7px 1px 7px;
+}

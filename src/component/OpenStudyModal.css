@@ -1,0 +1,48 @@
+section {
+    margin-right: auto;
+    margin-left: auto;
+    border: solid 0.5px;
+    border-radius: 1%;
+    width: 290px;
+    height: 340px;
+}
+
+.under {
+    padding: 20px;
+}
+
+hr {
+    height: 1.5px;
+    background-color: rgb(182, 182, 182);
+    border: 0;
+}
+
+header {
+    text-align: center;
+    margin-top: 5px;
+}
+
+.modalTitle {
+    margin-left: 15px;
+}
+
+.close {
+    border: none;
+    background-color: white;
+    float: right;
+    margin-right: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    padding: 0;
+    width: 15px;
+}
+
+footer {
+    margin-left: 140px;
+}
+
+.image {
+    border: solid 0.5px;
+    text-align: center;
+    width: 240px;
+}
