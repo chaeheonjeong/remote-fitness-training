@@ -1,0 +1,63 @@
+.explainLabel {
+  font-size: 0.8rem;
+  align-self: flex-start;
+  color: rgb(75, 72, 72);
+  height: 16px;
+  width:100%;
+}
+
+.falseExplainLabel {
+  color: red;
+}
+
+.greenExplainLabel {
+  color: green;
+}
+
+.authWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.emailInput {
+  position: relative;
+  height: 3rem;
+  border: 2px solid rgb(96, 93, 93);
+  border-radius: 0.8rem;
+  font-size: 1rem;
+  padding-left: 0.4rem;
+  margin: 0.5rem 0;
+  flex: 1;
+}
+
+.emailBtn {
+  height: 2.7rem;
+  width: 100px;
+  font-size: 0.75rem;
+  border-radius: 0.8rem;
+  padding: 0 1rem;
+  margin-left: 10px;
+  border: none;
+  transition: all 0.3s ease;
+  background-color: #3cf6c7;
+  color: black;
+  cursor: pointer;
+}
+
+.emailBtn:hover {
+  filter: brightness(0.85);
+}
+
+.emailWrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+}
+
+.warnLabel{
+    color:red;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+}
