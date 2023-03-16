@@ -1,0 +1,70 @@
+@font-face {
+    font-family: 'Cafe24SsurroundAir';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24SsurroundAir.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.MyInfo{
+    flex: 4;
+    height: calc(100vh - 50px);
+}
+
+.Profile{
+    width: 200px;
+    height: 200px;
+    border-radius: 100%;
+    border: 1px solid #555555;
+    margin-right: 800px;
+}
+
+.Title{
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 40px;
+    margin-right: 900px;
+}
+
+.Information{
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 20px;
+    text-align: left;
+    margin-left: 200px;
+}
+
+.nickname{
+    word-spacing: 10px;
+}
+
+.phone{
+    word-spacing: 5px;
+}
+
+.submitBtn{
+    text-align: right;
+}
+
+.Modify{
+    margin-left: 500px;
+    font-family: 'Cafe24SsurroundAir';
+    width: 70px;
+    height: 20px;
+    background: #967E76;
+    color: #FFF;
+    border: 0;
+    border-radius: 5px;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+.SignOut{
+    margin-left: 700px;
+    font-family: 'Cafe24SsurroundAir';
+    width: 70px;
+    height: 20px;
+    background: #967E76;
+    color: #FFF;
+    border: 0;
+    border-radius: 5px;
+    margin-right: 5px;
+    display: inline-block;
+}
