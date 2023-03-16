@@ -1,12 +1,14 @@
-import { useState } from "react";
 import PropTypes from "prop-types";
+import { useEffect, useRef, useState } from "react";
 
-import "./OpenStudyModal.css";
-import MainOpenStudy from "./MainOpenStudy";
+import styles from  "./OpenStudyModal.module.css";
 
-
-function OpenStudyModal({ open, close, makeRoom, setTitle, setTotal }) {
+function OpenStudyModal(
+    { open, close, makeRoom, title, setTitle, total, setTotal, participants, room, setRoom }) {
     var numOfPeople = Array.from({length: 50}, (v, i) => i+1);
+
+    //const [hashtag, setHashtag] = useState<string | ''>('');
+    const [tags, setTags] = useState([]);
 
     const numOfPeopleOption = () => {
         const numArray = [];
@@ -22,47 +24,69 @@ function OpenStudyModal({ open, close, makeRoom, setTitle, setTotal }) {
 
     const makeOpenStudy = () => {
         alert("오픈스터디가 생성되었습니다.");
-        makeRoom(true);
         close(false);
+        makeRoom(true);
+        /*setId(openRooms.length + 1);
+        setNewRoom({title: title, total: total, participants: participants});
+        setOpenRooms([...openRooms, newRoom]);
+        localStorage.setItem('openRooms', JSON.stringify(openRooms));
+        localStorage.setItem('openRooms', JSON.stringify([...openRooms, newRoom]));
+        */
+
     };
 
     const decidePeople = (e) => {
         setTotal(e.currentTarget.value);
     };
 
+
+
     return(
         <div className = {open ? 'openStudyModal' : 'modal'}>
             {open ? (
                 <section>
                     <header>
-                        <a className="modalTitle">오픈 스터디 만들기</a>
-                        <button className="close" onClick={() => {close(false)}}>
+                        <a className={styles.modalTitle}>오픈 스터디 만들기</a>
+                        <button className={styles.close} onClick={() => {close(false)}}>
                             &times;
                         </button>
                     </header>
                     <hr />
                     <div>
-                    <div className="under">
-                        <div className="image">오픈 스터디 사진</div>
-                        <a>방 제목</a> 
-                        <input
-                            //value = {title}
-                            onChange = {changeTitle}
-                        /><br />
-                        <a>태그</a> <input /><br />
-                        <a>인원수</a>
-                        <select onChange={decidePeople}>
-                            {numOfPeopleOption()}
-                        </select>
+                    <div className={styles.under}>
+                        <div className={styles.image}>오픈 스터디 사진</div>
+                        <div>
+                            <a>방 제목</a> 
+                            <input
+                                onChange = {changeTitle}
+                                autoFocus
+                            />
+                        </div>
+                        <div>
+                            <a>태그</a> 
+                            <textarea
+                                className={styles.tagInput}
+                                name="tag"
+                                type="text"
+                                placeholder="해시태그 입력(최대 5개)"
+                            />
+                        <div/>
+                        <div>
+                            <a>인원수</a>
+                            <select onChange={decidePeople}>
+                                {numOfPeopleOption()}
+                            </select>
+                        </div>
+                    </div>
                     </div>
                     <footer>
                         <button 
-                            className="makeOpenStudy" 
+                            className={styles.makeOpenStudy} 
                             onClick={() => makeOpenStudy()}
                         >
                             만들기
                         </button>
-                        <button className="openStudyCancle" onClick={() => {close(false)}}>
+                        <button className={styles.openStudyCancle} onClick={() => {close(false)}}>
                             취소
                         </button>
                     </footer>
@@ -77,9 +101,11 @@ OpenStudyModal.propTypes = {
     open: PropTypes.bool.isRequired,
     close: PropTypes.func.isRequired,
     makeRoom: PropTypes.func.isRequired,
-    //title: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
     setTitle: PropTypes.func.isRequired,
+    total: PropTypes.string.isRequired,
     setTotal: PropTypes.func.isRequired,
+    participants: PropTypes.number.isRequired,
 };
 
 export default OpenStudyModal;

@@ -8,12 +8,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/question" element={<MainQuestion />}>
-        </Route>
-        <Route path="/study" element={<MainStudy />}>
-        </Route>
-        <Route path="/" element={<MainOpenStudy />}>
-        </Route>
+        <Route path="/" exact={true} element={<MainOpenStudy />} />
+        <Route path="/study" element={<MainStudy />} />
+        <Route path="/question" element={<MainQuestion />} />       
       </Routes>
     </Router>
   );
