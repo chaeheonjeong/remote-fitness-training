@@ -77,18 +77,20 @@ body{
 }
 
 .content_6 {
-    border-bottom:3px solid black;
+    /*border-bottom:3px solid black;*/
     text-align: right;
+    margin-bottom: 20px;
 
 }
 
 
-
 .reply_input {
-    margin: 10px;
-    border: 3px solid black;
-    width: 98%;
-    height: 30px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding:1em;
+    border: 2px solid #90b2b8;
+    border-radius: 5px;
+    min-height: 50px;
 }
 
 .rc1 {
@@ -112,5 +114,62 @@ body{
     border: none;
     padding: 5px;
     border-radius: 200px;
-    background-color: greenyellow;
+    background-color: yellowgreen;
 }
+
+.falseBtn{
+    border: none;
+    padding: 5px;
+    border-radius: 200px;
+    background-color: red;
+}
+
+
+.rr_reply {
+    margin-top: 30px;
+    min-height: 300px;
+    padding:1em;
+    border-radius: 5px;
+    border: 3px solid #90b2b8;
+
+}
+
+table {
+    border: 1px #0A1931;
+    font-size: .9em;
+    box-shadow: 0 2px 5px rgba(0,0,0,.25);
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  th {
+    text-align: left;
+    
+  }
+    
+  thead {
+    font-weight: bold;
+    color: #000000;
+    background: #90b2b8;
+  }
+    
+   td, th {
+    padding: 1em;
+    vertical-align: middle;
+    
+  }
+    
+   td {
+    border-bottom: 1px solid rgba(0,0,0,.1);
+    background: #fff;
+  }
+
+  .rrbtn {
+    margin-right: 5px;
+  }
+
+  .rdbtn {
+    margin-right: 5px;
+  }

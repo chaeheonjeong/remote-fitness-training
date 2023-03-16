@@ -58,3 +58,37 @@
     justify-content: space-between;
 }
 
+
+.content_6 {
+    /*border-bottom:3px solid black;*/
+    text-align: right;
+
+}
+
+
+
+.reply_input {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 1em;
+    border: 3px solid #90b2b8;
+    width: 98%;
+    height: 30px;
+}
+
+.rc1 {
+    font-size: 13px;
+}
+
+.reply_choose {
+    margin-bottom: 7px;
+    margin-right: 10px;
+}
+
+.rc1 {
+    margin-right: 10px;
+}
+
+.sbtn {
+    border-radius: 10px;
+}

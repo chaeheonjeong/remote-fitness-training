@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './Write.css';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+
+import Tagify from '@yaireo/tagify'
+
 
 function Write() {
 
@@ -53,6 +58,21 @@ function Write() {
     setPCondition(e.target.value);
   }
 
+  const handleChange = (e) => {
+    const target = e.target;
+    const {title} = target;
+
+  }
+
+  const [postInfo, setPostInfo] = useState( {
+    title: null,
+    contents: null,
+    postnum: null,
+    writer: sessionStorage.getItem('nickName'),
+    tag: null,
+    watching: null
+  });
+
 
   return (
     <div className='choose'>
@@ -105,7 +125,34 @@ function Write() {
 
 
       <div className='content'>
-        ckeditor
+        <CKEditor
+          editor={ClassicEditor}
+          data=""
+          config={{
+            placeholder: "내용을 입력하세요.",
+          }}
+          onReady={(editor) => {
+            // You can store the "editor" and use when it is needed.
+            console.log('Editor is ready to use!', editor);
+          }}
+          onChange={(event, editor) => {
+            const data = editor.getData();
+            console.log({ event, editor, data });
+            setPostInfo({
+              ...postInfo,
+              contents: data
+            })
+            console.log(postInfo);
+          }}
+  
+          onBlur={(event, editor) => {
+            console.log('Blur.', editor);
+          }}
+          onFocus={(event, editor) => {
+            console.log('Focus.', editor);
+          }}
+        />
+      
       </div>
 
       <div className='btn'>
