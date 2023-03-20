@@ -14,12 +14,7 @@ function MainOpenStudy() {
     const [participants, setParticipants] = useState(1);
     const [total, setTotal] = useState('0');
 
-    const [room, setRoom] = useState({
-        id: 0,
-        title: "",
-        totalPeople: "",
-        partPeople: 0,
-    });
+    const [rooms, setRooms] = useState([]);
 
      /*const [newRoom, setNewRoom] = useState({
         title: openStudyTitle,
@@ -91,7 +86,49 @@ function MainOpenStudy() {
 
     function roomPack() {
         return(
-            Array.from({length: 50}, (v, i) => (
+            rooms.map((room, idx) => (
+                (idx%4 === 0) ? (
+                    <>
+                        <div className={mainStyles.openStudyBlock}></div>
+                        <OpenStudyRoomCard
+                            keyNum = {idx}
+                            title = {room.title}
+                            tag = {room.hashtag}
+                            total = {room.personNum}
+                            participants = {participants}
+                        />  
+                        <div className={mainStyles.openStudyBlank} />
+                    </>
+                ) : (
+                    (idx%4 === 3) ? (
+                        <>
+                            <OpenStudyRoomCard
+                                keyNum = {idx}
+                                title = {room.title}
+                                tag = {room.hashtag}
+                                total = {room.personNum}
+                                participants = {participants}
+                            />
+                        </> 
+                    ) : (
+                        <>
+                            <OpenStudyRoomCard
+                                keyNum = {idx}
+                                title = {room.title}
+                                tag = {room.hashtag}
+                                total = {room.personNum}
+                                participants = {participants}
+                            />
+                            <div className={mainStyles.openStudyBlank} />
+                        </>  
+                    )  
+                )
+            ))
+
+
+
+
+            /*Array.from({length: 50}, (v, i) => (
                 (i%4 === 0) ? (
                     <>
                         <div className={mainStyles.openStudyBlock}></div>
@@ -125,7 +162,7 @@ function MainOpenStudy() {
                         </>  
                     )  
                 )      
-            ))
+            ))*/
         );
     }
 
@@ -183,8 +220,8 @@ function MainOpenStudy() {
                 total = {total}
                 setTotal = {setTotal}
                 participants = {participants}
-                room = {room}
-                setRoom = {setRoom}
+                rooms = {rooms}
+                setRooms = {setRooms}
             />
         </>
     );

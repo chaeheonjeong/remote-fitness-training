@@ -2,13 +2,14 @@ import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 
 import styles from  "./OpenStudyModal.module.css";
+import tagStyles from "./Tag.module.css";
 
 function OpenStudyModal(
     { open, close, makeRoom, title, setTitle, total, setTotal, participants, room, setRoom }) {
     var numOfPeople = Array.from({length: 50}, (v, i) => i+1);
 
-    //const [hashtag, setHashtag] = useState<string | ''>('');
     const [tags, setTags] = useState([]);
+    const [inputValue, setInputValue] = useState('');
 
     const numOfPeopleOption = () => {
         const numArray = [];
@@ -26,20 +27,44 @@ function OpenStudyModal(
         alert("오픈스터디가 생성되었습니다.");
         close(false);
         makeRoom(true);
-        /*setId(openRooms.length + 1);
-        setNewRoom({title: title, total: total, participants: participants});
-        setOpenRooms([...openRooms, newRoom]);
-        localStorage.setItem('openRooms', JSON.stringify(openRooms));
-        localStorage.setItem('openRooms', JSON.stringify([...openRooms, newRoom]));
-        */
-
     };
 
     const decidePeople = (e) => {
         setTotal(e.currentTarget.value);
     };
 
+    function handleKeyPress(event) {
+        if(event.key === 'Enter') {
+            const newTag = inputValue.trim();
 
+            if(tags.includes(newTag)) {
+                alert('중복되는 태그가 있습니다');
+                setInputValue('');
+                event.preventDefault();
+            } else {
+                if(tags.length < 5) {
+                    if(newTag !== '') {
+                        setTags([...tags, newTag]);
+                        setInputValue('');
+                        event.preventDefault();
+                    }
+                }
+                else {
+                    alert('태그는 최대 5개까지 가능합니다.');
+                    setInputValue('');
+                    event.preventDefault();
+                }
+            }
+        }
+    }
+
+    function handleDelete(index) {
+        setTags(tags.filter((tag, i) => i !== index));
+    }
+
+    function handleSubmit(evnet) {
+        evnet.preventDefault();
+    }
 
     return(
         <div className = {open ? 'openStudyModal' : 'modal'}>
@@ -52,33 +77,57 @@ function OpenStudyModal(
                         </button>
                     </header>
                     <hr />
+
                     <div>
-                    <div className={styles.under}>
-                        <div className={styles.image}>오픈 스터디 사진</div>
-                        <div>
-                            <a>방 제목</a> 
-                            <input
-                                onChange = {changeTitle}
-                                autoFocus
-                            />
+                        <form action="/openStudyModal" method="POST" onSubmit={handleSubmit}>
+                            <div className={styles.under}>
+                                <div className={styles.image}>오픈 스터디 사진</div>
+                                <div>
+                                    <a>방 제목</a> 
+                                    <input
+                                        type="text"
+                                        name="title"
+                                        onChange = {changeTitle}
+                                        autoFocus
+                                    />
+                                </div>
+                                <div>
+                                    <a>태그</a> 
+                                    <input
+                                        type="text"
+                                        name="hashtag"
+                                        className={styles.tagInput}
+                                        value={inputValue}
+                                        onChange={(event) => setInputValue(event.target.value)}
+                                        onKeyPress={handleKeyPress}
+                                        placeholder="해시태그 입력(최대 5개)"
+                                    />
+                                    <div className={tagStyles.tagPackage}>
+                                        {tags.map((tag, index) => (
+                                            <span key={index} className={tagStyles.tag}>
+                                                {tag}
+                                                <button 
+                                                    onClick={() => handleDelete(index)}
+                                                >
+                                                    &times;
+                                                </button>
+                                            </span>
+                                        ))}
+                                    </div>
+                                <div/>
+                                <div>
+                                    <a>인원수</a>
+                                    <select
+                                        name="personNum"
+                                        onChange={decidePeople}
+                                    >
+                                        {numOfPeopleOption()}
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <a>태그</a> 
-                            <textarea
-                                className={styles.tagInput}
-                                name="tag"
-                                type="text"
-                                placeholder="해시태그 입력(최대 5개)"
-                            />
-                        <div/>
-                        <div>
-                            <a>인원수</a>
-                            <select onChange={decidePeople}>
-                                {numOfPeopleOption()}
-                            </select>
-                        </div>
-                    </div>
-                    </div>
+                    </form>
+
                     <footer>
                         <button 
                             className={styles.makeOpenStudy} 
@@ -86,7 +135,10 @@ function OpenStudyModal(
                         >
                             만들기
                         </button>
-                        <button className={styles.openStudyCancle} onClick={() => {close(false)}}>
+                        <button 
+                            className={styles.openStudyCancle} 
+                            onClick={() => {close(false)}}
+                        >
                             취소
                         </button>
                     </footer>

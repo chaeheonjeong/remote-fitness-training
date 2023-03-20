@@ -1,4 +1,11 @@
-.tagify {
-    width: 100%;
-    max-width: 700px;
+.tag {
+    background-color: rgb(206, 221, 250);
+    border-radius: 5px;
+    border: none;
+    margin: 5px;
+    padding: 0 2px 0 2px;
+}
+
+.tagPackage {
+    padding: 5px 0 5px 0;
 }
