@@ -3,12 +3,13 @@ import Calendar from 'react-calendar';
 import './MyCalendar.css';
 import moment from 'moment';
 import Modal from 'react-modal';
+import axios from 'axios';
 
 function MyCalendar() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [pickDate, setPickDate] = useState(new Date());
 
-    const handlePickDate = (value) => {
+    const handlePickDate = async (value) => {
         setPickDate(value);
         setModalIsOpen(true);
     };
