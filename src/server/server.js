@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const User = require("./models/user");
+const Write = require("./models/write");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -203,15 +204,18 @@ app.post("/email-newpass", async (req, res) => {
 
 
 app.post("/postwrite", async (req, res) => {
-  const { name, email, password } = req.body;
+  const { number, period, date, tag, title, content } = req.body;
   try {
-    const newUser = new User({
-      name: name,
-      email: email,
-      password: password,
+    const newWrite = new Write({
+      number: number,
+      period: period,
+      date: date,
+      tag : tag,
+      title : title,
+      content : content
     });
-    await newUser.save();
-    return res.status(200).json({ message: "User created successfully" });
+    await newWrite.save();
+    return res.status(200).json({ message: "Write created successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });

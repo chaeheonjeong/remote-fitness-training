@@ -86,11 +86,24 @@ body{
 }
 
 .tag_input {
-  width: 20%;
+  width: 100%;
   border-radius: 20px;
   padding: 5px;
   border: solid 2px black;
 }
+
+.tag_tagindex {
+  font-size: 15px;
+  color: blue;
+}
+/*
+.tag_Btn {
+  width: 15px;
+  height: 15px;
+  text-align: center;
+  align-items: center;
+}
+*/
 
 .title_tinput {
   width: 90%;

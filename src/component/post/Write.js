@@ -75,15 +75,26 @@ function Write() {
 
   const [tags, setTags] = useState([]);
 
+  
   function handleKeyPress(event) {
-    if (event.key === 'Enter') {
-      const newTag = event.target.value.trim();
-      if (newTag !== '') {
-        setTags([...tags, newTag]);
-        event.target.value = '';
-      }
+    if(event.key === 'Enter') {
+        const newTag = event.target.value.trim();
+
+        if(tags.length < 5) {
+
+            if(newTag !== '') {
+                setTags([...tags, newTag]);
+                event.target.value = '';
+            }
+        } else {
+            alert('태그는 최대 5개까지 가능합니다.');
+        }
     }
-  }
+}
+
+function handleDelete(index) {
+    setTags(tags.filter((tag, i) => i !== index));
+}
 
 
 
@@ -125,14 +136,28 @@ function Write() {
         <input type='date' id='date' className='date' /> 
         
         <text className='tt'>태그</text>
-        <input type='text' onKeyPress={handleKeyPress} maxLength='20' className='tag_input' name='tag' placeholder='태그를 입력하세요.' />
+
         <div>
-          <textarea onKeyPress={handleKeyPress} />
-          <div>
+          <input
+            className='tag_input'
+            onKeyPress={handleKeyPress}
+            type="text"
+            placeholder="해시태그 입력(최대 5개)"
+          />
+          <div className='tag_tagPackage'>
             {tags.map((tag, index) => (
-            <span key={index}>{tag}</span>
+              <span key={index} className='tag_tagindex'>
+                {tag}
+                <button 
+                  className='tag_Btn'
+                  onClick={() => handleDelete(index)}
+                >
+                  &times;
+                </button>
+              </span>
             ))}
           </div>
+
         </div>
 
 
@@ -180,7 +205,7 @@ function Write() {
 
       <div className='btn'>
         <input type='button' value='취소' className='cancel' />
-        <input type='submit' value='등록' className='submit' />
+        <input type='submit' value='등록' className='submit' onClick={titleHandler}/>
       </div>
 
     </div>
@@ -211,3 +236,7 @@ export default Write;
           <option value={pCondition.p12}>12명</option>
 
 */
+
+/*
+<input type='text' onKeyPress={handleKeyPress} maxLength='20' className='tag_input' name='tag' placeholder='태그를 입력하세요.' />
+<textarea onKeyPress={handleKeyPress}  className='tag_input' name='tag' placeholder='태그를 입력하세요.'/>*/
