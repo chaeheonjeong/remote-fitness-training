@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './AskView.css';
-import dummy from "./data.json";
 
 function A_View() {
-    const text=1;
-    const pList = dummy.titles.filter(titlecontent => (titlecontent.text === text));
-
+    
     return (
         <div className='detail'>
             <div className='content_4'>

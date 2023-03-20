@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import dummy from "./data.json";
 
 function View2() {
-    const text=1;
-    const pList = dummy.titles.filter(titlecontent => (titlecontent.text === text));
-
     const [progress, setProgress] = useState(false);
 
     const [color, setColor] = useState('green');
