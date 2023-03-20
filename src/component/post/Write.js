@@ -73,6 +73,20 @@ function Write() {
     watching: null
   });
 
+  const [tags, setTags] = useState([]);
+
+  function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+      const newTag = event.target.value.trim();
+      if (newTag !== '') {
+        setTags([...tags, newTag]);
+        event.target.value = '';
+      }
+    }
+  }
+
+
+
 
   return (
     <div className='choose'>
@@ -111,7 +125,16 @@ function Write() {
         <input type='date' id='date' className='date' /> 
         
         <text className='tt'>태그</text>
-        <input type='text' maxLength='20' className='tag_input' name='tag' placeholder='태그를 입력하세요.' />
+        <input type='text' onKeyPress={handleKeyPress} maxLength='20' className='tag_input' name='tag' placeholder='태그를 입력하세요.' />
+        <div>
+          <textarea onKeyPress={handleKeyPress} />
+          <div>
+            {tags.map((tag, index) => (
+            <span key={index}>{tag}</span>
+            ))}
+          </div>
+        </div>
+
 
       </div>
 
