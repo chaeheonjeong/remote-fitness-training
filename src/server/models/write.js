@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 const writeSchema = new Schema(
   {
-    number: { type: Int16Array, required: true },
+    number: { type: String, required: true },
     period: { type: String, required: true },
-    date: { type: String, required: true },
+    date: { type: Date, required: true },
     tag: { type: String, required: true },
     title: { type: String, required: true },
     content: { type: String, required: true },
@@ -17,6 +17,6 @@ const writeSchema = new Schema(
 
 writeSchema.set("collection", "write");
 
-const Write = mongoose.model("Write", writeSchema);
+const Write = mongoose.model("write", writeSchema);
 
 module.exports = Write;

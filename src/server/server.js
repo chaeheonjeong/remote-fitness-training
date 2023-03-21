@@ -201,8 +201,6 @@ app.post("/email-newpass", async (req, res) => {
 
 
 
-
-
 app.post("/postwrite", async (req, res) => {
   const { number, period, date, tag, title, content } = req.body;
   try {
@@ -222,7 +220,19 @@ app.post("/postwrite", async (req, res) => {
   }
 });
 
-
+app.get('/getwrite', function(req, res) {
+  // MyModel을 검색합니다.
+  Write.find({}, function(err, write) {
+    if (err) {
+      // 에러가 발생했다면 에러 메시지를 반환합니다.
+      res.status(500).send(err);
+    } else {
+      // 검색된 데이터를 반환합니다.
+      res.json(write);
+      console.log(res.body);
+    }
+  });
+});
 
 
 app.listen(8080, () => {

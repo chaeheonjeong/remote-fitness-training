@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './AskView.css';
 
 function A_View() {
+
+    const navigate = useNavigate();
     
     return (
         <div className='detail'>
             <div className='content_4'>
                 <div className='content_4_a'>
-                    <input type='button' value='목록' id='view_list_button1' />
+                    <input type='button' value='목록' id='view_list_button1' onClick={() => {
+                        navigate("/");
+                    }}/>
                 </div>
                     
                 <div className='content_4_b'>

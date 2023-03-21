@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import './Write.css';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+import {Button} from "@mui/material";
+
 
 import Tagify from '@yaireo/tagify'
 
@@ -14,6 +19,8 @@ function Write() {
     setRender(title);
     setTitle('');
   }
+
+  const navigate = useNavigate();
     
   const titleHandler = (e) => {
     const inputTitle = e.target.value;
@@ -58,21 +65,10 @@ function Write() {
     setPCondition(e.target.value);
   }
 
-  const handleChange = (e) => {
-    const target = e.target;
-    const {title} = target;
 
-  }
 
-  const [postInfo, setPostInfo] = useState( {
-    title: null,
-    contents: null,
-    postnum: null,
-    writer: sessionStorage.getItem('nickName'),
-    tag: null,
-    watching: null
-  });
 
+ 
   const [tags, setTags] = useState([]);
 
   
@@ -90,13 +86,64 @@ function Write() {
             alert('태그는 최대 5개까지 가능합니다.');
         }
     }
-}
+  }
 
-function handleDelete(index) {
-    setTags(tags.filter((tag, i) => i !== index));
-}
+  function handleDelete(index) {
+      setTags(tags.filter((tag, i) => i !== index));
+  }
+
+  const createPost = () => {
+    if(postInfo.number === "") postInfo.number ="";
+    if(postInfo.period === "") postInfo.period ="";
+    if(postInfo.date === "") postInfo.date ="";
+    if(postInfo.tag === "") postInfo.tag ="";
+    if(postInfo.title === "") postInfo.title = "";
+    if(postInfo.content === "") postInfo.content = "";
+    axios.post('http://localhost:8080/postwrite',{postInfo})
+    .then(res => {
+      console.log(res);
+      alert('글쓰기가 완료되었습니다.');
+      
+    })
+    .catch(e => console.error(e))
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+        const response = await axios.post("http://localhost:8080/postwrite", {
+          number: null,
+          period: null,
+          date: null,
+          tag : null,
+          title : null,
+          content : null
+        });
+        navigate("/postwrite");
+      }
+     catch (error) {
+      console.log(error);
+    }
+  };
 
 
+  
+
+
+  const [postInfo, setPostInfo] = useState( {
+    number: null,
+    period: null,
+    date: null,
+    tag : null,
+    title : null,
+    content : null
+  });
+
+
+  /*async function handleSubmit(e) {
+    e.preventDefault();
+    await createPost();
+  };*/
 
 
   return (
@@ -205,7 +252,7 @@ function handleDelete(index) {
 
       <div className='btn'>
         <input type='button' value='취소' className='cancel' />
-        <input type='submit' value='등록' className='submit' onClick={titleHandler}/>
+        <input type='submit' value='등록' className='submit' onClick={handleSubmit} />
       </div>
 
     </div>
@@ -240,3 +287,4 @@ export default Write;
 /*
 <input type='text' onKeyPress={handleKeyPress} maxLength='20' className='tag_input' name='tag' placeholder='태그를 입력하세요.' />
 <textarea onKeyPress={handleKeyPress}  className='tag_input' name='tag' placeholder='태그를 입력하세요.'/>*/
+
