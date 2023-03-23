@@ -216,9 +216,10 @@ app.post("/postwrite", async (req, res) => {
     return res.status(200).json({ message: "Write created successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "서버오류" });
   }
 });
+
 
 app.get('/getwrite', function(req, res) {
   // MyModel을 검색합니다.

@@ -5,16 +5,24 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-import {Button} from "@mui/material";
-
-
-import Tagify from '@yaireo/tagify'
-
 
 function Write() {
 
-  const [title,setTitle] = useState('');
+  const [title, setTitle] = useState('');
+
+  const [content, setContent] = useState('');
+
+  const [date, setDate] = useState(new Date());
+
+  const handleSelectDate = (date) => {
+    setDate(date);
+  }
+
+  const [tags, setTags] = useState([]);
+
   const [render , setRender] = useState('');
+
+
 	const send = () => {
     setRender(title);
     setTitle('');
@@ -28,18 +36,13 @@ function Write() {
   }
 
   const [periodCondition, setPeriodCondition] = useState({
-    num1 : null,
-    num2 : null,
-    num3 : null,
-    num4 : null,
-    num5 : null,
-    num6 : null,
-    num7 : null,
-    num8 : null,
-    num9 : null,
-    num10 : null,
-    num11 : null,
-    num12 : null,
+    num1 : '1개월',
+    num2 : '2개월',
+    num3 : '3개월',
+    num4 : '4개월',
+    num5 : '5개월',
+    num6 : '6개월 이상',
+
   });
 
   const periodChange = (e) => {
@@ -48,28 +51,21 @@ function Write() {
 
 
   const [pCondition, setPCondition] = useState({
-    p1 : null,
-    p2 : null,
-    p3 : null,
-    p4 : null,
-    p5 : null,
-    p6 : null,
-    p7 : null,
-    p8 : null,
-    p9 : null,
-    p10 : null,
-    p11 : null,
-    p12 : null,
+    p1 : '1명',
+    p2 : '2명',
+    p3 : '3명',
+    p4 : '4명',
+    p5 : '5명',
+    p6 : '6명',
+    p7 : '7명',
+    p8 : '8명',
+    p9 : '9명',
+    p10 : '10명 이상',
+
   });
   const pChange = (e) => {
     setPCondition(e.target.value);
   }
-
-
-
-
- 
-  const [tags, setTags] = useState([]);
 
   
   function handleKeyPress(event) {
@@ -92,7 +88,7 @@ function Write() {
       setTags(tags.filter((tag, i) => i !== index));
   }
 
-  const createPost = () => {
+  /*const createPost = () => {
     if(postInfo.number === "") postInfo.number ="";
     if(postInfo.period === "") postInfo.period ="";
     if(postInfo.date === "") postInfo.date ="";
@@ -106,20 +102,23 @@ function Write() {
       
     })
     .catch(e => console.error(e))
-  };
+  };*/
+
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
         const response = await axios.post("http://localhost:8080/postwrite", {
-          number: null,
-          period: null,
-          date: null,
-          tag : null,
-          title : null,
-          content : null
+          number: pCondition,
+          period: periodCondition,
+          date: date,
+          tag : tags,
+          title : title,
+          content : content
         });
-        navigate("/postwrite");
+        console.log('success' ,response.date);
+        /*navigate("/");*/
       }
      catch (error) {
       console.log(error);
@@ -130,14 +129,14 @@ function Write() {
   
 
 
-  const [postInfo, setPostInfo] = useState( {
+  /*const [postInfo, setPostInfo] = useState( {
     number: null,
     period: null,
     date: null,
     tag : null,
     title : null,
     content : null
-  });
+  });*/
 
 
   /*async function handleSubmit(e) {
@@ -180,7 +179,7 @@ function Write() {
 
       <div className='ch2'>
         <text className='ss'>시작예정일</text>
-        <input type='date' id='date' className='date' /> 
+        <input type='date' id='date' className='date' onChange={handleSelectDate}/> 
         
         <text className='tt'>태그</text>
 
@@ -233,11 +232,15 @@ function Write() {
           onChange={(event, editor) => {
             const data = editor.getData();
             console.log({ event, editor, data });
-            setPostInfo({
+            setContent({
+              content : data
+            })
+           
+            /*setPostInfo({
               ...postInfo,
               contents: data
-            })
-            console.log(postInfo);
+            })*/
+            //console.log(data/*postInfo*/);
           }}
   
           onBlur={(event, editor) => {

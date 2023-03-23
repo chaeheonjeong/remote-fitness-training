@@ -6,13 +6,11 @@ const writeSchema = new Schema(
     number: { type: String, required: true },
     period: { type: String, required: true },
     date: { type: Date, required: true },
-    tag: { type: String, required: true },
+    tag: { type: Array, required: true },
     title: { type: String, required: true },
     content: { type: String, required: true },
-  },
-  {
-    versionKey: false,
   }
+
 );
 
 writeSchema.set("collection", "write");
