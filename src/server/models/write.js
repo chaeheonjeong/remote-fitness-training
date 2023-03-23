@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const writeSchema = new Schema(
   {
-    number: { type: String, required: true },
-    period: { type: String, required: true },
+    number: { type: Array, required: true },
+    period: { type: Array, required: true },
     date: { type: Date, required: true },
     tag: { type: Array, required: true },
     title: { type: String, required: true },

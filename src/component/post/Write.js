@@ -118,7 +118,7 @@ function Write() {
           content : content
         });
         console.log('success' ,response.date);
-        /*navigate("/");*/
+        navigate("/");
       }
      catch (error) {
       console.log(error);
@@ -173,7 +173,6 @@ function Write() {
           <option value={periodCondition.num4}>4개월</option>
           <option value={periodCondition.num5}>5개월</option>
           <option value={periodCondition.num6}>6개월 이상</option>
-         
         </select>
       </div>
 
