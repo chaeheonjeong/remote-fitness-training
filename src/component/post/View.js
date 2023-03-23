@@ -13,10 +13,20 @@ function View() {
 
     const handleShowReplyInput = () => {
         setShowReplyInput(!showReplyInput);
-        setShowReplyList(true); // 대댓글 입력 칸을 보여주면서 대댓글 목록도 함께 보여줌
+        setShowReplyList(false); // 대댓글 입력 칸을 보여주면서 대댓글 목록도 함께 보여줌
     }
 
     const handleHideReplyInput = () => {
+        setShowReplyInput(false);
+        setShowReplyList(false);
+    }
+
+    const handleShowReplyList = () => {
+        setShowReplyList(true);
+        setShowReplyInput(showReplyInput); // 대댓글 입력 칸을 보여주면서 대댓글 목록도 함께 보여줌
+    }
+
+    const handleHideReplyList = () => {
         setShowReplyInput(false);
         setShowReplyList(false);
     }
@@ -117,7 +127,7 @@ function View() {
                 <table>
                     <thead>
                         <tr className='replyName'>
-                            <th></th>
+                            <th> </th>
                             <th>닉네임</th>
                             <th>댓글 내용</th>
                             <th>날짜</th>
@@ -147,17 +157,31 @@ function View() {
                                     <input type='text' className='reply_input' placeholder='대댓글 내용을 입력해주세요.' />
                                     <div className='reply_choose'>
                                         <input type='checkbox'></input>
-                                        <text className='rc1'>비밀댓글</text>
-                                       {!showReplyList} <button onClick={showReplyList}>대댓글 등록</button>
-                                        {showReplyList && (
-                                            <div className='rr_reply'>
-                                            {/* 대댓글 목록 보여주는 코드 */}
-                                            </div>
-                                        )}
+                                        <text className='rc1'>비밀 대댓글</text>
+                                        <button onClick='/'>대댓글 등록</button>
+                                        
 
                                         <button onClick={handleHideReplyInput}>대댓글 작성 취소</button>
                                     </div>
                                     </>
+                                )}
+
+                                {!showReplyList && (
+                                    <button onClick={handleShowReplyList}>대댓글 목록 보기</button>
+                                )}
+                                {showReplyList && (
+                                    <div className='rr_reply'>
+                                        <div>
+                                            {/* 대댓글 목록 보여주는 코드 */}
+                                        </div>
+                                        <div>
+                                            <button onClick={handleHideReplyList}>대댓글 목록 닫기</button>
+
+                                        </div>
+                                                                                
+                                    </div>
+                                    
+                                    
                                 )}
                                 
                                 
@@ -165,41 +189,7 @@ function View() {
                         
                     </tbody>
                 </table>
-            
-            
-            
-            
-            
-            {/*
-                    <Stack sx={{ m: 5 }}>
-                        <Box onSubmit={onSubmit}
-                            component="form"
-                        >
-                            <TextField
-                                onChange={(e) => { setText1(e.target.value) }}
-                                placeholder="답변 추가"
-                                value={text1}
-                                id="outlined-size-small"
-                                size="small"
-                                variant="standard"
-                                sx={{ width: '30rem' }}
-                            />
-                        </Box>
-
-                        {local.map((comment, index) => (
-
-                            <Box sx={{ m: 2 }} key={comment.commentId}>
-                                <Stack direction="row" spacing={2}>
-                                    <Avatar sx={{ bgcolor: 'orangered' }}>{comment.writer.slice(0, 2)}</Avatar>
-                                    <Box sx={{ color: 'gray' }}>{comment.writer}</Box>
-                                </Stack>
-                                <Box key={index} sx={{ padding: "20px 20px" }}>{comment.content}</Box>
-                                <ReplyComment responseTo={comment.commentId} />
-                                <hr style={{ borderTop: '1px solid gray' }} />
-                            </Box >
-                        ))}
-                        </Stack >*/}
-
+      
                 </div>
 
         </div>
@@ -220,12 +210,13 @@ export default View;
 
 
 /*
-<dlv className='secret_reply'>
-                    <div>비밀댓글</div>
-                    <input type='button' value="등록">등록</input>
-                </dlv>
+{!showReplyList && ( <button onClick={handleShowReplyList}>대댓글 등록</button>)}
+                                        {showReplyList && (
+                                            <div className='rr_reply'>
+                                            {/* 대댓글 목록 보여주는 코드 }
+                                            </div>
+                                        )}
 
 */
-
 /*
 <input type="button" className='rrbtn' value="답장"></input>*/

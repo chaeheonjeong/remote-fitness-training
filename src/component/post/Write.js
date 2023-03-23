@@ -112,8 +112,9 @@ function Write() {
           title : title,
           content : JSON.stringify(content)
         });
+        console.log(content);
         console.log('success' , response.data.message);
-        navigate("/");
+        navigate("/Write");
       }
      catch (error) {
       console.log(error);

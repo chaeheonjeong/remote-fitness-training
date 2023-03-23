@@ -213,6 +213,7 @@ app.post("/postWrite", async (req, res) => {
       content : JSON.parse(content),
     });
     await newWrite.save();
+    
     return res.status(200).json({ message: `Write created successfully` });
   } catch (error) {
     console.error(error);
