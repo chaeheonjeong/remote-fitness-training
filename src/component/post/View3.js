@@ -132,35 +132,35 @@ function View() {
                             <th>초록풀</th>
                             <th>리액트 공부 같이하고 싶습니다</th>
                             <th>작성된 날짜</th>
-                            <th>
-                                <input type="button" className='rdbtn' value="삭제"></input>
-                                <input type="button" className='rmbtn' value="수정"></input>
-                            </th>
                         </tr>
                         <tr className='replyContent'>
-                            
+                        <input
+                                type="button"
+                                value="답글쓰기"
+                                onClick={() => setShowReplyInput(!showReplyInput)}
+                                
+                                />
                                 {!showReplyInput && (
-                                    <button onClick={handleShowReplyInput}>대댓글 추가</button>
+                                    <button onClick={handleShowReplyInput}>댓글 추가</button>
                                 )}
                                 {showReplyInput && (
                                     <>
-                                    <input type='text' className='reply_input' placeholder='대댓글 내용을 입력해주세요.' />
+                                    <input type='text' className='reply_input' placeholder='댓글 내용을 입력해주세요.' />
                                     <div className='reply_choose'>
                                         <input type='checkbox'></input>
                                         <text className='rc1'>비밀댓글</text>
-                                       {!showReplyList} <button onClick={showReplyList}>대댓글 등록</button>
-                                        {showReplyList && (
-                                            <div className='rr_reply'>
-                                            {/* 대댓글 목록 보여주는 코드 */}
-                                            </div>
-                                        )}
-
-                                        <button onClick={handleHideReplyInput}>대댓글 작성 취소</button>
+                                        <input type='button' className='sbtn' value='등록'></input>
+                                        <button onClick={handleHideReplyInput}>취소</button>
                                     </div>
                                     </>
                                 )}
-                                
-                                
+                                {showReplyList && (
+                                    <div className='rr_reply'>
+                                    {/* 대댓글 목록 보여주는 코드 */}
+                                    </div>
+                                )}
+                                <input type="button" className='rdbtn' value="삭제"></input>
+                                <input type="button" className='rmbtn' value="수정"></input>
                         </tr>
                         
                     </tbody>

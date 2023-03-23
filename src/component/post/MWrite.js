@@ -5,17 +5,17 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-//react-html-parser
-function Write() {
+
+function MWrite() {
 
   const [title, setTitle] = useState('');
 
   const [content, setContent] = useState('');
 
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(new Date());
 
-  const handleSelectDate = (event) => {
-    setDate(event.target.value);
+  const handleSelectDate = (date) => {
+    setDate(date);
   }
 
   const [tags, setTags] = useState([]);
@@ -57,7 +57,6 @@ function Write() {
     p10 : '10명 이상',
 
   });
-
   const pChange = (e) => {
     setPCondition(e.target.value);
   }
@@ -83,61 +82,26 @@ function Write() {
       setTags(tags.filter((tag, i) => i !== index));
   }
 
-  /*const createPost = () => {
-    if(postInfo.number === "") postInfo.number ="";
-    if(postInfo.period === "") postInfo.period ="";
-    if(postInfo.date === "") postInfo.date ="";
-    if(postInfo.tag === "") postInfo.tag ="";
-    if(postInfo.title === "") postInfo.title = "";
-    if(postInfo.content === "") postInfo.content = "";
-    axios.post('http://localhost:8080/postwrite',{postInfo})
-    .then(res => {
-      console.log(res);
-      alert('글쓰기가 완료되었습니다.');
-      
-    })
-    .catch(e => console.error(e))
-  };*/
-
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await axios.post("http://localhost:8080/postWrite", {
+        const response = await axios.post("http://localhost:8080/postwrite", {
           number: pCondition,
           period: periodCondition,
-          date: String(date),
+          date: date,
           tag : tags,
           title : title,
-          content : JSON.stringify(content)
+          content : content
         });
-        console.log('success' , response.data.message);
+        console.log('success' , response.data);
         navigate("/");
       }
      catch (error) {
       console.log(error);
     }
   };
-
-
-  
-
-
-  /*const [postInfo, setPostInfo] = useState( {
-    number: null,
-    period: null,
-    date: null,
-    tag : null,
-    title : null,
-    content : null
-  });*/
-
-
-  /*async function handleSubmit(e) {
-    e.preventDefault();
-    await createPost();
-  };*/
 
 
   return (
@@ -227,11 +191,7 @@ function Write() {
               content : data
             })
            
-            /*setPostInfo({
-              ...postInfo,
-              contents: data
-            })*/
-            //console.log(data/*postInfo*/);
+          
           }}
   
           onBlur={(e, editor) => {
@@ -253,48 +213,4 @@ function Write() {
   );
 }
 
-export default Write;
-
-/*
-
-
-<input type='number' id='number' classname='number'></input>
-<input type='button' value='취소' id='cancel' className='cancel' onClick={onReset}/>
-<input type='text' maxLength='30' className='title_input' name='title' placeholder='제목을 작성해주세요.' />
-
-
-
-<option value={periodCondition.num6}>6개월</option>
-          <option value={periodCondition.num7}>7개월</option>
-          <option value={periodCondition.num8}>8개월</option>
-          <option value={periodCondition.num9}>9개월</option>
-          <option value={periodCondition.num10}>10개월</option>
-          <option value={periodCondition.num11}>11개월</option>
-          <option value={periodCondition.num12}>12개월</option>
-          
-<option value={pCondition.p10}>10명</option>
-          <option value={pCondition.p11}>11명</option>
-          <option value={pCondition.p12}>12명</option>
-
-*/
-
-/*
-<input type='text' onKeyPress={handleKeyPress} maxLength='20' className='tag_input' name='tag' placeholder='태그를 입력하세요.' />
-<textarea onKeyPress={handleKeyPress}  className='tag_input' name='tag' placeholder='태그를 입력하세요.'/>*/
-
-/*
-const [render , setRender] = useState('');
-
-const send = () => {
-    setRender(title);
-    setTitle('');
-  }
-
-
-  <div className='render_title'>
-        {render}
-   	  </div>
-
-
-
-*/
+export default MWrite;

@@ -201,7 +201,7 @@ app.post("/email-newpass", async (req, res) => {
 
 
 
-app.post("/postwrite", async (req, res) => {
+app.post("/postWrite", async (req, res) => {
   const { number, period, date, tag, title, content } = req.body;
   try {
     const newWrite = new Write({
@@ -210,19 +210,18 @@ app.post("/postwrite", async (req, res) => {
       date: date,
       tag : tag,
       title : title,
-      content : content
+      content : JSON.parse(content),
     });
     await newWrite.save();
-    return res.status(200).json({ message: "Write created successfully" });
+    return res.status(200).json({ message: `Write created successfully` });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "서버오류" });
+    res.status(500).json({ message: `${date}서버오류` });
   }
 });
 
 
 app.get('/getwrite', function(req, res) {
-  // MyModel을 검색합니다.
   Write.find({}, function(err, write) {
     if (err) {
       // 에러가 발생했다면 에러 메시지를 반환합니다.

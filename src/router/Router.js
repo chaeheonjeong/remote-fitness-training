@@ -13,6 +13,8 @@ import Ask from "../component/post//Ask";
 import AskView from "../component/post//AskView";
 import View2 from "../component/post//View2";
 
+import View3 from "../component/post//View3";
+
 const Router = () => {
     return(
         <BrowserRouter>
@@ -27,6 +29,7 @@ const Router = () => {
                 <Route path="/View" element={<View />} />
                 <Route path="/Ask" element={<Ask />} />
                 <Route path='/View2' element={<View2 />} />
+                <Route path='/View3' element={<View3 />} />
                 <Route path="/AskView" element={<AskView />} />
             </Routes>
         </BrowserRouter>
