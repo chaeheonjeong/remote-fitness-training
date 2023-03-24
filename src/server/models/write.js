@@ -8,7 +8,7 @@ const writeSchema = new Schema(
     date: { type: String, required: true },
     tag: { type: Array, required: true },
     title: { type: String, required: true },
-    content: { type: Object, required: true },
+    content: { type: Array, required: true },
   }
 
 );

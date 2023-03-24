@@ -114,7 +114,7 @@ function Write() {
         });
         console.log(content);
         console.log('success' , response.data.message);
-        navigate("/Write");
+        navigate("/");
       }
      catch (error) {
       console.log(error);

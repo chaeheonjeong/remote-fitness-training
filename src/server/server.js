@@ -8,6 +8,8 @@ const cors = require("cors");
 const app = express();
 const nodemailer = require("nodemailer");
 const Verify = require("./models/verify");
+const StudyTime = require("./models/studyTime");
+const GoalTime = require("./models/goalTime");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -27,7 +29,6 @@ app.get("/", (req, res) => {
 
 app.post("/login", async (req, res) => {
   // 요청 바디에서 email과 password를 추출합니다.
-  console.log(req.body);
   const { email, password } = req.body;
 
   // email이 존재하는지 확인합니다.
@@ -43,10 +44,10 @@ app.post("/login", async (req, res) => {
   }
 
   // JWT 토큰을 발행합니다.
-  const token = jwt.sign({ id: user._id }, mysecretkey, { expiresIn: "1h" });
+  const token = jwt.sign({ id: user._id }, mysecretkey, { expiresIn: "365d" });
 
   // 토큰을 클라이언트에게 전달합니다.
-  res.send({ token });
+  res.send({ token: token, name: user.name });
 });
 
 app.post("/email-check", async (req, res) => {
@@ -130,10 +131,6 @@ app.post("/email-send", async (req, res) => {
 app.post("/email-verify", async (req, res) => {
   const { email, verify } = req.body;
   try {
-    const user = await User.findOne({ email: email });
-    if (!user) {
-      return res.status(400).json({ message: "Email doesn't exist." });
-    }
     const verified = await Verify.find({
       email: email,
       expireDate: { $gte: new Date() },
@@ -148,7 +145,7 @@ app.post("/email-verify", async (req, res) => {
     }
     const obj = verified[0];
     if (obj.verify === verify) {
-      return res.status(200).json({ message: "비밀번호 찾기 성공" });
+      return res.status(200).json({ message: "인증번호 확인 성공" });
     } else {
       res.status(400).json({ message: "인증번호가 틀렸습니다." });
     }
@@ -178,6 +175,7 @@ app.post("/email-newpass", async (req, res) => {
         .status(400)
         .json({ message: "유효시간이 지났거나 이미 변경되었습니다." });
     }
+
     const obj = verified[0];
     if (obj.verify === verify) {
       obj.done = true;
@@ -188,9 +186,140 @@ app.post("/email-newpass", async (req, res) => {
         .status(200)
         .json({ password: user.password, message: "비밀번호 변경 성공" });
     } else {
-      res
-        .status(400)
-        .json({ message: "유효시간이 지났거나 이미 변경되었습니다." });
+      res.status(400).json({ message: "비밀번호 변경 실패" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/study-time", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const today = new Date().toLocaleDateString();
+    const userStudyTime = await StudyTime.findOne({
+      _user: userId,
+      date: today,
+    });
+    if (userStudyTime) {
+      const time = userStudyTime.studyTime;
+      const timeH = Math.floor(time / 3600);
+      const timeM = Math.floor((time % 3600) / 60);
+      return res.status(200).json({
+        timeH: timeH,
+        timeM: timeM,
+        message: `${time}공부 시간 가져오기 성공`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/goal-time", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  const { hour, min } = req.body;
+  try {
+    const time = hour * 3600 + min * 60;
+    const existingGoalTime = await GoalTime.findOne({ _user: userId });
+    if (existingGoalTime) {
+      existingGoalTime.goalTime = time;
+      await existingGoalTime.save();
+      return res.status(200).json({ message: "GoalTime updated successfully" });
+    } else {
+      const newGoalTime = new GoalTime({
+        _user: userId,
+        goalTime: time,
+      });
+      await newGoalTime.save();
+      return res.status(200).json({ message: "GoalTime created successfully" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/ggoal-time", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const userGoalTime = await GoalTime.findOne({
+      _user: userId,
+    });
+    if (userGoalTime) {
+      const time = userGoalTime.goalTime;
+      const timeH = Math.floor(time / 3600);
+      const timeM = Math.floor((time % 3600) / 60);
+      return res.status(200).json({
+        goalTimeH: timeH,
+        goalTimeM: timeM,
+        message: "목표 공부 시간 가져오기 성공",
+      });
+    } else {
+      res.status(400).json({
+        message: "목표 공부시간을 설정해주세요.",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/ranking", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const today = new Date();
+    today.setDate(today.getDate() - 1);
+    const yesterday = today.toLocaleDateString();
+
+    const rankTime = await StudyTime.find({ date: yesterday })
+      .sort({ studyTime: -1 })
+      .limit(10);
+
+    if (rankTime) {
+      const result = [];
+      for (let i = 0; i < rankTime.length; i++) {
+        const time = rankTime[i].studyTime;
+        const timeH = Math.floor(time / 3600);
+        const timeM = Math.floor((time % 3600) / 60);
+        const timeS = time % 60;
+        let userName = null;
+        try {
+          const user = await User.findById(rankTime[i]._user);
+          userName = user.name;
+        } catch (error) {
+          console.log(error);
+        }
+        result.push({ timeH, timeM, timeS, userName });
+      }
+
+      return res.status(200).json({
+        rankTime: result,
+        message: "공부 시간 랭킹 가져오기 성공",
+      });
+    } else {
+      res.status(400).json({
+        message: "공부한 사용자가 존재하지 않습니다.",
+      });
     }
   } catch (error) {
     console.error(error);

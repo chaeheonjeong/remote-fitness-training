@@ -8,13 +8,9 @@ import FindPwCount from "./FindPwCount";
 const FindPw = () => {
   const hook = useFindPw();
 
-  const submitHandler = (event) => {
-    event.preventDefault();
-  };
-
   return (
     <div className={styles.authWrapper}>
-      <AuthForm>
+      <AuthForm onSubmit={hook.submitHandler}>
         <div className={styles.emailWrapper}>
           <input
             type="text"
@@ -41,12 +37,9 @@ const FindPw = () => {
             placeholder="인증 번호"
             className={styles.numInput}
             onChange={(e) => hook.setNum(e.target.value)}
+            value={hook.num}
           />
-          {hook.emailInputColor === "pass" && (
-            <FindPwCount
-              hook = {hook}
-            />
-          )}
+          {hook.emailInputColor === "pass" && <FindPwCount hook={hook} />}
           <button className={styles.numBtn} onClick={hook.numBtnHandler}>
             확인
           </button>
@@ -82,10 +75,7 @@ const FindPw = () => {
           inputColor={hook.rePassColor}
         />
         <label className={styles.warnLabel}>{hook.warn}</label>
-        <AuthSubmitButton
-          text="비밀번호 변경하기"
-          submitHandler={hook.submitHandler}
-        />
+        <AuthSubmitButton text="비밀번호 변경하기" />
       </AuthForm>
     </div>
   );
