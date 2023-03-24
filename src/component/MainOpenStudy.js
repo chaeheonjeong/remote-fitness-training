@@ -1,180 +1,115 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useInView } from "react-intersection-observer";
+import axios from "axios";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import mainStyles from  "./MainOpenStudy.module.css";
-import cardStyles from  "./OpenStudyRoomCard.module.css";
+import "./InfiniteScroll.css";
 import OpenStudyModal from "./OpenStudyModal";
 import OpenStudyRoomCard from "./OpenStudyRoomCard";
 
+import loadingImg from "../images/loadingImg.gif";
+
 function MainOpenStudy() {
     const [studyModal, setStudyModal] = useState(false);
-    const [addRoom, setAddRoom] = useState(false);
-    const [openStudyTitle, setOpenStudyTitle] = useState('');
-    const [participants, setParticipants] = useState(1);
-    const [total, setTotal] = useState('0');
+    //const [image, setImage] = useState();
+    const [moreOpenStudies, setMoreOpenStudies] = useState(true);
+    const [openStudies, setOpenStudies] = useState([]);
+    const [page, setPage] = useState(1);
 
-    const [rooms, setRooms] = useState([]);
 
-     /*const [newRoom, setNewRoom] = useState({
-        title: openStudyTitle,
-        totalPeople: total,
-        partPeople: participants,
-    });
+    // 무한스크롤
 
-    const [room, setRoom] = useState('');
-    const [roomList, setRoomList] = useState([]);
- 
-    
+    //const [cards, setCards] = useState(Array.from({length: 4}))
 
-    //const [openRooms, setRooms] = useState([]);
-    const [id, setId] = useState(0);
-    const[openRooms, setOpenRooms] = useState({
-        id: id,
-        title: openStudyTitle,
-        totalPeople: total,
-        partPeople: participants,
-    });
-    
+    //const fetchData = () => {
+        //console.log(cards.length);
+        /* setTimeout(() => { 
+            setCards(cards.concat(Array.from({ length: 4 })))
+        }, 1500); */
 
-    
-
-    useEffect(() => {
-        localStorage.setItem('openRooms', JSON.stringify(openRooms));
-        localStorage.setItem('id', id);
-    }, [openRooms, id]);
-
-   useEffect(() => {
-        const openRoomList = localStorage.getItem('openRooms');
-        console.log(openRoomList, JSON.parse(openRoomList));
-        if(openRoomList) {
-            setOpenRooms(JSON.parse(openRoomList));
+        /* let params = {  
+            lastCardId: openStudies[openStudies.length - 1]?.id,
         }
-        const roomId = localStorage.getItem('id');
-        if(roomId) {
-            setId(parseInt(roomId));
+        if(moreOpenStudies) {
+            dispatch(fetchAll)
         }
-    }, []);*/
+    }; */
 
-    const [ref, visible] = useInView()
 
-    /*function roomPackage() {
-        return (
-            <>
-            {
-                Array.from(Array(100), item=>
-                    
-                )
-            }
-            </>
-        );
-    }*/
 
-    /*function roomPack() {
-        Array.from({length: 50}, (v, i) => {
-            <OpenStudyRoomCard
-                keyNum = {i}
-                title = {openStudyTitle}
-                total = {total}
-                participants = {participants}
-            />
-            if(i%4===0) {
-                <br />
-            }
-        });
-    }*/
-
-    function roomPack() {
+    const loaderImg = () => {
         return(
-            rooms.map((room, idx) => (
-                (idx%4 === 0) ? (
-                    <>
-                        <div className={mainStyles.openStudyBlock}></div>
-                        <OpenStudyRoomCard
-                            keyNum = {idx}
-                            title = {room.title}
-                            tag = {room.hashtag}
-                            total = {room.personNum}
-                            participants = {participants}
-                        />  
-                        <div className={mainStyles.openStudyBlank} />
-                    </>
-                ) : (
-                    (idx%4 === 3) ? (
-                        <>
-                            <OpenStudyRoomCard
-                                keyNum = {idx}
-                                title = {room.title}
-                                tag = {room.hashtag}
-                                total = {room.personNum}
-                                participants = {participants}
-                            />
-                        </> 
-                    ) : (
-                        <>
-                            <OpenStudyRoomCard
-                                keyNum = {idx}
-                                title = {room.title}
-                                tag = {room.hashtag}
-                                total = {room.personNum}
-                                participants = {participants}
-                            />
-                            <div className={mainStyles.openStudyBlank} />
-                        </>  
-                    )  
-                )
-            ))
-
-
-
-
-            /*Array.from({length: 50}, (v, i) => (
-                (i%4 === 0) ? (
-                    <>
-                        <div className={mainStyles.openStudyBlock}></div>
-                        <OpenStudyRoomCard
-                            keyNum = {i}
-                            title = {openStudyTitle}
-                            total = {total}
-                            participants = {participants}
-                        />  
-                        <div className={mainStyles.openStudyBlank} />
-                    </>
-                ) : (
-                    (i%4 === 3) ? (
-                        <>
-                            <OpenStudyRoomCard
-                                keyNum = {i}
-                                title = {openStudyTitle}
-                                total = {total}
-                                participants = {participants}
-                            />
-                        </> 
-                    ) : (
-                        <>
-                            <OpenStudyRoomCard
-                                keyNum = {i}
-                                title = {openStudyTitle}
-                                total = {total}
-                                participants = {participants}
-                            />
-                            <div className={mainStyles.openStudyBlank} />
-                        </>  
-                    )  
-                )      
-            ))*/
+            <div className={mainStyles.loadingPackage}>
+                <img className={mainStyles.loadingImg} src={loadingImg} alt="loadingImg" />
+                <div className={mainStyles.loading}>loading...</div>
+            </div>
         );
     }
 
+    /* const studyScroll = () => {
+        return (
+            <InfiniteScroll
+                dataLength = {cards.length}
+                next = {fetchData}
+                hasMore = {true}
+                loader = {loaderImg()}
+            >
+               {openStudyPackage()}
+            </InfiniteScroll>
+        );
+    } */
 
+    /* const openStudyPackage = () => {
+        <div>
+        {openStudies && openStudies.map((data, index) => {
+            return (
+                <OpenStudyRoomCard 
+                    img={data.img}
+                    title={data.title} 
+                    personNum={data.personNum} 
+                    tags={Array.isArray(data.tags) ? [...data.tags] : []} 
+                    id={data.id}
+                    key={data.id}
+                />
+            );
+        })}
+        </div>
+    }  */
 
-    const viewStudyModal = () => {
-        setStudyModal(studyModal => !studyModal);
-    };
+    const addModal = (img, title, tags, personNum) => {
+        const newOpenStudies = [...openStudies, {img, title, tags, personNum}]
+        setOpenStudies(newOpenStudies);
+    }
+
+    // 데이터 불러오기
+    useEffect(() => {
+        axios
+        .get("http://localhost:8080/openStudies")
+        .then((response) => {
+            //console.log(response.data.message);
+            if (response.status === 200) {
+                setOpenStudies([...response.data.openStudies]);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    });
+
 
     return(
         <>
-            <div id={mainStyles.body}>
+        {
+                <OpenStudyModal
+                  studyModal={studyModal}
+                  setStudyModal={setStudyModal}
+                  //setImage={setImage}
+                  addModalHandler = {addModal}
+                />
+            
+        }
+             <div id={mainStyles.body}>
                 <div id={mainStyles.menu}>
                     <div id={mainStyles.select}>
                         <Link to="/"><button id={mainStyles.openStudy}>오픈스터디</button></Link>
@@ -191,38 +126,37 @@ function MainOpenStudy() {
                         <input />
                         <button>검색</button>
                     </form>
-                    <button onClick={() => viewStudyModal()}>만들기</button>
+                    <button onClick={() => {setStudyModal(!studyModal)}}>만들기</button>
                 </div>
-                
-                <h2>Open Study</h2>
-                { 
-                    /*addRoom ? (
-                        <>
-                            <OpenStudyRoomCard 
-                                title = {openStudyTitle}
-                                total = {total}
-                                participants = {participants}
-                            />
-                        </>
-                    ) : null*/
-                }
-                <div className={cardStyles.container}>
-                    {addRoom ? roomPack() : null}
-                </div>
-            </div>
 
-            <OpenStudyModal
-                open = {studyModal}
-                close = {viewStudyModal}
-                makeRoom = {setAddRoom}
-                title = {openStudyTitle}
-                setTitle = {setOpenStudyTitle}
-                total = {total}
-                setTotal = {setTotal}
-                participants = {participants}
-                rooms = {rooms}
-                setRooms = {setRooms}
-            />
+                <h1>Open Study</h1>
+
+
+                <InfiniteScroll
+                    dataLength = {openStudies.length}
+                    next = {() => setPage(page + 1)}
+                    hasMore = {moreOpenStudies}
+                    loader = {loaderImg()}
+                >
+                <div>
+                    {openStudies && openStudies.map((data, index) => {
+                        return (
+                            <OpenStudyRoomCard 
+                                img={data.img}
+                                title={data.title} 
+                                personNum={data.personNum} 
+                                tags={Array.isArray(data.tags) ? [...data.tags] : []} 
+                                id={data.id}
+                                key={data.id}
+                            />
+                        );
+                    })}
+                </div>
+                </InfiniteScroll>
+                
+
+
+            </div>
         </>
     );
 } 

@@ -1,18 +1,13 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import MainOpenStudy from "./component/MainOpenStudy";
-import MainStudy from "./component/MainStudy";
-import MainQuestion from "./component/MainQuestion";
-import './App.css';
+import Register from "./component/auth/Register";
+import Login from "./component/auth/Login";
+import FindPw from "./component/auth/FindPw";
+import Main from "./component/main/Main";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" exact={true} element={<MainOpenStudy />} />
-        <Route path="/study" element={<MainStudy />} />
-        <Route path="/question" element={<MainQuestion />} />       
-      </Routes>
-    </Router>
+    <>
+      <Main />
+    </>
   );
 }
 

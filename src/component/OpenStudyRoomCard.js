@@ -1,5 +1,4 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
 
 import styles from  "./OpenStudyRoomCard.module.css";
 import "./InfiniteScroll.css";
@@ -7,15 +6,14 @@ import "./InfiniteScroll.css";
 import emptyHeart from "../images/emptyHeart.png";
 import fullHeart from "../images/heart.png";
 
-function OpenStudyRoomCard({ keyNum, title, total, participants }) {
-    const tag = "태그";
-
+function OpenStudyRoomCard( {img, title, personNum, tags, id} ) {
     const [heart, setHeart] = useState(false);
 
     const changeHeart = () => {
-        setHeart(heart => !heart);
+        setHeart(!heart);
     };
 
+    // 관심글
     function heartBtn() {
         if(!heart) {
             return <img id={styles.heart} src={emptyHeart} alt="emptyHeart" onClick={() => changeHeart()}></img>;
@@ -25,24 +23,36 @@ function OpenStudyRoomCard({ keyNum, title, total, participants }) {
         }
     };
 
+    // 해시태그
+    function hashtag() {
+        return (
+            tags && tags.map((tag, index) => {
+                if(typeof tag === 'object' && tag.id) {
+                    return(<a className={styles.openStudyTag} key={tag.id} id={tag.id}>{'#' + tag}</a>);
+                } else {
+                    return(<a className={styles.openStudyTag} key={index}>{'#' + tag}</a>)
+                }  
+            })
+        );
+    }
+
     return(
-        <>
-            <div className={styles.openStudyBox} key={keyNum}>
+            <div className={styles.openStudyBox} key={id}>
                 {heartBtn()}
-                <a className={styles.participants}>{participants}/{total}</a>
-                <a>{keyNum}</a>
-                <div className={styles.openStudyImg}>스터디 사진</div>
+                <a className={styles.participants}>1/{personNum}</a>
+                <div className={styles.openStudyImg}>
+                    {
+                        img ? (
+                            <img className={styles.openStudyImage} src={img} alt="openStudyImg" />
+                        ) : null
+                    }
+                </div>
                 <h3 className={styles.roomTitle}>{title}</h3>
-                <a className={styles.openStudyTag}>#{tag}</a>
+                    {
+                        hashtag()
+                    }
             </div>
-        </>
     );
 }
 
-OpenStudyRoomCard.propTypes = {
-    keyNum: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    total: PropTypes.string.isRequired,
-    participants: PropTypes.number.isRequired,
-};
 export default OpenStudyRoomCard;

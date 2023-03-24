@@ -28,6 +28,8 @@ function MainStudy() {
 
     function studyPack() {
         return (
+            
+
             Array.from({length: 50}, (v, i) => (
                 (i%3 === 0) ? (
                     <>
@@ -62,7 +64,7 @@ function MainStudy() {
 
     function loaderImg() {
         return(
-            <div className={styles.loadingPackage}>
+             <div className={styles.loadingPackage}>
                 <img className={styles.loadingImg} src={loadingImg} alt="loadingImg"></img>
                 <div className={styles.loading}>loading...</div>
             </div>
@@ -110,9 +112,8 @@ function MainStudy() {
                 <div className={cardStyles.container}>
                     {studyScroll()}
                 </div>
-            </div>
+            </div> 
+                </>
 
-            
-        </>
     );
 } export default MainStudy;
