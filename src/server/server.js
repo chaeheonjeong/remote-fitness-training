@@ -10,6 +10,10 @@ const nodemailer = require("nodemailer");
 const Verify = require("./models/verify");
 const StudyTime = require("./models/studyTime");
 const GoalTime = require("./models/goalTime");
+const { dblClick } = require("@testing-library/user-event/dist/click");
+
+const OpenStudy = require("./models/openStudy");
+//const { default: StudyRoomCard } = require("../component/StudyRoomCard");
 
 app.use(cors());
 app.use(bodyParser.json());
