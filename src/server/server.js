@@ -290,7 +290,7 @@ app.post('/openStudy', async (req, res) => {
   }
 });
 
-app.get("/openStudies", async (req, res) => {
+/* app.get("/openStudies", async (req, res) => {
 
   try {
     const openStudies = await OpenStudy.find()
@@ -305,4 +305,45 @@ app.get("/openStudies", async (req, res) => {
       console.error(error);
       res.status(500).json({ message: "Server Error" });
     }
-  });
+  }); */
+
+  app.get("/openStudies", async (req, res) => {
+    //const { page, limit } = req.query;
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+  
+    const offset = (page - 1) * limit;
+  
+    try {
+      const openStudies = await OpenStudy.find().skip(offset).limit(limit);
+      //const totalOpenStudies = openStudies.length;
+      //console.log(totalOpenStudies);
+
+      //const currentOpenStudies = await OpenStudy.find().skip(offset).limit(limit);
+    
+        /* if(openStudies){
+          return res.status(200).json({
+            openStudies: openStudies,
+            message: '오픈스터디 목록 가져오기 성공',
+          });
+        } */
+        if(openStudies.length > 0) {
+          return res.status(200).json({ 
+            openStudies: openStudies,
+            //totalOpenStudies,
+            message: '오픈스터디 목록 가져오기 성공',
+            success: true, 
+            openStudies 
+          });
+        } else {
+          return res.status(404).json({
+            message: "데이터가 존재하지 않습니다",
+            success: false,
+          });
+        }
+      }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    });

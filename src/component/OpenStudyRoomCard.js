@@ -26,13 +26,17 @@ function OpenStudyRoomCard( {img, title, personNum, tags, id} ) {
     // 해시태그
     function hashtag() {
         return (
-            tags && tags.map((tag, index) => {
-                if(typeof tag === 'object' && tag.id) {
-                    return(<a className={styles.openStudyTag} key={tag.id} id={tag.id}>{'#' + tag}</a>);
-                } else {
-                    return(<a className={styles.openStudyTag} key={index}>{'#' + tag}</a>)
-                }  
-            })
+            <div>
+            {
+                tags && tags.map((tag, index) => {
+                    if(typeof tag === 'object' && tag.id) {
+                        return(<a className={styles.openStudyTag} key={tag.id} id={tag.id}>{'#' + tag}</a>);
+                    } else {
+                        return(<a className={styles.openStudyTag} key={index}>{'#' + tag}</a>)
+                    }  
+                })
+            }
+            </div>
         );
     }
 
@@ -40,6 +44,7 @@ function OpenStudyRoomCard( {img, title, personNum, tags, id} ) {
             <div className={styles.openStudyBox} key={id}>
                 {heartBtn()}
                 <a className={styles.participants}>1/{personNum}</a>
+                <a>{id}</a>
                 <div className={styles.openStudyImg}>
                     {
                         img ? (

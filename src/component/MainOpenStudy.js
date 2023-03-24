@@ -12,31 +12,12 @@ import loadingImg from "../images/loadingImg.gif";
 
 function MainOpenStudy() {
     const [studyModal, setStudyModal] = useState(false);
-    //const [image, setImage] = useState();
-    const [moreOpenStudies, setMoreOpenStudies] = useState(true);
+
+    const [totalOpenStudies, setTotalOpenStudies] = useState([]);
     const [openStudies, setOpenStudies] = useState([]);
+    const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
-
-
-    // 무한스크롤
-
-    //const [cards, setCards] = useState(Array.from({length: 4}))
-
-    //const fetchData = () => {
-        //console.log(cards.length);
-        /* setTimeout(() => { 
-            setCards(cards.concat(Array.from({ length: 4 })))
-        }, 1500); */
-
-        /* let params = {  
-            lastCardId: openStudies[openStudies.length - 1]?.id,
-        }
-        if(moreOpenStudies) {
-            dispatch(fetchAll)
-        }
-    }; */
-
-
+    const [isLoading, setIsLoading] = useState(false);
 
     const loaderImg = () => {
         return(
@@ -47,43 +28,43 @@ function MainOpenStudy() {
         );
     }
 
-    /* const studyScroll = () => {
-        return (
-            <InfiniteScroll
-                dataLength = {cards.length}
-                next = {fetchData}
-                hasMore = {true}
-                loader = {loaderImg()}
-            >
-               {openStudyPackage()}
-            </InfiniteScroll>
-        );
-    } */
-
-    /* const openStudyPackage = () => {
-        <div>
-        {openStudies && openStudies.map((data, index) => {
-            return (
-                <OpenStudyRoomCard 
-                    img={data.img}
-                    title={data.title} 
-                    personNum={data.personNum} 
-                    tags={Array.isArray(data.tags) ? [...data.tags] : []} 
-                    id={data.id}
-                    key={data.id}
-                />
-            );
-        })}
-        </div>
-    }  */
-
     const addModal = (img, title, tags, personNum) => {
         const newOpenStudies = [...openStudies, {img, title, tags, personNum}]
         setOpenStudies(newOpenStudies);
     }
 
-    // 데이터 불러오기
-    useEffect(() => {
+    const moreOpenStudies = () => {
+        console.log('데이터를 불러옵니다');
+      
+        axios
+          .get(`http://localhost:8080/openStudies?page=${page}&limit=12`)
+          .then((response) => {
+            const newOpenStudies = response.data.openStudies;
+            const isLastPage = newOpenStudies.length < 12;
+      
+            if (isLastPage) {
+              setHasMore(false);
+            }
+            
+      
+            const prevOpenStudies = [...openStudies];
+            console.log('Page: ', page);
+            setOpenStudies(prevOpenStudies => [...prevOpenStudies, ...newOpenStudies]);
+            console.log('Number of loaded studies: ' + (prevOpenStudies.length + newOpenStudies.length));
+            setPage(prevPage => prevPage + 1);
+          })
+          .catch((error) => {
+            console.log(error);
+            setIsLoading(false);
+          });
+      };
+      
+      useEffect(() => {
+        moreOpenStudies();
+      }, []);
+
+
+    /* useEffect(() => {
         axios
         .get("http://localhost:8080/openStudies")
         .then((response) => {
@@ -95,7 +76,7 @@ function MainOpenStudy() {
         .catch((error) => {
             console.log(error);
         });
-    });
+    }); */
 
 
     return(
@@ -104,20 +85,19 @@ function MainOpenStudy() {
                 <OpenStudyModal
                   studyModal={studyModal}
                   setStudyModal={setStudyModal}
-                  //setImage={setImage}
                   addModalHandler = {addModal}
                 />
             
         }
-             <div id={mainStyles.body}>
-                <div id={mainStyles.menu}>
-                    <div id={mainStyles.select}>
-                        <Link to="/"><button id={mainStyles.openStudy}>오픈스터디</button></Link>
-                        <Link to="/study"><button id={mainStyles.study}>스터디</button></Link>
-                        <Link to="/question"><button id={mainStyles.question}>질문</button></Link>
+             <div className={mainStyles.body}>
+                <div className={mainStyles.menu}>
+                    <div className={mainStyles.select}>
+                        <Link to="/"><button className={mainStyles.openStudy}>오픈스터디</button></Link>
+                        <Link to="/study"><button className={mainStyles.study}>스터디</button></Link>
+                        <Link to="/question"><button className={mainStyles.question}>질문</button></Link>
                     </div>
 
-                    <form id={mainStyles.search}>
+                    <form className={mainStyles.search}>
                         <select>
                             <option>제목</option>
                             <option>태그</option>
@@ -129,17 +109,17 @@ function MainOpenStudy() {
                     <button onClick={() => {setStudyModal(!studyModal)}}>만들기</button>
                 </div>
 
+        
                 <h1>Open Study</h1>
 
 
                 <InfiniteScroll
                     dataLength = {openStudies.length}
-                    next = {() => setPage(page + 1)}
-                    hasMore = {moreOpenStudies}
+                    next = {moreOpenStudies}
+                    hasMore = {hasMore}
                     loader = {loaderImg()}
                 >
-                <div>
-                    {openStudies && openStudies.map((data, index) => {
+                    { openStudies && openStudies.map((data, index) => {
                         return (
                             <OpenStudyRoomCard 
                                 img={data.img}
@@ -151,11 +131,7 @@ function MainOpenStudy() {
                             />
                         );
                     })}
-                </div>
                 </InfiniteScroll>
-                
-
-
             </div>
         </>
     );

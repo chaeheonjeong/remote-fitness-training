@@ -1,4 +1,4 @@
-.container {
+/* .container {
     width: 1508px;
     display: flex;
     flex-direction: row;
@@ -6,14 +6,16 @@
     flex-wrap: wrap;
     margin-left: auto;
     margin-right: auto;
-}
+} */
 
 .openStudyBox {
-    border: solid 1px;
+    display: inline-block;
+    border: 1.5px solid rgb(189, 188, 188);
     border-radius: 7px;
-    width: 300px; /*w: 300, h: 230*/
-    height: 230px;
+    width: 19.5%; /*w: 300(19.3rem), h: 230(15rem)*/
+    height: 16rem;
     padding: 10px;
+    margin: 10px;
 }
 
 #heart {
@@ -21,16 +23,14 @@
     height: 25px;
 }
 
-.openStudyImg {
-    background-color: aqua;
-    margin: 10px -10px 2px -10px;
-    text-align: center;
-    height: 120px;
-    
+.openStudyImg { /* div태그 */
+    background-color: rgb(43, 209, 151);
+    margin: 0 -10px 2px -10px;
+    height: 130px;
 }
 
-.openStudyImage {
-    height: 120px;
+.openStudyImage { /* img태그 */
+    height: 130px;
     width: 100%;
     object-fit: cover;
     /*object-fit: contain;*/
@@ -46,9 +46,10 @@
 
 .openStudyTag {
     border: none;
+    display: inline-block;
     background-color: rgb(205, 231, 255);
     border-radius: 7px;
     text-align: center;
-    padding: 1px 7px 1px 7px;
-    margin-right: 5px;
+    padding: 0px 7px 0px 7px;
+    margin: 0 10px 8px 0;
 }
