@@ -17,11 +17,18 @@ import View3 from "../component/post//View3";
 import MyCalendar from '../component/mypage/MyCalendar';
 import MyInfo from '../component/mypage/MyInfo';
 
+import MainOpenStudy from "../component/MainOpenStudy";
+import MainStudy from "../component/MainStudy";
+import MainQuestion from "../component/MainQuestion";
+
 const Router = () => {
     return(
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Main/>}/>
+                <Route path="/" element={[<Main/>, <MainOpenStudy/>]}/>
+                <Route path="/study" element={[<Main/>, <MainStudy/>]}/>
+                <Route path="/question" element={[<Main/>, <MainQuestion/>]}/>
+                
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/findPassword" element={<FindPw/>}/>

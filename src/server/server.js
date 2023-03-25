@@ -8,6 +8,10 @@ const cors = require("cors");
 const app = express();
 const nodemailer = require("nodemailer");
 const Verify = require("./models/verify");
+const { dblClick } = require("@testing-library/user-event/dist/click");
+
+const OpenStudy = require("./models/openStudy");
+//const { default: StudyRoomCard } = require("../component/StudyRoomCard");
 const StudyTime = require("./models/studyTime");
 const GoalTime = require("./models/goalTime");
 const Schedule = require("./models/schedule");
@@ -452,3 +456,105 @@ app.get("/ranking", async (req, res) => {
 app.listen(8080, () => {
   console.log("서버가 시작되었습니다.");
 });
+
+
+// -------------------------------------------------------------------------
+
+/*app.get('/mainStudy', function(req, res) {
+  res.render('MainStudy')
+})*/
+
+/*app.post('/openStudyModal', function(req, res) {
+    db.collection('openStudy').insertOne({ title : req.body.title, hashtag : req.body.hashtag, personNum : req.body.personNum }, 
+        function(err, result) {
+            console.log("새로운 open study의 정보를 저장하였습니다.");
+    })
+});
+
+app.get('/mainOpenStudy', function(req, res) {
+  db.collection('openStudy').find().toArray(function (err, result) {
+    res.render('MainOpenStudy.js', { rooms : result });
+    //console.log(result);
+  });
+});*/
+
+/*app.post("/", async (req, res) => {
+  const { title, hashtag, personNum } = req.body;
+  try {
+    const newOpenStudy = new OpenStudy({
+      title: title,
+      hashtag: hashtag,
+      personNum: personNum
+    });
+    await newOpenStudy.save();
+    return res.status(200).json({message : "OpenStudyRoom created successfully" });
+  } catch (error) {
+    console.err(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+
+  newOpenStudy.save(function(err) {
+    if(err) return handleError(err);
+  })
+});
+
+app.get('/', async (req, res) => {
+  try {
+    db.collection('openStudy').find().toArray((err, result) => {
+      console.log(result);
+      //res.render('MainOpenStudy.js', { rooms : result })
+      res.send(result);
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+  
+  try {
+    const rooms = await OpenStudy.find();
+    res.json(rooms);
+    console.log(rooms);
+  } catch(err) {
+    res.status(500).json({ message: err.message });
+  }
+
+
+});*/
+
+
+app.use(express.json());
+app.post('/openStudy', async (req, res) => {
+  try {
+    const { img, title, hashtag, personNum } = req.body;
+
+    const newOpenStudy = new OpenStudy({
+      img: img,
+      title: title,
+      tags: hashtag,
+      personNum: personNum
+    });
+
+    await newOpenStudy.save();
+    res.status(200).json({ message: `OpenStudy created successfully` });
+  } catch(err) {
+    console.log(err);
+    res.status(500).json({ message: `err.message` });
+  }
+});
+
+app.get("/openStudies", async (req, res) => {
+
+  try {
+    const openStudies = await OpenStudy.find()
+      if(openStudies){
+        return res.status(200).json({
+          openStudies: openStudies,
+          message: '오픈스터디 목록 가져오기 성공',
+        });
+      }
+    }
+  catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server Error" });
+    }
+  });
