@@ -390,7 +390,7 @@ app.post("/postWrite", async (req, res) => {
       date: date,
       tag : tag,
       title : title,
-      content : JSON.parse(content),
+      content : content,
     });
     await newWrite.save();
     
