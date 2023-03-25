@@ -110,7 +110,7 @@ function Write() {
           date: String(date),
           tag : tags,
           title : title,
-          content : JSON.stringify(content)
+          content : JSON.parse(content)
         });
         console.log(content);
         console.log('success' , response.data.message);
