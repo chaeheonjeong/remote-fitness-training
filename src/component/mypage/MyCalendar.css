@@ -183,6 +183,10 @@
     font-family: 'Cafe24SsurroundAir';
   }
 
+  .showSchedule{
+    list-style-type: none;
+  }
+
 .input{
   background-color: transparent;
   border: none;

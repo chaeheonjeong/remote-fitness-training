@@ -101,7 +101,7 @@ function MyCalendar() {
         });
 
         return(
-            <ul>
+            <ul className="showSchedule">
                 {filteredSchedules.map((schedule) => (
                     <li key={schedule.title} onClick={() => handleSelectSchedule(schedule)}>
                         {schedule.title}
