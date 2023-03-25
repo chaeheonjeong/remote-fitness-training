@@ -13,7 +13,7 @@ function View() {
 
     const handleShowReplyInput = () => {
         setShowReplyInput(!showReplyInput);
-        setShowReplyList(false); // 대댓글 입력 칸을 보여주면서 대댓글 목록도 함께 보여줌
+        //setShowReplyList(false); // 대댓글 입력 칸을 보여주면서 대댓글 목록도 함께 보여줌
     }
 
     const handleHideReplyInput = () => {
@@ -75,8 +75,9 @@ function View() {
                 </div>
                     
                 <div className='content_4_b'>
-                    <input type='button' value='수정'/>
                     <input type='button' value='삭제'/>
+                    <input type='button' value='수정'/>
+                    
                 </div>
             </div>
 

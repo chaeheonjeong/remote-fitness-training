@@ -332,11 +332,6 @@ app.get("/ggoal-time", async (req, res) => {
 });
 
 app.get("/ranking", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-
   try {
     const today = new Date();
     today.setDate(today.getDate() - 1);
@@ -366,10 +361,6 @@ app.get("/ranking", async (req, res) => {
       return res.status(200).json({
         rankTime: result,
         message: "공부 시간 랭킹 가져오기 성공",
-      });
-    } else {
-      res.status(400).json({
-        message: "공부한 사용자가 존재하지 않습니다.",
       });
     }
   } catch (error) {

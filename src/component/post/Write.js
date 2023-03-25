@@ -110,9 +110,8 @@ function Write() {
           date: String(date),
           tag : tags,
           title : title,
-          content : JSON.stringify(content)
+          content : JSON.parse(JSON.stringify(content))
         });
-        console.log(content);
         console.log('success' , response.data.message);
         navigate("/");
       }
@@ -122,23 +121,6 @@ function Write() {
   };
 
 
-  
-
-
-  /*const [postInfo, setPostInfo] = useState( {
-    number: null,
-    period: null,
-    date: null,
-    tag : null,
-    title : null,
-    content : null
-  });*/
-
-
-  /*async function handleSubmit(e) {
-    e.preventDefault();
-    await createPost();
-  };*/
 
 
   return (

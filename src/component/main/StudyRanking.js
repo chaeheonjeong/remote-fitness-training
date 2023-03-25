@@ -40,9 +40,7 @@ const StudyRanking = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/ranking", {
-        headers: { Authorization: `Bearer ${user.token}` },
-      })
+      .get("http://localhost:8080/ranking")
       .then((response) => {
         if (response.status === 200) {
           setRankers(response.data.rankTime);
