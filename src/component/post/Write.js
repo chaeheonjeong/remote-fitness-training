@@ -20,8 +20,6 @@ function Write() {
 
   const [tags, setTags] = useState([]);
 
-
-
   const navigate = useNavigate();
     
   const titleHandler = (e) => {
@@ -43,7 +41,6 @@ function Write() {
     setPeriodCondition(e.target.value);
   }
 
-
   const [pCondition, setPCondition] = useState({
     p1 : '1명',
     p2 : '2명',
@@ -62,13 +59,11 @@ function Write() {
     setPCondition(e.target.value);
   }
 
-  
   function handleKeyPress(e) {
     if(e.key === 'Enter') {
         const newTag = e.target.value.trim();
 
         if(tags.length < 5) {
-
             if(newTag !== '') {
                 setTags([...tags, newTag]);
                 e.target.value = '';
@@ -82,24 +77,6 @@ function Write() {
   function handleDelete(index) {
       setTags(tags.filter((tag, i) => i !== index));
   }
-
-  /*const createPost = () => {
-    if(postInfo.number === "") postInfo.number ="";
-    if(postInfo.period === "") postInfo.period ="";
-    if(postInfo.date === "") postInfo.date ="";
-    if(postInfo.tag === "") postInfo.tag ="";
-    if(postInfo.title === "") postInfo.title = "";
-    if(postInfo.content === "") postInfo.content = "";
-    axios.post('http://localhost:8080/postwrite',{postInfo})
-    .then(res => {
-      console.log(res);
-      alert('글쓰기가 완료되었습니다.');
-      
-    })
-    .catch(e => console.error(e))
-  };*/
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -119,9 +96,6 @@ function Write() {
       console.log(error);
     }
   };
-
-
-
 
   return (
     <div className='choose'>
@@ -157,7 +131,6 @@ function Write() {
       <div className='ch2'>
         <text className='ss'>시작예정일</text>
         <input type='date' id='date' className='date' onChange={handleSelectDate}/> 
-        
         <text className='tt'>태그</text>
 
         <div>
@@ -180,17 +153,13 @@ function Write() {
               </span>
             ))}
           </div>
-
         </div>
-
-
       </div>
 
       <div className='title_input'>
         <text className='cc'>제목</text>
         <input onChange={titleHandler} className='title_tinput' value={title} placeholder='제목을 입력하세요.'/>
       </div>
-    
 
       <div className='content'>
         <CKEditor
@@ -200,7 +169,6 @@ function Write() {
             placeholder: "내용을 입력하세요.",
           }}
           onReady={(editor) => {
-            // You can store the "editor" and use when it is needed.
             console.log('Editor is ready to use!', editor);
           }}
           onChange={(e, editor) => {
@@ -209,12 +177,6 @@ function Write() {
             setContent({
               content : data
             })
-           
-            /*setPostInfo({
-              ...postInfo,
-              contents: data
-            })*/
-            //console.log(data/*postInfo*/);
           }}
   
           onBlur={(e, editor) => {
@@ -237,47 +199,3 @@ function Write() {
 }
 
 export default Write;
-
-/*
-
-
-<input type='number' id='number' classname='number'></input>
-<input type='button' value='취소' id='cancel' className='cancel' onClick={onReset}/>
-<input type='text' maxLength='30' className='title_input' name='title' placeholder='제목을 작성해주세요.' />
-
-
-
-<option value={periodCondition.num6}>6개월</option>
-          <option value={periodCondition.num7}>7개월</option>
-          <option value={periodCondition.num8}>8개월</option>
-          <option value={periodCondition.num9}>9개월</option>
-          <option value={periodCondition.num10}>10개월</option>
-          <option value={periodCondition.num11}>11개월</option>
-          <option value={periodCondition.num12}>12개월</option>
-          
-<option value={pCondition.p10}>10명</option>
-          <option value={pCondition.p11}>11명</option>
-          <option value={pCondition.p12}>12명</option>
-
-*/
-
-/*
-<input type='text' onKeyPress={handleKeyPress} maxLength='20' className='tag_input' name='tag' placeholder='태그를 입력하세요.' />
-<textarea onKeyPress={handleKeyPress}  className='tag_input' name='tag' placeholder='태그를 입력하세요.'/>*/
-
-/*
-const [render , setRender] = useState('');
-
-const send = () => {
-    setRender(title);
-    setTitle('');
-  }
-
-
-  <div className='render_title'>
-        {render}
-   	  </div>
-
-
-
-*/

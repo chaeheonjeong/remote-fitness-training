@@ -3,18 +3,14 @@ const Schema = mongoose.Schema;
 
 const askSchema = new Schema(
   {
-    number: { type: Array, required: true },
-    period: { type: Array, required: true },
-    date: { type: Date, required: true },
-    tag: { type: Array, required: true },
     title: { type: String, required: true },
-    content: { type: String, required: true },
+    content: { type: Object, required: true },
   }
 
 );
 
-askSchema.set("collection", "write");
+askSchema.set("collection", "ask");
 
-const Write = mongoose.model("write", askSchema);
+const Ask = mongoose.model("ask", askSchema);
 
-module.exports = Write;
+module.exports = Ask;

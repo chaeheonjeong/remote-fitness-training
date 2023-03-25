@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const User = require("./models/user");
 const Write = require("./models/write");
+const Ask = require("./models/ask");
+
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -405,6 +407,26 @@ app.get('/getwrite', function(req, res) {
     }
   });
 });
+
+
+app.post("/postAsk", async (req, res) => {
+  const { title, content } = req.body;
+  try {
+    const newAsk = new Ask({
+      title : title,
+      content : content,
+    });
+    await newAsk.save();
+    
+    return res.status(200).json({ message: `Ask created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+
+
 
 app.listen(8080, () => {
   console.log("서버가 시작되었습니다.");

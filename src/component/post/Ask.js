@@ -1,34 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import './Ask.css';
-
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 function Ask() {
-
-  const [title,setTitle] = useState('');
-  const [render , setRender] = useState('');
-	const send = () => {
-    setRender(title);
-    setTitle('');
-  }
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const navigate = useNavigate();
     
   const titleHandler = (e) => {
     const inputTitle = e.target.value;
     setTitle(inputTitle);
   }
 
-  const [postInfo, setPostInfo] = useState( {
-    title: null,
-    contents: null,
-    postnum: null,
-    writer: sessionStorage.getItem('nickName'),
-    tag: null,
-    watching: null
-  });
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        const response = await axios.post("http://localhost:8080/postAsk", {
+          title : title,
+          content : JSON.parse(JSON.stringify(content))
+        });
+        console.log('success' , response.data.message);
+        navigate("/");
+      }
+     catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className='ask'>
@@ -36,11 +37,7 @@ function Ask() {
         <text className='cc'>제목</text>
         <input onChange={titleHandler} className='title_tinput' value={title} placeholder='제목을 입력하세요.'/>
       </div>
-      <div className='render_title'>
-        {render}
-   	  </div>
-
-
+    
       <div className='content'>
         <CKEditor
           editor={ClassicEditor}
@@ -52,30 +49,28 @@ function Ask() {
             // You can store the "editor" and use when it is needed.
             console.log('Editor is ready to use!', editor);
           }}
-          onChange={(event, editor) => {
+          onChange={(e, editor) => {
             const data = editor.getData();
-            console.log({ event, editor, data });
-            setPostInfo({
-              ...postInfo,
-              contents: data
+            console.log({ e, editor, data });
+            setContent({
+              content : data
             })
-            console.log(postInfo);
           }}
   
-          onBlur={(event, editor) => {
+          onBlur={(e, editor) => {
             console.log('Blur.', editor);
           }}
-          onFocus={(event, editor) => {
+          onFocus={(e, editor) => {
             console.log('Focus.', editor);
           }}
         />
+      
       </div>
 
       <div className='btn'>
         <input type='button' value='취소' className='cancel' />
-        <input type='submit' value='등록' className='submit' />
+        <input type='submit' value='등록' className='submit' onClick={handleSubmit} />
       </div>
-
     </div>
   );
 }
