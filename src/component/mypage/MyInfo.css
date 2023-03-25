@@ -6,7 +6,7 @@
 }
 
 .MyInfo{
-    flex: 4;
+    margin-left: 25%;
     height: calc(100vh - 50px);
 }
 
@@ -15,27 +15,25 @@
     height: 200px;
     border-radius: 100%;
     border: 1px solid #555555;
-    margin-right: 800px;
 }
 
 .Title{
     font-family: 'Cafe24SsurroundAir';
     font-size: 40px;
-    margin-right: 900px;
 }
 
 .Information{
     font-family: 'Cafe24SsurroundAir';
     font-size: 20px;
     text-align: left;
-    margin-left: 200px;
+    margin-left: 10%;
 }
 
 .nickname{
     word-spacing: 10px;
 }
 
-.phone{
+.email{
     word-spacing: 5px;
 }
 

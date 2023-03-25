@@ -5,7 +5,7 @@
     font-style: normal;
 }
 .MyCalendar{
-    flex: 4;
+  margin-left: 20%;
 }
 
 .react-calendar {
@@ -180,10 +180,6 @@
   }
 
   .scheduleName{
-    position: relative;
-    align-items: baseline;
-    float: left;
-    margin-top: 30px;
     font-family: 'Cafe24SsurroundAir';
   }
 
@@ -200,6 +196,7 @@
   position: relative;
   top: 50%;
   width: 200px;
+  margin-bottom: 10px;
   text-align: center;
 }
 
@@ -220,21 +217,22 @@
   transition: all 0.5s linear;
   width: 202px;
 }
+.addSchedule{
+  font-family: 'Cafe24SsurroundAir';
+}
 
 .add{
   border-radius: 5px;
   border: none;
   font-family: 'Cafe24SsurroundAir';
-  margin-top: 50px;
+  margin-top: 35px;
 }
 
-.scheduleContent{
-  float: left;
-  margin-top: 10px;
+.scheduleContents{
   font-family: 'Cafe24SsurroundAir';
 }
 
-.Content{
+.Contents{
   width: 200px;
   height: 150px;
   border:1px solid #CCC;

@@ -1,0 +1,16 @@
+.wrapper {
+    display: flex;
+    width:100%;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.title {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.content{
+    border: 1.5px solid rgb(189, 188, 188);
+    border-radius: 0.5rem;
+}

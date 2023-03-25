@@ -1,0 +1,110 @@
+.container {
+  display: flex;
+  border-bottom: 2px solid;
+  border-color: rgb(225, 225, 225);
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 5rem;
+}
+
+.smallContainer {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.smallContainer2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.linkLabel {
+  font-size: 1.3rem;
+}
+
+.welcomeLabel {
+  font-size: 0.8rem;
+}
+
+.logButton {
+  height: 2.5rem;
+  font-size: 0.8rem;
+  border-radius: 0.8rem;
+  border: 2px solid transparent;
+  background-color: #3cf6c7;
+  color: black;
+  cursor: pointer;
+  padding: 0 0.75rem;
+}
+
+.notiCircle{
+  position: absolute;
+  font-size: 0.8rem;
+  color: white;
+  background-color: red;
+  border-radius: 50%;
+  width: 0.9rem;
+  height: 0.9rem;
+  text-align: center;
+  line-height: 0.9rem;
+  top: -.25rem;
+  right:0;
+}
+
+.profileContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.profileDropdown {
+  position: absolute;
+  top: 50px;
+  width: 100px;
+  background-color: #f8f8f8;
+  padding: 0.3rem 0;
+  border-radius: 5px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+  rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+.profileDropItem {
+  padding: 0.4rem 0.5rem;
+  border: 1px solid transparent;
+  background-color: transparent;
+  display: flex;
+  width: 100%;
+  gap: 0.5rem;
+  align-items: center;
+}
+.profileDropItem:hover {
+  opacity: 0.6;
+}
+
+.dropClose {
+  transition: all 0.2s linear 0s;
+  visibility: hidden;
+  animation: fadeOut 0.2s;
+}
+.dropOpen {
+  visibility: visible;
+  animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }

@@ -1,21 +1,17 @@
 import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import MyCalendar from './component/mypage/MyCalendar';
 import MyInfo from './component/mypage/MyInfo';
 import SideBar from './component/mypage/SideBar';
+import Register from "./component/auth/Register";
+import Login from "./component/auth/Login";
+import FindPw from "./component/auth/FindPw";
+import Main from "./component/main/Main";
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <SideBar />
-        <Routes>
-          <Route path="/MyInfo" element={<MyInfo/>} />
-          <Route path="/MyCalendar" element={<MyCalendar/>}/>
-        </Routes>
-      </BrowserRouter>
-    </div>
-    
+    <>
+      <Main />
+    </>
   );
 }
 
