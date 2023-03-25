@@ -14,6 +14,7 @@ const { dblClick } = require("@testing-library/user-event/dist/click");
 
 const OpenStudy = require("./models/openStudy");
 //const { default: StudyRoomCard } = require("../component/StudyRoomCard");
+const Schedule = require("./models/schedule");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -30,6 +31,52 @@ mongoose
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+//사용자 정보 확인
+app.get("/user", async(req, res) =>{
+    const token = req.headers.authorization;
+    try{
+        const {email} = jwt.verify(token, mysecretkey);
+        const user = await User.findOne({email});
+        res.json(user);
+        //console.log(res.data);
+    }catch(err){
+        res.status(401).send({message : 'Invalid token'});
+    }
+});
+
+//일정 정보 저장
+app.post("/schedules", async(req, res) => {
+    const {date, title, contents} = req.body;
+    try{
+        const newSchedule = new Schedule({
+            title: title,
+            date: date,
+            contents: contents
+        });
+        await newSchedule.save();
+        return res.status(201).json(newSchedule);
+    } catch(err){
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    } 
+});
+
+//저장된 일정 정보 가져오기
+app.get('/schedules', async(req, res) => {
+    try{
+        const schedules = await Schedule.find();
+        return res.status(200).json(schedules);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({message : 'Server Error'})
+    }
+});
+
+app.post("/userInfo", async(req,res) => {
+    console.log(req.body);
+    const {name, email, password} = req.body;
+
+})
 
 app.post("/login", async (req, res) => {
   // 요청 바디에서 email과 password를 추출합니다.
@@ -367,7 +414,6 @@ app.get('/getwrite', function(req, res) {
     }
   });
 });
-
 
 app.listen(8080, () => {
   console.log("서버가 시작되었습니다.");

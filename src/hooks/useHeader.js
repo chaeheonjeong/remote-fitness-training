@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import {useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {HiOutlineUser} from "react-icons/hi";
 import {RiArchiveDrawerLine} from "react-icons/ri";
 import {BsPostcardHeart} from "react-icons/bs";
@@ -25,11 +25,11 @@ export default function useHeader() {
     ", top=" +
     popupY;
   const profileDrop = [
-    { title: "내 정보", url: "", emo: <HiOutlineUser/>},
+    { title: "내 정보", url: "/MyInfo", emo: <HiOutlineUser/>},
     { title: "서랍", url: "", emo: <RiArchiveDrawerLine/>},
     { title: "관심글", url: "", emo: <BsPostcardHeart/> },
     { title: "내가 쓴 글", url: "", emo: <BsPostcard/>},
-    { title: "캘린더", url: "", emo:<BsCalendarCheck/>},
+    { title: "캘린더", url: "/MyCalendar", emo:<BsCalendarCheck/>},
   ];
 
   const el = useRef();
