@@ -16,10 +16,10 @@ function OpenStudyRoomCard( {img, title, personNum, tags, id} ) {
     // 관심글
     function heartBtn() {
         if(!heart) {
-            return <img id={styles.heart} src={emptyHeart} alt="emptyHeart" onClick={() => changeHeart()}></img>;
+            return <img className={styles.heart} src={emptyHeart} alt="emptyHeart" onClick={() => changeHeart()}></img>;
         }
         else {
-            return <img id={styles.heart} src={fullHeart} alt="fullHeart" onClick={() => changeHeart()}></img>;
+            return <img className={styles.heart} src={fullHeart} alt="fullHeart" onClick={() => changeHeart()}></img>;
         }
     };
 

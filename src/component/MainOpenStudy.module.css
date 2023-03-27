@@ -1,39 +1,71 @@
 .body {
-    /* width: 100%; */
     padding: 2.8rem 6rem;
 }
 
-/* Search */
+/* Select & Search */
 
 .menu {
+    display: flex;
     padding: 20px 0 70px 0;
     margin-left: auto;
     margin-right: auto;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .menu button {
     background-color: white;
     border-radius: 7px;
     padding: 3px 5px 3px 5px;
+    height: 2rem;
+    width: 5rem;
 }
 
 .select {
-    display: inline-block;
-    margin-right: 7%;
-}
-
-.select button {
-    margin-right: 10px;
+    display: inline-grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
 }
 
 .openStudy {
-    border-color: rgb(255, 187, 0);
-    border-style: solid;
+    border: 1.5px solid rgb(255, 187, 0);
+}
+
+.study, .question {
+    border: 1.5px solid rgb(189, 188, 188);;
 }
 
 .search {
-    display: inline-block;
-    margin-right: 7%;
+    display: flex;
+}
+
+.search select {
+    border-radius: 7px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border: 1.5px solid rgb(189, 188, 188);
+}
+
+.search input {
+    border: 1.5px solid rgb(189, 188, 188);
+}
+
+.search button {
+    border: 1.5px solid rgb(189, 188, 188);
+    width: 3rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: none;
+}
+
+.searchAndMake {
+    display: flex;
+}
+
+.makeBtn {   
+    border: 1.5px solid rgb(189, 188, 188);
+    width: 5rem;
+    margin-left: 3rem;
 }
 
 /*-------------------------------------------------------------*/

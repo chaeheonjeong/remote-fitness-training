@@ -208,68 +208,6 @@ app.listen(8080, () => {
 
 // -------------------------------------------------------------------------
 
-/*app.get('/mainStudy', function(req, res) {
-  res.render('MainStudy')
-})*/
-
-/*app.post('/openStudyModal', function(req, res) {
-    db.collection('openStudy').insertOne({ title : req.body.title, hashtag : req.body.hashtag, personNum : req.body.personNum }, 
-        function(err, result) {
-            console.log("새로운 open study의 정보를 저장하였습니다.");
-    })
-});
-
-app.get('/mainOpenStudy', function(req, res) {
-  db.collection('openStudy').find().toArray(function (err, result) {
-    res.render('MainOpenStudy.js', { rooms : result });
-    //console.log(result);
-  });
-});*/
-
-/*app.post("/", async (req, res) => {
-  const { title, hashtag, personNum } = req.body;
-  try {
-    const newOpenStudy = new OpenStudy({
-      title: title,
-      hashtag: hashtag,
-      personNum: personNum
-    });
-    await newOpenStudy.save();
-    return res.status(200).json({message : "OpenStudyRoom created successfully" });
-  } catch (error) {
-    console.err(err);
-    res.status(500).json({ message: "Server Error" });
-  }
-
-  newOpenStudy.save(function(err) {
-    if(err) return handleError(err);
-  })
-});
-
-app.get('/', async (req, res) => {
-  try {
-    db.collection('openStudy').find().toArray((err, result) => {
-      console.log(result);
-      //res.render('MainOpenStudy.js', { rooms : result })
-      res.send(result);
-    });
-  } catch (err) {
-    console.log(err);
-    next(err);
-  }
-  
-  try {
-    const rooms = await OpenStudy.find();
-    res.json(rooms);
-    console.log(rooms);
-  } catch(err) {
-    res.status(500).json({ message: err.message });
-  }
-
-
-});*/
-
-
 app.use(express.json());
 app.post('/openStudy', async (req, res) => {
   try {
@@ -289,23 +227,6 @@ app.post('/openStudy', async (req, res) => {
     res.status(500).json({ message: `err.message` });
   }
 });
-
-/* app.get("/openStudies", async (req, res) => {
-
-  try {
-    const openStudies = await OpenStudy.find()
-      if(openStudies){
-        return res.status(200).json({
-          openStudies: openStudies,
-          message: '오픈스터디 목록 가져오기 성공',
-        });
-      }
-    }
-  catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server Error" });
-    }
-  }); */
 
   app.get("/openStudies", async (req, res) => {
     //const { page, limit } = req.query;
@@ -347,3 +268,46 @@ app.post('/openStudy', async (req, res) => {
         res.status(500).json({ success: false, message: "Server Error" });
       }
     });
+
+
+
+
+
+
+
+    app.get("/search", async (req, res) => {
+      const option = decodeURIComponent(req.query.selected);
+      const value = decodeURIComponent(req.query.value);
+    
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+      var openStudiesSearch = [];
+
+      try {
+        if(option === 'title') {
+          openStudiesSearch = await OpenStudy.find({ title: value }, null, { skip: offset, limit: limit });
+        }
+        else if(option === 'tags') {
+          openStudiesSearch = await OpenStudy.find({ tags: { $in: [value] } }, null, { skip: offset, limit: limit });
+        }
+    
+        if(openStudiesSearch.length > 0) {
+          return res.status(200).json({ 
+            openStudies: openStudiesSearch,
+            //totalOpenStudies,
+            message: '검색목록 가져오기 성공',
+            success: true
+          });
+        } else {
+          return res.status(404).json({
+            message: "데이터가 존재하지 않습니다",
+            success: false,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    })

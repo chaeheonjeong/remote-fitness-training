@@ -4,6 +4,7 @@ import styles from  "./OpenStudyModal.module.css";
 import tagStyles from "./Tag.module.css";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
+import imageCompression from "browser-image-compression";
 
 
 export default function OpenStudyModal({
@@ -39,13 +40,14 @@ export default function OpenStudyModal({
             });
             addModalHandler(img, title, tags, personNum);
             alert("오픈스터디가 생성되었습니다.");
+            
         } catch(error) {
             console.log(error);
         }
     }
 
     function handleKeyPress(event) {
-        if(event.key === 'Enter') {
+        if(event.code === 'Enter' || event.code === 'Comma' || event.code === 'Space') {
             const newTag = inputTag.trim();
 
             if(tags.includes(newTag)) {
@@ -68,38 +70,47 @@ export default function OpenStudyModal({
             }
         }
     }
- /*            // 태그 생성 
-            function handleKeyPress(event) {
-                console.log('태그생성');
-            } */
         
             // 태그 삭제 
             function handleDelete(index) {
                 setTags(tags.filter((tag, i) => i !== index));
             }
     
-            // 모달창에서 만들기 눌렀을 때 (데이터 저장)
-            /*const submitHandler = async (event) => {
-                event.preventDefault();
-                alert("오픈스터디가 생성되었습니다.");
-                setStudyModal(false);
-                //makeRoom(true);
-            };*/
-    
-        // 사진 업로드
-        const imageUploadHandler = (event) => {
+        // 사진 업로드 및 압축
+        const imageUploadHandler = async (event) => {
             const selectedImage = event.target.files[0];
-            const MAX_SIZE = 50000000;
-    
-            if(selectedImage && selectedImage.size <= MAX_SIZE) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    //setImage(reader.result);
-                    setImg(reader.result);
-                };
-                reader.readAsDataURL(selectedImage);
-            } else {
-                alert("이미지 용량은 50MB보다 작아야 합니다.");
+            const MAX_SIZE = 20000000;
+            const options = {
+                maxSizeMB: 1, // 이미지 최대 용량
+            };
+            
+            try {
+                console.log("before: ", selectedImage.size);
+                console.log(selectedImage);
+
+                const compressedFile = await imageCompression(selectedImage, options);
+                const promise = imageCompression.getDataUrlFromFile(compressedFile);
+
+                if(compressedFile && compressedFile.size <= MAX_SIZE) {
+
+                    const reader = new FileReader();
+                    
+
+                    console.log("changeSize: ",compressedFile.size);
+
+                    reader.onload = () => {
+                        setImg(reader.result);
+                        console.log('check: ', reader.result);
+                    };
+                    //reader.readAsDataURL(selectedImage);
+                    reader.readAsDataURL(compressedFile);
+                    console.log('hello: ', compressedFile);
+                } else {
+                    //alert("이미지 용량은 50MB보다 작아야 합니다.");
+                }
+            }
+            catch (error) {
+                console.log(error)
             }
         };
 
@@ -108,12 +119,12 @@ export default function OpenStudyModal({
       <div className={`${styles.container} ${studyModal? styles.ModalOpen : styles.ModalClose}`}>
         <div className={styles.closeBox} onClick={() => setStudyModal(false)} />
         <div className={styles.modalWrapper}>
-          오픈스터디 만들기
-          <button className={styles.ModalClose} onClick={() => setStudyModal(false)}>
-                                &times;
-                            </button>
-          <div className={styles.inputWrapper}>
-          <form>
+            <strong>오픈스터디 만들기</strong>
+            <button className={styles.ModalClose} onClick={() => setStudyModal(false)}>
+                &times;
+            </button>
+            <div className={styles.inputWrapper}>
+            <form>
                                 대표이미지
                                 <div className={styles.image}>
                                     <input 
@@ -124,7 +135,7 @@ export default function OpenStudyModal({
                                 </div>
 
                                 <div className={styles.openStudyTitle}>
-                                    <a>방 제목</a> 
+                                    <a>방 제목 </a> 
                                     <input
                                         type="text"
                                         name="title"
@@ -134,7 +145,7 @@ export default function OpenStudyModal({
                                 </div>
 
                                 <div>
-                                    <a>태그</a> 
+                                    <a>태그 </a> 
                                     <input
                                         type="text"
                                         name="hashtag"
@@ -159,8 +170,9 @@ export default function OpenStudyModal({
                                 </div>
 
                                 <div>
-                                    <a>인원수</a>
+                                    <a>인원수 </a>
                                     <select
+                                        className="personNum"
                                         name="personNum"
                                         onChange={ (e) => setpersonNum(e.currentTarget.value) }
                                     >

@@ -1,21 +1,24 @@
 .infinite-scroll-component__outerdiv {
     width: 100%;
     display: flex;
-    flex-direction: row;
+    /* flex-direction: row; */
     /* justify-content: flex-start; */
     flex-wrap: wrap;
     margin-left: auto;
     margin-right: auto;
     /* overflow-y: hidden;
     overflow-x: hidden; */
+    margin-top: 2rem;
 }
 
 .infinite-scroll-component  {
     width: 100%;
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    /* flex-direction: row; */
     /* justify-content: flex-start; */
     flex-wrap: wrap;
     margin-left: auto;
     margin-right: auto;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem 1rem;
 }
