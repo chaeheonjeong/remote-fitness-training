@@ -31,6 +31,7 @@ function Ask() {
 
 
   return (
+    <div className='body'>
     <div className='ask'>
       <div className='title_input'>
         <text className='cc'>제목</text>
@@ -76,6 +77,7 @@ function Ask() {
         <input type='submit' value='등록' className='submit' />
       </div>
 
+    </div>
     </div>
   );
 }

@@ -8,6 +8,7 @@ const cors = require("cors");
 const app = express();
 const nodemailer = require("nodemailer");
 const Verify = require("./models/verify");
+const auth = require("./auth");
 const { dblClick } = require("@testing-library/user-event/dist/click");
 
 const OpenStudy = require("./models/openStudy");
@@ -31,16 +32,20 @@ mongoose
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
-//사용자 정보 확인
-app.get("/user", async(req, res) =>{
-    const token = req.headers.authorization;
+
+//로그인한 사용자 정보를 검색
+app.get('/users', auth, async(req, res) => {
     try{
-        const {email} = jwt.verify(token, mysecretkey);
-        const user = await User.findOne({email});
-        res.json(user);
-        //console.log(res.data);
-    }catch(err){
-        res.status(401).send({message : 'Invalid token'});
+        const user = await User.findOne({_id : req.user.id});
+        console.log(req.user);
+        console.log(user);
+        if(!user){
+            return res.status(404).send({message : 'User not found'});
+        }
+        res.send({name : user.name, email : user.email});
+    } catch(err){
+        console.log(err);
+        res.status(500).send({message : 'Server Error'});
     }
 });
 
@@ -96,6 +101,7 @@ app.post("/login", async (req, res) => {
 
   // JWT 토큰을 발행합니다.
   const token = jwt.sign({ id: user._id }, mysecretkey, { expiresIn: "365d" });
+  console.log(user._id);
 
   // 토큰을 클라이언트에게 전달합니다.
   res.send({ token: token, name: user.name });
@@ -408,51 +414,43 @@ app.get('/getwrite', function(req, res) {
 
 
 app.get("/ranking", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-
-  try {
-    const today = new Date();
-    today.setDate(today.getDate() - 1);
-    const yesterday = today.toLocaleDateString();
-
-    const rankTime = await StudyTime.find({ date: yesterday })
-      .sort({ studyTime: -1 })
-      .limit(10);
-
-    if (rankTime) {
-      const result = [];
-      for (let i = 0; i < rankTime.length; i++) {
-        const time = rankTime[i].studyTime;
-        const timeH = Math.floor(time / 3600);
-        const timeM = Math.floor((time % 3600) / 60);
-        const timeS = time % 60;
-        let userName = null;
-        try {
-          const user = await User.findById(rankTime[i]._user);
-          userName = user.name;
-        } catch (error) {
-          console.log(error);
+    try {
+      const today = new Date();
+      today.setDate(today.getDate() - 1);
+      const yesterday = today.toLocaleDateString();
+  
+      const rankTime = await StudyTime.find({ date: yesterday })
+        .sort({ studyTime: -1 })
+        .limit(10);
+  
+      if (rankTime) {
+        const result = [];
+        for (let i = 0; i < rankTime.length; i++) {
+          const time = rankTime[i].studyTime;
+          const timeH = Math.floor(time / 3600);
+          const timeM = Math.floor((time % 3600) / 60);
+          const timeS = time % 60;
+          let userName = null;
+          try {
+            const user = await User.findById(rankTime[i]._user);
+            userName = user.name;
+          } catch (error) {
+            console.log(error);
+          }
+          result.push({ timeH, timeM, timeS, userName });
         }
-        result.push({ timeH, timeM, timeS, userName });
+  
+        return res.status(200).json({
+          rankTime: result,
+          message: "공부 시간 랭킹 가져오기 성공",
+        });
       }
-
-      return res.status(200).json({
-        rankTime: result,
-        message: "공부 시간 랭킹 가져오기 성공",
-      });
-    } else {
-      res.status(400).json({
-        message: "공부한 사용자가 존재하지 않습니다.",
-      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server Error" });
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
+  });
+
 app.listen(8080, () => {
   console.log("서버가 시작되었습니다.");
 });

@@ -3,28 +3,27 @@ import profile from './icon/profile.png';
 import './MyInfo.css';
 import SideBar from './SideBar';
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
 
 function MyInfo(){
    const [imgFile, setImgFile] = useState("");
    const imgRef = useRef();
    const [user, setUser] = useState(null);
+   const token = localStorage.getItem('token');
 
-   useEffect(()=>{
-    const token = localStorage.getItem('token');
-
+   useEffect(() => {
     if(token){
-        axios.get('/user', {headers : {Authorization:`Bearer ${token}`}})
+        axios.get("http://localhost:8080/users", {
+            headers : {Authorization: `Bearer ${token}`}
+        })
         .then((res) => {
-            const decodedToken = jwt_decode(token);
-            setUser({email : decodedToken.email, ...res.data});
+            setUser(res.data);
+            console.log(res.data);
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
         });
     }
-    
-   }, []);
+   }, [token]);
 
    const saveImgFile = () => {
     const file = imgRef.current.files[0];

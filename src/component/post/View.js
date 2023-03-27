@@ -60,6 +60,7 @@ function View() {
 
 */
     return (
+        <div className='body'>
         <div className='detail'>
             <div className='content_4'>
                 <div className='content_4_a'>
@@ -192,6 +193,7 @@ function View() {
       
                 </div>
 
+        </div>
         </div>
     );
 }

@@ -142,6 +142,7 @@ function Write() {
 
 
   return (
+    <div className='body'>
     <div className='choose'>
       <div className='ch1'>
         <text className='nn'>모집인원</text>
@@ -250,6 +251,7 @@ function Write() {
         <input type='submit' value='등록' className='submit' onClick={handleSubmit} />
       </div>
 
+    </div>
     </div>
   );
 }
