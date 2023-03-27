@@ -4,7 +4,7 @@
   border: 2px solid rgb(96, 93, 93);
   border-radius: 0.8rem;
   font-size: 1rem;
-  padding-left: 0.4rem;
+  padding: 0 0.8rem;
   margin: 0.5rem 0;
   flex: 1;
 }
@@ -24,8 +24,8 @@
 }
 
 .emailBtn:hover {
-    filter: brightness(0.85);
-  }
+  filter: brightness(0.85);
+}
 
 .numInput {
   position: relative;
@@ -33,7 +33,7 @@
   border: 2px solid rgb(96, 93, 93);
   border-radius: 0.8rem;
   font-size: 1rem;
-  padding-left: 0.4rem;
+  padding: 0 0.8rem;
   margin: 0.5rem 0;
   flex: 1;
 }
@@ -74,7 +74,7 @@
   align-self: flex-start;
   color: rgb(75, 72, 72);
   height: 16px;
-  width:100%;
+  width: 100%;
 }
 
 .falseExplainLabel {
@@ -85,8 +85,8 @@
   color: green;
 }
 
-.warnLabel{
-  color:red;
+.warnLabel {
+  color: red;
   margin-top: 1rem;
   font-size: 0.85rem;
 }

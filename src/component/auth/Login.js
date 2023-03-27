@@ -20,11 +20,6 @@ const Login = () => {
     user.login(emailText, passText, setWarnLabel);
   };
 
-  const submitRegisterHandler = (event) => {
-    event.preventDefault();
-    navigate("/register");
-  };
-
   const findPasswordHandler = (event) => {
     event.preventDefault();
     navigate("/findPassword");

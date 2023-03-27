@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-//import { useRouter } from "next/router";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import mainStyles from  "./MainOpenStudy.module.css";
@@ -14,7 +13,6 @@ import loadingImg from "../images/loadingImg.gif";
 function MainOpenStudy() {
     const [studyModal, setStudyModal] = useState(false);
 
-    //const [totalOpenStudies, setTotalOpenStudies] = useState([]);
     const [openStudies, setOpenStudies] = useState([]);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
@@ -45,16 +43,6 @@ function MainOpenStudy() {
         } catch(error) {
             console.log(error);
         }
-    } */
-
-    /* $('#search').click(() => {
-        var inputValue = $('#searchInput').val()
-        window.location.replace(`/search?option=${selected}&value=${inputValue}`)
-    })  */
-
-    /* const searchBtnClick = () => {
-        console.log('btn click!!!!!!!!');
-        searchResult();
     } */
 
     const changeSelectHandler = (event) => {

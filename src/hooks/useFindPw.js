@@ -24,8 +24,9 @@ export default function useFindPw() {
   const sendEmailHandler = async (event) => {
     event.preventDefault();
     setNumCheckColor("default");
-    setMinutes(2);
-    setSeconds(30);
+    setMinutes(5);
+    setSeconds(0);
+    setNum("");
 
     if (emailRegEx.test(emailText)) {
       try {
@@ -39,23 +40,37 @@ export default function useFindPw() {
     } else setEmailInputColor("fail1");
   };
 
-  const numBtnHandler = (event) => {
+  const numBtnHandler = async (event) => {
     event.preventDefault();
-    if (numCheckColor !== "fail2" && num === "1234") {
-      setNumCheckColor("pass");
-    } else if (num !== "1234") {
+    try {
+      const response = await axios.post("http://localhost:8080/email-verify", {
+        email: emailText,
+        verify: num,
+      });
+      if (numCheckColor !== "fail2" && response.status === 200) {
+        setNumCheckColor("pass");
+      }
+    } catch (error) {
       setNumCheckColor("fail");
     }
   };
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
     if (numCheckColor !== "pass") {
       setWarn("인증번호를 확인해주세요.");
     } else if (!passColor || !rePassColor || pass === "" || rePass === "") {
       setWarn("비밀번호를 확인해주세요.");
     } else {
-      navigate("/login");
+      const response = await axios.post("http://localhost:8080/email-newpass", {
+        email: emailText,
+        verify: num,
+        newPassword: pass,
+      });
+      if (response.status === 200) {
+        alert("비밀번호 변경이 완료되었습니다!");
+        navigate("/login");
+      }
     }
   };
 
