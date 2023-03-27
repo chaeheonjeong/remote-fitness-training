@@ -1,8 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import './View.css';
-
+import axios from 'axios';
 
 function View() {
+
+    const [write, setWrite] = useState(null);
+
+    useEffect(() => {
+        const fetchWrite = async () => {
+            try{
+                const res = await axios.get("http://localhost:8080/getwrite");
+                setWrite(res.data);
+                console.log(res.data);
+            }catch(err){
+                console.error(err);
+            }
+        };
+        fetchWrite();
+    }, []);
+
+    
    
     const [progress, setProgress] = useState(false);
 
@@ -59,6 +76,11 @@ function View() {
     }, [comments])
 
 */
+
+
+    if (!write) {
+        return <div>Loading...</div>;
+    }
     return (
         <div className='detail'>
             <div className='content_4'>
@@ -89,7 +111,7 @@ function View() {
                 <div className='content_2_a'>
                     <div>작성자</div>
                     <div>|</div>
-                    <div>날짜</div>
+                    <div>날짜{write.date}</div>
                 </div>
                 <div className='content_2_c'>
                     <div></div>
@@ -101,17 +123,17 @@ function View() {
 
             <div className='content_5'>
                 <div className='content_5_a'>
-                    <div>모집인원</div>
-                    <div>시작 예정일</div>
+                    <div>모집인원{write.number}</div>
+                    <div>시작 예정일{write.date}</div>
                 </div>
                 <div className='content_5_b'>
-                    <div>진행기간</div>
-                    <div>태그</div>
+                    <div>진행기간{write.period}</div>
+                    <div>태그{write.tag}</div>
                 </div>
             </div>
 
             <div className='content_3'>
-                <div>내용</div>
+                <div>내용{write.title}</div>
             </div>
 
             <div className='content_6'>

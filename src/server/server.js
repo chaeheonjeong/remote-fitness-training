@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const User = require("./models/user");
 const Write = require("./models/write");
 const Ask = require("./models/ask");
+const Counter = require("./models/counter");
 
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
@@ -18,17 +19,22 @@ const OpenStudy = require("./models/openStudy");
 //const { default: StudyRoomCard } = require("../component/StudyRoomCard");
 const Schedule = require("./models/schedule");
 
+const ObjectId = mongoose.Types.ObjectId;
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const mysecretkey = "capstone";
 
+
+var db;
 mongoose
   .connect(
     "mongodb+srv://admin:password1234@capstone.zymalsv.mongodb.net/capstone?retryWrites=true&w=majority"
   )
   .then(() => console.log("DB 접속완료"))
   .catch((err) => console.log(err));
+
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -371,13 +377,46 @@ app.get("/ranking", async (req, res) => {
   }
 });
 
+app.post('/add', function(요청, 응답){
+  응답.send('전송완료')
+  db.collection('counter').findOne({name : '게시물 수'}, function(에러, 결과){
+      console.log(결과.totalPost)
+      var 총게시물갯수 = 결과.totalPost;
+      db.collection('post').insertOne({ _id : 총게시물갯수 + 1 ,제목 : 요청.body.title, 날짜 : 요청.body.date}, function(에러, 결과){
+          console.log('저장완료');
 
+          db.collection('counter').updateOne({name: '게시물 수'}, {$inc : {totalPost : 1}}, function(에러, 결과){
+              if(에러){return console.log(에러)}
+          });
+      });
+
+
+
+  });
+  /*console.log(요청.body.date)
+  console.log(요청.body.title)*/
+
+});
 
 
 app.post("/postWrite", async (req, res) => {
+  
   const { number, period, date, tag, title, content } = req.body;
+
+  const counter = await Counter.findOneAndUpdate({ name: '게시물 수' }, { $inc: { totalWrite: 1 } }, { new: true, upsert: true });
+  const 총게시물갯수 = (counter.totalWrite +1);
+  
+  /*_id: Number(총게시물갯수 + 1), */
+
+  if (!counter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+
   try {
+
     const newWrite = new Write({
+      //
+      _id: 총게시물갯수 + 1, 
       number: number,
       period: period,
       date: date,
@@ -390,13 +429,13 @@ app.post("/postWrite", async (req, res) => {
     return res.status(200).json({ message: `Write created successfully` });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: `${date}서버오류` });
+    res.status(500).json({ message: `서버오류` });
   }
 });
 
 
 app.get('/getwrite', function(req, res) {
-  Write.find({}, function(err, write) {
+  Write.findOne({'_id': ObjectId('641f253f39759a6198f41478')}, function(err, write) {
     if (err) {
       // 에러가 발생했다면 에러 메시지를 반환합니다.
       res.status(500).send(err);

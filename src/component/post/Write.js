@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 //react-html-parser
 function Write() {
 
+  //const [_id, setId] = useState('');
+
   const [title, setTitle] = useState('');
 
   const [content, setContent] = useState('');
@@ -58,6 +60,7 @@ function Write() {
   const pChange = (e) => {
     setPCondition(e.target.value);
   }
+
 
   function handleKeyPress(e) {
     if(e.key === 'Enter') {

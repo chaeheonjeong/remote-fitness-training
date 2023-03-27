@@ -33,7 +33,6 @@ const Router = () => {
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/findPassword" element={<FindPw/>}/>
                 <Route path="/notification" element={<Notification/>}/>
-                <Route path="/" element={<Main />} />
                 <Route path="/Write" element={<Write />} />
                 <Route path="/View" element={<View />} />
                 <Route path="/Ask" element={<Ask />} />
