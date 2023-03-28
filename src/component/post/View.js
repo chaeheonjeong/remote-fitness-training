@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import './View.css';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 function View() {
+    const { id } = useParams();
 
     const [write, setWrite] = useState(null);
 
     useEffect(() => {
         const fetchWrite = async () => {
             try{
-                const res = await axios.get("http://localhost:8080/getwrite");
+                const res = await axios.get("http://localhost:8080/getwrite/${id}" );
                 setWrite(res.data);
                 console.log(res.data);
             }catch(err){
                 console.error(err);
+                console.log(id);
             }
         };
         fetchWrite();
-    }, []);
+    }, [id]);
 
     
    
@@ -48,39 +51,7 @@ function View() {
         setShowReplyList(false);
     }
 
-/*
-    const [local, setLocal] = useState([])
-
-    const dispatch = useDispatch()
-    const comments = useSelector(state => state.comment)
-    const [commentValue, setCommentValule] = useState('')
-    const [text1, setText1] = useState('')
-    const [display, setDisplay] = useState(false)
-    const onSubmit = (e) => {
-        e.preventDefault();
-        setCommentValule(text1)
-        let data = {
-            content: text1,
-            writer: 'jamong',
-            postId: '123123',
-            responseTo: 'root',
-            commentId: uuid()
-        }
-        //dispatch(addComment(data))
-
-        setText1('')
-    }
-    useEffect(() => {
-        localStorage.setItem('reply', JSON.stringify(comments))
-        setLocal(comments.filter(comment => comment.responseTo === 'root'))
-    }, [comments])
-
-*/
-
-
-    if (!write) {
-        return <div>Loading...</div>;
-    }
+    
     return (
         <div className='detail'>
             <div className='content_4'>
@@ -104,14 +75,14 @@ function View() {
             </div>
 
             <div className='content_1'>
-                <div>제목</div>
+                <div>제목{write?.title}</div>
             </div>
 
             <div className='content_2'>
                 <div className='content_2_a'>
                     <div>작성자</div>
                     <div>|</div>
-                    <div>날짜{write.date}</div>
+                    <div>날짜</div>
                 </div>
                 <div className='content_2_c'>
                     <div></div>
@@ -123,17 +94,17 @@ function View() {
 
             <div className='content_5'>
                 <div className='content_5_a'>
-                    <div>모집인원{write.number}</div>
-                    <div>시작 예정일{write.date}</div>
+                    <div>모집인원{write?.number}</div>
+                    <div>시작 예정일{String(write?.date)}</div>
                 </div>
                 <div className='content_5_b'>
-                    <div>진행기간{write.period}</div>
-                    <div>태그{write.tag}</div>
+                    <div>진행기간{String(write?.period)}</div>
+                    <div>태그{String(write?.tag)}</div>
                 </div>
             </div>
 
             <div className='content_3'>
-                <div>내용{write.title}</div>
+                <div>내용{write?.content}</div>
             </div>
 
             <div className='content_6'>
@@ -243,3 +214,33 @@ export default View;
 */
 /*
 <input type="button" className='rrbtn' value="답장"></input>*/
+
+
+/*
+    const [local, setLocal] = useState([])
+
+    const dispatch = useDispatch()
+    const comments = useSelector(state => state.comment)
+    const [commentValue, setCommentValule] = useState('')
+    const [text1, setText1] = useState('')
+    const [display, setDisplay] = useState(false)
+    const onSubmit = (e) => {
+        e.preventDefault();
+        setCommentValule(text1)
+        let data = {
+            content: text1,
+            writer: 'jamong',
+            postId: '123123',
+            responseTo: 'root',
+            commentId: uuid()
+        }
+        //dispatch(addComment(data))
+
+        setText1('')
+    }
+    useEffect(() => {
+        localStorage.setItem('reply', JSON.stringify(comments))
+        setLocal(comments.filter(comment => comment.responseTo === 'root'))
+    }, [comments])
+
+*/

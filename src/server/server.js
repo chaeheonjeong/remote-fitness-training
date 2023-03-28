@@ -377,26 +377,6 @@ app.get("/ranking", async (req, res) => {
   }
 });
 
-app.post('/add', function(요청, 응답){
-  응답.send('전송완료')
-  db.collection('counter').findOne({name : '게시물 수'}, function(에러, 결과){
-      console.log(결과.totalPost)
-      var 총게시물갯수 = 결과.totalPost;
-      db.collection('post').insertOne({ _id : 총게시물갯수 + 1 ,제목 : 요청.body.title, 날짜 : 요청.body.date}, function(에러, 결과){
-          console.log('저장완료');
-
-          db.collection('counter').updateOne({name: '게시물 수'}, {$inc : {totalPost : 1}}, function(에러, 결과){
-              if(에러){return console.log(에러)}
-          });
-      });
-
-
-
-  });
-  /*console.log(요청.body.date)
-  console.log(요청.body.title)*/
-
-});
 
 
 app.post("/postWrite", async (req, res) => {
@@ -415,7 +395,6 @@ app.post("/postWrite", async (req, res) => {
   try {
 
     const newWrite = new Write({
-      //
       _id: 총게시물갯수 + 1, 
       number: number,
       period: period,
@@ -434,15 +413,16 @@ app.post("/postWrite", async (req, res) => {
 });
 
 
-app.get('/getwrite', function(req, res) {
-  Write.findOne({'_id': ObjectId('641f253f39759a6198f41478')}, function(err, write) {
+app.get('/getwrite/:id', function(req, res) {
+  Write.findOne({_id: req.params.id}, function(err, write) {
     if (err) {
       // 에러가 발생했다면 에러 메시지를 반환합니다.
       res.status(500).send(err);
     } else {
       // 검색된 데이터를 반환합니다.
-      res.json(write);
-      console.log(res.body);
+      
+      console.log(write);
+      console.log(req.params.id);
     }
   });
 });
