@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const User = require("./models/user");
+const Write = require("./models/write");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -367,6 +368,54 @@ app.get("/ranking", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
+
+
+
+  app.post("/postWrite", async (req, res) => {
+  
+    const { number, period, date, tag, title, content } = req.body;
+  
+    const counter = await Counter.findOneAndUpdate({ name: '게시물 수' }, { $inc: { totalWrite: 1 } }, { new: true, upsert: true });
+    const 총게시물갯수 = (counter.totalWrite +1);
+    
+    /*_id: Number(총게시물갯수 + 1), */
+  
+    if (!counter) {
+      return res.status(500).json({ message: "Counter not found" });
+    }
+  
+    try {
+  
+      const newWrite = new Write({
+        _id: 총게시물갯수 + 1, 
+        number: number,
+        period: period,
+        date: date,
+        tag : tag,
+        title : title,
+        content : content,
+      });
+      await newWrite.save();
+      
+      return res.status(200).json({ message: `Write created successfully` });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: `서버오류` });
+    }
+  });
+
+
+app.get('/getwrite', function(req, res) {
+  Write.find({}, function(err, write) {
+    if (err) {
+      // 에러가 발생했다면 에러 메시지를 반환합니다.
+      res.status(500).send(err);
+    } else {
+      // 검색된 데이터를 반환합니다.
+      res.json(write);
+      console.log(res.body);
+    }
+  });
 });
 
 
@@ -437,46 +486,42 @@ app.post('/openStudy', async (req, res) => {
         res.status(500).json({ success: false, message: "Server Error" });
       }
     });
+});
 
+/* 
+app.get("/search", async (req, res) => {
+  const option = decodeURIComponent(req.query.selected);
+  const value = decodeURIComponent(req.query.value);
 
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
 
+  const offset = (page - 1) * limit;
+  var openStudiesSearch = [];
 
+  try {
+    if(option === 'title') {
+      openStudiesSearch = await OpenStudy.find({ title: value }, null, { skip: offset, limit: limit });
+    }
+    else if(option === 'tags') {
+      openStudiesSearch = await OpenStudy.find({ tags: { $in: [value] } }, null, { skip: offset, limit: limit });
+    }
 
-
-
-    app.get("/search", async (req, res) => {
-      const option = decodeURIComponent(req.query.selected);
-      const value = decodeURIComponent(req.query.value);
-    
-      const page = parseInt(req.query.page);
-      const limit = parseInt(req.query.limit);
-    
-      const offset = (page - 1) * limit;
-      var openStudiesSearch = [];
-
-      try {
-        if(option === 'title') {
-          openStudiesSearch = await OpenStudy.find({ title: value }, null, { skip: offset, limit: limit });
-        }
-        else if(option === 'tags') {
-          openStudiesSearch = await OpenStudy.find({ tags: { $in: [value] } }, null, { skip: offset, limit: limit });
-        }
-    
-        if(openStudiesSearch.length > 0) {
-          return res.status(200).json({ 
-            openStudies: openStudiesSearch,
-            //totalOpenStudies,
-            message: '검색목록 가져오기 성공',
-            success: true
-          });
-        } else {
-          return res.status(404).json({
-            message: "데이터가 존재하지 않습니다",
-            success: false,
-          });
-        }
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Server Error" });
-      }
-    })
+    if(openStudiesSearch.length > 0) {
+      return res.status(200).json({ 
+        openStudies: openStudiesSearch,
+        //totalOpenStudies,
+        message: '검색목록 가져오기 성공',
+        success: true
+      });
+    } else {
+      return res.status(404).json({
+        message: "데이터가 존재하지 않습니다",
+        success: false,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+}); */
