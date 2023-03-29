@@ -53,6 +53,8 @@ const MyGoal = () => {
           }
         })
         .catch((error) => {
+          console.log(error);
+          setDealt(0);
           setHour(0);
           setMinute(0);
         });
@@ -119,7 +121,7 @@ const MyGoal = () => {
                 : `0시간 0분`}
             </label>
             <label className={styles.progLabel1}>
-              {user.token !== null ? `${dealt}` : `0`}%
+              {user.token !== null ? dealt : `0`}%
             </label>
             &nbsp;
             <label className={styles.progLabel2}>달성</label>

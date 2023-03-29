@@ -10,7 +10,14 @@ const Header = () => {
 
   return (
     <div className={styles.container}>
-      <label className={styles.linkLabel}>Link</label>
+      <label
+        className={styles.linkLabel}
+        onClick={() => {
+          hook.navigate("/");
+        }}
+      >
+        Link
+      </label>
       <div className={styles.smallContainer}>
         <div className={styles.smallContainer2}>
           {user.token !== null && (

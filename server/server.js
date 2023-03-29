@@ -205,16 +205,17 @@ app.get("/study-time", async (req, res) => {
       _user: userId,
       date: today,
     });
-    if (userStudyTime) {
-      const time = userStudyTime.studyTime;
-      const timeH = Math.floor(time / 3600);
-      const timeM = Math.floor((time % 3600) / 60);
-      return res.status(200).json({
-        timeH: timeH,
-        timeM: timeM,
-        message: `${time}공부 시간 가져오기 성공`,
-      });
-    }
+    if (!userStudyTime)
+      return res.status(204).json({ message: "시간 찾지 못했습니다." });
+
+    const time = userStudyTime.studyTime;
+    const timeH = Math.floor(time / 3600);
+    const timeM = Math.floor((time % 3600) / 60);
+    return res.status(200).json({
+      timeH: timeH,
+      timeM: timeM,
+      message: "공부 시간 가져오기 성공",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
@@ -269,22 +270,17 @@ app.get("/ggoal-time", async (req, res) => {
         message: "목표 공부 시간 가져오기 성공",
       });
     } else {
-      res.status(400).json({
-        message: "목표 공부시간을 설정해주세요.",
+      return res.status(204).json({
+        message: `목표 공부 시간을 설정해주세요.`,
       });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 });
 
 app.get("/ranking", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-
   try {
     const today = new Date();
     today.setDate(today.getDate() - 1);
@@ -315,9 +311,54 @@ app.get("/ranking", async (req, res) => {
         rankTime: result,
         message: "공부 시간 랭킹 가져오기 성공",
       });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/myRanking", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const today = new Date();
+    today.setDate(today.getDate() - 1);
+    const yesterday = today.toLocaleDateString();
+    let myRank = 0;
+
+    const rankTime = await StudyTime.find({ date: yesterday })
+      .sort({ studyTime: -1 })
+      .limit(10);
+
+    for (let i = 0; i < rankTime.length; i++) {
+      if (rankTime[i]._user === userId) {
+        myRank = i + 1;
+      }
+    }
+
+    const myStudyTime = await StudyTime.findOne({
+      _user: userId,
+      date: yesterday,
+    });
+    if (myStudyTime) {
+      const time = myStudyTime.studyTime;
+      const timeH = Math.floor(time / 3600);
+      const timeM = Math.floor((time % 3600) / 60);
+      const timeS = time % 60;
+      return res.status(200).json({
+        studyTimeH: timeH,
+        studyTimeM: timeM,
+        studyTimeS: timeS,
+        myRank: myRank,
+        message: `나의 공부 시간 가져오기 성공`,
+      });
     } else {
-      res.status(400).json({
-        message: "공부한 사용자가 존재하지 않습니다.",
+      return res.status(204).json({
+        message: "목표 공부 시간을 설정해주세요.",
       });
     }
   } catch (error) {
@@ -326,6 +367,12 @@ app.get("/ranking", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.send("hello world!");
+});
+
 app.listen(8080, () => {
   console.log("서버가 시작되었습니다.");
+  // delete require.cache["axios"];
+  // console.log(require.cache);
 });
