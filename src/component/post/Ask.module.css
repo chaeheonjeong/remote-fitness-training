@@ -1,5 +1,5 @@
 
-body{
+.ask{
     padding: 2rem;
     border: 4px solid black;
     margin: 30px;
@@ -23,6 +23,12 @@ body{
   .cc {
     margin-right: 30px;
   }
+
+  
+.tt {
+  margin-right: 30px;
+}
+
   
   .btn {
     text-align: end;

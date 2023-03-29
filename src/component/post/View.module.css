@@ -1,5 +1,5 @@
 
-body{
+.detail{
     padding:1.5em;
     border-radius: 5px;
     border: 4px solid black;
@@ -91,6 +91,7 @@ body{
     border: 2px solid #90b2b8;
     border-radius: 5px;
     min-height: 50px;
+    width: 100%;
 }
 
 .rc1 {
@@ -114,7 +115,8 @@ body{
     border: none;
     padding: 5px;
     border-radius: 200px;
-    background-color: yellowgreen;
+    background-color: green;
+    color: white;
 }
 
 .falseBtn{
@@ -122,6 +124,7 @@ body{
     padding: 5px;
     border-radius: 200px;
     background-color: red;
+    color: white;
 }
 
 
@@ -180,3 +183,4 @@ table {
     width: 100%;
 
   }
+  

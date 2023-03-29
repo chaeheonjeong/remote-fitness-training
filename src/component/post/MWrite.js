@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './Write.css';
+import styles from './MWrite.module.css';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from 'axios';
@@ -105,11 +105,11 @@ function MWrite() {
 
 
   return (
-    <div className='choose'>
-      <div className='ch1'>
-        <text className='nn'>모집인원</text>
+    <div className={styles.choose}>
+      <div className={styles.ch1}>
+        <text className={styles.nn}>모집인원</text>
         
-        <select name="number" className="number" onChange={pChange}>
+        <select name="number" className={styles.number} onChange={pChange}>
           <option value="명">명</option>
           <option value={pCondition.p1}>1명</option>
           <option value={pCondition.p2}>2명</option>
@@ -123,8 +123,8 @@ function MWrite() {
           <option value={pCondition.p11}>10명 이상</option>
 
         </select>
-        <text className='ww'>진행기간</text>
-        <select name="period" className="period" onChange={periodChange}>
+        <text className={styles.ww}>진행기간</text>
+        <select name="period" className={styles.period} onChange={periodChange}>
           <option value="개월">개월</option>
           <option value={periodCondition.num1}>1개월</option>
           <option value={periodCondition.num2}>2개월</option>
@@ -135,25 +135,25 @@ function MWrite() {
         </select>
       </div>
 
-      <div className='ch2'>
-        <text className='ss'>시작예정일</text>
-        <input type='date' id='date' className='date' onChange={handleSelectDate}/> 
+      <div className={styles.ch2}>
+        <text className={styles.ss}>시작예정일</text>
+        <input type='date' id='date' className={styles.date} onChange={handleSelectDate}/> 
         
-        <text className='tt'>태그</text>
+        <text className={styles.tt}>태그</text>
 
         <div>
           <input
-            className='tag_input'
+            className={styles.tag_input}
             onKeyPress={handleKeyPress}
             type="text"
             placeholder="해시태그 입력(최대 5개)"
           />
-          <div className='tag_tagPackage'>
+          <div className={styles.tag_tagPackage}>
             {tags.map((tag, index) => (
-              <span key={index} className='tag_tagindex'>
+              <span key={index} className={styles.tag_tagindex}>
                 {tag}
                 <button 
-                  className='tag_Btn'
+                  className={styles.tag_Btn}
                   onClick={() => handleDelete(index)}
                 >
                   &times;
@@ -167,13 +167,13 @@ function MWrite() {
 
       </div>
 
-      <div className='title_input'>
-        <text className='cc'>제목</text>
-        <input onChange={titleHandler} className='title_tinput' value={title} placeholder='제목을 입력하세요.'/>
+      <div className={styles.title_input}>
+        <text className={styles.tt}>제목</text>
+        <input onChange={titleHandler} className={styles.title_tinput} value={title} placeholder='제목을 입력하세요.'/>
       </div>
     
 
-      <div className='content'>
+      <div className={styles.content}>
         <CKEditor
           editor={ClassicEditor}
           data=""
@@ -204,9 +204,9 @@ function MWrite() {
       
       </div>
 
-      <div className='btn'>
+      <div className={styles.btn}>
         <input type='button' value='취소' className='cancel' />
-        <input type='submit' value='등록' className='submit' onClick={handleSubmit} />
+        <input type='submit' value='수정' className='submit' onClick={handleSubmit} />
       </div>
 
     </div>

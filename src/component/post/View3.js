@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+/*import React, { useEffect, useState } from 'react';
 import './View.css';
 
 
@@ -48,7 +48,7 @@ function View() {
         setLocal(comments.filter(comment => comment.responseTo === 'root'))
     }, [comments])
 
-*/
+*//*
     return (
         <div className='detail'>
             <div className='content_4'>
@@ -59,8 +59,8 @@ function View() {
                             setBtnColorRed(!BtnColorRed);
                         }}>
                             {progress ? "모집완료" : "모집중"}
-                            {/* <cbtn style={progress ? {color:'green'} : {color:'red'}}></cbtn> */}
-                        </button>
+                            {/* <cbtn style={progress ? {color:'green'} : {color:'red'}}></cbtn> */
+                       /* </button>
                     </div>                    
                 </div>
                     
@@ -156,8 +156,8 @@ function View() {
                                 )}
                                 {showReplyList && (
                                     <div className='rr_reply'>
-                                    {/* 대댓글 목록 보여주는 코드 */}
-                                    </div>
+                                    {/* 대댓글 목록 보여주는 코드 */
+/*</div>
                                 )}
                                 <input type="button" className='rdbtn' value="삭제"></input>
                                 <input type="button" className='rmbtn' value="수정"></input>
@@ -198,7 +198,7 @@ function View() {
                                 <hr style={{ borderTop: '1px solid gray' }} />
                             </Box >
                         ))}
-                        </Stack >*/}
+                        </Stack >*//*}
 
                 </div>
 
