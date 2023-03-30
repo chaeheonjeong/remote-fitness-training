@@ -18,6 +18,8 @@ import View3 from "../component/post//View3";
 import MainOpenStudy from "../component/MainOpenStudy";
 import MainStudy from "../component/MainStudy";
 import MainQuestion from "../component/MainQuestion";
+import MyCalendar from '../component/mypage/MyCalendar';
+import MyInfo from '../component/mypage/MyInfo';
 
 const Router = () => {
     return(
@@ -31,13 +33,16 @@ const Router = () => {
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/findPassword" element={<FindPw/>}/>
                 <Route path="/notification" element={<Notification/>}/>
-                <Route path="/" element={<Main />} />
+                
+                {/* <Route path="/" element={<Main />} /> */}
                 <Route path="/Write" element={<Write />} />
                 <Route path="/View" element={<View />} />
                 <Route path="/Ask" element={<Ask />} />
                 <Route path='/View2' element={<View2 />} />
                 <Route path='/View3' element={<View3 />} />
                 <Route path="/AskView" element={<AskView />} />
+                <Route path="/MyInfo" element={<MyInfo/>} />
+                <Route path="/MyCalendar" element={<MyCalendar/>}/>
             </Routes>
         </BrowserRouter>
     );

@@ -32,7 +32,7 @@
 }
 
 .study, .question {
-    border: 1.5px solid rgb(189, 188, 188);;
+    border: 1.5px solid rgb(189, 188, 188);
 }
 
 .search {
@@ -88,6 +88,14 @@
     margin-left: auto;
     margin-right: auto;
     padding-left: 14px;
+}
+
+.noResult {
+    margin-top: 5rem;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: red;
 }
 
 

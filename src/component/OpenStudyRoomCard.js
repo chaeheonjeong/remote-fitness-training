@@ -44,7 +44,7 @@ function OpenStudyRoomCard( {img, title, personNum, tags, id} ) {
             <div className={styles.openStudyBox} key={id}>
                 {heartBtn()}
                 <a className={styles.participants}>1/{personNum}</a>
-                <a>{id}</a>
+                {/* <a>{id}</a> */}
                 <div className={styles.openStudyImg}>
                     {
                         img ? (

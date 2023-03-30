@@ -2,8 +2,8 @@
     display: inline-block;
     border: 1.5px solid rgb(189, 188, 188);
     border-radius: 7px;
-    width: 91%; /*w: 300(19.3rem), h: 230(15rem)*/
-    height: 16rem;
+    width: 90%; /*w: 300(19.3rem), h: 230(15rem)*/
+    height: 18rem;
     padding: 0.7rem;
     margin: 0 auto 0 auto;
 }
@@ -16,11 +16,11 @@
 .openStudyImg { /* div태그 */
     background-color: rgb(43, 209, 151);
     margin: 0 -0.7rem 2px -0.7rem;
-    height: 130px;
+    height: 10rem;
 }
 
 .openStudyImage { /* img태그 */
-    height: 130px;
+    height: 10rem;
     width: 100%;
     object-fit: cover;
     /*object-fit: contain;*/

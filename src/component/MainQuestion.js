@@ -1,156 +1,107 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import "./InfiniteScroll.css";
 import styles from  "./MainQuestion.module.css";
-import cardStyles from  "./QuestionRoomCard.module.css";
+//import cardStyles from  "./QuestionRoomCard.module.css";
 import QuestionRoomCard from "./QuestionRoomCard";
 
-import InfiniteScroll from "react-infinite-scroll-component";
-
 import loadingImg from "../images/loadingImg.gif";
+import axios from "axios";
 
 function MainQuestion() {
     const [questionTitle, setQuestionTitle] = useState('');
 
-    const [cards, setCards] = useState(Array.from({length: 6}))
-    const fetchData = () => {
-        setTimeout(() => {
-            setCards(cards.concat(Array.from({ length: 12 })))
-        }, 1500);
-    };
+    const [questions, setQuestions] = useState([]);
+    const [hasMore, setHasMore] = useState(true);
+    const [page, setPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const [searchInput, setSearchInput] = useState('');
     
-    function questionCard({ keyNum }) {
-        <QuestionRoomCard
-
-            title = {questionTitle}
-        />
-    }
-
-    function questionPack() {
-        return (
-            /*Array.from({length: 50}, (v, i) => (
-                (i%3 === 0) ? (
-                    <>
-                        <QuestionRoomCard
-                            key = {i}
-                            title = {openStudyTitle}
-                            total = {total}
-                            participants = {participants}
-                        />
-                    </>
-                ) : (
-                    <QuestionRoomCard
-                        key = {i}
-                        title = {openStudyTitle}
-                        total = {total}
-                        participants = {participants}
-                    />
-                )
-            ))*/
-
-            Array.from({length: 50}, (v, i) => (
-                /*<div className="aRowOfCard">
-                    <h3>br</h3>
-                    {
-                    Array.from({length: 3}, (v, j) => (
-                        <QuestionRoomCard
-                            key = {i}
-                            title = {openStudyTitle}
-                            total = {total}
-                            participants = {participants}
-                        />
-                    ))
-                    }
-                </div>*/
-
-                (i%3 === 0) ? (
-                    <>
-                        <div className={styles.block}></div>
-                        <QuestionRoomCard
-                            keyNum = {i}
-                            title = {questionTitle}
-                        />
-                        <div className={styles.blank} />
-                    </>
-                ) : (
-                    (i%3 === 2) ? (
-                        <>
-                            <QuestionRoomCard
-                                keyNum = {i}
-                                title = {questionTitle}
-                            />
-                        </>
-                    ) : (
-                        <>
-                            <QuestionRoomCard
-                                keyNum = {i}
-                                title = {questionTitle}
-                            />
-                            <div className={styles.blank} />
-                        </>
-                    )
-                )
-            ))
-        );
-    }
-
     function loaderImg() {
         return(
-            <div className={styles.loadingPackage}>
+             <div className={styles.loadingPackage}>
                 <img className={styles.loadingImg} src={loadingImg} alt="loadingImg"></img>
                 <div className={styles.loading}>loading...</div>
             </div>
         );
     }
 
-    function questionScroll() {
-        return(
-            <>
-                <InfiniteScroll
-                    dataLength = {cards.length}
-                    next = {fetchData}
-                    hasMore = {true}
-                    loader = {loaderImg()}
-                >
-                    {questionPack()}
-                </InfiniteScroll>  
-            </>
-        );
-    }
+    const moreQuestions = () => {
+        console.log('데이터를 불러옵니다');
+
+        axios 
+            .get(`http://localhost:8080/questions?page=${page}&limit=12`)
+            .then((response) => {
+                const newQuestions = response.data.questions;
+                const isLastPage = newQuestions.length < 12;
+
+                if(isLastPage) {
+                    setHasMore(false);
+                }
+
+                const prevStudies = [...questions];
+                console.log('Page: ', page);
+                setQuestions(prevStudies => [...prevStudies, ...newQuestions]);
+                console.log('Number of loaded studies: ' + (prevStudies.length + newQuestions.length));
+                setPage(prevPage => prevPage + 1);
+            })
+            .catch((error) => {
+                console.log(error);
+                setIsLoading(false);
+            });
+    };
+
+    useEffect(() => {
+        moreQuestions();
+    }, []);
 
     return(
         <>
-            <div id={styles.body}>
-                <div id={styles.menu}>
-                    <div id={styles.select}>
-                        <Link to="/"><button id={styles.openStudy}>오픈스터디</button></Link>
-                        <Link to="/study"><button id={styles.study}>스터디</button></Link>
-                        <Link to="/question"><button id={styles.question}>질문</button></Link>
+            <div className={styles.body}>
+                <div className={styles.menu}>
+                    <div className={styles.select}>
+                        <Link to="/"><button className={styles.openStudy}>오픈스터디</button></Link>
+                        <Link to="/study"><button className={styles.study}>스터디</button></Link>
+                        <Link to="/question"><button className={styles.question}>질문</button></Link>
                     </div>
 
-                    <form id={styles.search}>
-                        <select>
-                            <option>제목</option>
-                            <option>태그</option>
-                            <option>작성자</option>
-                        </select>
-                        <input />
-                        <button>검색</button>
-                    </form>
-                    <button>글쓰기</button>
+                    <div className={styles.searchAndMake}>
+                        <form className={styles.search}>
+                            <select>
+                                <option value="title">제목</option>
+                                <option value="tags">태그</option>
+                                <option value="writer">작성자</option>
+                            </select>
+                            <input className="searchInput" name="searchInput" onChange = { (e) => setSearchInput(e.target.value) }/>
+                            <button>검색</button>
+                        </form>
+                        <button className={styles.makeBtn}>글쓰기</button>
+                    </div>
                 </div>
                     
                 <h1>Question</h1>
-                <div className={cardStyles.container}>
-                    {questionScroll()}
-                </div>
-            </div>
-
-            
+                
+                <InfiniteScroll
+                    dataLength = {questions.length}
+                    next = {moreQuestions}
+                    hasMore = {hasMore}
+                    loader = {loaderImg()}
+                >
+                    { questions && questions.map((data, index) => {
+                        return (
+                            <QuestionRoomCard 
+                                title={data.title}
+                                //tags={Array.isArray(data.tag) ? [...data.tag] : []} 
+                                id={data._id}
+                                key={data._id}
+                            />
+                        );
+                    })}
+                </InfiniteScroll>
+            </div> 
         </>
-
-
-
     );
 } export default MainQuestion;

@@ -22,6 +22,8 @@ const Schedule = require("./models/schedule");
 const ObjectId = mongoose.Types.ObjectId;
 
 app.use(cors());
+//app.use(json({ limit: '50mb' }));
+//app.use(urlencoded({ limit: '50mb', extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const mysecretkey = "capstone";
@@ -498,7 +500,19 @@ app.listen(8080, () => {
 // -------------------------------------------------------------------------
 
 app.use(express.json());
+app.use(bodyParser.json({
+  limit: 5000000,
+  extended: true
+}));
+app.use(bodyParser.urlencoded({
+  limit: 5000000,
+  extended: true
+}));
+
 app.post('/openStudy', async (req, res) => {
+
+  
+
   try {
     const { img, title, hashtag, personNum } = req.body;
 
@@ -509,6 +523,8 @@ app.post('/openStudy', async (req, res) => {
       personNum: personNum
     });
 
+    console.log("img.size : ", img.size);
+
     await newOpenStudy.save();
     res.status(200).json({ message: `OpenStudy created successfully` });
   } catch(err) {
@@ -518,7 +534,7 @@ app.post('/openStudy', async (req, res) => {
 });
 
   app.get("/openStudies", async (req, res) => {
-    //const { page, limit } = req.query;
+
     const page = parseInt(req.query.page);
     const limit = parseInt(req.query.limit);
   
@@ -559,13 +575,71 @@ app.post('/openStudy', async (req, res) => {
     });
 
 
+    app.get("/studies", async (req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+
+      const offset = (page - 1) * limit;
+
+      try {
+        const studies = await Write.find().skip(offset).limit(limit);
+
+        if(studies.length > 0) {
+          return res.status(200).json({
+            studies: studies,
+            message: '스터디 모집글 목록 가져오기',
+            success: true,
+            studies
+          });
+        } else {
+          return res.status(404).json({
+            message: "데이터가 존재하지 않습니다.",
+            success: false
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    });
+
+
+    app.get("/questions", async (req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+
+      const offset = (page - 1) * limit;
+
+      try {
+        const questions = await Ask.find().skip(offset).limit(limit);
+
+        if(questions.length > 0) {
+          return res.status(200).json({
+            questions: questions,
+            message: '스터디 모집글 목록 가져오기',
+            success: true,
+            questions
+          });
+        } else {
+          return res.status(404).json({
+            message: "데이터가 존재하지 않습니다.",
+            success: false
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    });
+
+
 
 
 
 
 
     app.get("/search", async (req, res) => {
-      const option = decodeURIComponent(req.query.selected);
+      const option = req.query.selected;
       const value = decodeURIComponent(req.query.value);
     
       const page = parseInt(req.query.page);
@@ -575,10 +649,10 @@ app.post('/openStudy', async (req, res) => {
       var openStudiesSearch = [];
 
       try {
-        if(option === 'title') {
+        if(option === "title") {
           openStudiesSearch = await OpenStudy.find({ title: value }, null, { skip: offset, limit: limit });
         }
-        else if(option === 'tags') {
+        else if(option === "tags") {
           openStudiesSearch = await OpenStudy.find({ tags: { $in: [value] } }, null, { skip: offset, limit: limit });
         }
     
@@ -590,13 +664,14 @@ app.post('/openStudy', async (req, res) => {
             success: true
           });
         } else {
-          return res.status(404).json({
-            message: "데이터가 존재하지 않습니다",
-            success: false,
+          return res.status(200).json({
+            openStudies: [],
+            message: "검색결과가 없습니다",
+            success: true,
           });
         }
       } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: "Server Error" });
       }
-    })
+    });

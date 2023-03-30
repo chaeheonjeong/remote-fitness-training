@@ -7,37 +7,52 @@ import view from "../images/view.png";
 import comment from "../images/comment.png";
 
 import styles from  "./StudyRoomCard.module.css";
-import "./InfiniteScroll.css";
 
-function StudyRoomCard({ keyNum, title }) {
-    const tag = "태그";
+function StudyRoomCard({ title, tags, id }) {
     const viewCount = 21;
     const commentCount = 7;
-    title = "스터디원 구합니다";
 
     const [heart, setHeart] = useState(false);
+
     const changeHeart = () => {
-        setHeart(heart => !heart);
+        setHeart(!heart);
     };
 
+    // 관심글
     function heartBtn() {
         if(!heart) {
-            return <img id={styles.heart} src={emptyHeart} alt="emptyHeart" onClick={() => changeHeart()}></img>;
+            return <img className={styles.heart} src={emptyHeart} alt="emptyHeart" onClick={() => changeHeart()}></img>;
         }
         else {
-            return <img id={styles.heart} src={fullHeart} alt="fullHeart" onClick={() => changeHeart()}></img>;
+            return <img className={styles.heart} src={fullHeart} alt="fullHeart" onClick={() => changeHeart()}></img>;
         }
     };
 
+    // 해시태그
+    function hashtag() {
+        return (
+            <div className={styles.tagPackage}>
+            {
+                tags && tags.map((tag, index) => {
+                    if(typeof tag === 'object' && tag.id) {
+                        return(<a className={styles.studyTag} key={tag.id} id={tag.id}>{'#' + tag}</a>);
+                    } else {
+                        return(<a className={styles.studyTag} key={index}>{'#' + tag}</a>)
+                    }  
+                })
+            }
+            </div>
+        );
+    }
+
     return(
-        <>
-            <div className={styles.studyBox} key={keyNum}>
+            <div className={styles.studyBox} key={id}>
                 {heartBtn()}
-                <a>{keyNum}</a>
+                <a>{id}</a>
                 <h1 className={styles.studyTitle}>{title}</h1>
-                <div className={styles.tagPackage}>
-                    <a className={styles.studyTag}>#{tag}</a>
-                </div>
+                {
+                    hashtag()
+                }
                 <div className={styles.reaction}>
                     <img className={styles.view} src={view} alt="view"></img>
                     <a>{viewCount}</a>
@@ -45,12 +60,7 @@ function StudyRoomCard({ keyNum, title }) {
                     <a>{commentCount}</a>
                 </div>
             </div>
-        </>
     );
 }
 
-StudyRoomCard.propTypes = {
-    keyNum: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-};
 export default StudyRoomCard;

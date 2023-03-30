@@ -14,7 +14,7 @@ export default function OpenStudyModal({
     addModalHandler
 }) 
 {
-    const [img, setImg] = useState("");
+    const [image, setImg] = useState("");
     const [title, setTitle] = useState("");
     const [inputTag, setInputTag] = useState("");
     const [personNum, setpersonNum] = useState("1");
@@ -33,12 +33,13 @@ export default function OpenStudyModal({
         setStudyModal(false);
         try {
             const response = await axios.post("http://localhost:8080/openStudy", {
-                img: img,
+                img: image,
                 title: title,
                 hashtag: tags,
                 personNum: personNum
             });
-            addModalHandler(img, title, tags, personNum);
+            addModalHandler(image, title, tags, personNum);
+            console.log("사진 크기: ", image.size);
             alert("오픈스터디가 생성되었습니다.");
             
         } catch(error) {
@@ -79,10 +80,11 @@ export default function OpenStudyModal({
         // 사진 업로드 및 압축
         const imageUploadHandler = async (event) => {
             const selectedImage = event.target.files[0];
-            const MAX_SIZE = 20000000;
+            const MAX_SIZE = 50000000;
             const options = {
-                maxSizeMB: 1, // 이미지 최대 용량
+                maxSizeMB: 50, // 이미지 최대 용량
             };
+            console.log("before: ", selectedImage.size);
             
             try {
                 console.log("before: ", selectedImage.size);
@@ -100,13 +102,16 @@ export default function OpenStudyModal({
 
                     reader.onload = () => {
                         setImg(reader.result);
+                        
                         console.log('check: ', reader.result);
                     };
                     //reader.readAsDataURL(selectedImage);
-                    reader.readAsDataURL(compressedFile);
+                    const imageFile = reader.readAsDataURL(compressedFile);
+                    setImg(imageFile);
+                    
                     console.log('hello: ', compressedFile);
                 } else {
-                    //alert("이미지 용량은 50MB보다 작아야 합니다.");
+                    alert("이미지 용량은 50MB보다 작아야 합니다.");
                 }
             }
             catch (error) {
