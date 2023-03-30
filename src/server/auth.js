@@ -5,16 +5,14 @@ const mysecretkey = "capstone";
 const auth = async(req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    console.log(token);
+    
     if(!token){
         return res.status(401).send({message : 'Missing Auth Token'});
     }
     
     try{
         const decoded = jwt.verify(token, mysecretkey);
-        console.log(decoded);
         req.user = {id : decoded.id};
-        console.log(req.user);
         next();
     } catch(err){
         console.error(err);

@@ -183,6 +183,10 @@
     font-family: 'Cafe24SsurroundAir';
   }
 
+  .schedlueContents{
+    font-family: 'Cafe24SsurroundAir';
+  }
+
   .showSchedule{
     list-style-type: none;
   }
@@ -226,6 +230,13 @@
 }
 
 .add{
+  border-radius: 5px;
+  border: none;
+  font-family: 'Cafe24SsurroundAir';
+  margin-top: 35px;
+}
+
+.modify{
   border-radius: 5px;
   border: none;
   font-family: 'Cafe24SsurroundAir';

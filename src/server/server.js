@@ -37,8 +37,7 @@ app.get("/", (req, res) => {
 app.get('/users', auth, async(req, res) => {
     try{
         const user = await User.findOne({_id : req.user.id});
-        console.log(req.user);
-        console.log(user);
+
         if(!user){
             return res.status(404).send({message : 'User not found'});
         }
@@ -50,13 +49,14 @@ app.get('/users', auth, async(req, res) => {
 });
 
 //일정 정보 저장
-app.post("/schedules", async(req, res) => {
+app.post("/schedules", auth, async(req, res) => {
     const {date, title, contents} = req.body;
     try{
         const newSchedule = new Schedule({
             title: title,
             date: date,
-            contents: contents
+            contents: contents,
+            userId: req.user.id
         });
         await newSchedule.save();
         return res.status(201).json(newSchedule);
@@ -66,10 +66,10 @@ app.post("/schedules", async(req, res) => {
     } 
 });
 
-//저장된 일정 정보 가져오기
-app.get('/schedules', async(req, res) => {
+//저장된 일정 정보 가져오기(로그인된 유저가 자신의 일정만 보이도록)
+app.get('/schedules', auth, async(req, res) => {
     try{
-        const schedules = await Schedule.find();
+        const schedules = await Schedule.find({userId: req.user.id});
         return res.status(200).json(schedules);
     }catch(err){
         console.error(err);
@@ -77,11 +77,24 @@ app.get('/schedules', async(req, res) => {
     }
 });
 
-app.post("/userInfo", async(req,res) => {
-    console.log(req.body);
-    const {name, email, password} = req.body;
+//일정 수정하기
+app.put('/schedules/:id', (req, res) => {
+    const id = req.params.id;
+    const title = req.body. title;
+    const contents = req.body.contents;
 
-})
+    console.log(req.body);
+    console.log(id);
+
+    Schedule.findOneAndUpdate({_id : id}, {title, contents}, {new : true})
+        .then(updatedSchedule => {
+            res.send(updatedSchedule);
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).send(err);
+        });
+});
 
 app.post("/login", async (req, res) => {
   // 요청 바디에서 email과 password를 추출합니다.

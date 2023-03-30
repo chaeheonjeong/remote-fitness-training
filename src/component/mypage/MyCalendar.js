@@ -16,11 +16,14 @@ function MyCalendar() {
     const [contents, setContents] = useState('');
     const [schedules, setSchedules] = useState([]);
     const [selectedSchedule, setSelectedSchedule] = useState(null);
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
         const fetchSchedules = async () => {
             try{
-                const res = await axios.get("http://localhost:8080/schedules");
+                const res = await axios.get("http://localhost:8080/schedules",{
+                    headers : {Authorization: `Bearer ${token}`}
+                });
                 setSchedules(res.data);
                 console.log(res.data);
             }catch(err){
@@ -72,6 +75,26 @@ function MyCalendar() {
         setContents(e.target.value);
     }
 
+    const handleModify = () => {
+        axios.put(`http://localhost:8080/schedules/${selectedSchedule._id}`, selectedSchedule)
+            .then(res => {
+                console.log('update success: ', res.data);
+                const updatedScheudles = schedules.map(schedule => {
+                    if(schedule._id === selectedSchedule._id){
+                        return selectedSchedule;
+                    }else{
+                        return schedule;
+                    }
+                });
+                setSchedules(updatedScheudles);
+                setSelectedSchedule(null);
+                setListModalIsOpen(false);
+            })
+            .catch(err => {
+                console.error(err);
+            });    
+    }
+
     const handleFormSubmit = async (e) => {
         try{
             e.preventDefault();
@@ -79,6 +102,8 @@ function MyCalendar() {
                 title : title,
                 date : date,
                 contents : contents
+            },{
+                headers : {Authorization: `Bearer ${token}`}
             });
             console.log('Success: ', res.data);
             setSchedules([...schedules, {title, date, contents}]);
@@ -146,25 +171,12 @@ function MyCalendar() {
                 <button type="submit" onClick={() => setSelectedSchedule(null)} className='ModalButton'>X</button>
                 {selectedSchedule ? (
                     <div>
-                        <p> 날짜 : {moment(selectedSchedule.date).format("YYYY-MM-DD")}</p>
-                        <p>일정 제목 : {selectedSchedule.title}</p>
-                        <p>일정 내용 : {selectedSchedule.contents}</p>
+                        <p> 날짜 : {moment(selectedSchedule.date).format("YYYY-MM-DD")} </p>
+                        <p className='scheduleName'>제목 : <input className='input' type="text" value={selectedSchedule.title} onChange={(e) => setSelectedSchedule({ ...selectedSchedule, title: e.target.value })} /></p>
+                        <p className='schedlueContents'>내용 : <input className='Contents' type="text" value={selectedSchedule.contents} onChange={(e) => setSelectedSchedule({ ...selectedSchedule, contents: e.target.value })} /></p>
+                        <button type="submit" onClick={handleModify} className='modify'>수정</button>
                     </div>
-                ) : (
-                    <div>
-                        <h2>일정 목록</h2>
-                        {schedules
-                            .filter(schedule => moment(schedule.date).isSame(date,"day"))
-                            .map((schedule) => (
-                                <div key={schedule.title} onClick={()=>setSelectedSchedule(schedule)}>
-                                    <p>날짜 : {moment(schedule.date).format("YYYY-MM-DD")}</p>
-                                    <p>일정 제목 : {schedule.title}</p>
-                                    <p>일정 내용 : {schedule.contents}</p>
-                                </div>
-                            ))
-                        }
-                    </div>
-                )}
+                ) : null}
             </Modal>
         </div>
         </div>
