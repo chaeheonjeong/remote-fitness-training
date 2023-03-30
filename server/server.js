@@ -1,6 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const User = require("./models/user");
+const Write = require("./models/write");
+const Ask = require("./models/ask");
+const Counter = require("./models/counter");
+
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -9,12 +13,20 @@ const nodemailer = require("nodemailer");
 const Verify = require("./models/verify");
 const StudyTime = require("./models/studyTime");
 const GoalTime = require("./models/goalTime");
+const { dblClick } = require("@testing-library/user-event/dist/click");
+
+const OpenStudy = require("./models/openStudy");
+//const { default: StudyRoomCard } = require("../component/StudyRoomCard");
+const Schedule = require("./models/schedule");
+
+const ObjectId = mongoose.Types.ObjectId;
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const mysecretkey = "capstone";
 
+var db;
 mongoose
   .connect(
     "mongodb+srv://admin:password1234@capstone.zymalsv.mongodb.net/capstone?retryWrites=true&w=majority"
@@ -24,6 +36,51 @@ mongoose
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
+});
+//사용자 정보 확인
+app.get("/user", async (req, res) => {
+  const token = req.headers.authorization;
+  try {
+    const { email } = jwt.verify(token, mysecretkey);
+    const user = await User.findOne({ email });
+    res.json(user);
+    //console.log(res.data);
+  } catch (err) {
+    res.status(401).send({ message: "Invalid token" });
+  }
+});
+
+//일정 정보 저장
+app.post("/schedules", async (req, res) => {
+  const { date, title, contents } = req.body;
+  try {
+    const newSchedule = new Schedule({
+      title: title,
+      date: date,
+      contents: contents,
+    });
+    await newSchedule.save();
+    return res.status(201).json(newSchedule);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+//저장된 일정 정보 가져오기
+app.get("/schedules", async (req, res) => {
+  try {
+    const schedules = await Schedule.find();
+    return res.status(200).json(schedules);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/userInfo", async (req, res) => {
+  console.log(req.body);
+  const { name, email, password } = req.body;
 });
 
 app.post("/login", async (req, res) => {
@@ -359,6 +416,129 @@ app.get("/myRanking", async (req, res) => {
     } else {
       return res.status(204).json({
         message: "목표 공부 시간을 설정해주세요.",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/postreply", async (req, res) => {
+  const { reply } = req.body;
+
+  const replycounter = await ReplyCounter.findOneAndUpdate(
+    { name: "댓글 수" },
+    { $inc: { totalReply: 1 } },
+    { new: true, upsert: true }
+  );
+  const 총댓글수 = replycounter.totalReply + 1;
+
+  if (!replycounter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newReply = new Reply({
+      _id: 총댓글수 + 1,
+      reply: reply,
+    });
+    await newReply.save();
+
+    return res.status(200).json({ message: `Reply created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+app.post("/postAsk", async (req, res) => {
+  const { title, content } = req.body;
+
+  const counter2 = await Counter2.findOneAndUpdate(
+    { name: "게시물 수" },
+    { $inc: { totalWrite: 1 } },
+    { new: true, upsert: true }
+  );
+  const 총게시물갯수 = counter2.totalWrite + 1;
+
+  if (!counter2) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newAsk = new Ask({
+      _id: 총게시물갯수 + 1,
+      title: title,
+      content: content,
+    });
+    await newAsk.save();
+
+    return res.status(200).json({ message: `Ask created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+app.post("/postWrite", async (req, res) => {
+  const { number, period, date, tag, title, content } = req.body;
+
+  const counter = await Counter.findOneAndUpdate(
+    { name: "게시물 수" },
+    { $inc: { totalWrite: 1 } },
+    { new: true, upsert: true }
+  );
+  const 총게시물갯수 = counter.totalWrite + 1;
+
+  /*_id: Number(총게시물갯수 + 1), */
+
+  if (!counter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newWrite = new Write({
+      _id: 총게시물갯수 + 1,
+      number: number,
+      period: period,
+      date: date,
+      tag: tag,
+      title: title,
+      content: content,
+    });
+    await newWrite.save();
+
+    return res.status(200).json({ message: `Write created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+app.post("/openStudy", async (req, res) => {
+  try {
+    const { img, title, hashtag, personNum } = req.body;
+
+    const newOpenStudy = new OpenStudy({
+      img: img,
+      title: title,
+      tags: hashtag,
+      personNum: personNum,
+    });
+
+    await newOpenStudy.save();
+    res.status(200).json({ message: `OpenStudy created successfully` });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: `err.message` });
+  }
+});
+
+app.get("/openStudies", async (req, res) => {
+  try {
+    const openStudies = await OpenStudy.find();
+    if (openStudies) {
+      return res.status(200).json({
+        openStudies: openStudies,
+        message: "오픈스터디 목록 가져오기 성공",
       });
     }
   } catch (error) {

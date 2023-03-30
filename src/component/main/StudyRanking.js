@@ -11,6 +11,7 @@ import { useState, useEffect, Fragment } from "react";
 import { BiMedal } from "react-icons/bi";
 import { BsCaretDownSquare } from "react-icons/bs";
 import { CgCloseR } from "react-icons/cg";
+import RankSwiper from "./RankSwiper";
 
 const StudyRanking = () => {
   const today = new Date();
@@ -35,7 +36,12 @@ const StudyRanking = () => {
     "rgb(65, 61, 33)",
   ];
 
-  SwiperCore.use([Autoplay]);
+  /*   useEffect(() => {
+    SwiperCore.use([Pagination, FreeMode, Autoplay]);
+  }, []); */
+
+  /*   SwiperCore.use([Pagination, FreeMode, Autoplay]); */
+
   const rankRender = (data, index) => {
     return (
       <div className={styles.swiperContent}>
@@ -59,6 +65,23 @@ const StudyRanking = () => {
       </div>
     );
   };
+
+  /*   const mySwiper = new Swiper('.swiper-container', {
+    className= {styles.swiper},
+    direction="vertical",
+    freeMode={true},
+    slidesPerView={1},
+    spaceBetween={8},
+    loop={true}
+    autoplay={{
+      delay: 1000,
+      disableOnInteraction: false,
+    }}
+    preventInteractionOnTransition={true}
+    modules={[Pagination, FreeMode, Autoplay]}
+    speed={950}
+    touchRatio={0}
+  }); */
 
   useEffect(() => {
     axios
@@ -183,14 +206,18 @@ const StudyRanking = () => {
             </div>
           )}
           {rankers.length > 0 && (
-            <Swiper
+            <RankSwiper rankers={rankers} />
+            /*             <Swiper
               className={styles.swiper}
               direction="vertical"
               freeMode={true}
               slidesPerView={1}
               spaceBetween={8}
               loop={true}
-              autoplay={{ delay: 1000, disableOnInteraction: false }}
+              autoplay={{
+                delay: 1000,
+                disableOnInteraction: false,
+              }}
               preventInteractionOnTransition={true}
               modules={[Pagination, FreeMode, Autoplay]}
               speed={950}
@@ -205,7 +232,7 @@ const StudyRanking = () => {
                   );
                 } else return false;
               })}
-            </Swiper>
+            </Swiper> */
           )}
           <div
             style={{

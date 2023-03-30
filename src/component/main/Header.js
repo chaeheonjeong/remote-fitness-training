@@ -51,8 +51,9 @@ const Header = () => {
                       key={x.title}
                       className={styles.profileDropItem}
                       style={{ cursor: "pointer" }}
-                      //   onClick={()=>window.open(x.url)}
-                      // 나중에 URL 추가하고 활성화
+                      onClick={() => {
+                        hook.navigate(x.url);
+                      }}
                     >
                       {x.emo}
                       {x.title}

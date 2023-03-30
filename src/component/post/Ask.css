@@ -1,0 +1,36 @@
+.ask {
+  margin-top: 10px;
+}
+
+.title_input {
+  display: flex;
+  font-size: 20px;
+  margin-bottom: 10px;
+  border-bottom: 3px;
+  padding: 5px;
+  height: 40px;
+}
+
+.cc {
+  margin-right: 30px;
+}
+
+.btn {
+  text-align: end;
+  margin-top: 20px;
+  margin-right: 65px;
+}
+
+.title_tinput {
+  width: 90%;
+  padding: 5px;
+  border: solid 1.6px black;
+}
+
+.content {
+  margin-top: 20px;
+  width: 90%;
+  height: 400px;
+  margin-left: 73px;
+  border: solid 1.6px black;
+}
