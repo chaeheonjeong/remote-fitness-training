@@ -96,6 +96,26 @@ app.put('/schedules/:id', (req, res) => {
         });
 });
 
+//일정 삭제하기
+app.delete('/schedules/:id', (req, res) => {
+    const id = req.params.id;
+    console.log(id);
+
+    Schedule.findOneAndDelete({_id : id})
+        .then(deletedSchedule => {
+            res.send(deletedSchedule);
+            console.log(deletedSchedule);
+
+            if(!deletedSchedule){
+                return res.status(404).send();
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).send(err);
+        })
+})
+
 app.post("/login", async (req, res) => {
   // 요청 바디에서 email과 password를 추출합니다.
   const { email, password } = req.body;

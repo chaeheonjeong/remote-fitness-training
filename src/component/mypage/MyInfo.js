@@ -3,6 +3,7 @@ import profile from './icon/profile.png';
 import './MyInfo.css';
 import SideBar from './SideBar';
 import axios from 'axios';
+import Header from "../main/Header";
 
 function MyInfo(){
    const [imgFile, setImgFile] = useState("");
@@ -35,6 +36,7 @@ function MyInfo(){
    };
     return(
         <div>
+        <Header />
         <SideBar/>
         {user ? (
             <div className="MyInfo">
@@ -52,10 +54,10 @@ function MyInfo(){
                 ref={imgRef}
             />
             <div className="Information">
-                <p className="nickname">닉네임 <input type="text" value={user.name} className="NickName"/></p>
-                <p className="email">이메일 <input type="text" value={user.email} className="Email"/></p>
-                <p className="newPhone">새 비밀번호 <input type="password" className="NewPassWord"/></p>
-                <p className="newPhone">새 비밀번호 확인 <input type="password" className="NewPassWord"/></p>
+                <p className="nickname">닉네임 <input type="text" value={user.name} className="Input" /></p>
+                <p className="email">이메일 <input type="text" value={user.email} className="Input"/></p>
+                <p className="newPhone">새 비밀번호 <input type="password" className="Input"/></p>
+                <p className="newPhone">새 비밀번호 확인 <input type="password" className="Input"/></p>
             </div>
             <div className="submitBtn">
                 <button type="submit" value="modify" className="Modify">수정</button>

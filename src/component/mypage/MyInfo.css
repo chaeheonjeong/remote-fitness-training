@@ -6,8 +6,9 @@
 }
 
 .MyInfo{
-    margin-left: 25%;
-    height: calc(100vh - 50px);
+    margin-left: 30%;
+    height: calc(100vh - 5rem);
+    top: 5rem;
 }
 
 .Profile{
@@ -27,6 +28,15 @@
     font-size: 20px;
     text-align: left;
     margin-left: 10%;
+
+}
+
+.Input{
+    border: none;
+    border-bottom: 2px solid rgb(225, 225, 225);
+    align-items: left;
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 20px;
 }
 
 .nickname{

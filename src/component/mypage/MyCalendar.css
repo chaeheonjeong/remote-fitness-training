@@ -18,6 +18,7 @@
     border-radius: 10px;
     box-shadow: 0px 0px 20px #e0e0e0;
     margin: 100px;
+    margin-top: 30px;
     margin-left: 200px;
     font-family: 'Cafe24SsurroundAir';
     font-size: 15px;
@@ -99,26 +100,24 @@
   .react-calendar__tile {
     position: relative;
     max-width: 100%;
-    padding: 10px 6.6667px;
-    background: none;
-    text-align: center;
+    background: #F0EBE3;
+    text-align: start;
     line-height: 16px;
     width: 50px;
     height: 65px;
-    font-size: 15px;
+    font-size: 12px;
     font-family: 'Cafe24SsurroundAir';
+    border-right: 1px;
   }
   .react-calendar__tile:disabled {
-    background-color: #EFEAD8;
+    background: #F0EBE3;
   }
   .react-calendar__tile:enabled:hover,
   .react-calendar__tile:enabled:focus {
     background-color: #D0C9C0;
-    border-radius: 40px 80px / 80px 40px;
   }
   .react-calendar__tile--now {
     background: #DFD3C3;
-    border-radius: 40px 80px / 80px 40px;
   }
   .react-calendar__tile--now:enabled:hover,
   .react-calendar__tile--now:enabled:focus {
@@ -126,7 +125,6 @@
   }
   .react-calendar__tile--hasActive {
     background: #D7C0AE;
-    border-radius: 40px 80px / 80px 40px;
   }
   .react-calendar__tile--hasActive:enabled:hover,
   .react-calendar__tile--hasActive:enabled:focus {
@@ -135,7 +133,6 @@
   .react-calendar__tile--active {
     background: #B7C4CF;
     color: white;
-    border-radius: 40px 80px / 80px 40px;
   }
   .react-calendar__tile--active:enabled:hover,
   .react-calendar__tile--active:enabled:focus {
@@ -189,6 +186,10 @@
 
   .showSchedule{
     list-style-type: none;
+    text-align: center;
+    border-radius: 5px;
+    background-color: #ABC4AA;
+    margin-top: 0.8px;
   }
 
 .input{
@@ -228,6 +229,14 @@
 .addSchedule{
   font-family: 'Cafe24SsurroundAir';
 }
+.addBtn{
+  top:15px;
+  left: 15px;
+  position: absolute;
+  border-radius: 5px;
+  border: none;
+  font-family: 'Cafe24SsurroundAir';
+}
 
 .add{
   border-radius: 5px;
@@ -241,6 +250,15 @@
   border: none;
   font-family: 'Cafe24SsurroundAir';
   margin-top: 35px;
+  margin-left: 5px;
+}
+
+.delete{
+  border-radius: 5px;
+  border: none;
+  font-family: 'Cafe24SsurroundAir';
+  margin-top: 35px;
+  margin-left: 5px;
 }
 
 .scheduleContents{
