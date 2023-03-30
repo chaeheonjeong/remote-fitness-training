@@ -68,6 +68,7 @@ function MainOpenStudy() {
 
                 } catch(error) {
                     console.log('검색결과: ', error);
+                    //setHasMore(false);
                     setIsLoading(false);
                 } finally {
                 }
@@ -112,8 +113,9 @@ function MainOpenStudy() {
             setPage(prevPage => prevPage + 1);
           })
           .catch((error) => {
-            console.log(error);
+            console.log('모든데이터를 불러왔습니다. => ', error);
             setIsLoading(false);
+            setHasMore(false);
           });
       };
       
@@ -170,7 +172,7 @@ function MainOpenStudy() {
                 </div>
 
         
-                <h1>Open Study</h1>
+                <h1>Open Study</h1> 
                 {searching && !noResult && (
                     searchResults.map((result, index) => {
                         return (
@@ -217,6 +219,12 @@ function MainOpenStudy() {
                         })}
                     </InfiniteScroll>
                 )}
+                { !hasMore && (
+                        <div className={mainStyles.noData}>
+                        <a>✅ 모든 오픈스터디를 보여드렸습니다 ✅</a>
+                    </div>
+                )}
+
             </div>
         </>
     );

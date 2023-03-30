@@ -501,11 +501,10 @@ app.listen(8080, () => {
 
 app.use(express.json());
 app.use(bodyParser.json({
-  limit: 5000000,
-  extended: true
+  limit: '50mb'
 }));
 app.use(bodyParser.urlencoded({
-  limit: 5000000,
+  limit: '50mb',
   extended: true
 }));
 
@@ -515,6 +514,7 @@ app.post('/openStudy', async (req, res) => {
 
   try {
     const { img, title, hashtag, personNum } = req.body;
+    
 
     const newOpenStudy = new OpenStudy({
       img: img,
@@ -522,8 +522,6 @@ app.post('/openStudy', async (req, res) => {
       tags: hashtag,
       personNum: personNum
     });
-
-    console.log("img.size : ", img.size);
 
     await newOpenStudy.save();
     res.status(200).json({ message: `OpenStudy created successfully` });

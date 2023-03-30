@@ -99,7 +99,13 @@
 }
 
 
-
+.noData {
+    margin-top: 5rem;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: rgb(0, 98, 255);
+}
 
 
 

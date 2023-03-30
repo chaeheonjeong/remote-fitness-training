@@ -14,7 +14,9 @@ export default function OpenStudyModal({
     addModalHandler
 }) 
 {
-    const [image, setImg] = useState("");
+    const [image, setImg] = useState(null);
+    const [imageUrl, setImageUrl] = useState("");
+
     const [title, setTitle] = useState("");
     const [inputTag, setInputTag] = useState("");
     const [personNum, setpersonNum] = useState("1");
@@ -31,16 +33,27 @@ export default function OpenStudyModal({
     const addOpenStudy = async (event) => {
         event.preventDefault();
         setStudyModal(false);
+
+        console.log('imageUrl.length: ', imageUrl.length);
         try {
-            const response = await axios.post("http://localhost:8080/openStudy", {
-                img: image,
+            const maxSize = 10000000;
+
+            if(imageUrl && imageUrl.length <= maxSize) {
+                const response = await axios.post("http://localhost:8080/openStudy", {
+                img: imageUrl,
                 title: title,
                 hashtag: tags,
                 personNum: personNum
             });
-            addModalHandler(image, title, tags, personNum);
-            console.log("사진 크기: ", image.size);
+            addModalHandler(imageUrl, title, tags, personNum);
+            //console.log("사진 크기: ", imageUrl.size);
             alert("오픈스터디가 생성되었습니다.");
+        } else {
+            //console.log("사진 크기: ", imageUrl);
+            //console.log("사진 크기: ", imageUrl.size);
+            //console.log("사진 크기: ", imageUrl.length);
+            alert("이미지 용량은 10MB보다 작아야 합니다.");
+        }
             
         } catch(error) {
             console.log(error);
@@ -72,42 +85,55 @@ export default function OpenStudyModal({
         }
     }
         
-            // 태그 삭제 
-            function handleDelete(index) {
-                setTags(tags.filter((tag, i) => i !== index));
-            }
+    // 태그 삭제 
+    function handleDelete(index) {
+        setTags(tags.filter((tag, i) => i !== index));
+    }
     
         // 사진 업로드 및 압축
         const imageUploadHandler = async (event) => {
             const selectedImage = event.target.files[0];
-            const MAX_SIZE = 50000000;
+            const MAX_SIZE = 10000000;
             const options = {
-                maxSizeMB: 50, // 이미지 최대 용량
+                maxSizeMB: 10, // 이미지 최대 용량
             };
-            console.log("before: ", selectedImage.size);
+
+            try {
+                const compressedFile = await imageCompression(selectedImage, options);
+
+                //if(compressedFile && compressedFile.size <= MAX_SIZE) {
+                    setImg(compressedFile);
+
+                    const promise = imageCompression.getDataUrlFromFile(compressedFile);
+                    promise.then(result => {
+                        setImageUrl(result);
+                    })
+                
+            } catch(error) {
+                console.log(error);
+            }
+            /* console.log("before: ", selectedImage.size);
             
             try {
                 console.log("before: ", selectedImage.size);
                 console.log(selectedImage);
 
                 const compressedFile = await imageCompression(selectedImage, options);
-                const promise = imageCompression.getDataUrlFromFile(compressedFile);
-
+                //const promise = imageCompression.getDataUrlFromFile(compressedFile);
+                
                 if(compressedFile && compressedFile.size <= MAX_SIZE) {
-
                     const reader = new FileReader();
-                    
-
                     console.log("changeSize: ",compressedFile.size);
 
                     reader.onload = () => {
-                        setImg(reader.result);
+                        //setImg(reader.result);
+                        setImg(compressedFile);
                         
-                        console.log('check: ', reader.result);
+                        console.log('check: ', compressedFile);
                     };
-                    //reader.readAsDataURL(selectedImage);
-                    const imageFile = reader.readAsDataURL(compressedFile);
-                    setImg(imageFile);
+                    reader.readAsDataURL(compressedFile);
+                    //const imageFile = reader.readAsDataURL(compressedFile);
+                   //setImg(imageFile);
                     
                     console.log('hello: ', compressedFile);
                 } else {
@@ -116,7 +142,7 @@ export default function OpenStudyModal({
             }
             catch (error) {
                 console.log(error)
-            }
+            } */
         };
 
   return (
