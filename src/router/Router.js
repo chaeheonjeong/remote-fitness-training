@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import React, { useEffect, useState } from "react";
 
 import Login from "../component/auth/Login";
 import Register from "../component/auth/Register";
@@ -19,6 +18,8 @@ import MainStudy from "../component/main/MainStudy";
 import MainQuestion from "../component/main/MainQuestion";
 import MyCalendar from "../component/mypage/MyCalendar";
 import MyInfo from "../component/mypage/MyInfo";
+import ModifyPost from "../component/post/ModifyPost";
+import ModifyAsk from "../component/post/ModifyAsk";
 
 const Router = () => {
   return (
@@ -31,12 +32,14 @@ const Router = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/findPassword" element={<FindPw />} />
         <Route path="/notification" element={<Notification />} />
-        <Route path="/Write" element={<Write />} />
-        <Route path="/View" element={<View />} />
+        <Route path="/writePost" element={<Write />} />
+        <Route path="/modifyPost/:id" element={<ModifyPost />} />
+        <Route path="/View/:id" element={<View />} />
         <Route path="/Ask" element={<Ask />} />
+        <Route path="/modifyAsk/:id" element={<ModifyAsk />} />
         <Route path="/View2" element={<View2 />} />
         <Route path="/View3" element={<View3 />} />
-        <Route path="/AskView" element={<AskView />} />
+        <Route path="/AskView/:id" element={<AskView />} />
         <Route path="/MyInfo" element={<MyInfo />} />
         <Route path="/MyCalendar" element={<MyCalendar />} />
         <Route path="/View/:id" element={<View />} />

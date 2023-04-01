@@ -106,3 +106,19 @@
   margin-left: 73px;
   border: solid 1.6px black;
 }
+
+.cbtn {
+  border: none;
+  padding: 5px;
+  border-radius: 200px;
+  background-color: green;
+  color: white;
+}
+
+.falseBtn {
+  border: none;
+  padding: 5px;
+  border-radius: 200px;
+  background-color: red;
+  color: white;
+}

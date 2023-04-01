@@ -102,7 +102,7 @@ function MainStudy() {
           </form>
           <button
             onClick={() => {
-              navigate("/Write");
+              navigate("/writePost");
             }}
           >
             만들기
