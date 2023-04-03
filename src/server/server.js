@@ -41,10 +41,71 @@ app.get('/users', auth, async(req, res) => {
         if(!user){
             return res.status(404).send({message : 'User not found'});
         }
-        res.send({name : user.name, email : user.email});
+        res.send({name : user.name, email : user.email, _id : user._id});
     } catch(err){
         console.log(err);
         res.status(500).send({message : 'Server Error'});
+    }
+});
+
+//로그인한 사용자의 정보를 수정
+app.put('/users/:id', auth, async(req, res) => {
+    const id = req.params.id;
+    console.log(req.body);
+    console.log(req.params.id);
+
+    User.findOneAndUpdate({_id : id}, {name : req.body.name}, {new : true})
+        .then(updatedUser => {
+            res.send(updatedUser);
+            console.log(updatedUser);
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).send(err);
+        });
+});
+
+//로그인한 사용자의 비밀번호를 변경
+app.put('/users/change-password/:id', auth, async(req, res) => {
+    const id = req.params.id;
+    const {password, newPassword, confirmNewPassword} = req.body;
+
+    try {
+        const user = await User.findOne({_id : id});
+        if(!user) return res.status(404).send('User not found');
+
+        const isMatch = user.password == password;
+        if(!isMatch) return res.status(400).send('Invalid password');
+
+        if(newPassword !== confirmNewPassword){
+            return res.status(400).send('Password do not match');
+        }
+
+        if(newPassword.length < 6){
+            return res.status(400).send({error : 'New password must be at least 6 characters long'});
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        res.send('Password Update Successfully');
+    }catch(err){
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+//회원 탈퇴 시 사용자의 정보 삭제
+app.delete("/users/withdraw/:id", auth, async(req,res) => {
+    try{
+        const id = req.params.id;
+        console.log(id);
+
+        await User.findOneAndDelete({_id : id});
+
+        res.send({message : "Withdraw Successfully"});
+    }catch(err) {
+        console.error(err);
+        res.status(500).send(err);
     }
 });
 
@@ -80,7 +141,7 @@ app.get('/schedules', auth, async(req, res) => {
 //일정 수정하기
 app.put('/schedules/:id', (req, res) => {
     const id = req.params.id;
-    const title = req.body. title;
+    const title = req.body.title;
     const contents = req.body.contents;
 
     console.log(req.body);

@@ -6,14 +6,15 @@
 }
 
 .MyInfo{
-    margin-left: 30%;
+    margin-left: 25%;
     height: calc(100vh - 5rem);
     top: 5rem;
+    margin-top: 3%;
 }
 
 .Profile{
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     border-radius: 100%;
     border: 1px solid #555555;
 }
@@ -37,42 +38,87 @@
     align-items: left;
     font-family: 'Cafe24SsurroundAir';
     font-size: 20px;
+    padding: 2px;
+    width: 30%;
+    margin-top: 30px;
+}
+
+.Btn{
+    font-family: 'Cafe24SsurroundAir';
+    border : none;
+    border-radius: 5px;
+    margin-left : 5px;
+    margin-top : 20px;
+    background-color: #F1E0AC;
+}
+
+.pwd{
+    font-family: 'Cafe24SsurroundAir';
+    text-align: left;
+
+}
+
+._input{
+    border: none;
+    border-bottom: 2px solid rgb(225, 225, 225);
+    box-sizing: border-box;
+    padding: 7px 0px;
+    position: relative;
+    top: 50%;
+    width: 300px;
+    margin-bottom: 7px;
+    align-items: center;
+}
+
+.password-match{
+    border: none;
+    border-bottom: 2px solid rgb(225, 225, 225);
+    box-sizing: border-box;
+    padding: 7px 0px;
+    position: relative;
+    top: 50%;
+    width: 300px;
+    margin-bottom: 7px;
+    align-items: center;
+}
+
+.password-not-match{
+    border: none;
+    border-bottom: 2px solid rgb(225, 225, 225);
+    box-sizing: border-box;
+    padding: 7px 0px;
+    position: relative;
+    top: 50%;
+    width: 300px;
+    margin-bottom: 7px;
+    align-items: center;
+}
+
+.password-not-match:focus{
+    border-color: #CC3636;
+}
+
+._input:focus{
+    border-color: #F1E0AC;
 }
 
 .nickname{
     word-spacing: 10px;
 }
 
+.changeBtn{
+    font-family: 'Cafe24SsurroundAir';
+    border-radius: 5px;
+    margin-left: 5px;
+    border: none;
+    background-color: #F1E0AC;
+
+}
+
 .email{
     word-spacing: 5px;
 }
 
-.submitBtn{
-    text-align: right;
-}
-
-.Modify{
-    margin-left: 500px;
-    font-family: 'Cafe24SsurroundAir';
-    width: 70px;
-    height: 20px;
-    background: #967E76;
-    color: #FFF;
-    border: 0;
-    border-radius: 5px;
-    margin-right: 5px;
-    display: inline-block;
-}
-
-.SignOut{
-    margin-left: 700px;
-    font-family: 'Cafe24SsurroundAir';
-    width: 70px;
-    height: 20px;
-    background: #967E76;
-    color: #FFF;
-    border: 0;
-    border-radius: 5px;
-    margin-right: 5px;
-    display: inline-block;
+.noLogin{
+    text-align: center;
 }
