@@ -28,7 +28,7 @@ function View() {
     }
   };
 
-  useEffect(() => {
+  /*  useEffect(() => {
     const fetchWrite = async () => {
       try {
         const res = await axios.get(`http://localhost:8080/getWrite/${id}`, {
@@ -43,7 +43,37 @@ function View() {
       }
     };
     fetchWrite();
-  }, [id]);
+  }, [id]); */
+
+  useEffect(() => {
+    if (user.token !== null) {
+      axios
+        .get(`http://localhost:8080/getWrite/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setWrite(response.data.result[0]);
+            setSameUser(response.data.sameUser);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .get(`http://localhost:8080/getWrite2/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            setWrite(response.data.result[0]);
+            setSameUser(response.data.sameUser);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
 
   useEffect(() => {
     if (write.content !== undefined) {
@@ -164,6 +194,7 @@ function View() {
         <div className={styles.content_3}>
           <div>내용</div>
           <div dangerouslySetInnerHTML={{ __html: htmlString }} />
+          {console.log(htmlString)}
         </div>
         <div className={styles.content_6}>
           <input

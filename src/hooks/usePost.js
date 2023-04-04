@@ -26,15 +26,13 @@ export default function useWrite() {
   const user = userStore();
   const { id } = useParams();
 
-  const [imageFile, setImageFile] = useState(null);
-
   const uploadImage = async (file) => {
     const formData = new FormData();
     formData.append("image", file);
 
-    const res = await axios.post("http://localhost:8080//upload", formData);
+    const res = await axios.post("http://localhost:8080/upload", formData);
     const imageUrl = res.data.url;
-
+    console.log(imageUrl);
     return imageUrl;
   };
 
@@ -73,7 +71,6 @@ export default function useWrite() {
             content: JSON.parse(JSON.stringify(content)),
             writer: user.name,
             writeDate: formattedDate,
-            image: imageFile,
           },
           {
             headers: { Authorization: `Bearer ${user.token}` },
@@ -145,5 +142,6 @@ export default function useWrite() {
     setSameUser,
     recruit,
     setRecruit,
+    uploadImage,
   };
 }

@@ -17,8 +17,6 @@
 
 .btn {
   text-align: end;
-  margin-top: 20px;
-  margin-right: 65px;
 }
 
 .title_tinput {
@@ -30,7 +28,6 @@
 .content {
   margin-top: 20px;
   width: 90%;
-  height: 400px;
   margin-left: 73px;
   border: solid 1.6px black;
 }

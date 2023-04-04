@@ -14,8 +14,10 @@ function AskView() {
   const [write, setWrite] = useState([]);
   const [htmlString, setHtmlString] = useState();
   const [sameUser, setSameUser] = useState();
+  const [good, setGood] = useState(false);
+  const [goodCount, setGoodCount] = useState(0);
 
-  useEffect(() => {
+  /*   useEffect(() => {
     const fetchWrite = async () => {
       try {
         const res = await axios.get(`http://localhost:8080/getAsk/${id}`, {
@@ -23,7 +25,6 @@ function AskView() {
         });
         if (res.data !== undefined) {
           setWrite(res.data.result[0]);
-          console.log(write);
           setSameUser(res.data.sameUser);
         }
       } catch (err) {
@@ -31,7 +32,37 @@ function AskView() {
       }
     };
     fetchWrite();
-  }, [id]);
+  }, [id]); */
+
+  useEffect(() => {
+    if (user.token !== null) {
+      axios
+        .get(`http://localhost:8080/getAsk/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setWrite(response.data.result[0]);
+            setSameUser(response.data.sameUser);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .get(`http://localhost:8080/getAsk2/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            setWrite(response.data.result[0]);
+            setSameUser(response.data.sameUser);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
 
   useEffect(() => {
     if (write.content !== undefined) {
@@ -42,6 +73,65 @@ function AskView() {
       setHtmlString(htmlString);
     }
   }, [write]);
+
+  useEffect(() => {
+    if (user.token !== null) {
+      axios
+        .get(`http://localhost:8080/getGood/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setGood(response.data.good);
+            setGoodCount(response.data.count);
+          } else if (response.status === 204) {
+            setGood(false);
+            setGoodCount(0);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .get(`http://localhost:8080/getGood2/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            setGoodCount(response.data.count);
+          } else if (response.status === 204) {
+            setGood(false);
+            setGoodCount(0);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
+
+  const clickGood = () => {
+    if (user.token !== null) {
+      axios
+        .post(`http://localhost:8080/setGood/${id}`, null, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setGood(!good);
+            if (!good) {
+              setGoodCount((prevCount) => prevCount + 1);
+            } else {
+              setGoodCount((prevCount) => prevCount - 1);
+            }
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      alert("로그인 해주세요.");
+    }
+  };
 
   const deleteHandler = () => {
     const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
@@ -105,6 +195,9 @@ function AskView() {
         <div className={styles.content_3}>
           <div>내용</div>
           <div dangerouslySetInnerHTML={{ __html: htmlString }} />
+          <span onClick={clickGood} className={good ? `styles.goodBtn` : null}>
+            좋아요{goodCount}
+          </span>
         </div>
         <div className="detail">
           <div>

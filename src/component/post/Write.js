@@ -4,9 +4,134 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Header from "../main/Header";
 import axios from "axios";
+import { useState } from "react";
 
 const Write = () => {
+  const [flag, setFlag] = useState(false);
   const hook = usePost();
+
+  const imgLink = "http://localhost:8080/images";
+
+  const customUploadAdapter = (loader) => {
+    // (2)
+    return {
+      upload() {
+        return new Promise((resolve, reject) => {
+          loader.file.then((file) => {
+            // 이미지 리사이징 및 압축
+            compressImage(file, 800, 800).then((compressedFile) => {
+              const data = new FormData();
+              data.append("name", file.name);
+              data.append("file", compressedFile);
+
+              axios
+                .post("http://localhost:8080/upload", data)
+                .then((res) => {
+                  if (!flag) {
+                    setFlag(true);
+                  }
+                  resolve({
+                    default: `${imgLink}/${res.data.filename}`,
+                  });
+                  console.log(`${imgLink}/${res.data.filename}`);
+                })
+                .catch((err) => reject(err));
+            });
+          });
+        });
+      },
+    };
+  };
+
+  function uploadPlugin(editor) {
+    // (3)
+    editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+      return customUploadAdapter(loader);
+    };
+  }
+
+  const compressImage = (file, maxWidth, maxHeight) => {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      image.onload = function () {
+        let width = image.width;
+        let height = image.height;
+        let newWidth = width;
+        let newHeight = height;
+
+        // 이미지 크기 조정
+        if (width > maxWidth) {
+          newWidth = maxWidth;
+          newHeight = (height * maxWidth) / width;
+        }
+        if (newHeight > maxHeight) {
+          newHeight = maxHeight;
+          newWidth = (newWidth * maxHeight) / newHeight;
+          newHeight = maxHeight;
+        }
+
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+
+        // 이미지 압축
+        ctx.drawImage(image, 0, 0, newWidth, newHeight);
+        canvas.toBlob(
+          (blob) => {
+            resolve(blob);
+          },
+          file.type,
+          0.7
+        );
+      };
+
+      image.onerror = (e) => {
+        reject(e);
+      };
+
+      image.src = URL.createObjectURL(file);
+    });
+  };
+
+  // const customUploadAdapter = (loader) => {
+  //   console.log(loader);
+  //   return {
+  //     upload() {
+  //       return loader.file.then(
+  //         new Promise(async (resolve, reject) => {
+  //           const data = new FormData();
+  //           const files = await loader.file;
+  //           console.log(files);
+  //           const file = [];
+  //           for (const iter of files) {
+  //             file.push(iter);
+  //           }
+  //           data.append("file", file);
+  //           console.log(data);
+  //           axios
+  //             .post("http://localhost:8080/upload", data)
+  //             .then((res) => {
+  //               const images = res.data.images;
+  //               const urls = images.map((image) => ({
+  //                 default: `${imgLink}/${image.filename}`,
+  //               }));
+
+  //               resolve({ urls: urls });
+  //             })
+  //             .catch((err) => reject(err));
+  //         })
+  //       );
+  //     },
+  //   };
+  // };
+
+  // function uploadPlugin(editor) {
+  //   editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+  //     return customUploadAdapter(loader);
+  //   };
+  // }
 
   return (
     <>
@@ -115,54 +240,38 @@ const Write = () => {
             data=""
             config={{
               placeholder: "내용을 입력하세요.",
-              ckfinder: {
-                // 이미지 업로드 설정
-                uploadUrl: "/upload",
-                options: {
-                  resourceType: "Images",
-                  multiple: false,
-                  formats: ["jpg", "jpeg", "png", "gif"],
-                },
-                // 이미지 탭 삽입 이벤트
-                onInsert: (data) => {
-                  const images = data.data;
-                  const imageUrl = images.default.attributes.src;
-                  // 서버로 이미지 파일 경로 전송
-                },
-              },
+              extraPlugins: [uploadPlugin],
             }}
             onChange={(e, editor) => {
               const data = editor.getData();
-              console.log({ e, editor, data });
               hook.setContent({
                 content: data,
               });
             }}
             onBlur={(e, editor) => {
-              console.log("Blur.", editor);
+              // console.log("Blur.", editor);
             }}
             onFocus={(e, editor) => {
-              console.log("Focus.", editor);
+              // console.log("Focus.", editor);
             }}
           />
         </div>
-
-        <div className="btn">
-          <input
-            type="button"
-            value="취소"
-            className="cancel"
-            onClick={() => {
-              hook.navigate("/study");
-            }}
-          />
-          <input
-            type="submit"
-            value="등록"
-            className="submit"
-            onClick={hook.handleSubmit}
-          />
-        </div>
+      </div>
+      <div className="btn">
+        <input
+          type="button"
+          value="취소"
+          className="cancel"
+          onClick={() => {
+            hook.navigate("/study");
+          }}
+        />
+        <input
+          type="submit"
+          value="등록"
+          className="submit"
+          onClick={hook.handleSubmit}
+        />
       </div>
     </>
   );

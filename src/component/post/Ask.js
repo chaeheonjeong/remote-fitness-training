@@ -18,8 +18,94 @@ function Ask() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
+  const [flag, setFlag] = useState(false);
   const navigate = useNavigate();
   const user = userStore();
+
+  const imgLink = "http://localhost:8080/images";
+
+  const customUploadAdapter = (loader) => {
+    // (2)
+    return {
+      upload() {
+        return new Promise((resolve, reject) => {
+          loader.file.then((file) => {
+            // 이미지 리사이징 및 압축
+            compressImage(file, 800, 800).then((compressedFile) => {
+              const data = new FormData();
+              data.append("name", file.name);
+              data.append("file", compressedFile);
+
+              axios
+                .post("http://localhost:8080/upload", data)
+                .then((res) => {
+                  if (!flag) {
+                    setFlag(true);
+                  }
+                  resolve({
+                    default: `${imgLink}/${res.data.filename}`,
+                  });
+                  console.log(`${imgLink}/${res.data.filename}`);
+                })
+                .catch((err) => reject(err));
+            });
+          });
+        });
+      },
+    };
+  };
+
+  function uploadPlugin(editor) {
+    // (3)
+    editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+      return customUploadAdapter(loader);
+    };
+  }
+
+  const compressImage = (file, maxWidth, maxHeight) => {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      image.onload = function () {
+        let width = image.width;
+        let height = image.height;
+        let newWidth = width;
+        let newHeight = height;
+
+        // 이미지 크기 조정
+        if (width > maxWidth) {
+          newWidth = maxWidth;
+          newHeight = (height * maxWidth) / width;
+        }
+        if (newHeight > maxHeight) {
+          newHeight = maxHeight;
+          newWidth = (newWidth * maxHeight) / newHeight;
+          newHeight = maxHeight;
+        }
+
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+
+        // 이미지 압축
+        ctx.drawImage(image, 0, 0, newWidth, newHeight);
+        canvas.toBlob(
+          (blob) => {
+            resolve(blob);
+          },
+          file.type,
+          0.7
+        );
+      };
+
+      image.onerror = (e) => {
+        reject(e);
+      };
+
+      image.src = URL.createObjectURL(file);
+    });
+  };
 
   const titleHandler = (e) => {
     const inputTitle = e.target.value;
@@ -111,11 +197,12 @@ function Ask() {
             data=""
             config={{
               placeholder: "내용을 입력하세요.",
+              extraPlugins: [uploadPlugin],
             }}
-            onReady={(editor) => {
+            /*             onReady={(editor) => {
               // You can store the "editor" and use when it is needed.
               console.log("Editor is ready to use!", editor);
-            }}
+            }} */
             onChange={(e, editor) => {
               const data = editor.getData();
               console.log({ e, editor, data });
@@ -123,12 +210,12 @@ function Ask() {
                 content: data,
               });
             }}
-            onBlur={(e, editor) => {
+            /*             onBlur={(e, editor) => {
               console.log("Blur.", editor);
             }}
             onFocus={(e, editor) => {
               console.log("Focus.", editor);
-            }}
+            }} */
           />
         </div>
 

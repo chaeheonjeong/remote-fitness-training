@@ -5,15 +5,18 @@ const User = require("./models/user");
 const Write = require("./models/write");
 const Ask = require("./models/ask");
 const Counter = require("./models/counter");
-
+const path = require("path");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const { v4: uuid } = require("uuid");
+const mime = require("mime-types");
 const app = express();
 const nodemailer = require("nodemailer");
 const Verify = require("./models/verify");
 const StudyTime = require("./models/studyTime");
 const GoalTime = require("./models/goalTime");
+const AskGood = require("./models/askGood");
 const { dblClick } = require("@testing-library/user-event/dist/click");
 
 const OpenStudy = require("./models/openStudy");
@@ -22,22 +25,48 @@ const Schedule = require("./models/schedule");
 
 const ObjectId = mongoose.Types.ObjectId;
 
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "./server/uploads");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + "-" + file.originalname);
+//   },
+// });
+// const upload = multer({
+//   storage: storage,
+//   limits: { fileSize: 1024 * 1024 * 5 },
+// });
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./uploads");
+  // (2)
+  destination: (req, file, cb) => {
+    // (3)
+    cb(null, "./server/images");
   },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
+  filename: (req, file, cb) => {
+    // (4)
+    cb(null, `${uuid()}.${mime.extension(file.mimetype)}`); // (5)
   },
 });
+
 const upload = multer({
-  storage: storage,
-  limits: { fileSize: 1024 * 1024 * 5 },
+  // (6)
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (["image/jpeg", "image/jpg", "image/png"].includes(file.mimetype))
+      cb(null, true);
+    else cb(new Error("해당 파일의 형식을 지원하지 않습니다."), false);
+  },
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
 });
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/images", express.static("./server/images"));
+// app.use("/images", express.static("./server/uploads"));
 const mysecretkey = "capstone";
 
 var db;
@@ -508,17 +537,8 @@ app.post("/postWrite", async (req, res) => {
   const decodedToken = jwt.verify(token, mysecretkey);
   const userId = decodedToken.id;
 
-  const {
-    number,
-    period,
-    date,
-    tag,
-    title,
-    content,
-    writer,
-    writeDate,
-    imageUrl,
-  } = req.body;
+  const { number, period, date, tag, title, content, writer, writeDate } =
+    req.body;
 
   const counter = await Counter.findOneAndUpdate(
     { name: "스터디 모집 게시물 수" },
@@ -545,7 +565,6 @@ app.post("/postWrite", async (req, res) => {
       writer: writer,
       writeDate: writeDate,
       recruit: true, //모집여부
-      image: imageUrl,
     });
     await newWrite.save();
 
@@ -599,6 +618,22 @@ app.get("/getWrite/:id", async (req, res) => {
   }
 });
 
+app.get("/getWrite2/:id", async (req, res) => {
+  try {
+    const result = await Write.find({ _id: Number(req.params.id) });
+    if (result) {
+      return res.status(200).json({
+        result: result,
+        sameUser: false,
+        message: `id 가져오기 성공`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 app.delete("/writeDelete/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -641,6 +676,22 @@ app.get("/getAsk/:id", async (req, res) => {
   }
 });
 
+app.get("/getAsk2/:id", async (req, res) => {
+  try {
+    const result = await Ask.find({ _id: Number(req.params.id) });
+    if (result) {
+      return res.status(200).json({
+        result: result,
+        sameUser: false,
+        message: `id 가져오기 성공`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 app.post("/askModify", async (req, res) => {
   const { _id, tag, title, content } = req.body;
   console.log(req.body);
@@ -651,7 +702,6 @@ app.post("/askModify", async (req, res) => {
         $set: { tag, title, content },
       }
     );
-
     return res
       .status(200)
       .json({ message: `Write ${_id} updated successfully`, updatedWrite });
@@ -714,9 +764,100 @@ app.get("/openStudies", async (req, res) => {
   }
 });
 
-app.post("/upload", upload.single("upload"), (req, res) => {
-  const imageUrl = `http://localhost:5000/images/${req.file.filename}`;
-  res.json({ url: imageUrl });
+app.get("/getGood/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const result = await AskGood.findOne({ _id: Number(req.params.id) });
+    if (result) {
+      let isUser = false;
+      for (let i = 0; i < result._users.length; i++) {
+        if (userId === result._users[i]) isUser = true;
+      }
+      return res.status(200).json({
+        good: isUser,
+        count: result.goodCount,
+        message: `좋아요 리스트 가져오기 성공`,
+      });
+    } else {
+      return res.status(204).json({
+        message: `좋아요가 없습니다`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/getGood2/:id", async (req, res) => {
+  try {
+    const result = await AskGood.findOne({ _id: Number(req.params.id) });
+    if (result) {
+      return res.status(200).json({
+        count: result.goodCount,
+        message: `좋아요 리스트 가져오기 성공`,
+      });
+    } else {
+      return res.status(204).json({
+        message: `좋아요가 없습니다`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/setGood/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const result = await AskGood.findOne({ _id: Number(req.params.id) });
+
+    if (!result) {
+      const newDoc = new AskGood({
+        _id: Number(req.params.id),
+        _users: [userId],
+        goodCount: 1,
+      });
+      await newDoc.save();
+      return res.status(201).json({
+        message: `좋아요가 추가되었습니다`,
+      });
+    } else {
+      const index = result._users.indexOf(userId);
+      if (index > -1) {
+        result._users.splice(index, 1);
+        result.goodCount--;
+        await result.save();
+        return res.status(200).json({
+          message: `좋아요가 취소되었습니다`,
+        });
+      } else {
+        result._users.push(userId);
+        result.goodCount++;
+        await result.save();
+        return res.status(200).json({
+          message: `좋아요가 추가되었습니다`,
+        });
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/upload", upload.single("file"), (req, res) => {
+  // (7)
+  res.status(200).json(req.file);
 });
 
 app.get("/", (req, res) => {
