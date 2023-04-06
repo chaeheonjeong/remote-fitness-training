@@ -5,9 +5,12 @@ const Write = require("./models/write");
 const Ask = require("./models/ask");
 const Counter = require("./models/counter");
 
+const path = require("path");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const { v4: uuid } = require("uuid");
+const mime = require("mime-types");
 const app = express();
 const nodemailer = require("nodemailer");
 const Verify = require("./models/verify");
@@ -16,7 +19,7 @@ const GoalTime = require("./models/goalTime");
 const { dblClick } = require("@testing-library/user-event/dist/click");
 
 const OpenStudy = require("./models/openStudy");
-const multer = require("multer");
+//const multer = require("multer");
 const router = express.Router();
 
 const Schedule = require("./models/schedule");
@@ -24,11 +27,39 @@ const { resolve } = require("url");
 
 const ObjectId = mongoose.Types.ObjectId;
 
+/* const storage = multer.diskStorage({
+  // (2)
+  destination: (req, file, cb) => {
+    // (3)
+    cb(null, "./server/images");
+  },
+  filename: (req, file, cb) => {
+    // (4)
+    cb(null, `${uuid()}.${mime.extension(file.mimetype)}`); // (5)
+  },
+});
+
+const upload = multer({
+  // (6)
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (["image/jpeg", "image/jpg", "image/png"].includes(file.mimetype))
+      cb(null, true);
+    else cb(new Error("해당 파일의 형식을 지원하지 않습니다."), false);
+  },
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+}); */
+
 app.use(cors());
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 10000 }));
+app.use(bodyParser.json({ limit: '5mb' }));
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: true, parameterLimit: 5000 }));
+//app.use(bodyParser.json({ limit: '50mb' }));
+//app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 10000 }));
 //app.use(bodyParser.json());
 //app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/images", express.static("./server/images"));
 const mysecretkey = "capstone";
 
 var db;
@@ -40,7 +71,7 @@ mongoose
   .catch((err) => console.log(err));
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello World!");a
 });
 //사용자 정보 확인
 app.get("/user", async (req, res) => {
@@ -457,23 +488,32 @@ app.post("/postreply", async (req, res) => {
 });
 
 app.post("/postAsk", async (req, res) => {
-  const { title, content } = req.body;
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
 
-  const counter2 = await Counter2.findOneAndUpdate(
-    { name: "게시물 수" },
+  const { title, content, tag, writer, writeDate } = req.body;
+
+  const counter = await Counter.findOneAndUpdate(
+    { name: "질문 게시물 수" },
     { $inc: { totalWrite: 1 } },
     { new: true, upsert: true }
   );
-  const 총게시물갯수 = counter2.totalWrite + 1;
+  const totalWrite = counter.totalWrite + 1;
 
-  if (!counter2) {
+  if (!counter) {
     return res.status(500).json({ message: "Counter not found" });
   }
   try {
     const newAsk = new Ask({
-      _id: 총게시물갯수 + 1,
+      _id: totalWrite + 1,
+      _user: userId,
       title: title,
       content: content,
+      tag: tag,
+      writer: writer,
+      writeDate: writeDate,
     });
     await newAsk.save();
 
@@ -485,15 +525,20 @@ app.post("/postAsk", async (req, res) => {
 });
 
 app.post("/postWrite", async (req, res) => {
-  
-  const { number, period, date, tag, title, content } = req.body;
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  const { number, period, date, tag, title, content, writer, writeDate } =
+    req.body;
 
   const counter = await Counter.findOneAndUpdate(
-    { name: "게시물 수" },
+    { name: "스터디 모집 게시물 수" },
     { $inc: { totalWrite: 1 } },
     { new: true, upsert: true }
   );
-  const 총게시물갯수 = counter.totalWrite + 1;
+  const totalWrite = counter.totalWrite + 1;
 
   /*_id: Number(총게시물갯수 + 1), */
 
@@ -501,15 +546,18 @@ app.post("/postWrite", async (req, res) => {
     return res.status(500).json({ message: "Counter not found" });
   }
   try {
-
     const newWrite = new Write({
-      _id: 총게시물갯수 + 1,
+      _id: totalWrite + 1,
+      _user: userId,
       number: number,
       period: period,
       date: date,
       tag: tag,
       title: title,
       content: content,
+      writer: writer,
+      writeDate: writeDate,
+      recruit: true, //모집여부
     });
     await newWrite.save();
 
@@ -520,12 +568,164 @@ app.post("/postWrite", async (req, res) => {
   }
 });
 
+app.post("/postModify", async (req, res) => {
+  const { _id, number, period, date, tag, title, content, recruit } = req.body;
+
+  try {
+    const updatedWrite = await Write.findOneAndUpdate(
+      { _id },
+      {
+        $set: { number, period, date, tag, title, content, recruit },
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: `Write ${_id} updated successfully`, updatedWrite });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+app.get("/getWrite/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const result = await Write.find({ _id: Number(req.params.id) });
+    if (result) {
+      let sameUser = false;
+      if (userId === result[0]._user) sameUser = true;
+      return res.status(200).json({
+        result: result,
+        sameUser: sameUser,
+        message: `id 가져오기 성공`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/getWrite2/:id", async (req, res) => {
+  try {
+    const result = await Write.find({ _id: Number(req.params.id) });
+    if (result) {
+      return res.status(200).json({
+        result: result,
+        sameUser: false,
+        message: `id 가져오기 성공`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.delete("/writeDelete/:id", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Write collection에서 해당 id 값의 document를 삭제
+    const result = await Write.deleteOne({ _id: id });
+
+    // Counter collection에서 "게시물 수" name 값을 가진 document의 totalWrite 필드값을 -1 해줌
+    const counter = await Counter.findOneAndUpdate(
+      { name: "스터디 모집 게시물 수" },
+      { $inc: { totalWrite: -1 } }
+    );
+    res.status(200).json({ message: "글이 삭제되었습니다.", counter });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "글 삭제에 실패하였습니다." });
+  }
+});
+
+app.get("/getAsk/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const result = await Ask.find({ _id: Number(req.params.id) });
+    if (result) {
+      let sameUser = false;
+      if (userId === result[0]._user) sameUser = true;
+      return res.status(200).json({
+        result: result,
+        sameUser: sameUser,
+        message: `id 가져오기 성공`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/getAsk2/:id", async (req, res) => {
+  try {
+    const result = await Ask.find({ _id: Number(req.params.id) });
+    if (result) {
+      return res.status(200).json({
+        result: result,
+        sameUser: false,
+        message: `id 가져오기 성공`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/askModify", async (req, res) => {
+  const { _id, tag, title, content } = req.body;
+  console.log(req.body);
+  try {
+    const updatedWrite = await Ask.findOneAndUpdate(
+      { _id },
+      {
+        $set: { tag, title, content },
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: `Write ${_id} updated successfully`, updatedWrite });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+app.delete("/askDelete/:id", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Write collection에서 해당 id 값의 document를 삭제
+    const result = await Ask.deleteOne({ _id: id });
+
+    // Counter collection에서 "게시물 수" name 값을 가진 document의 totalWrite 필드값을 -1 해줌
+    const counter = await Counter.findOneAndUpdate(
+      { name: "질문 게시물 수" },
+      { $inc: { totalWrite: -1 } }
+    );
+    res.status(200).json({ message: "글이 삭제되었습니다.", counter });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "글 삭제에 실패하였습니다." });
+  }
+});
+
 app.listen(8080, () => {
   console.log("서버가 시작되었습니다.");
 });
-
-app.use(bodyParser.json({limit: '5mb'}));
-app.use(bodyParser.urlencoded({limit: '5mb', extended: true, parameterLimit: 5000}))
 
 app.post("/openStudy", async (req, res) => {
   try {
@@ -539,7 +739,6 @@ app.post("/openStudy", async (req, res) => {
     });
 
     console.log("here 1");
-    /* console.log(img + " " + title + " " + hashtag + " " + personNum); */
 
     await newOpenStudy.save();
     console.log("here 2");
@@ -789,3 +988,32 @@ app.post("/openStudy", async (req, res) => {
         res.status(500).json({ success: false, message: "Server Error" });
       }
     });
+
+
+
+
+
+    //app.post('/myLikedPost', async(req, res) => {
+      /* const { userId, openStudyId } = req.body;
+
+      const user = await User.findById(userId);
+      const openStudy = await OpenStudy.findById(openStudyId);
+
+      user.userLikedOpenStudy.push(openStudy._id);
+      await user.save();
+
+      res.send('데이터를 저장하였습니다'); */
+
+/*       try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decodedToken = jwt.verify(token, mysecretkey);
+        const userId = decodedToken.userId;
+        const user = await User.findById(userId).populate('userLikedOpenStudy');
+        const userLikedOpenStudyIds = user.userLikedOpenStudy.map(post => post._id.toString());
+        const openStudies = await OpenStudy.find({ _id: { $in: userLikedOpenStudyIds }});
+        
+        res.status(200).json({ openStudies });
+      } catch(error) {
+        res.status(500).json({ message: 'Internal server error' });
+      }
+    }); */

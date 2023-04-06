@@ -3,10 +3,17 @@ const Schema = mongoose.Schema;
 
 const askSchema = new Schema(
   {
+    _id: { type: Number, required: true /*, unique: true*/ },
+    _user: { type: String, required: true },
     title: { type: String, required: true },
     content: { type: Object, required: true },
+    tag: { type: Array, required: false },
+    writer: { type: String, required: true },
+    writeDate: { type: String, required: true },
+  },
+  {
+    versionKey: false,
   }
-
 );
 
 askSchema.set("collection", "ask");

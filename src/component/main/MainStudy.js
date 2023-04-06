@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import styles from  "./MainStudy.module.css";
 import "./InfiniteScroll.css";
 import StudyRoomCard from "./StudyRoomCard";
 
 import loadingImg from "../../images/loadingImg.gif";
-import axios from "axios";
+
 
 function MainStudy() {
     const [studyTitle, setStudyTitle] = useState('');
@@ -23,10 +25,16 @@ function MainStudy() {
     const [searching, setSearching] = useState(false);
     const [noResult, setNoResult] = useState(false);
 
+    const navigate = useNavigate();
+
     function loaderImg() {
         return(
              <div className={styles.loadingPackage}>
-                <img className={styles.loadingImg} src={loadingImg} alt="loadingImg"></img>
+                <img 
+                    className={styles.loadingImg} 
+                    src={loadingImg} 
+                    alt="loadingImg"
+                ></img>
                 <div className={styles.loading}>loading...</div>
             </div>
         );
@@ -130,16 +138,20 @@ function MainStudy() {
         moreStudies();
     }, []);
 
-    
-
     return(
         <>
             <div className={styles.body}>
                 <div className={styles.menu}>
                     <div className={styles.select}>
-                        <Link to="/"><button className={styles.openStudy}>오픈스터디</button></Link>
-                        <Link to="/study"><button className={styles.study}>스터디</button></Link>
-                        <Link to="/question"><button className={styles.question}>질문</button></Link>
+                        <Link to="/">
+                            <button className={styles.openStudy}>오픈스터디</button>
+                        </Link>
+                        <Link to="/study">
+                            <button className={styles.study}>스터디</button>
+                        </Link>
+                        <Link to="/question">
+                            <button className={styles.question}>질문</button>
+                        </Link>
                     </div>
 
                     <div className={styles.searchAndMake} onSubmit={searchHandler}>
@@ -152,7 +164,14 @@ function MainStudy() {
                             <input className="searchInput" name="searchInput" value={searchInput} onChange = { (e) => setSearchInput(e.target.value) }/>
                             <button type="submit">검색</button>
                         </form>
-                        <button className={styles.makeBtn}>만들기</button>
+                        <button 
+                            className={styles.makeBtn} 
+                            onClick={() => {
+                                navigate("/writePost");
+                            }}
+                        >
+                            만들기
+                        </button>
                     </div>
                 </div>
                     
@@ -214,5 +233,76 @@ function MainStudy() {
             </div> 
         </>
 
+    )
+}
+/*   }
+
+  function loaderImg() {
+    return (
+      <div className={styles.loadingPackage}>
+        <img
+          className={styles.loadingImg}
+          src={loadingImg}
+          alt="loadingImg"
+        ></img>
+        <div className={styles.loading}>loading...</div>
+      </div>
     );
-} export default MainStudy;
+  }
+
+  function studyScroll() {
+    return (
+      <>
+        <InfiniteScroll
+          dataLength={cards.length}
+          next={fetchData}
+          hasMore={true}
+          loader={loaderImg()}
+        >
+          {studyPack()}
+        </InfiniteScroll>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div id={styles.body}>
+        <div id={styles.menu}>
+          <div id={styles.select}>
+            <Link to="/">
+              <button id={styles.openStudy}>오픈스터디</button>
+            </Link>
+            <Link to="/study">
+              <button id={styles.study}>스터디</button>
+            </Link>
+            <Link to="/question">
+              <button id={styles.question}>질문</button>
+            </Link>
+          </div>
+
+          <form id={styles.search}>
+            <select>
+              <option>제목</option>
+              <option>태그</option>
+              <option>작성자</option>
+            </select>
+            <input />
+            <button>검색</button>
+          </form>
+          <button
+            onClick={() => {
+              navigate("/writePost");
+            }}
+          >
+            만들기
+          </button>
+        </div>
+
+        <h1>Study</h1>
+        <div className={cardStyles.container}>{studyScroll()}</div>
+      </div>
+    </>
+  );
+} */
+export default MainStudy;
