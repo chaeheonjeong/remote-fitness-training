@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import styles from "./MyGoalModal.module.css";
 import axios from "axios";
 import userStore from "../../store/user.store";
+import { AiOutlineClockCircle } from "react-icons/ai";
 
 export default function MyGoalModal({
   visible,
@@ -52,39 +53,44 @@ export default function MyGoalModal({
     >
       <div className={styles.closeBox} onClick={() => setVisible(false)} />
       <div className={styles.modalWrapper}>
-        하루 목표 공부시간을 설정해보세요!
-        <div className={styles.inputWrapper}>
-          <input
-            type="number"
-            value={hour === "" ? 0 : hour}
-            min="0"
-            onChange={(e) => {
-              setHour(e.target.value.replace(/(^0+)/, ""));
-            }}
-            className={styles.inputStyle}
-          />{" "}
-          시간
-          <input
-            type="number"
-            value={min === "" ? 0 : min}
-            min="0"
-            onChange={(e) => {
-              setMin(e.target.value.replace(/(^0+)/, ""));
-            }}
-            className={styles.inputStyle}
-          />{" "}
-          분
-        </div>
-        <div className={styles.buttonWrapper}>
-          <button onClick={goalModalHandelr} className={styles.btnOk}>
-            적용
-          </button>
-          <button
-            onClick={() => setVisible(false)}
-            className={styles.btnCancle}
-          >
-            취소
-          </button>
+        <AiOutlineClockCircle size="25" className={styles.clock} />
+        <div className={styles.contentWrapper}>
+          <div style={{ fontWeight: "700" }}>
+            하루 목표 공부시간을 설정해보세요!
+          </div>
+          <div className={styles.inputWrapper}>
+            <input
+              type="number"
+              value={hour === "" ? 0 : hour}
+              min="0"
+              onChange={(e) => {
+                setHour(e.target.value.replace(/(^0+)/, ""));
+              }}
+              className={styles.inputStyle}
+            />{" "}
+            시간
+            <input
+              type="number"
+              value={min === "" ? 0 : min}
+              min="0"
+              onChange={(e) => {
+                setMin(e.target.value.replace(/(^0+)/, ""));
+              }}
+              className={styles.inputStyle}
+            />{" "}
+            분
+          </div>
+          <div className={styles.buttonWrapper}>
+            <button
+              onClick={() => setVisible(false)}
+              className={styles.btnCancle}
+            >
+              취소
+            </button>
+            <button onClick={goalModalHandelr} className={styles.btnOk}>
+              적용
+            </button>
+          </div>
         </div>
       </div>
     </div>

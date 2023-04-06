@@ -1,110 +1,105 @@
-import React, { useEffect, useState } from 'react';
-import './Write.css';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
+import React, { useEffect, useState } from "react";
+import "./Write.css";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 //react-html-parser
 function Write() {
-
   //const [_id, setId] = useState('');
 
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
 
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
 
   const [date, setDate] = useState("");
 
   const handleSelectDate = (event) => {
     setDate(event.target.value);
-  }
+  };
 
   const [tags, setTags] = useState([]);
 
   const navigate = useNavigate();
-    
+
   const titleHandler = (e) => {
     const inputTitle = e.target.value;
     setTitle(inputTitle);
-  }
+  };
 
   const [periodCondition, setPeriodCondition] = useState({
-    num1 : '1개월',
-    num2 : '2개월',
-    num3 : '3개월',
-    num4 : '4개월',
-    num5 : '5개월',
-    num6 : '6개월 이상',
-
+    num1: "1개월",
+    num2: "2개월",
+    num3: "3개월",
+    num4: "4개월",
+    num5: "5개월",
+    num6: "6개월 이상",
   });
 
   const periodChange = (e) => {
     setPeriodCondition(e.target.value);
-  }
+  };
 
   const [pCondition, setPCondition] = useState({
-    p1 : '1명',
-    p2 : '2명',
-    p3 : '3명',
-    p4 : '4명',
-    p5 : '5명',
-    p6 : '6명',
-    p7 : '7명',
-    p8 : '8명',
-    p9 : '9명',
-    p10 : '10명 이상',
-
+    p1: "1명",
+    p2: "2명",
+    p3: "3명",
+    p4: "4명",
+    p5: "5명",
+    p6: "6명",
+    p7: "7명",
+    p8: "8명",
+    p9: "9명",
+    p10: "10명 이상",
   });
 
   const pChange = (e) => {
     setPCondition(e.target.value);
-  }
-
+  };
 
   function handleKeyPress(e) {
-    if(e.key === 'Enter') {
-        const newTag = e.target.value.trim();
+    if (e.key === "Enter") {
+      const newTag = e.target.value.trim();
 
-        if(tags.length < 5) {
-            if(newTag !== '') {
-                setTags([...tags, newTag]);
-                e.target.value = '';
-            }
-        } else {
-            alert('태그는 최대 5개까지 가능합니다.');
+      if (tags.length < 5) {
+        if (newTag !== "") {
+          setTags([...tags, newTag]);
+          e.target.value = "";
         }
+      } else {
+        alert("태그는 최대 5개까지 가능합니다.");
+      }
     }
   }
 
   function handleDelete(index) {
-      setTags(tags.filter((tag, i) => i !== index));
+    setTags(tags.filter((tag, i) => i !== index));
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await axios.post("http://localhost:8080/postWrite", {
-          number: pCondition,
-          period: periodCondition,
-          date: String(date),
-          tag : tags,
-          title : title,
-          content : JSON.parse(JSON.stringify(content))
-        });
-        console.log('success' , response.data.message);
-        navigate("/");
-      }
-     catch (error) {
+      const response = await axios.post("http://localhost:8080/postWrite", {
+        number: pCondition,
+        period: periodCondition,
+        date: String(date),
+        tag: tags,
+        title: title,
+        content: JSON.parse(JSON.stringify(content)),
+      });
+      console.log("success", response.data.message);
+      navigate("/study");
+    } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <div className='choose'>
-      <div className='ch1'>
-        <text className='nn'>모집인원</text>
-        
+    <div className="choose">
+      <div className="ch1">
+        <text className="nn">모집인원</text>
+
         <select name="number" className="number" onChange={pChange}>
           <option value="명">명</option>
           <option value={pCondition.p1}>1명</option>
@@ -117,9 +112,8 @@ function Write() {
           <option value={pCondition.p8}>8명</option>
           <option value={pCondition.p9}>9명</option>
           <option value={pCondition.p11}>10명 이상</option>
-
         </select>
-        <text className='ww'>진행기간</text>
+        <text className="ww">진행기간</text>
         <select name="period" className="period" onChange={periodChange}>
           <option value="개월">개월</option>
           <option value={periodCondition.num1}>1개월</option>
@@ -131,26 +125,28 @@ function Write() {
         </select>
       </div>
 
-      <div className='ch2'>
-        <text className='ss'>시작예정일</text>
-        <input type='date' id='date' className='date' onChange={handleSelectDate}/> 
-        <text className='tt'>태그</text>
+      <div className="ch2">
+        <text className="ss">시작예정일</text>
+        <input
+          type="date"
+          id="date"
+          className="date"
+          onChange={handleSelectDate}
+        />
+        <text className="tt">태그</text>
 
         <div>
           <input
-            className='tag_input'
+            className="tag_input"
             onKeyPress={handleKeyPress}
             type="text"
             placeholder="해시태그 입력(최대 5개)"
           />
-          <div className='tag_tagPackage'>
+          <div className="tag_tagPackage">
             {tags.map((tag, index) => (
-              <span key={index} className='tag_tagindex'>
+              <span key={index} className="tag_tagindex">
                 {tag}
-                <button 
-                  className='tag_Btn'
-                  onClick={() => handleDelete(index)}
-                >
+                <button className="tag_Btn" onClick={() => handleDelete(index)}>
                   &times;
                 </button>
               </span>
@@ -159,12 +155,17 @@ function Write() {
         </div>
       </div>
 
-      <div className='title_input'>
-        <text className='cc'>제목</text>
-        <input onChange={titleHandler} className='title_tinput' value={title} placeholder='제목을 입력하세요.'/>
+      <div className="title_input">
+        <text className="cc">제목</text>
+        <input
+          onChange={titleHandler}
+          className="title_tinput"
+          value={title}
+          placeholder="제목을 입력하세요."
+        />
       </div>
 
-      <div className='content'>
+      <div className="content">
         <CKEditor
           editor={ClassicEditor}
           data=""
@@ -172,31 +173,40 @@ function Write() {
             placeholder: "내용을 입력하세요.",
           }}
           onReady={(editor) => {
-            console.log('Editor is ready to use!', editor);
+            console.log("Editor is ready to use!", editor);
           }}
           onChange={(e, editor) => {
             const data = editor.getData();
             console.log({ e, editor, data });
             setContent({
-              content : data
-            })
+              content: data,
+            });
           }}
-  
           onBlur={(e, editor) => {
-            console.log('Blur.', editor);
+            console.log("Blur.", editor);
           }}
           onFocus={(e, editor) => {
-            console.log('Focus.', editor);
+            console.log("Focus.", editor);
           }}
         />
-      
       </div>
 
-      <div className='btn'>
-        <input type='button' value='취소' className='cancel' />
-        <input type='submit' value='등록' className='submit' onClick={handleSubmit} />
+      <div className="btn">
+        <input
+          type="button"
+          value="취소"
+          className="cancel"
+          onClick={() => {
+            navigate("/study");
+          }}
+        />
+        <input
+          type="submit"
+          value="등록"
+          className="submit"
+          onClick={handleSubmit}
+        />
       </div>
-
     </div>
   );
 }

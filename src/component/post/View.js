@@ -1,8 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import './View.css';
-
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 function View() {
+    const { id } = useParams();
+
+    const [write, setWrite] = useState(null);
+
+    useEffect(() => {
+        const fetchWrite = async () => {
+            try{
+                const res = await axios.get("http://localhost:8080/getwrite/${id}" );
+                setWrite(res.data);
+                console.log(res.data);
+            }catch(err){
+                console.error(err);
+                console.log(id);
+            }
+        };
+        fetchWrite();
+    }, [id]);
+
+    
    
     const [progress, setProgress] = useState(false);
 
@@ -13,7 +33,7 @@ function View() {
 
     const handleShowReplyInput = () => {
         setShowReplyInput(!showReplyInput);
-        setShowReplyList(false); // 대댓글 입력 칸을 보여주면서 대댓글 목록도 함께 보여줌
+        //setShowReplyList(false); // 대댓글 입력 칸을 보여주면서 대댓글 목록도 함께 보여줌
     }
 
     const handleHideReplyInput = () => {
@@ -31,34 +51,7 @@ function View() {
         setShowReplyList(false);
     }
 
-/*
-    const [local, setLocal] = useState([])
-
-    const dispatch = useDispatch()
-    const comments = useSelector(state => state.comment)
-    const [commentValue, setCommentValule] = useState('')
-    const [text1, setText1] = useState('')
-    const [display, setDisplay] = useState(false)
-    const onSubmit = (e) => {
-        e.preventDefault();
-        setCommentValule(text1)
-        let data = {
-            content: text1,
-            writer: 'jamong',
-            postId: '123123',
-            responseTo: 'root',
-            commentId: uuid()
-        }
-        //dispatch(addComment(data))
-
-        setText1('')
-    }
-    useEffect(() => {
-        localStorage.setItem('reply', JSON.stringify(comments))
-        setLocal(comments.filter(comment => comment.responseTo === 'root'))
-    }, [comments])
-
-*/
+    
     return (
         <div className='detail'>
             <div className='content_4'>
@@ -75,13 +68,14 @@ function View() {
                 </div>
                     
                 <div className='content_4_b'>
-                    <input type='button' value='수정'/>
                     <input type='button' value='삭제'/>
+                    <input type='button' value='수정'/>
+                    
                 </div>
             </div>
 
             <div className='content_1'>
-                <div>제목</div>
+                <div>제목{write?.title}</div>
             </div>
 
             <div className='content_2'>
@@ -100,17 +94,17 @@ function View() {
 
             <div className='content_5'>
                 <div className='content_5_a'>
-                    <div>모집인원</div>
-                    <div>시작 예정일</div>
+                    <div>모집인원{write?.number}</div>
+                    <div>시작 예정일{String(write?.date)}</div>
                 </div>
                 <div className='content_5_b'>
-                    <div>진행기간</div>
-                    <div>태그</div>
+                    <div>진행기간{String(write?.period)}</div>
+                    <div>태그{String(write?.tag)}</div>
                 </div>
             </div>
 
             <div className='content_3'>
-                <div>내용</div>
+                <div>내용{write?.content}</div>
             </div>
 
             <div className='content_6'>
@@ -220,3 +214,33 @@ export default View;
 */
 /*
 <input type="button" className='rrbtn' value="답장"></input>*/
+
+
+/*
+    const [local, setLocal] = useState([])
+
+    const dispatch = useDispatch()
+    const comments = useSelector(state => state.comment)
+    const [commentValue, setCommentValule] = useState('')
+    const [text1, setText1] = useState('')
+    const [display, setDisplay] = useState(false)
+    const onSubmit = (e) => {
+        e.preventDefault();
+        setCommentValule(text1)
+        let data = {
+            content: text1,
+            writer: 'jamong',
+            postId: '123123',
+            responseTo: 'root',
+            commentId: uuid()
+        }
+        //dispatch(addComment(data))
+
+        setText1('')
+    }
+    useEffect(() => {
+        localStorage.setItem('reply', JSON.stringify(comments))
+        setLocal(comments.filter(comment => comment.responseTo === 'root'))
+    }, [comments])
+
+*/

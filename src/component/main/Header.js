@@ -10,7 +10,14 @@ const Header = () => {
 
   return (
     <div className={styles.container}>
-      <label className={styles.linkLabel}>Link</label>
+      <label
+        className={styles.linkLabel}
+        onClick={() => {
+          hook.navigate("/");
+        }}
+      >
+        Link
+      </label>
       <div className={styles.smallContainer}>
         <div className={styles.smallContainer2}>
           {user.token !== null && (
@@ -44,8 +51,9 @@ const Header = () => {
                       key={x.title}
                       className={styles.profileDropItem}
                       style={{ cursor: "pointer" }}
-                      //   onClick={()=>window.open(x.url)}
-                      // 나중에 URL 추가하고 활성화
+                      onClick={() => {
+                        hook.navigate(x.url);
+                      }}
                     >
                       {x.emo}
                       {x.title}
