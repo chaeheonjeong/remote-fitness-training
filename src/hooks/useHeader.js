@@ -26,9 +26,9 @@ export default function useHeader() {
     popupY;
   const profileDrop = [
     { title: "내 정보", url: "/MyInfo", emo: <HiOutlineUser/>},
-    { title: "서랍", url: "", emo: <RiArchiveDrawerLine/>},
-    { title: "관심글", url: "", emo: <BsPostcardHeart/> },
-    { title: "내가 쓴 글", url: "", emo: <BsPostcard/>},
+    { title: "서랍", url: "/", emo: <RiArchiveDrawerLine/>},
+    { title: "관심글", url: "/", emo: <BsPostcardHeart/> },
+    { title: "내가 쓴 글", url: "/", emo: <BsPostcard/>},
     { title: "캘린더", url: "/MyCalendar", emo:<BsCalendarCheck/>},
   ];
 
