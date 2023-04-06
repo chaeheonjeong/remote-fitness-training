@@ -25,9 +25,21 @@ const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={[<Main />, <MainOpenStudy />]} />
+        <Route
+          path="/"
+          element={[<Main key="main" />, <MainOpenStudy key="openstudy" />]}
+        />
+        <Route
+          path="/study"
+          element={[<Main key="smain" />, <MainStudy key="study" />]}
+        />
+        <Route
+          path="/question"
+          element={[<Main key="qmain" />, <MainQuestion key="question" />]}
+        />
+        {/* <Route path="/" element={[<Main />]} />
         <Route path="/study" element={[<Main />, <MainStudy />]} />
-        <Route path="/question" element={[<Main />, <MainQuestion />]} />
+        <Route path="/question" element={[<Main />, <MainQuestion />]} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/findPassword" element={<FindPw />} />

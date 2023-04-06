@@ -18,7 +18,7 @@ function OpenStudyRoomCard({ img, title, personNum, tags, id }) {
     if (!heart) {
       return (
         <img
-          id={styles.heart}
+          className={styles.heart}
           src={emptyHeart}
           alt="emptyHeart"
           onClick={() => changeHeart()}
@@ -27,7 +27,7 @@ function OpenStudyRoomCard({ img, title, personNum, tags, id }) {
     } else {
       return (
         <img
-          id={styles.heart}
+          className={styles.heart}
           src={fullHeart}
           alt="fullHeart"
           onClick={() => changeHeart()}
@@ -37,24 +37,30 @@ function OpenStudyRoomCard({ img, title, personNum, tags, id }) {
   }
 
   // 해시태그
-  function hashtag() {
+  function Hashtag() {
     return (
-      tags &&
-      tags.map((tag, index) => {
-        if (typeof tag === "object" && tag.id) {
-          return (
-            <a className={styles.openStudyTag} key={tag.id} id={tag.id}>
-              {"#" + tag}
-            </a>
-          );
-        } else {
-          return (
-            <a className={styles.openStudyTag} key={index}>
-              {"#" + tag}
-            </a>
-          );
-        }
-      })
+      <div>
+        {tags &&
+          tags.map((tag, index) => {
+            if (typeof tag === "object" && tag.id) {
+              return (
+                <a
+                  className={styles.openStudyTag}
+                  key={tag.id + index}
+                  id={tag.id}
+                >
+                  {"#" + tag}
+                </a>
+              );
+            } else {
+              return (
+                <a className={styles.openStudyTag} key={index + tag}>
+                  {"#" + tag}
+                </a>
+              );
+            }
+          })}
+      </div>
     );
   }
 
@@ -62,13 +68,14 @@ function OpenStudyRoomCard({ img, title, personNum, tags, id }) {
     <div className={styles.openStudyBox} key={id}>
       {heartBtn()}
       <a className={styles.participants}>1/{personNum}</a>
+      {/* <a>{id}</a> */}
       <div className={styles.openStudyImg}>
         {img ? (
           <img className={styles.openStudyImage} src={img} alt="openStudyImg" />
         ) : null}
       </div>
       <h3 className={styles.roomTitle}>{title}</h3>
-      {hashtag()}
+      {<Hashtag />}
     </div>
   );
 }

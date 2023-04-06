@@ -8,23 +8,24 @@ import comment from "../../images/comment.png";
 
 import styles from "./QuestionRoomCard.module.css";
 import "./InfiniteScroll.css";
+import { Fragment } from "react";
 
-function QuestionRoomCard({ keyNum, title }) {
-  const tag = "태그";
+function QuestionRoomCard({ title, tags, id, onClick }) {
   const viewCount = 10;
   const commentCount = 3;
-  title = "Hello";
 
   const [heart, setHeart] = useState(false);
+
   const changeHeart = () => {
-    setHeart((heart) => !heart);
+    setHeart(!heart);
   };
 
-  function heartBtn() {
+  // 관심글
+  const HeartBtn = () => {
     if (!heart) {
       return (
         <img
-          id={styles.heart}
+          className={styles.heart}
           src={emptyHeart}
           alt="emptyHeart"
           onClick={() => changeHeart()}
@@ -33,23 +34,45 @@ function QuestionRoomCard({ keyNum, title }) {
     } else {
       return (
         <img
-          id={styles.heart}
+          className={styles.heart}
           src={fullHeart}
           alt="fullHeart"
           onClick={() => changeHeart()}
         ></img>
       );
     }
+  };
+
+  // 해시태그
+  function Hashtag() {
+    return (
+      <div className={styles.tagPackage}>
+        {tags &&
+          tags.map((tag, index) => {
+            if (typeof tag === "object" && tag.id) {
+              return (
+                <a className={styles.studyTag} key={tag.id} id={tag.id}>
+                  {"#" + tag}
+                </a>
+              );
+            } else {
+              return (
+                <a className={styles.studyTag} key={index}>
+                  {"#" + tag}
+                </a>
+              );
+            }
+          })}
+      </div>
+    );
   }
 
   return (
-    <>
-      <div className={styles.questionBox} key={keyNum}>
-        {heartBtn()}
+    <div key={id + title} className={styles.questionBoxWrapper}>
+      <HeartBtn />
+      <div className={styles.questionBox} onClick={onClick && onClick}>
         <h1 className={styles.questionTitle}>{title}</h1>
-        <div className={styles.tagPackage}>
-          <a className={styles.quesitonTag}>#{tag}</a>
-        </div>
+        {<Hashtag />}
         <div className={styles.reaction}>
           <img className={styles.view} src={view} alt="view"></img>
           <a>{viewCount}</a>
@@ -57,12 +80,8 @@ function QuestionRoomCard({ keyNum, title }) {
           <a>{commentCount}</a>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
-QuestionRoomCard.propTypes = {
-  keyNum: PropTypes.number.isRequired,
-  title: PropTypes.string.isRequired,
-};
 export default QuestionRoomCard;

@@ -17,6 +17,7 @@ const Verify = require("./models/verify");
 const StudyTime = require("./models/studyTime");
 const GoalTime = require("./models/goalTime");
 const AskGood = require("./models/askGood");
+const PostGood = require("./models/postGood");
 const { dblClick } = require("@testing-library/user-event/dist/click");
 
 const OpenStudy = require("./models/openStudy");
@@ -157,6 +158,20 @@ app.post("/email-check", async (req, res) => {
       return res.status(400).json({ message: "Email already exists" });
     }
     return res.status(200).json({ message: "Email is available" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/nick-check", async (req, res) => {
+  const { nick } = req.body;
+  try {
+    const user = await User.findOne({ name: nick });
+    if (user) {
+      return res.status(400).json({ message: "nick already exists" });
+    }
+    return res.status(200).json({ message: "nick is available" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
@@ -521,6 +536,7 @@ app.post("/postAsk", async (req, res) => {
       tag: tag,
       writer: writer,
       writeDate: writeDate,
+      views: 0,
     });
     await newAsk.save();
 
@@ -565,6 +581,7 @@ app.post("/postWrite", async (req, res) => {
       writer: writer,
       writeDate: writeDate,
       recruit: true, //모집여부
+      views: 0,
     });
     await newWrite.save();
 
@@ -741,6 +758,8 @@ app.post("/openStudy", async (req, res) => {
       personNum: personNum,
     });
 
+    console.log("img.size : ", img.size);
+
     await newOpenStudy.save();
     res.status(200).json({ message: `OpenStudy created successfully` });
   } catch (err) {
@@ -750,17 +769,152 @@ app.post("/openStudy", async (req, res) => {
 });
 
 app.get("/openStudies", async (req, res) => {
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
+
+  const offset = (page - 1) * limit;
+
   try {
-    const openStudies = await OpenStudy.find();
-    if (openStudies) {
+    const openStudies = await OpenStudy.find().skip(offset).limit(limit);
+    //const totalOpenStudies = openStudies.length;
+    //console.log(totalOpenStudies);
+
+    //const currentOpenStudies = await OpenStudy.find().skip(offset).limit(limit);
+
+    /* if(openStudies){
+        return res.status(200).json({
+          openStudies: openStudies,
+          message: '오픈스터디 목록 가져오기 성공',
+        });
+      } */
+    if (openStudies.length > 0) {
       return res.status(200).json({
         openStudies: openStudies,
+        //totalOpenStudies,
         message: "오픈스터디 목록 가져오기 성공",
+        success: true,
+        openStudies,
+      });
+    } else {
+      return res.status(404).json({
+        message: "데이터가 존재하지 않습니다",
+        success: false,
       });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+app.get("/studies", async (req, res) => {
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
+
+  const offset = (page - 1) * limit;
+
+  try {
+    const studies = await Write.find()
+      .sort({ writeDate: -1 })
+      .skip(offset)
+      .limit(limit);
+    const counter = await Write.count();
+    const hasMore = counter > page * limit;
+
+    if (studies.length > 0) {
+      return res.status(200).json({
+        studies: studies,
+        message: "스터디 모집글 목록 가져오기",
+        success: true,
+        hasMore: hasMore,
+        studies,
+      });
+    } else {
+      return res.status(404).json({
+        message: "데이터가 존재하지 않습니다.",
+        success: false,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+app.get("/questions", async (req, res) => {
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
+
+  const offset = (page - 1) * limit;
+
+  try {
+    const questions = await Ask.find()
+      .sort({ writeDate: -1 })
+      .skip(offset)
+      .limit(limit);
+    const counter = await Ask.count();
+    const hasMore = counter > page * limit;
+
+    if (questions.length > 0) {
+      return res.status(200).json({
+        questions: questions,
+        message: "스터디 모집글 목록 가져오기",
+        success: true,
+        hasMore: hasMore,
+      });
+    } else {
+      return res.status(404).json({
+        message: "데이터가 존재하지 않습니다.",
+        success: false,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+app.get("/search", async (req, res) => {
+  const option = req.query.selected;
+  const value = decodeURIComponent(req.query.value);
+
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
+
+  const offset = (page - 1) * limit;
+  var openStudiesSearch = [];
+
+  try {
+    if (option === "title") {
+      openStudiesSearch = await OpenStudy.find({ title: value }, null, {
+        skip: offset,
+        limit: limit,
+      });
+    } else if (option === "tags") {
+      openStudiesSearch = await OpenStudy.find(
+        { tags: { $in: [value] } },
+        null,
+        { skip: offset, limit: limit }
+      );
+    }
+
+    if (openStudiesSearch.length > 0) {
+      return res.status(200).json({
+        openStudies: openStudiesSearch,
+        //totalOpenStudies,
+        message: "검색목록 가져오기 성공",
+        success: true,
+      });
+    } else {
+      return res.status(200).json({
+        openStudies: [],
+        message: "검색결과가 없습니다",
+        success: true,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 });
 
@@ -824,27 +978,30 @@ app.post("/setGood/:id", async (req, res) => {
     if (!result) {
       const newDoc = new AskGood({
         _id: Number(req.params.id),
-        _users: [userId],
+        _users: [{ user: userId, time: new Date() }],
         goodCount: 1,
       });
       await newDoc.save();
       return res.status(201).json({
+        goodCount: 1,
         message: `좋아요가 추가되었습니다`,
       });
     } else {
-      const index = result._users.indexOf(userId);
+      const index = result._users.findIndex((obj) => obj.user === userId);
       if (index > -1) {
         result._users.splice(index, 1);
         result.goodCount--;
         await result.save();
         return res.status(200).json({
+          goodCount: result.goodCount,
           message: `좋아요가 취소되었습니다`,
         });
       } else {
-        result._users.push(userId);
+        result._users.push({ user: userId, time: new Date() });
         result.goodCount++;
         await result.save();
         return res.status(200).json({
+          goodCount: result.goodCount,
           message: `좋아요가 추가되었습니다`,
         });
       }
@@ -852,6 +1009,130 @@ app.post("/setGood/:id", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/getGoodPost/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const result = await PostGood.findOne({ _id: Number(req.params.id) });
+    if (result) {
+      let isUser = false;
+      for (let i = 0; i < result._users.length; i++) {
+        if (userId === result._users[i]) isUser = true;
+      }
+      return res.status(200).json({
+        good: isUser,
+        count: result.goodCount,
+        message: `좋아요 리스트 가져오기 성공`,
+      });
+    } else {
+      return res.status(204).json({
+        message: `좋아요가 없습니다`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/getGoodPost2/:id", async (req, res) => {
+  try {
+    const result = await PostGood.findOne({ _id: Number(req.params.id) });
+    if (result) {
+      return res.status(200).json({
+        count: result.goodCount,
+        message: `좋아요 리스트 가져오기 성공`,
+      });
+    } else {
+      return res.status(204).json({
+        message: `좋아요가 없습니다`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/setGoodPost/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const result = await PostGood.findOne({ _id: Number(req.params.id) });
+
+    if (!result) {
+      const newDoc = new PostGood({
+        _id: Number(req.params.id),
+        _users: [{ user: userId, time: new Date() }],
+        goodCount: 1,
+      });
+      await newDoc.save();
+      return res.status(201).json({
+        goodCount: 1,
+        message: `좋아요가 추가되었습니다`,
+      });
+    } else {
+      const index = result._users.findIndex((obj) => obj.user === userId);
+      if (index > -1) {
+        result._users.splice(index, 1);
+        result.goodCount--;
+        await result.save();
+        return res.status(200).json({
+          goodCount: result.goodCount,
+          message: `좋아요가 취소되었습니다`,
+        });
+      } else {
+        result._users.push({ user: userId, time: new Date() });
+        result.goodCount++;
+        await result.save();
+        return res.status(200).json({
+          goodCount: result.goodCount,
+          message: `좋아요가 추가되었습니다`,
+        });
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/view", async (req, res) => {
+  const { id, postName } = req.body;
+
+  if (postName === "question") {
+    try {
+      const ask = await Ask.findOneAndUpdate(
+        { _id: id },
+        { $inc: { views: 1 } }, // views 필드를 1 증가시킴
+        { new: true }
+      );
+      res.json({ message: "조회수 +1 성공" });
+    } catch (err) {
+      console.log(err);
+      res.json({ error: err.message });
+    }
+  } else if (postName === "study") {
+    try {
+      const write = await Write.findOneAndUpdate(
+        { _id: id },
+        { $inc: { views: 1 } }, // views 필드를 1 증가시킴
+        { new: true }
+      );
+      res.json({ message: "조회수 +1 성공" });
+    } catch (err) {
+      console.log(err);
+      res.json({ error: err.message });
+    }
   }
 });
 

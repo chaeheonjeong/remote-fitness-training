@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import userStore from "../../store/user.store";
 import Header from "../main/Header";
+import { scrollToTop } from "../../util/common";
 
 function View() {
   const { id } = useParams();
@@ -15,6 +16,8 @@ function View() {
   const [progress, setProgress] = useState(false);
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [showReplyList, setShowReplyList] = useState(false);
+  const [good, setGood] = useState(false);
+  const [goodCount, setGoodCount] = useState(0);
 
   const deleteHandler = () => {
     const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
@@ -28,22 +31,16 @@ function View() {
     }
   };
 
-  /*  useEffect(() => {
-    const fetchWrite = async () => {
-      try {
-        const res = await axios.get(`http://localhost:8080/getWrite/${id}`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        if (res.data !== undefined) {
-          setWrite(res.data.result[0]);
-          setSameUser(res.data.sameUser);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchWrite();
-  }, [id]); */
+  const formatDate = (today) => {
+    const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const dateW = today.getDate();
+    const dayOfWeek = daysOfWeek[today.getDay()];
+    const formattedDate = `${year}.${month}.${dateW}(${dayOfWeek})`;
+
+    return formattedDate;
+  };
 
   useEffect(() => {
     if (user.token !== null) {
@@ -128,6 +125,73 @@ function View() {
     }
   };
 
+  useEffect(() => {
+    if (user.token !== null) {
+      axios
+        .get(`http://localhost:8080/getGoodPost/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setGood(response.data.good);
+            setGoodCount(response.data.count);
+            console.log(response.data.message);
+          } else if (response.status === 204) {
+            setGood(false);
+            setGoodCount(0);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .get(`http://localhost:8080/getGoodPost2/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            setGoodCount(response.data.count);
+          } else if (response.status === 204) {
+            setGood(false);
+            setGoodCount(0);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    scrollToTop();
+  }, []);
+
+  const clickGood = () => {
+    if (user.token !== null) {
+      axios
+        .post(`http://localhost:8080/setGoodPost/${id}`, null, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setGood(!good);
+            if (!good) {
+              setGoodCount((prevCount) => prevCount + 1);
+            } else {
+              setGoodCount((prevCount) => prevCount - 1);
+            }
+          } else if (response.status === 201) {
+            setGood(!good);
+            setGoodCount(1);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      alert("로그인 해주세요.");
+    }
+  };
+
   return (
     <>
       <Header />
@@ -166,7 +230,11 @@ function View() {
           <div className={styles.content_2_a}>
             <div>작성자{write.writer}</div>
             <div>|</div>
-            <div>날짜{write.writeDate}</div>
+            <div>
+              날짜{" "}
+              {write.writeDate !== undefined &&
+                formatDate(new Date(write.writeDate))}
+            </div>
           </div>
           <div className={styles.content_2_c}>
             <div></div>
@@ -194,7 +262,10 @@ function View() {
         <div className={styles.content_3}>
           <div>내용</div>
           <div dangerouslySetInnerHTML={{ __html: htmlString }} />
-          {console.log(htmlString)}
+          <span onClick={clickGood} className={good ? `styles.goodBtn` : null}>
+            좋아요{goodCount}
+          </span>
+          <span>조회수{write.views}</span>
         </div>
         <div className={styles.content_6}>
           <input

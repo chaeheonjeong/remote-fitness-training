@@ -1,53 +1,26 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
-
-import styles from "./MainStudy.module.css";
-import cardStyles from "./StudyRoomCard.module.css";
-import "./InfiniteScroll.css";
-
-import StudyRoomCard from "./StudyRoomCard";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
+import styles from "./MainStudy.module.css";
+import "./InfiniteScroll.css";
+import StudyRoomCard from "./StudyRoomCard";
+
 import loadingImg from "../../images/loadingImg.gif";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { TbCircleArrowUpFilled } from "react-icons/tb";
+import { scrollToTop } from "../../util/common";
 
 function MainStudy() {
-  const [studyTitle, setStudyTitle] = useState("");
-
-  const [cards, setCards] = useState(Array.from({ length: 6 }));
-  const fetchData = () => {
-    setTimeout(() => {
-      setCards(cards.concat(Array.from({ length: 12 })));
-    }, 1500);
-  };
+  const [studies, setStudies] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [renderQ, setRenderQ] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
   const navigate = useNavigate();
+  const limit = 12;
 
-  function studyCard() {
-    <StudyRoomCard title={studyTitle} />;
-  }
-
-  function studyPack() {
-    return Array.from({ length: 50 }, (v, i) =>
-      i % 3 === 0 ? (
-        <>
-          <div className={styles.block}></div>
-          <StudyRoomCard key={i} title={studyTitle} />
-          <div className={styles.blank} />
-        </>
-      ) : i % 3 === 2 ? (
-        <>
-          <StudyRoomCard key={i} title={studyTitle} />
-        </>
-      ) : (
-        <>
-          <StudyRoomCard key={i} title={studyTitle} />
-          <div className={styles.blank} />
-        </>
-      )
-    );
-  }
-
-  function loaderImg() {
+  function LoaderImg() {
     return (
       <div className={styles.loadingPackage}>
         <img
@@ -60,57 +33,121 @@ function MainStudy() {
     );
   }
 
-  function studyScroll() {
-    return (
-      <>
-        <InfiniteScroll
-          dataLength={cards.length}
-          next={fetchData}
-          hasMore={true}
-          loader={loaderImg()}
-        >
-          {studyPack()}
-        </InfiniteScroll>
-      </>
-    );
-  }
+  const moreStudies = () => {
+    console.log(hasMore);
+    if (hasMore) {
+      axios
+        .get(
+          `http://localhost:8080/studies?page=${
+            Math.floor(renderQ.length / limit) + 1
+          }&limit=${limit}`
+        )
+        .then((response) => {
+          const { hasMore, studies } = response.data;
+          const page = Math.floor(renderQ.length / limit) + 1;
+          if (page === 1) setRenderQ([...studies]);
+          else setRenderQ((prev) => [...prev, ...studies]);
+          setHasMore(hasMore);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  useEffect(() => {
+    moreStudies();
+  }, []);
+
+  const clickHandler = (id) => {
+    axios
+      .post(
+        `http://localhost:8080/view`,
+        { id: id, postName: "study" } // 서버로 전달할 id
+      )
+      .then((response) => {
+        console.log(response.data.message);
+        navigate(`/view/${id}`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <>
-      <div id={styles.body}>
-        <div id={styles.menu}>
-          <div id={styles.select}>
+      <div className={styles.upCircle}>
+        <TbCircleArrowUpFilled
+          size="50"
+          color="gray"
+          onClick={() => {
+            scrollToTop();
+          }}
+        />
+      </div>
+      <div className={styles.body}>
+        <div className={styles.menu}>
+          <div className={styles.select}>
             <Link to="/">
-              <button id={styles.openStudy}>오픈스터디</button>
+              <button className={styles.openStudy}>오픈스터디</button>
             </Link>
             <Link to="/study">
-              <button id={styles.study}>스터디</button>
+              <button className={styles.study}>스터디</button>
             </Link>
             <Link to="/question">
-              <button id={styles.question}>질문</button>
+              <button className={styles.question}>질문</button>
             </Link>
           </div>
 
-          <form id={styles.search}>
-            <select>
-              <option>제목</option>
-              <option>태그</option>
-              <option>작성자</option>
-            </select>
-            <input />
-            <button>검색</button>
-          </form>
-          <button
-            onClick={() => {
-              navigate("/writePost");
-            }}
-          >
-            만들기
-          </button>
+          <div className={styles.searchAndMake}>
+            <form className={styles.search}>
+              <select>
+                <option value="title">제목</option>
+                <option value="tags">태그</option>
+                <option value="writer">작성자</option>
+              </select>
+              <input
+                className="searchInput"
+                name="searchInput"
+                onChange={(e) => setSearchInput(e.target.value)}
+              />
+              <button>검색</button>
+            </form>
+            <button
+              className={styles.makeBtn}
+              onClick={() => {
+                navigate("/writePost");
+              }}
+            >
+              만들기
+            </button>
+          </div>
         </div>
 
         <h1>Study</h1>
-        <div className={cardStyles.container}>{studyScroll()}</div>
+
+        <InfiniteScroll
+          dataLength={renderQ.length}
+          next={moreStudies}
+          hasMore={hasMore}
+          loader={<LoaderImg />}
+          key={Math.random() + "&&"}
+        >
+          {renderQ &&
+            renderQ.map((data, index) => {
+              return (
+                <StudyRoomCard
+                  title={data.title}
+                  tags={Array.isArray(data.tag) ? [...data.tag] : []}
+                  id={data._id + index}
+                  key={Math.random()}
+                  onClick={() => {
+                    clickHandler(data._id);
+                  }}
+                />
+              );
+            })}
+        </InfiniteScroll>
       </div>
     </>
   );
