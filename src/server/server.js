@@ -4,9 +4,11 @@ const User = require("./models/user");
 const Write = require("./models/write");
 const Ask = require("./models/ask");
 const Reply = require("./models/reply");
+const R_Reply = require("./models/r_reply");
 const Counter = require("./models/counter");
 const Counter2 = require("./models/counter2");
 const ReplyCounter = require("./models/replycounter");
+const R_ReplyCounter = require("./models/r_replycounter");
 
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
@@ -427,9 +429,15 @@ app.get("/ranking", async (req, res) => {
 
 
 //+++++++++++++++++++++++++++++++++++++++++
+/// 댓글 작성
+app.post("/postreply/:id", async (req, res) => {
+  const { reply, isSecret, rwriter, rwriterDate } = req.body;
+  const { id } = req.params;
 
-app.post("/postreply", async (req, res) => {
-  const { reply } = req.body;
+  const post = await Write.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
 
   const replycounter = await ReplyCounter.findOneAndUpdate({ name: '댓글 수' }, { $inc: { totalReply: 1 } }, { new: true, upsert: true });
   const 총댓글수 = (replycounter.totalReply +1);
@@ -439,11 +447,14 @@ app.post("/postreply", async (req, res) => {
   }
   try {
     const newReply = new Reply({
+      postId : id,
       _id: 총댓글수 + 1, 
+      rwriter : rwriter,
       reply : reply,
+      isSecret : isSecret
     });
     await newReply.save();
-    
+    console.log(isSecret)
     return res.status(200).json({ message: `Reply created successfully` });
   } catch (error) {
     console.error(error);
@@ -452,6 +463,46 @@ app.post("/postreply", async (req, res) => {
 });
 
 
+/// 대댓글 작성
+app.post("/postr_reply/:postId", async (req, res) => {
+  const { r_reply, isRSecret } = req.body;
+  const { postId, rid } = req.params;
+
+
+  const post = await Write.findOne({ _id: postId });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const reply = await Reply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "Reply not found" });
+  }
+
+  const r_replycounter = await R_ReplyCounter.findOneAndUpdate({ name: '대댓글 수' }, { $inc: { totalR_Reply: 1 } }, { new: true, upsert: true });
+  const 총대댓글수 = r_replycounter.totalR_Reply + 1;
+
+  if (!r_replycounter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newR_Reply = new R_Reply({
+      postRId : postId,
+      r_replyId : rid,
+      r_rid: 총대댓글수 + 1,
+      r_reply : r_reply,
+      isRSecret : isRSecret
+    });
+    await newR_Reply.save();
+    console.log(isRSecret)
+    return res.status(200).json({ message: `Reply created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+/// 질문 글 작성
 app.post("/postAsk", async (req, res) => {
   const { title, content } = req.body;
 
@@ -476,13 +527,23 @@ app.post("/postAsk", async (req, res) => {
   }
 });
 
+/// 스터디 모집글 작성성
 app.post("/postWrite", async (req, res) => {
-  
-  const { number, period, date, tag, title, content } = req.body;
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
 
-  const counter = await Counter.findOneAndUpdate({ name: '게시물 수' }, { $inc: { totalWrite: 1 } }, { new: true, upsert: true });
-  const 총게시물갯수 = (counter.totalWrite +1);
-  
+  const { number, period, date, tag, title, content, writer, writeDate } =
+    req.body;
+
+  const counter = await Counter.findOneAndUpdate(
+    { name: "게시물 수" },
+    { $inc: { totalWrite: 1 } },
+    { new: true, upsert: true }
+  );
+  const 총게시물갯수 = counter.totalWrite + 1;
+
   /*_id: Number(총게시물갯수 + 1), */
 
   if (!counter) {
@@ -490,16 +551,19 @@ app.post("/postWrite", async (req, res) => {
   }
   try {
     const newWrite = new Write({
-      _id: 총게시물갯수 + 1, 
+      _id: 총게시물갯수 + 1,
+      _user: userId,
       number: number,
       period: period,
       date: date,
-      tag : tag,
-      title : title,
-      content : content,
+      tag: tag,
+      title: title,
+      content: content,
+      writer: writer,
+      writeDate: writeDate,
     });
     await newWrite.save();
-    
+
     return res.status(200).json({ message: `Write created successfully` });
   } catch (error) {
     console.error(error);
@@ -507,32 +571,63 @@ app.post("/postWrite", async (req, res) => {
   }
 });
 
+app.get("/getWrite/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
 
-/*app.get('/getwrite/:id', function(req, res) {
-  Write.findOne({_id: req.params.id}, function(err, write) {
-    if (err) {
-      // 에러가 발생했다면 에러 메시지를 반환합니다.
-      res.status(500).send(err);
-    } else {
-      // 검색된 데이터를 반환합니다.
-      
-      console.log(write);
-      console.log(req.params.id);
+  try {
+    const result = await Write.find({ _id: Number(req.params.id) });
+    if (result) {
+      let sameUser = false;
+      if (userId === result[0]._user) sameUser = true;
+      return res.status(200).json({
+        data: result,
+        sameUser: sameUser,
+        message: `id 가져오기 성공`,
+      });
     }
-  });
-});*/
-
-app.get('/getwrite/:id', function(req, res) {
-  Write.findOne({_id: req.params.id})
-    .then(function(write) {
-      console.log(write);
-      console.log(req.params.id);
-      res.send(write);
-    })
-    .catch(function(err) {
-      res.status(500).send(err);
-    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
 });
+
+
+// 댓글 
+app.get("/getReply/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    
+    const result = await Reply.find({ postId: req.params.id})
+
+    if (result) {
+      console.log(result);
+      let sameUsers = false;
+      if (userId === result[0]._user) sameUsers = true;
+      console.log(req.params.postId);
+      return res.status(200).json({
+        data: result,
+        sameUsers: sameUsers,
+        message: ` ${typeof req.params.postId}댓글 가져오기 성공`,
+      });
+    } 
+    else {
+      return res.status(404).json({ message: "댓글이 존재하지 않습니다." });
+    }
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+
 
 
 

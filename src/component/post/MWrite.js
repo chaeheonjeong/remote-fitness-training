@@ -3,7 +3,7 @@ import styles from './MWrite.module.css';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
 function MWrite() {
@@ -19,6 +19,29 @@ function MWrite() {
   }
 
   const [tags, setTags] = useState([]);
+
+
+  
+
+  const { id } = useParams();
+  console.log(id);
+
+  const [write, setWrite] = useState([]);
+
+  useEffect(() => {
+    const fetchWrite = async () => {
+        try{
+            const res = await axios.get(`http://localhost:8080/getwrite/${(id)}` );
+            setWrite(res.data.data.map(({ _id, number, period, date, tag, title, content }) => ({ _id, number, period, date, tag, title, content })));
+            console.log(res.data.message);
+        }catch(err){
+            console.error(err);
+            console.log(id);
+        }
+    };
+    fetchWrite();
+  }, [id]);
+
 
 
 
@@ -83,19 +106,19 @@ function MWrite() {
   }
 
 
-
-  const handleSubmit = async (e) => {
+  const handleModify = async (e) => {
     e.preventDefault();
     try {
-        const response = await axios.post("http://localhost:8080/postwrite", {
+        const response = await axios.post(`http://localhost:8080/updatewrite/${(id)}`, {
           number: pCondition,
           period: periodCondition,
-          date: date,
+          date: String(date),
           tag : tags,
           title : title,
-          content : content
+          content : JSON.parse(JSON.stringify(content))
         });
-        console.log('success' , response.data);
+        alert('해당 게시글이 수정되었습니다.');
+        console.log('success' , response.data.message);
         navigate("/");
       }
      catch (error) {
@@ -206,7 +229,7 @@ function MWrite() {
 
       <div className={styles.btn}>
         <input type='button' value='취소' className='cancel' />
-        <input type='submit' value='수정' className='submit' onClick={handleSubmit} />
+        <input type='submit' value='수정' className='submit' onClick={handleModify} />
       </div>
 
     </div>

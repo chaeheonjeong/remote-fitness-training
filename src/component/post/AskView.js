@@ -1,10 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 import styles from './AskView.module.css';
+import userStore from "../../store/user.store";
+import { useParams } from "react-router-dom";
+import Reply from '../../server/models/reply';
 
 function A_View() {
 
+    const { id } = useParams();
+    const user = userStore();
+    const [ask, setAsk] = useState([]);
+    const [htmlString, setHtmlString] = useState();
+    const [sameUser, setSameUser] = useState(false);  
+
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchAsk = async () => {
+          try {
+            const res = await axios.get(`http://localhost:8080/getAsk/${id}`, {
+              headers: { Authorization: `Bearer ${user.token}` },
+            });
+            if (res.data !== undefined) {
+              setAsk(res.data.data[0]);
+              setSameUser(res.data.sameUser);
+              console.log(res.data.message);
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        };
+        fetchAsk();
+      }, [id]);
+
+      useEffect(() => {
+        if (ask.content !== undefined) {
+          const contentString = JSON.stringify(ask.content); // 객체를 문자열로 변환합니다.
+          const cleanedString = contentString.replace(/undefined/g, "");
+          const parsedContent = JSON.parse(cleanedString); // 문자열을 JSON 객체로 변환합니다.
+          const htmlString = parsedContent.content;
+          setHtmlString(htmlString);
+        }
+      }, [ask]);
     
     return (
         <div className={styles.detail}>
@@ -15,21 +53,29 @@ function A_View() {
                     }}/>
                 </div>
                     
-                <div className={styles.content_4_b}>
-                    <input type='button' value='수정'/>
-                    <input type='button' value='삭제'/>
-                </div>
+                {sameUser && (
+                    <div className={styles.content_4_b}>
+                        <input type="button" value="삭제" />
+                        <input
+                            type="button"
+                            value="수정"
+                            onClick={() => {
+                                navigate(`/reply/${id}`);
+                            }}
+                        />
+                    </div>
+                )}
             </div>
 
             <div className={styles.content_1}>
-                <div>제목</div>
+                <div>제목{ask.title}</div>
             </div>
 
             <div className={styles.content_2}>
                 <div className={styles.content_2_a}>
-                    <div>작성자</div>
+                    <div>작성자{ask.writer}</div>
                     <div>|</div>
-                    <div>날짜</div>
+                    <div>날짜{ask.writeDate}</div>
                 </div>
                 <div className={styles.content_2_c}>
                     <div></div>
@@ -41,6 +87,7 @@ function A_View() {
 
             <div className={styles.content_3}>
                 <div>내용</div>
+                <div dangerouslySetInnerHTML={{ __html: htmlString }} />
             </div>
 
             <div className={styles.content_6}>

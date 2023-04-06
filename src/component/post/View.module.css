@@ -95,7 +95,19 @@
 }
 
 .rc1 {
-    font-size: 13px;
+    font-size: 14px;
+}
+
+.secret {
+    margin-left: 10px;
+}
+
+.falseSecret {
+    font-size: 12px;
+}
+
+.trueSecret {
+    font-size: 12px;
 }
 
 .reply_choose {
@@ -109,6 +121,7 @@
 
 .sbtn {
     border-radius: 10px;
+    width: 40px;
 }
 
 .cbtn {
