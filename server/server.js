@@ -650,11 +650,6 @@ app.post("/openStudy", async (req, res) => {
       }
     });
 
-
-
-
-
-
     // openStudy 검색
     app.get("/searchOpenStudy", async (req, res) => {
       const option = req.query.selected;
