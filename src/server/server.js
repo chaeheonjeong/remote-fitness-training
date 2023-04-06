@@ -18,8 +18,8 @@ const GoalTime = require("./models/goalTime");
 const Schedule = require("./models/schedule");
 
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit : '10mb'}));
+app.use(bodyParser.urlencoded({ limit : '10mb', extended: true }));
 const mysecretkey = "capstone";
 
 mongoose
@@ -48,22 +48,62 @@ app.get('/users', auth, async(req, res) => {
     }
 });
 
-//로그인한 사용자의 정보를 수정
-app.put('/users/:id', auth, async(req, res) => {
-    const id = req.params.id;
-    console.log(req.body);
-    console.log(req.params.id);
+app.post('/nick-change', async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
 
-    User.findOneAndUpdate({_id : id}, {name : req.body.name}, {new : true})
-        .then(updatedUser => {
-            res.send(updatedUser);
-            console.log(updatedUser);
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).send(err);
-        });
+  const { nick } = req.body;
+
+  try {
+    const userWithSameNick = await User.findOne({ name: nick });
+    if (userWithSameNick) {
+      return res.status(400).json({ message: '이미 존재하는 닉네임 입니다.' });
+    }
+
+    // Update user's nick in database
+    await User.findByIdAndUpdate(userId, { name: nick });
+
+    res.status(200).json({ message: '닉네임이 변경되었습니다' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '서버 에러 발생' });
+  }
 });
+
+app.put('/img-change/:id', auth, async(req, res) => {
+  try{
+    const id = req.params.id;
+    const image = req.body.image;
+    const user = await User.findByIdAndUpdate(id, {image}, {new: true});
+    res.json(user);
+  }catch(err){
+    console.error(err);
+    res.status(500).send(err);
+  }
+})
+
+app.get('/img-change', auth, async(req, res) => {
+  try{
+    const id = req.user.id;
+    console.log(id);
+    
+    const user = await User.findById(id);
+
+    if(!user){
+      return res.status(404).json({error: 'User not found'});
+    }
+
+    const image = user.image;
+    return res.status(200).json({image});
+  }catch(err){
+    console.error(err);
+    return res.status(500).send(err);
+  }
+})
+
+
 
 //로그인한 사용자의 비밀번호를 변경
 app.put('/users/change-password/:id', auth, async(req, res) => {
@@ -94,6 +134,7 @@ app.put('/users/change-password/:id', auth, async(req, res) => {
         res.status(500).send(err);
     }
 });
+
 //회원 탈퇴 시 사용자의 정보 삭제
 app.delete("/users/withdraw/:id", auth, async(req,res) => {
     try{

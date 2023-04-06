@@ -17,6 +17,7 @@ function MyInfo(){
    const [newPassword, setNewPassword] = useState("");
    const [confirmNewPassword, setConfirmNewPassword] = useState("");
    const [errorMessage, setErrorMessage] = useState(false);
+   const [nameError, setNameError] = useState(false);
    const [passwordMatch, setPasswordMatch] = useState(false);
    const token = localStorage.getItem('token');
 
@@ -34,6 +35,21 @@ function MyInfo(){
         });
     }
    }, [token]);
+
+   useEffect(() => {
+    const fetchData = async () => {
+        try{
+            const res = await axios.get(`http://localhost:8080/img-change`,{
+            headers: { Authorization: `Bearer ${token}` },
+            });
+            setImgFile(res.data.image);
+            console.log('이미지 가져오기에 성공 했습니다.', res.data);
+        }catch(err){
+            console.log('이미지 가져오기에 실패했습니다.', err);
+        }
+    };
+    fetchData();
+   },[]);
 
    const handleChangePassword = (e) => {
     e.preventDefault();
@@ -93,21 +109,37 @@ function MyInfo(){
     
    };
 
-   const handleFormSubmit = (e) => {
+   const handleFormSubmit = async(e) => {
     e.preventDefault();
     console.log(user._id);
-    axios.put(`http://localhost:8080/users/${user._id}`, {
-        name : user.name
-    },{
-        headers : {Authorization: `Bearer ${token}`}
-    })
-        .then(res => {
-            setUser(res.data);
-            console.log(res.data);
-        })
-        .catch(err => {
-            console.error(err);
+
+
+    try {
+        const response = await axios.post(
+          `http://localhost:8080/nick-change`,
+          {
+            nick: user.name,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        if (response.status === 200) {
+          alert("닉네임이 변경되었습니다.")
+        }
+        setNameError(false);
+
+        const res = await axios.put(`http://localhost:8080/img-change/${user._id}`,{image: imgFile},{
+            headers: { Authorization: `Bearer ${token}` },
         });
+        console.log('이미지 업로드에 성공 했습니다.');
+      } catch (error) {
+        if(error.response && error.response.data && error.response.data.message === '이미 존재하는 닉네임 입니다.') {
+            setNameError('이미 존재하는 닉네임 입니다.');
+        }
+        console.error('이미지 업로드에 실패했습니다.',error);
+      }
+          
    };
 
    const saveImgFile = () => {
@@ -118,6 +150,7 @@ function MyInfo(){
         setImgFile(reader.result);
     };
    };
+
     return(
         <div>
         <Header />
@@ -126,27 +159,34 @@ function MyInfo(){
             <div className="MyInfo">
             <img
                 className="Profile"
-                src={imgFile ? imgFile : profile}
+                src={imgFile}
                 alt="프로필 이미지"
             />
+            <label className='img-btn' for="ProfileImg">
+                프로필 변경
+            </label>
             <input
-                className="ProfileImg"
+                id="ProfileImg"
                 type="file"
                 accept="image/*"
                 onChange={saveImgFile}
                 ref={imgRef}
+                style={{display: "none"}}
             />
             <form className="Information" onSubmit={handleFormSubmit}>
                 <label className="nickname">닉네임 </label>
                 <input type="text" value={user.name} className="Input" onChange={(e) => setUser({ ...user, name: e.target.value })} />
                 <br/>
+                {nameError && <p style={{ color: "red" }}>{nameError}</p>}
                 <label className="email">이메일 </label>
                 <input type="text" value={user.email} className="Input"/>
                 <br/>
                 <button type="submit" value="modify" className="Btn">수정</button>
-                <button onClick={() => setModalIsOpen(true)} className="Btn">비밀번호 변경</button>
-                <button type="submit" onClick={handleWithDraw} value="SignOut" className="Btn">회원 탈퇴</button>
             </form>
+            <div>
+                <button onClick={() => setModalIsOpen(true)} className="CBtn">비밀번호 변경</button>
+                <button type="submit" onClick={handleWithDraw} value="SignOut" className="DBtn">회원 탈퇴</button>
+            </div>
             <Modal className='Modal' ariaHideApp={false} isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} overlayClassName='Overlay'>
                 <button type="submit" onClick={() => setModalIsOpen(false)} className='ModalButton'>X</button>
                 <form className='change' onSubmit={handleChangePassword}>

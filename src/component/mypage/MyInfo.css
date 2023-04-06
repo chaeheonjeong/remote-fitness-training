@@ -19,6 +19,15 @@
     border: 1px solid #555555;
 }
 
+.img-btn{
+    font-family: 'Cafe24SsurroundAir';
+    border : none;
+    border-radius: 5px;
+    background-color: #F1E0AC;
+    padding-inline: 3px;
+
+}
+
 .Title{
     font-family: 'Cafe24SsurroundAir';
     font-size: 40px;
@@ -49,6 +58,23 @@
     border-radius: 5px;
     margin-left : 5px;
     margin-top : 20px;
+    background-color: #F1E0AC;
+}
+
+.CBtn{
+    font-family: 'Cafe24SsurroundAir';
+    border : none;
+    border-radius: 5px;
+    margin-left: 65px;
+
+    background-color: #F1E0AC;
+}
+
+.DBtn{
+    font-family: 'Cafe24SsurroundAir';
+    border : none;
+    margin-left: 5px;
+    border-radius: 5px;
     background-color: #F1E0AC;
 }
 
