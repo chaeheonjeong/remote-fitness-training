@@ -61,7 +61,7 @@ app.post('/nick-change', async (req, res) => {
     if (userWithSameNick) {
       return res.status(400).json({ message: '이미 존재하는 닉네임 입니다.' });
     }
-
+    
     // Update user's nick in database
     await User.findByIdAndUpdate(userId, { name: nick });
 

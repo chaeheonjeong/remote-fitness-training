@@ -113,7 +113,6 @@ function MyInfo(){
     e.preventDefault();
     console.log(user._id);
 
-
     try {
         const response = await axios.post(
           `http://localhost:8080/nick-change`,
@@ -134,9 +133,8 @@ function MyInfo(){
         });
         console.log('이미지 업로드에 성공 했습니다.');
       } catch (error) {
-        if(error.response && error.response.data && error.response.data.message === '이미 존재하는 닉네임 입니다.') {
-            setNameError('이미 존재하는 닉네임 입니다.');
-        }
+        console.error('이미 존재하는 닉네임 입니다.',error);
+        setNameError('이미 존재하는 닉네임 입니다.');
         console.error('이미지 업로드에 실패했습니다.',error);
       }
           
@@ -159,7 +157,7 @@ function MyInfo(){
             <div className="MyInfo">
             <img
                 className="Profile"
-                src={imgFile}
+                src={imgFile ? imgFile : profile}
                 alt="프로필 이미지"
             />
             <label className='img-btn' for="ProfileImg">
