@@ -10,16 +10,16 @@ import View from "../component/post//View";
 import Ask from "../component/post//Ask";
 import AskView from "../component/post//AskView";
 import View2 from "../component/post//View2";
-
 import View3 from "../component/post//View3";
-
+import MyCalendar from "../component/mypage/MyCalendar";
+import MyInfo from "../component/mypage/MyInfo";
 import MainOpenStudy from "../component/main/MainOpenStudy";
 import MainStudy from "../component/main/MainStudy";
 import MainQuestion from "../component/main/MainQuestion";
-import MyCalendar from "../component/mypage/MyCalendar";
-import MyInfo from "../component/mypage/MyInfo";
 import ModifyPost from "../component/post/ModifyPost";
 import ModifyAsk from "../component/post/ModifyAsk";
+import MyPost from "../component/mypage/MyPost";
+import MyAsk from "../component/mypage/MyAsk";
 
 const Router = () => {
   return (
@@ -37,9 +37,6 @@ const Router = () => {
           path="/question"
           element={[<Main key="qmain" />, <MainQuestion key="question" />]}
         />
-        {/* <Route path="/" element={[<Main />]} />
-        <Route path="/study" element={[<Main />, <MainStudy />]} />
-        <Route path="/question" element={[<Main />, <MainQuestion />]} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/findPassword" element={<FindPw />} />
@@ -55,6 +52,8 @@ const Router = () => {
         <Route path="/MyInfo" element={<MyInfo />} />
         <Route path="/MyCalendar" element={<MyCalendar />} />
         <Route path="/View/:id" element={<View />} />
+        <Route path="myAsk" element={<MyAsk />} />
+        <Route path="myPost" element={<MyPost />} />
       </Routes>
     </BrowserRouter>
   );

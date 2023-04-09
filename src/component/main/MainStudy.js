@@ -139,7 +139,7 @@ function MainStudy() {
                 <StudyRoomCard
                   title={data.title}
                   tags={Array.isArray(data.tag) ? [...data.tag] : []}
-                  id={data._id + index}
+                  id={data._id}
                   key={Math.random()}
                   onClick={() => {
                     clickHandler(data._id);

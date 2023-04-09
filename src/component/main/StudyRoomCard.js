@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import emptyHeart from "../../images/emptyHeart.png";
@@ -7,15 +7,38 @@ import view from "../../images/view.png";
 import comment from "../../images/comment.png";
 
 import styles from "./StudyRoomCard.module.css";
+import axios from "axios";
+import userStore from "../../store/user.store";
 
 function StudyRoomCard({ title, tags, id, onClick }) {
-  const viewCount = 21;
+  const user = userStore();
   const commentCount = 7;
 
   const [heart, setHeart] = useState(false);
+  const [viewCount, setViewCount] = useState(0);
 
   const changeHeart = () => {
     setHeart(!heart);
+  };
+
+  const clickHeart = () => {
+    if (user.token !== null) {
+      axios
+        .post(`http://localhost:8080/setGoodPost/${id}`, null, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200 || response.status === 201) {
+            setHeart(!heart);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      alert("로그인 해주세요.");
+      setHeart(false);
+    }
   };
 
   // 관심글
@@ -26,7 +49,10 @@ function StudyRoomCard({ title, tags, id, onClick }) {
           className={styles.heart}
           src={emptyHeart}
           alt="emptyHeart"
-          onClick={() => changeHeart()}
+          onClick={() => {
+            changeHeart();
+            clickHeart();
+          }}
         ></img>
       );
     } else {
@@ -35,7 +61,10 @@ function StudyRoomCard({ title, tags, id, onClick }) {
           className={styles.heart}
           src={fullHeart}
           alt="fullHeart"
-          onClick={() => changeHeart()}
+          onClick={() => {
+            changeHeart();
+            clickHeart();
+          }}
         ></img>
       );
     }
@@ -68,6 +97,42 @@ function StudyRoomCard({ title, tags, id, onClick }) {
       </div>
     );
   }
+
+  useEffect(() => {
+    if (user.token !== null) {
+      axios
+        .get(`http://localhost:8080/getGoodPost/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setHeart(response.data.good);
+          } else if (response.status === 204) {
+            setHeart(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    axios
+      .post(
+        "http://localhost:8080/getViewCount",
+        { id: id, postName: "study" } // 서버로 전달할 id
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          setViewCount(response.data.count);
+          console.log(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <div key={id + title} className={styles.questionBoxWrapper}>
