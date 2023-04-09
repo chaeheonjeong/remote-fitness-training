@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 
 .body{
@@ -8,6 +9,8 @@
   
 }
 
+=======
+>>>>>>> aae62bccb2a9a695be3134443397e77122ea13e1
 .choose {
   margin-top: 10px;
 }
@@ -16,8 +19,8 @@
   font-size: 20px;
   display: flex;
   margin-bottom: 20px;
-  border-bottom:3px;
-  padding : 5px;
+  border-bottom: 3px;
+  padding: 5px;
 }
 
 .ch2 {
@@ -25,17 +28,16 @@
   display: flex;
 
   margin-bottom: 50px;
-  border-bottom:3px;
-  padding : 5px;
+  border-bottom: 3px;
+  padding: 5px;
 }
-
 
 .title_input {
   display: flex;
   font-size: 20px;
   margin-bottom: 10px;
-  border-bottom:3px;
-  padding : 5px;
+  border-bottom: 3px;
+  padding: 5px;
   height: 40px;
 }
 
@@ -81,8 +83,6 @@
 
 .btn {
   text-align: end;
-  margin-top : 20px;
-  margin-right: 65px;
 }
 
 .tag_input {
@@ -111,10 +111,25 @@
   border: solid 2px black;
 }
 
-
 .content {
   margin-top: 20px;
   width: 90%;
   margin-left: 73px;
   border: solid 1.6px black;
+}
+
+.cbtn {
+  border: none;
+  padding: 5px;
+  border-radius: 200px;
+  background-color: green;
+  color: white;
+}
+
+.falseBtn {
+  border: none;
+  padding: 5px;
+  border-radius: 200px;
+  background-color: red;
+  color: white;
 }

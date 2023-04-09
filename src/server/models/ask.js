@@ -3,18 +3,22 @@ const Schema = mongoose.Schema;
 
 const askSchema = new Schema(
   {
-    number: { type: Array, required: true },
-    period: { type: Array, required: true },
-    date: { type: Date, required: true },
-    tag: { type: Array, required: true },
+    _id: { type: Number, required: true /*, unique: true*/ },
+    _user: { type: String, required: true },
     title: { type: String, required: true },
-    content: { type: String, required: true },
+    content: { type: Object, required: true },
+    tag: { type: Array, required: false },
+    writer: { type: String, required: true },
+    writeDate: { type: String, required: true },
+    views: { type: Number, required: true },
+  },
+  {
+    versionKey: false,
   }
-
 );
 
-askSchema.set("collection", "write");
+askSchema.set("collection", "ask");
 
-const Write = mongoose.model("write", askSchema);
+const Ask = mongoose.model("ask", askSchema);
 
-module.exports = Write;
+module.exports = Ask;

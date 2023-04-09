@@ -13,6 +13,8 @@ export default function useRegister() {
   const [rePass, setRePass] = useState("");
   const [warn, setWarn] = useState("");
   const [nick, setNick] = useState("");
+  const [nickInputColor, setNickInputColor] = useState("defualt");
+  const [nickWarn, setNickWarn] = useState("");
 
   const navigate = useNavigate();
 
@@ -30,6 +32,20 @@ export default function useRegister() {
     }
   };
 
+  const checkNickHandler = async (event) => {
+    try {
+      event.preventDefault();
+      const response = await axios.post("http://localhost:8080/nick-check", {
+        nick: nick,
+      });
+      if (response.status === 200) {
+        setNickInputColor("pass");
+      }
+    } catch (error) {
+      setNickInputColor("fail");
+    }
+  };
+
   const submitHandler = async (event) => {
     event.preventDefault();
     try {
@@ -42,7 +58,7 @@ export default function useRegister() {
       } else if (!passColor || !rePassColor || pass === "" || rePass === "") {
         setWarn("비밀번호를 확인해주세요.");
       } else if (nick === "") {
-        setWarn("닉네임을 입력해주세요.");
+        setWarn("닉네임을 확인해주세요.");
       } else {
         const response = await axios.post("http://localhost:8080/signup", {
           name: nick,
@@ -70,6 +86,14 @@ export default function useRegister() {
   }, [emailInputColor]);
 
   useEffect(() => {
+    if (nickInputColor === "fail") {
+      setNickWarn("* 중복된 닉네임이 존재합니다");
+    } else if (nickInputColor === "pass") {
+      setNickWarn(" 사용 가능한 닉네임입니다.");
+    }
+  }, [nickInputColor]);
+
+  useEffect(() => {
     if (pass !== "") setPassColor(pass.length >= 6);
     else setPassColor(true);
     if (rePass !== "" && pass !== rePass) setRePassColor(false);
@@ -93,5 +117,8 @@ export default function useRegister() {
     rePassColor,
     nick,
     setNick,
+    checkNickHandler,
+    nickWarn,
+    nickInputColor,
   };
 }
