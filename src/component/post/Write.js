@@ -95,44 +95,6 @@ const Write = () => {
     });
   };
 
-  // const customUploadAdapter = (loader) => {
-  //   console.log(loader);
-  //   return {
-  //     upload() {
-  //       return loader.file.then(
-  //         new Promise(async (resolve, reject) => {
-  //           const data = new FormData();
-  //           const files = await loader.file;
-  //           console.log(files);
-  //           const file = [];
-  //           for (const iter of files) {
-  //             file.push(iter);
-  //           }
-  //           data.append("file", file);
-  //           console.log(data);
-  //           axios
-  //             .post("http://localhost:8080/upload", data)
-  //             .then((res) => {
-  //               const images = res.data.images;
-  //               const urls = images.map((image) => ({
-  //                 default: `${imgLink}/${image.filename}`,
-  //               }));
-
-  //               resolve({ urls: urls });
-  //             })
-  //             .catch((err) => reject(err));
-  //         })
-  //       );
-  //     },
-  //   };
-  // };
-
-  // function uploadPlugin(editor) {
-  //   editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
-  //     return customUploadAdapter(loader);
-  //   };
-  // }
-
   return (
     <>
       <Header />

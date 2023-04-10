@@ -61,3 +61,21 @@
   margin-top: 1rem;
   font-size: 0.85rem;
 }
+
+.nickWrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+}
+
+.nickInput {
+  position: relative;
+  height: 3rem;
+  border: 2px solid rgb(96, 93, 93);
+  border-radius: 0.8rem;
+  font-size: 1rem;
+  padding: 0 0.8rem;
+  margin: 0.5rem 0;
+  flex: 1;
+}

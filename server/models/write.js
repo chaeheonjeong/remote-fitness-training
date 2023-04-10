@@ -14,6 +14,7 @@ const writeSchema = new Schema(
     writer: { type: String, required: true },
     writeDate: { type: String, required: true },
     recruit: { type: Boolean, required: true },
+    views: { type: Number, required: true },
   },
   {
     versionKey: false,

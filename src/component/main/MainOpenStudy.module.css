@@ -31,7 +31,8 @@
   border: 1.5px solid rgb(255, 187, 0);
 }
 
-.study, .question {
+.study,
+.question {
   border: 1.5px solid rgb(189, 188, 188);
 }
 
@@ -62,7 +63,7 @@
   display: flex;
 }
 
-.makeBtn {   
+.makeBtn {
   border: 1.5px solid rgb(189, 188, 188);
   width: 5rem;
   margin-left: 3rem;
@@ -105,6 +106,16 @@
   font-weight: bold;
   font-size: 1.3rem;
   color: rgb(0, 98, 255);
+}
+
+.upCircle {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 0;
+  right: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 

@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
-import LazyLoad from "react-lazyload";
 
 import mainStyles from  "./MainOpenStudy.module.css";
 import "./InfiniteScroll.css";
@@ -10,6 +9,8 @@ import OpenStudyModal from "./OpenStudyModal";
 import OpenStudyRoomCard from "./OpenStudyRoomCard";
 
 import loadingImg from "../../images/loadingImg.gif";
+import { TbCircleArrowUpFilled } from "react-icons/tb";
+import { scrollToTop } from "../../util/common";
 
 function MainOpenStudy() {
     const [studyModal, setStudyModal] = useState(false);
@@ -51,18 +52,13 @@ function MainOpenStudy() {
         }
 
         axios
-            .get(`http://localhost:8080/searchOpenStudy?selected=${selected}&value=${encodeURIComponent(searchInput)}&page=${page}&limit=6`)
+            .get(`http://localhost:8080/searchOpenStudy?selected=${selected}&value=${encodeURIComponent(searchInput)}&page=${page}&limit=4`)
             .then((response) => {
                 console.log('검색결과를 가져오겠습니다.');
                 const newSearchOpenStudies = response.data.openStudies;
-                const isLastPage = newSearchOpenStudies.length < 6;
+                const isLastPage = newSearchOpenStudies.length < 4;
 
                 try {
-                    //setSearchResults(response.data.openStudies);
-                    //setHasMore(response.data.hasMore);
-                    //console.log('검색결과 : ', response.data.openStudies);
-                    //console.log(response.data.openStudies.length);
-
                     if(isLastPage) {
                         setHasMore(false);
                     }
@@ -134,22 +130,6 @@ function MainOpenStudy() {
         moreOpenStudies();
       }, []);
 
-
-    /* useEffect(() => {
-        axios
-        .get("http://localhost:8080/openStudies")
-        .then((response) => {
-            //console.log(response.data.message);
-            if (response.status === 200) {
-                setOpenStudies([...response.data.openStudies]);
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-    }); */
-
-
     return(
         <>
         {
@@ -158,8 +138,17 @@ function MainOpenStudy() {
                   setStudyModal={setStudyModal}
                   addModalHandler = {addModal}
                 />
-            
         }
+        
+      <div className={mainStyles.upCircle}>
+        <TbCircleArrowUpFilled
+          size="50"
+          color="gray"
+          onClick={() => {
+            scrollToTop();
+          }}
+        />
+      </div>
              <div className={mainStyles.body}>
                 <div className={mainStyles.menu}>
                     <div className={mainStyles.select}>

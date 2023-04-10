@@ -28,6 +28,7 @@
     "nodemailer": "^6.9.1",
     "nodemon": "^2.0.21",
     "testing-library": "^0.0.2",
+    "uuid": "^9.0.0",
     "zlib": "^1.0.5"
   }
 }

@@ -6,6 +6,7 @@ import userStore from "../../store/user.store";
 import Header from "../main/Header";
 import styles from "./View.module.css";
 import axios from "axios";
+import { scrollToTop } from "../../util/common";
 
 function AskView() {
   const navigate = useNavigate();
@@ -84,6 +85,7 @@ function AskView() {
           if (response.status === 200) {
             setGood(response.data.good);
             setGoodCount(response.data.count);
+            console.log(response.data.message);
           } else if (response.status === 204) {
             setGood(false);
             setGoodCount(0);
@@ -109,6 +111,10 @@ function AskView() {
     }
   }, []);
 
+  useEffect(() => {
+    scrollToTop();
+  });
+
   const clickGood = () => {
     if (user.token !== null) {
       axios
@@ -123,6 +129,9 @@ function AskView() {
             } else {
               setGoodCount((prevCount) => prevCount - 1);
             }
+          } else if (response.status === 201) {
+            setGood(!good);
+            setGoodCount(1);
           }
         })
         .catch((error) => {
@@ -143,6 +152,17 @@ function AskView() {
         })
         .catch((err) => console.log(err));
     }
+  };
+
+  const formatDate = (today) => {
+    const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const dateW = today.getDate();
+    const dayOfWeek = daysOfWeek[today.getDay()];
+    const formattedDate = `${year}.${month}.${dateW}(${dayOfWeek})`;
+
+    return formattedDate;
   };
 
   return (
@@ -178,7 +198,11 @@ function AskView() {
           <div className={styles.content_2_a}>
             <div>작성자{write.writer}</div>
             <div>|</div>
-            <div>날짜{write.writeDate}</div>
+            <div>
+              날짜
+              {write.writeDate !== undefined &&
+                formatDate(new Date(write.writeDate))}
+            </div>
           </div>
         </div>
         <div className={styles.content_5}>
@@ -198,6 +222,7 @@ function AskView() {
           <span onClick={clickGood} className={good ? `styles.goodBtn` : null}>
             좋아요{goodCount}
           </span>
+          <span> 조회수 {write.views} </span>
         </div>
         <div className="detail">
           <div>
@@ -208,7 +233,7 @@ function AskView() {
             />
             <div className="reply_choose">
               <input type="checkbox"></input>
-              <text className="rc1">비밀댓글</text>
+              <p className="rc1">비밀댓글</p>
               <input type="button" className="sbtn" value="등록"></input>
             </div>
           </div>

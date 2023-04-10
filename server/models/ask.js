@@ -10,6 +10,7 @@ const askSchema = new Schema(
     tag: { type: Array, required: false },
     writer: { type: String, required: true },
     writeDate: { type: String, required: true },
+    views: { type: Number, required: true },
   },
   {
     versionKey: false,

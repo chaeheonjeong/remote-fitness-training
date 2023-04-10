@@ -9,12 +9,6 @@ import userStore from "../../store/user.store";
 
 function Ask() {
   const today = new Date();
-  const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1;
-  const dateW = today.getDate();
-  const dayOfWeek = daysOfWeek[today.getDay()];
-  const formattedDate = `${year}.${month}.${dateW}(${dayOfWeek})`;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
@@ -125,7 +119,7 @@ function Ask() {
             content: JSON.parse(JSON.stringify(content)),
             tag: tags,
             writer: user.name,
-            writeDate: formattedDate,
+            writeDate: today,
           },
           {
             headers: { Authorization: `Bearer ${user.token}` },

@@ -6,12 +6,6 @@ import userStore from "../store/user.store";
 
 export default function useWrite() {
   const today = new Date();
-  const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1;
-  const dateW = today.getDate();
-  const dayOfWeek = daysOfWeek[today.getDay()];
-  const formattedDate = `${year}.${month}.${dateW}(${dayOfWeek})`;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");
@@ -70,7 +64,7 @@ export default function useWrite() {
             title: title,
             content: JSON.parse(JSON.stringify(content)),
             writer: user.name,
-            writeDate: formattedDate,
+            writeDate: today,
           },
           {
             headers: { Authorization: `Bearer ${user.token}` },

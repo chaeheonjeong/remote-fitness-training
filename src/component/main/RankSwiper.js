@@ -68,7 +68,7 @@ function RankSwiper({ rankers }) {
                   {rankRender(data, index)}
                 </SwiperSlide>
               );
-            } else return false;
+            }
           })}
         </Swiper>
       )}

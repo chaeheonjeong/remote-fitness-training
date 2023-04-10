@@ -198,7 +198,7 @@ const StudyRanking = () => {
                     {rankRender(data, index)}
                   </div>
                 );
-              } else return false;
+              } else return <div key={data + index}></div>;
             })}
           </div>
         )}

@@ -54,12 +54,28 @@ const Register = () => {
           inputColor={hook.rePassColor}
           eventHandler={hook.setRePass}
         />
-        <AuthInput
-          type="text"
-          placeholder="닉네임"
-          inputColor={true}
-          eventHandler={hook.setNick}
-        />
+        <div className={styles.nickWrapper}>
+          <input
+            type="text"
+            placeholder="닉네임"
+            className={styles.nickInput}
+            onChange={(e) => hook.setNick(e.target.value)}
+          />
+          <button className={styles.emailBtn} onClick={hook.checkNickHandler}>
+            중복확인
+          </button>
+        </div>
+        <label
+          className={`${styles.explainLabel} ${
+            hook.nickInputColor === "pass"
+              ? styles.greenExplainLabel
+              : hook.emailInputColor !== "fail"
+              ? styles.falseExplainLabel
+              : null
+          }`}
+        >
+          {hook.nickWarn}
+        </label>
         <label className={styles.warnLabel}>{hook.warn}</label>
         <AuthSubmitButton text="회원가입" />
       </AuthForm>

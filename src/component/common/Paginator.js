@@ -18,17 +18,17 @@ export default function Paginator({ hook }) {
         color="#000"
         onClick={() => hook.beforePage()}
         style={{
-            cursor: "pointer"
+          cursor: "pointer",
         }}
       />
       {arr.map((x, i) => {
         return (
           <div
-            key={i}
+            key={i + "paginator"}
             className={styles.pageNumber}
             style={{
               fontWeight: i + 1 === hook.currentPage ? "900" : "400",
-              cursor: "pointer"
+              cursor: "pointer",
             }}
             onClick={() => hook.setCurrentPage(i + 1)}
           >
@@ -41,7 +41,7 @@ export default function Paginator({ hook }) {
         color="#000"
         onClick={() => hook.nextPage()}
         styles={{
-            cursor: "pointer"
+          cursor: "pointer",
         }}
       />
     </div>
