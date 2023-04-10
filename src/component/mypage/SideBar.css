@@ -7,12 +7,12 @@
 
 .SideBar{
     width: 20%;
-    height: calc(100vh - 50px);
+    height: calc(100vh - 5rem);
 
     position: fixed;
-    top: 50px;
+    top: 5rem;
 
-    border-right: 1px solid #555555;
+    border-right: 2px solid rgb(225, 225, 225);
     background-color: #FBF7F0;
 
 }

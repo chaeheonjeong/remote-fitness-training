@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
 
 import emptyHeart from "../../images/emptyHeart.png";
 import fullHeart from "../../images/heart.png";
@@ -14,8 +15,26 @@ function StudyRoomCard({ title, tags, id }) {
 
     const [heart, setHeart] = useState(false);
 
-    const changeHeart = () => {
+    const changeHeart = async () => {
         setHeart(!heart);
+
+/*         if(!heart) {
+            try {
+                const token = localStorage.getItem('token');  
+                await axios.post('http://localhost:8080/myLikedStudy', { postId: id }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setHeart(true);
+                //setLikedPosts(response.data);
+            } catch(error) {
+                console.log(error);
+            }
+        } else {
+            setHeart(false);
+        } */
     };
 
     // 관심글

@@ -15,6 +15,8 @@ const app = express();
 const nodemailer = require("nodemailer");
 const Verify = require("./models/verify");
 const StudyTime = require("./models/studyTime");
+const AskGood = require("./models/askGood");
+const PostGood = require("./models/postGood");
 const GoalTime = require("./models/goalTime");
 const { dblClick } = require("@testing-library/user-event/dist/click");
 
@@ -25,7 +27,12 @@ const router = express.Router();
 const Schedule = require("./models/schedule");
 const { resolve } = require("url");
 
+
+
 const ObjectId = mongoose.Types.ObjectId;
+
+const auth = require("./auth");
+/* const authMiddleware = require('./middleware/auth'); */
 
 /* const storage = multer.diskStorage({
   // (2)
@@ -71,8 +78,9 @@ mongoose
   .catch((err) => console.log(err));
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");a
+  res.send("Hello World!");
 });
+
 //사용자 정보 확인
 app.get("/user", async (req, res) => {
   const token = req.headers.authorization;
@@ -86,33 +94,191 @@ app.get("/user", async (req, res) => {
   }
 });
 
-//일정 정보 저장
-app.post("/schedules", async (req, res) => {
-  const { date, title, contents } = req.body;
-  try {
-    const newSchedule = new Schedule({
-      title: title,
-      date: date,
-      contents: contents,
-    });
-    await newSchedule.save();
-    return res.status(201).json(newSchedule);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server Error" });
+
+//로그인한 사용자 정보를 검색
+app.get('/users', auth, async(req, res) => {
+  try{
+      const user = await User.findOne({_id : req.user.id});
+
+      if(!user){
+          return res.status(404).send({message : 'User not found'});
+      }
+      res.send({name : user.name, email : user.email, _id : user._id});
+  } catch(err){
+      console.log(err);
+      res.status(500).send({message : 'Server Error'});
   }
 });
 
-//저장된 일정 정보 가져오기
-app.get("/schedules", async (req, res) => {
+app.post('/nick-change', async (req, res) => {
+const authHeader = req.headers.authorization;
+const token = authHeader.split(" ")[1];
+const decodedToken = jwt.verify(token, mysecretkey);
+const userId = decodedToken.id;
+
+const { nick } = req.body;
+
+try {
+  const userWithSameNick = await User.findOne({ name: nick });
+  if (userWithSameNick) {
+    return res.status(400).json({ message: '이미 존재하는 닉네임 입니다.' });
+  }
+
+  // Update user's nick in database
+  await User.findByIdAndUpdate(userId, { name: nick });
+
+  res.status(200).json({ message: '닉네임이 변경되었습니다' });
+} catch (error) {
+  console.error(error);
+  res.status(500).json({ message: '서버 에러 발생' });
+}
+});
+
+app.put('/img-change/:id', auth, async(req, res) => {
+try{
+  const id = req.params.id;
+  const image = req.body.image;
+  const user = await User.findByIdAndUpdate(id, {image}, {new: true});
+  res.json(user);
+}catch(err){
+  console.error(err);
+  res.status(500).send(err);
+}
+})
+
+app.get('/img-change', auth, async(req, res) => {
+try{
+  const id = req.user.id;
+  console.log(id);
+  
+  const user = await User.findById(id);
+
+  if(!user){
+    return res.status(404).json({error: 'User not found'});
+  }
+
+  const image = user.image;
+  return res.status(200).json({image});
+}catch(err){
+  console.error(err);
+  return res.status(500).send(err);
+}
+})
+
+
+
+//로그인한 사용자의 비밀번호를 변경
+app.put('/users/change-password/:id', auth, async(req, res) => {
+  const id = req.params.id;
+  const {password, newPassword, confirmNewPassword} = req.body;
+
   try {
-    const schedules = await Schedule.find();
-    return res.status(200).json(schedules);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server Error" });
+      const user = await User.findOne({_id : id});
+      if(!user) return res.status(404).send('User not found');
+
+      const isMatch = user.password == password;
+      if(!isMatch) return res.status(400).send('Invalid password');
+
+      if(newPassword !== confirmNewPassword){
+          return res.status(400).send('Password do not match');
+      }
+
+      if(newPassword.length < 6){
+          return res.status(400).send({error : 'New password must be at least 6 characters long'});
+      }
+
+      user.password = newPassword;
+      await user.save();
+
+      res.send('Password Update Successfully');
+  }catch(err){
+      console.error(err);
+      res.status(500).send(err);
   }
 });
+
+//회원 탈퇴 시 사용자의 정보 삭제
+app.delete("/users/withdraw/:id", auth, async(req,res) => {
+  try{
+      const id = req.params.id;
+      console.log(id);
+
+      await User.findOneAndDelete({_id : id});
+
+      res.send({message : "Withdraw Successfully"});
+  }catch(err) {
+      console.error(err);
+      res.status(500).send(err);
+  }
+});
+
+//일정 정보 저장
+app.post("/schedules", auth, async(req, res) => {
+  const {date, title, contents} = req.body;
+  try{
+      const newSchedule = new Schedule({
+          title: title,
+          date: date,
+          contents: contents,
+          userId: req.user.id
+      });
+      await newSchedule.save();
+      return res.status(201).json(newSchedule);
+  } catch(err){
+      console.error(err);
+      res.status(500).json({ message: 'Server Error' });
+  } 
+});
+
+//저장된 일정 정보 가져오기(로그인된 유저가 자신의 일정만 보이도록)
+app.get('/schedules', auth, async(req, res) => {
+  try{
+      const schedules = await Schedule.find({userId: req.user.id});
+      return res.status(200).json(schedules);
+  }catch(err){
+      console.error(err);
+      res.status(500).json({message : 'Server Error'})
+  }
+});
+
+//일정 수정하기
+app.put('/schedules/:id', (req, res) => {
+  const id = req.params.id;
+  const title = req.body.title;
+  const contents = req.body.contents;
+
+  console.log(req.body);
+  console.log(id);
+
+  Schedule.findOneAndUpdate({_id : id}, {title, contents}, {new : true})
+      .then(updatedSchedule => {
+          res.send(updatedSchedule);
+      })
+      .catch(err => {
+          console.error(err);
+          res.status(500).send(err);
+      });
+});
+
+//일정 삭제하기
+app.delete('/schedules/:id', (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+
+  Schedule.findOneAndDelete({_id : id})
+      .then(deletedSchedule => {
+          res.send(deletedSchedule);
+          console.log(deletedSchedule);
+
+          if(!deletedSchedule){
+              return res.status(404).send();
+          }
+      })
+      .catch(err => {
+          console.error(err);
+          res.status(500).send(err);
+      })
+})
 
 app.post("/userInfo", async (req, res) => {
   console.log(req.body);
@@ -989,31 +1155,118 @@ app.post("/openStudy", async (req, res) => {
       }
     });
 
+    /* app.get('/myLikedPost', auth, async(req, res) => {
+      const userId = req.user.id;
 
+      console.log(userId);
 
+      try {
+        const studyLiked = await PostGood.find(
+          { '_users.user': userId }
+        );
+        console.log(studyLiked);
 
+        const studyLikedIds = studyLiked.map(post => post._id);
+        console.log(studyLikedIds);
 
-    //app.post('/myLikedPost', async(req, res) => {
-      /* const { userId, openStudyId } = req.body;
+        const likedPosts = await Write.find({ _id: { $in: studyLiked } });
+        console.log(likedPosts); 
 
-      const user = await User.findById(userId);
-      const openStudy = await OpenStudy.findById(openStudyId);
+        res.status(200).json({ likedPosts: likedPosts });
 
-      user.userLikedOpenStudy.push(openStudy._id);
-      await user.save();
-
-      res.send('데이터를 저장하였습니다'); */
-
-/*       try {
-        const token = req.headers.authorization.split(' ')[1];
-        const decodedToken = jwt.verify(token, mysecretkey);
-        const userId = decodedToken.userId;
-        const user = await User.findById(userId).populate('userLikedOpenStudy');
-        const userLikedOpenStudyIds = user.userLikedOpenStudy.map(post => post._id.toString());
-        const openStudies = await OpenStudy.find({ _id: { $in: userLikedOpenStudyIds }});
-        
-        res.status(200).json({ openStudies });
       } catch(error) {
-        res.status(500).json({ message: 'Internal server error' });
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
       }
     }); */
+
+    app.get('/myLikedPost', auth, async(req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+
+      const userId = req.user.id;
+
+      console.log(userId);
+
+      try {
+        const studyLiked = await PostGood.find(
+          { '_users.user': userId }
+        );
+        
+        console.log(studyLiked);
+
+        const studyLikedIds = studyLiked.map(post => post._id);
+        console.log(studyLikedIds);
+
+        const likedPosts = await Write.find({ _id: { $in: studyLiked } })
+          .skip(offset)
+          .limit(limit);
+        console.log(likedPosts); 
+
+        
+
+        if(studyLiked.length > 0) {
+          return res.status(200).json({ 
+            likePosts: likedPosts,
+            success: true,
+           });
+        } else {
+          return res.status(400).json({ 
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+           });
+        }
+
+      } catch(error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+
+    app.get('/myLikedQuestion', auth, async(req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+
+      const userId = req.user.id;
+
+      console.log(userId);
+
+      try {
+        const questionLiked = await AskGood.find(
+          { '_users.user': userId }
+        );
+        
+        console.log(questionLiked);
+
+        const questionLikedIds = questionLiked.map(question => question._id);
+        console.log(questionLikedIds);
+
+        const likedQuestions = await Ask.find({ _id: { $in: questionLiked } })
+          .skip(offset)
+          .limit(limit);
+        console.log(likedQuestions); 
+
+        
+
+        if(questionLiked.length > 0) {
+          return res.status(200).json({ 
+            likeQuestions: likedQuestions,
+            success: true,
+           });
+        } else {
+          return res.status(400).json({ 
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+           });
+        }
+
+      } catch(error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+    

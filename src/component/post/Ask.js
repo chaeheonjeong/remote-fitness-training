@@ -157,7 +157,8 @@ function Ask() {
   return (
     <>
       <Header />
-      <div className="ask">
+      <div className='body'>
+    <div className="ask">
         <div className="title_input">
           <text className="cc">제목</text>
           <input
@@ -236,6 +237,7 @@ function Ask() {
           />
         </div>
       </div>
+    </div>
     </>
   );
 }

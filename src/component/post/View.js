@@ -130,6 +130,7 @@ function View() {
 
   return (
     <>
+        <div className='body'>
       <Header />
       <div className={styles.detail}>
         <div className={styles.content_4}>
@@ -281,6 +282,7 @@ function View() {
               </tr>
             </tbody>
           </table>
+        </div>
         </div>
       </div>
     </>

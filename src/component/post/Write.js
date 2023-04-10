@@ -136,7 +136,8 @@ const Write = () => {
   return (
     <>
       <Header />
-      <div className="choose">
+      <div className='body'>
+    <div className="choose">
         <div className="ch1">
           <text className="nn">모집인원</text>
 
@@ -273,6 +274,7 @@ const Write = () => {
           onClick={hook.handleSubmit}
         />
       </div>
+    </div>
     </>
   );
 };
