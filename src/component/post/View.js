@@ -7,7 +7,6 @@ import userStore from "../../store/user.store";
 
 function View() {
   const { id } = useParams();
-  const { rid } = useParams();
   const user = userStore();
   const [write, setWrite] = useState([]);
   const [htmlString, setHtmlString] = useState();
@@ -108,6 +107,35 @@ function View() {
 
   const navigate = useNavigate();
 
+  //-----------------------------------------------------------
+  const [r_reply, setR_Reply] = useState([]);
+  const { rid } = useParams();
+  const [isRSecret, setIsRSecret] = useState(false); // 비밀댓글 여부
+  const [RsameUsers, setRSameUsers] = useState(false);
+  const [postRId, setPostRId] = useState(); 
+  useEffect(() => {
+    const fetchR_Reply = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8080/getR_Reply/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        if (res.data !== undefined) {
+          setR_Reply(res.data.data);
+          setRSameUsers(res.data.RsameUsers);
+          console.log(res.data.message);
+          console.log(res.data.data);
+        }console.log(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    
+    fetchR_Reply();
+ 
+  }, []);
+
+  //----------------------------------------------------------------
+
   const replyHandler = (e) => {
     setReply(e.target.value);
   };
@@ -115,6 +143,8 @@ function View() {
   const replyInputChangeHandler = (e) => {
     setReplyInput(e.target.value);
   };
+
+  const today = new Date();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -125,6 +155,8 @@ function View() {
       const response = await axios.post(`http://localhost:8080/postreply/${id}`, {
         reply: String(replyInput),
         isSecret : Boolean(isSecret),
+        rwriter: user.name,
+        rwriteDate: today,
       }, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
@@ -149,8 +181,6 @@ function View() {
   const replyInputRChangeHandler = (e) => {
     setReplyRInput(e.target.value);
   };
-  const [r_reply, setR_Reply] = useState([]);
-  const [isRSecret, setIsRSecret] = useState(false); // 비밀댓글 여부
   const [replyRInput, setReplyRInput] = useState("");
 
   const rhandleSubmit = async (e) => {
@@ -161,6 +191,8 @@ function View() {
       const response = await axios.post(`http://localhost:8080/postr_reply/${id}/${selectedRId}`, {
         r_reply: String(replyRInput),
         isRSecret : Boolean(isRSecret),
+        r_rwriter: user.name,
+        r_rwriteDate: today,
         
       }, {
         headers: { Authorization: `Bearer ${user.token}` },
@@ -179,6 +211,17 @@ function View() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const formatDate = (today) => {
+    const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const dateW = today.getDate();
+    const dayOfWeek = daysOfWeek[today.getDay()];
+    const formattedDate = `${year}.${month}.${dateW}(${dayOfWeek})`;
+
+    return formattedDate;
   };
 
 
@@ -215,14 +258,13 @@ function View() {
         <div className={styles.content_2_a}>
           <div>작성자{write.writer}</div>
           <div>|</div>
-          <div>날짜{write.writeDate}</div>
+          <div>
+              날짜{" "}
+              {write.writeDate !== undefined &&
+                formatDate(new Date(write.writeDate))}
+          </div>
         </div>
-        <div className={styles.content_2_c}>
-          <div></div>
-        </div>
-        <div className={styles.content_2_b}>
-          <div></div>
-        </div>
+      
       </div>
       <div className={styles.content_5}>
         <div className={styles.content_5_a}>
@@ -276,10 +318,13 @@ function View() {
             {reply.map((r) => (
             
             <tr className={styles.replyTitle} key={r._id}>
-              <td></td>
+              <td>{r.rwriter}</td>
               <td>{r.isSecret ? "비밀댓글" : "공개댓글"}</td>
               <td>{r.reply}</td>
-              <td>{r.createdAt}</td>
+              <td>{" "}
+              {r.rwriteDate !== undefined &&
+                formatDate(new Date(r.rwriteDate))}</td>
+
               {sameUsers && (
                 <td>
                   <input type="button" className={styles.rdbtn} value="삭제"></input>
@@ -322,15 +367,40 @@ function View() {
                   }}>대댓글 목록 보기</button>
                 )}
                 <div>
-                      <button onClick={() => {
-                        setShowReplyList(null);
-                        setSelectedRId(null);
-                      }}>대댓글 목록 닫기</button>
-                    </div>
+                  {showReplyList && (
+                    <button onClick={() => {
+                      setShowReplyList(selectedRId === r._id ? null : r._id);
+                      setSelectedRId(selectedRId === r._id ? null : r._id);
+                    }}>대댓글 목록 닫기</button>
+                  )}
+                
+                </div>
                 {showReplyList === r._id && (
                   
-                  <div className={styles.rr_reply}>
+                  <div className={styles.rr_reply2}>
                     {/* 대댓글 목록 보여주는 코드 */}
+                    
+                      <table>
+                        <thead>
+                          <tr className={styles.ttrrr}>
+                            <td>닉네임</td>
+                            <td>비밀댓글 여부</td>
+                            <td>대댓글 내용</td>
+                            <td>작성 날짜</td>
+                          </tr>
+                        </thead>
+                        {r_reply.map((rr) => (
+                        <tbody>
+                          <tr>
+                            <td>{rr.r_rwriter}</td>
+                            <td>{rr.isRSecret ? "비밀댓글" : "공개댓글"}</td>
+                            <td>{rr.r_reply}</td>
+                            <td>{" "}{rr.r_rwriteDate !== undefined && formatDate(new Date(rr.r_rwriteDate))}</td>
+                          </tr>
+                        </tbody>
+                        ))}
+                      </table>
+                    
                   </div>
                 )}
               </td>

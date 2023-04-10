@@ -431,7 +431,7 @@ app.get("/ranking", async (req, res) => {
 //+++++++++++++++++++++++++++++++++++++++++
 /// 댓글 작성
 app.post("/postreply/:id", async (req, res) => {
-  const { reply, isSecret, rwriter, rwriterDate } = req.body;
+  const { reply, isSecret, rwriter, rwriteDate } = req.body;
   const { id } = req.params;
 
   const post = await Write.findOne({ _id: id });
@@ -449,7 +449,8 @@ app.post("/postreply/:id", async (req, res) => {
     const newReply = new Reply({
       postId : id,
       _id: 총댓글수 + 1, 
-      rwriter : rwriter,
+      rwriter: rwriter,
+      rwriteDate : rwriteDate,
       reply : reply,
       isSecret : isSecret
     });
@@ -465,7 +466,7 @@ app.post("/postreply/:id", async (req, res) => {
 
 /// 대댓글 작성
 app.post("/postr_reply/:id/:rid", async (req, res) => {
-  const { r_reply, isRSecret } = req.body;
+  const { r_reply, isRSecret, r_rwriteDate, r_rwriter } = req.body;
   const { id, rid } = req.params;
 
   console.log(rid);
@@ -492,6 +493,8 @@ app.post("/postr_reply/:id/:rid", async (req, res) => {
       postRId : id,
       selectedRId : rid,
       _id: 총대댓글수 + 1, //댓글번호
+      r_rwriter : r_rwriter,
+      r_rwriteDate : r_rwriteDate,
       r_reply : r_reply,
       isRSecret : isRSecret
     });
@@ -609,7 +612,7 @@ app.get("/getReply/:id", async (req, res) => {
     const result = await Reply.find({ postId: req.params.id})
 
     if (result) {
-      console.log(result);
+
       let sameUsers = false;
       if (userId === result[0]._user) sameUsers = true;
       console.log(req.params.postId);
@@ -629,7 +632,39 @@ app.get("/getReply/:id", async (req, res) => {
   }
 });
 
+// 대댓글 
+app.get("/getR_Reply/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+  const selectedRId = req.params.rid;
 
+  try {
+    const result = await R_Reply.find({ postRId : req.params.id})
+    if (result) {
+      console.log(result);
+      let RsameUsers = false;
+      if (userId === result[0]._user) RsameUsers = true;
+      console.log(req.params.postRId);
+      console.log(req.params.rid);
+      return res.status(200).json({
+        data: result, selectedRId,
+        RsameUsers: RsameUsers,
+        message: ` ${typeof req.params.rid}대댓글 가져오기 성공`,
+      });
+    } 
+    else {
+      return res.status(404).json({ message: "대댓글이 존재하지 않습니다." });
+    }
+
+    
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
 
 
 
