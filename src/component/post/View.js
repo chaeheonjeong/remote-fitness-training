@@ -12,6 +12,7 @@ function View() {
   const [write, setWrite] = useState([]);
   const [htmlString, setHtmlString] = useState();
   const [sameUser, setSameUser] = useState(false);
+  const [selectedRId, setSelectedRId] = useState();
 
   useEffect(() => {
     const fetchWrite = async () => {
@@ -55,7 +56,8 @@ function View() {
 
   const handleHideReplyInput = () => {
     setShowReplyInput(false);
-    setShowReplyList(false);
+    //setShowReplyList(false);
+    setSelectedRId(null);
   };
 
   const handleShowReplyList = () => {
@@ -68,6 +70,7 @@ function View() {
     setShowReplyList(false);
   };
 
+
   //---------------------------------
 
 
@@ -76,6 +79,7 @@ function View() {
   const [isSecret, setIsSecret] = useState(false); // 비밀댓글 여부
   const [sameUsers, setSameUsers] = useState(false);
   const [postId, setPostId] = useState(); 
+  const [replyInput, setReplyInput] = useState("");
 
   useEffect(() => {
     const fetchReply = async () => {
@@ -108,14 +112,18 @@ function View() {
     setReply(e.target.value);
   };
 
+  const replyInputChangeHandler = (e) => {
+    setReplyInput(e.target.value);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = { reply, isSecret };
+    const data = { reply: replyInput, isSecret: isSecret };
     
     console.log(data);
     try {
       const response = await axios.post(`http://localhost:8080/postreply/${id}`, {
-        reply: String(reply),
+        reply: String(replyInput),
         isSecret : Boolean(isSecret),
       }, {
         headers: { Authorization: `Bearer ${user.token}` },
@@ -126,23 +134,34 @@ function View() {
       console.log(typeof data);
       //console.log(res.data.datas);
       console.log("success", response.data.message);
+
+      // 새로운 댓글을 추가합니다.
+      setReply([...reply, replyInput]);
+      setReplyInput(""); // 댓글 입력창을 초기화합니다.
+
       navigate("/");
     } catch (error) {
       console.log(error);
     }
   };
 
+
+  const replyInputRChangeHandler = (e) => {
+    setReplyRInput(e.target.value);
+  };
   const [r_reply, setR_Reply] = useState([]);
   const [isRSecret, setIsRSecret] = useState(false); // 비밀댓글 여부
+  const [replyRInput, setReplyRInput] = useState("");
 
   const rhandleSubmit = async (e) => {
     e.preventDefault();
-    const data = { r_reply, isRSecret };
+    const data = { r_reply : replyRInput, isRSecret : isRSecret};
     console.log(data);
     try {
-      const response = await axios.post(`http://localhost:8080/postr_reply/${id}`, {
-        r_reply: String(r_reply),
+      const response = await axios.post(`http://localhost:8080/postr_reply/${id}/${selectedRId}`, {
+        r_reply: String(replyRInput),
         isRSecret : Boolean(isRSecret),
+        
       }, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
@@ -150,17 +169,18 @@ function View() {
       
       
       console.log(typeof data);
-      //console.log(res.data.datas);
       console.log("success", response.data.message);
+
+      // 새로운 댓글을 추가합니다.
+      setR_Reply([...r_reply, replyRInput]);
+      setReplyRInput(""); // 댓글 입력창을 초기화합니다.
+
       navigate("/");
     } catch (error) {
       console.log(error);
     }
   };
 
-  const replyRHandler = (e) => {
-    setR_Reply(e.target.value);
-  };
 
   
   return (
@@ -225,8 +245,8 @@ function View() {
             type="text"
             className={styles.reply_input}
             placeholder="댓글 내용을 입력해주세요."
-            value={reply}
-            onChange={replyHandler}
+            value={replyInput}
+            onChange={replyInputChangeHandler}
           />
           <div className={styles.reply_choose}>
 
@@ -253,7 +273,8 @@ function View() {
             </tr>
           </thead>
           <tbody>
-          {reply.map((r) => (
+            {reply.map((r) => (
+            
             <tr className={styles.replyTitle} key={r._id}>
               <td></td>
               <td>{r.isSecret ? "비밀댓글" : "공개댓글"}</td>
@@ -267,59 +288,57 @@ function View() {
               )}
 
               <td>
-              {!showReplyInput && (
-                <button onClick={handleShowReplyInput}>대댓글 추가</button>
-              )}
-
-              {showReplyInput && (
-                <form onSubmit={rhandleSubmit}> 
-                  <div className={styles.rhandle}>
-                  
-                    <input
-                      type="text"
-                      className={styles.reply_input}
-                      placeholder="대댓글 내용을 입력해주세요."
-                      value={r_reply}
-                      onChange={replyRHandler}
-                    />
-                    <div className={styles.reply_choose}>
-                      <input type="checkbox" checked={isRSecret} className={styles.secret} onChange={(e) => setIsRSecret(e.target.checked)}></input>
-                      <text className={styles.rc1}>비밀 대댓글</text>
-                      <input type="submit" value="대댓글 등록"></input>
-                      <button onClick={handleHideReplyInput}>대댓글 작성 취소</button>
-                    </div>
-                  </div>
-                </form>
-                
-              )}
-
-              {!showReplyList && (
-                <button onClick={handleShowReplyList}>대댓글 목록 보기</button>
-              )}
-              </td>
-
-            </tr>
-          ))}
-    
-            <tr className={styles.replyContent}>
-              <td>
-              
-              {showReplyList && (
-                <tr className={styles.replyContent}>
-                  <td colSpan={10}>
-                    <div className={styles.rr_reply}>
-                      <div>{/* 대댓글 목록 보여주는 코드 */}</div>
-                      <div>
-                        <button onClick={handleHideReplyList}>
-                          대댓글 목록 닫기
-                        </button>
+                {!showReplyInput && (
+                  <button onClick={() => {
+                    setShowReplyInput(selectedRId === r._id ? null : r._id);
+                    setSelectedRId(selectedRId === r._id ? null : r._id);
+                  }}>대댓글 추가</button>
+                )}
+                {showReplyInput === r._id && (
+                    <form onSubmit={rhandleSubmit}> 
+                      <div className={styles.rhandle}>
+                      
+                        <input
+                          type="text"
+                          className={styles.reply_input}
+                          placeholder="대댓글 내용을 입력해주세요."
+                          value={replyRInput}
+                          onChange={replyInputRChangeHandler}
+                        />
+                        <div className={styles.reply_choose}>
+                          <input type="checkbox" checked={isRSecret} className={styles.secret} onChange={(e) => setIsRSecret(e.target.checked)}></input>
+                          <text className={styles.rc1}>비밀 대댓글</text>
+                          <input type="submit" value="대댓글 등록"></input>
+                          <button onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
+                        </div>
                       </div>
+                  </form>
+              
+                )}
+                {!showReplyList && (
+                  <button onClick={() => {
+                    setShowReplyList(selectedRId === r._id ? null : r._id);
+                    setSelectedRId(selectedRId === r._id ? null : r._id);
+                  }}>대댓글 목록 보기</button>
+                )}
+                <div>
+                      <button onClick={() => {
+                        setShowReplyList(null);
+                        setSelectedRId(null);
+                      }}>대댓글 목록 닫기</button>
                     </div>
-                  </td>
-                </tr>
-              )}
+                {showReplyList === r._id && (
+                  
+                  <div className={styles.rr_reply}>
+                    {/* 대댓글 목록 보여주는 코드 */}
+                  </div>
+                )}
               </td>
+
             </tr>
+            ))}
+    
+           
           </tbody>
         </table>
       </div>
@@ -328,54 +347,3 @@ function View() {
 }
 
 export default View;
-
-/*
-
-
-<input type='number' id='number' classname='number'></input>
-<input type='button' value='취소' id='cancel' className='cancel' onClick={onReset}/>
-<input type='button' value='모집중' id='view_list_button1' />
-<input type={text} />
-
-*/
-
-/*
-{!showReplyList && ( <button onClick={handleShowReplyList}>대댓글 등록</button>)}
-                                        {showReplyList && (
-                                            <div className='rr_reply'>
-                                            {/* 대댓글 목록 보여주는 코드 }
-                                            </div>
-                                        )}
-
-*/
-/*
-<input type="button" className='rrbtn' value="답장"></input>*/
-
-/*
-    const [local, setLocal] = useState([])
-
-    const dispatch = useDispatch()
-    const comments = useSelector(state => state.comment)
-    const [commentValue, setCommentValule] = useState('')
-    const [text1, setText1] = useState('')
-    const [display, setDisplay] = useState(false)
-    const onSubmit = (e) => {
-        e.preventDefault();
-        setCommentValule(text1)
-        let data = {
-            content: text1,
-            writer: 'jamong',
-            postId: '123123',
-            responseTo: 'root',
-            commentId: uuid()
-        }
-        //dispatch(addComment(data))
-
-        setText1('')
-    }
-    useEffect(() => {
-        localStorage.setItem('reply', JSON.stringify(comments))
-        setLocal(comments.filter(comment => comment.responseTo === 'root'))
-    }, [comments])
-
-*/

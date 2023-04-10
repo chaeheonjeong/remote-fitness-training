@@ -11,11 +11,6 @@ import Write from "../component/post/Write";
 import View from "../component/post/View";
 import Ask from "../component/post/Ask";
 import AskView from "../component/post/AskView";
-import View2 from "../component/post/View2";
-
-import MWrite from "../component/post/MWrite"
-
-import View3 from "../component/post/View3";
 
 import MainOpenStudy from "../component/MainOpenStudy";
 import MainStudy from "../component/MainStudy";
@@ -38,13 +33,10 @@ const Router = () => {
                 <Route path="/Write" element={<Write />} />
                 <Route path="/View" element={<View />} />
                 <Route path="/Ask" element={<Ask />} />
-                <Route path='/View2' element={<View2 />} />
-                <Route path='/View3' element={<View3 />} />
                 <Route path="/AskView" element={<AskView />} />
                 <Route path="/MyInfo" element={<MyInfo/>} />
                 <Route path="/MyCalendar" element={<MyCalendar/>}/>
                 <Route path="/View/:id" element={<View />} />
-                <Route path="/MWrite" element={<MWrite />} />
             </Routes>
         </BrowserRouter>
     );

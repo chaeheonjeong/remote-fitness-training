@@ -464,12 +464,14 @@ app.post("/postreply/:id", async (req, res) => {
 
 
 /// 대댓글 작성
-app.post("/postr_reply/:postId", async (req, res) => {
+app.post("/postr_reply/:id/:rid", async (req, res) => {
   const { r_reply, isRSecret } = req.body;
-  const { postId, rid } = req.params;
+  const { id, rid } = req.params;
+
+  console.log(rid);
 
 
-  const post = await Write.findOne({ _id: postId });
+  const post = await Write.findOne({ _id: id });
   if (!post) {
     return res.status(404).json({ message: "Post not found" });
   }
@@ -487,9 +489,9 @@ app.post("/postr_reply/:postId", async (req, res) => {
   }
   try {
     const newR_Reply = new R_Reply({
-      postRId : postId,
-      r_replyId : rid,
-      r_rid: 총대댓글수 + 1,
+      postRId : id,
+      selectedRId : rid,
+      _id: 총대댓글수 + 1, //댓글번호
       r_reply : r_reply,
       isRSecret : isRSecret
     });

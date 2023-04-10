@@ -4,9 +4,8 @@ const Schema = mongoose.Schema;
 const r_replySchema = new Schema(
   {
     postRId : {type: Number, required: true }, //게시물 번호
-    r_replyId : { type: Number, required: false }, //댓글 번호
-    rid : { type: String, required: false, auto: true }, // 대댓글 번호
-
+    selectedRId : { type: Number, required: false }, //댓글 번호
+    _id : { type: String, required: false, auto: true }, // 대댓글 번호
     r_reply: { type: String, required: true }, // 대댓글
     isRSecret: { type: Boolean, default: false }, //대댓글비밀댓글 설정 여부
   },
