@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import userStore from "../../store/user.store";
 
-function View() {
+const View = () => {
   const { id } = useParams();
   const user = userStore();
   const [write, setWrite] = useState([]);
