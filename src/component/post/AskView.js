@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import "./AskView.css";
+//import "./AskView.css";
 import userStore from "../../store/user.store";
 import Header from "../main/Header";
 import styles from "./View.module.css";
 import axios from "axios";
 import { scrollToTop } from "../../util/common";
+import Reply from '../../server/models/reply';
 
 function AskView() {
   const navigate = useNavigate();
@@ -154,6 +155,19 @@ function AskView() {
     }
   };
 
+  const deleteReply = (id, replyId) => {
+    const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
+    if(confirmDelete) {
+      axios
+        .delete(`http://localhost:8080/askDelete/${id}/reply/${replyId}`)
+        .then((res) => {
+          console.log(res.data);
+          //navigate("/");
+        })
+        .catch((err) => console.log(err));
+    }
+  }
+
   const formatDate = (today) => {
     const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
     const year = today.getFullYear();
@@ -257,7 +271,7 @@ function AskView() {
                   <th>작성된 날짜</th>
                   <th>
                     <input type="button" className="rrbtn" value="답장"></input>
-                    <input type="button" className="rdbtn" value="삭제"></input>
+                    <input type="button" className="rdbtn" value="삭제" onClick={deleteReply}></input>
                     <input type="button" className="rmbtn" value="수정"></input>
                   </th>
                 </tr>

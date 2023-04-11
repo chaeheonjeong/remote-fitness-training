@@ -4,7 +4,12 @@ const mongoose = require("mongoose");
 const User = require("./models/user");
 const Write = require("./models/write");
 const Ask = require("./models/ask");
+const Reply = require("./models/reply");
+const R_Reply = require("./models/r_reply");
 const Counter = require("./models/counter");
+const ReplyCounter = require("./models/replycounter");
+const R_ReplyCounter = require("./models/r_replycounter");
+
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
@@ -634,26 +639,33 @@ app.get("/myRanking", async (req, res) => {
   }
 });
 
-app.post("/postreply", async (req, res) => {
-  const { reply } = req.body;
+// 댓글 작성
+app.post("/postreply/:id", async (req, res) => {
+  const { reply, isSecret, rwriter, rwriteDate } = req.body;
+  const { id } = req.params;
 
-  const replycounter = await ReplyCounter.findOneAndUpdate(
-    { name: "댓글 수" },
-    { $inc: { totalReply: 1 } },
-    { new: true, upsert: true }
-  );
-  const 총댓글수 = replycounter.totalReply + 1;
+  const post = await Write.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const replycounter = await ReplyCounter.findOneAndUpdate({ name: '댓글 수' }, { $inc: { totalReply: 1 } }, { new: true, upsert: true });
+  const 총댓글수 = (replycounter.totalReply +1);
 
   if (!replycounter) {
     return res.status(500).json({ message: "Counter not found" });
   }
   try {
     const newReply = new Reply({
-      _id: 총댓글수 + 1,
-      reply: reply,
+      postId : id,
+      _id: 총댓글수 + 1, 
+      rwriter: rwriter,
+      rwriteDate : rwriteDate,
+      reply : reply,
+      isSecret : isSecret
     });
     await newReply.save();
-
+    console.log(isSecret)
     return res.status(200).json({ message: `Reply created successfully` });
   } catch (error) {
     console.error(error);
@@ -1496,6 +1508,116 @@ app.post("/getViewCount", async (req, res) => {
   }
 });
 
+// 댓글 
+app.get("/getReply/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    
+    const result = await Reply.find({ postId: req.params.id})
+
+    if (result) {
+
+      let sameUsers = false;
+      if (userId === result[0]._user) sameUsers = true;
+      console.log(req.params.postId);
+      return res.status(200).json({
+        data: result,
+        sameUsers: sameUsers,
+        message: ` ${typeof req.params.postId}댓글 가져오기 성공`,
+      });
+    } 
+    else {
+      return res.status(404).json({ message: "댓글이 존재하지 않습니다." });
+    }
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// 대댓글 
+app.get("/getR_Reply/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+  const selectedRId = req.params.rid;
+
+  try {
+    const result = await R_Reply.find({ postRId : req.params.id})
+    if (result) {
+      console.log(result);
+      let RsameUsers = false;
+      if (userId === result[0]._user) RsameUsers = true;
+      console.log(req.params.postRId);
+      console.log(req.params.rid);
+      return res.status(200).json({
+        data: result, selectedRId,
+        RsameUsers: RsameUsers,
+        message: ` ${typeof req.params.rid}대댓글 가져오기 성공`,
+      });
+    } 
+    else {
+      return res.status(404).json({ message: "대댓글이 존재하지 않습니다." });
+    }
+
+    
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+/// 대댓글 작성
+app.post("/postr_reply/:id/:rid", async (req, res) => {
+  const { r_reply, isRSecret, r_rwriteDate, r_rwriter } = req.body;
+  const { id, rid } = req.params;
+
+  console.log(rid);
+
+
+  const post = await Write.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const reply = await Reply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "Reply not found" });
+  }
+
+  const r_replycounter = await R_ReplyCounter.findOneAndUpdate({ name: '대댓글 수' }, { $inc: { totalR_Reply: 1 } }, { new: true, upsert: true });
+  const 총대댓글수 = r_replycounter.totalR_Reply + 1;
+
+  if (!r_replycounter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newR_Reply = new R_Reply({
+      postRId : id,
+      selectedRId : rid,
+      _id: 총대댓글수 + 1, //댓글번호
+      r_rwriter : r_rwriter,
+      r_rwriteDate : r_rwriteDate,
+      r_reply : r_reply,
+      isRSecret : isRSecret
+    });
+    await newR_Reply.save();
+    console.log(isRSecret)
+    return res.status(200).json({ message: `Reply created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+
 app.post("/upload", upload.single("file"), (req, res) => {
   // (7)
   res.status(200).json(req.file);
@@ -1588,6 +1710,29 @@ app.get('/myLikedQuestion', auth, async(req, res) => {
   } catch(error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// 댓글삭제
+app.delete("/view/:id/reply/:replyId", async(req, res) => {
+  const postId = req.params.id;
+  const replyId = req.params.replyId;
+
+  try {
+    const reply = await Reply.findOne({ postId: postId, _id: replyId });
+
+    if(!reply) {
+      return res.status(404).json({ message: "댓글을 찾을 수 없습니다." });
+    }
+
+    console.log(reply);
+
+    await Reply.deleteOne({ postId: postId, _id: replyId });
+
+    res.status(200).json({ message: "댓글을 삭제하였습니다." });
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: "댓글삭제 실패" });
   }
 });
 
