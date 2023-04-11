@@ -4,6 +4,8 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import userStore from "../../store/user.store";
+import Header from "../main/Header";
+import { scrollToTop } from "../../util/common";
 
 const View = () => {
   const { id } = useParams();
@@ -12,6 +14,50 @@ const View = () => {
   const [htmlString, setHtmlString] = useState();
   const [sameUser, setSameUser] = useState(false);
   const [selectedRId, setSelectedRId] = useState();
+  const [good, setGood] = useState(false);
+  const [goodCount, setGoodCount] = useState(0);
+
+  const deleteHandler = () => {
+    const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
+    if (confirmDelete) {
+      axios
+        .delete(`http://localhost:8080/writeDelete/${id}`)
+        .then((res) => {
+          navigate("/study");
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
+  useEffect(() => {
+    if (user.token !== null) {
+      axios
+        .get(`http://localhost:8080/getWrite/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setWrite(response.data.result[0]);
+            setSameUser(response.data.sameUser);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .get(`http://localhost:8080/getWrite2/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            setWrite(response.data.result[0]);
+            setSameUser(response.data.sameUser);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
 
   useEffect(() => {
     const fetchWrite = async () => {
@@ -69,6 +115,8 @@ const View = () => {
     setShowReplyList(false);
   };
 
+  
+
 
   //---------------------------------
 
@@ -79,6 +127,73 @@ const View = () => {
   const [sameUsers, setSameUsers] = useState(false);
   const [postId, setPostId] = useState(); 
   const [replyInput, setReplyInput] = useState("");
+
+  useEffect(() => {
+    if (user.token !== null) {
+      axios
+        .get(`http://localhost:8080/getGoodPost/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setGood(response.data.good);
+            setGoodCount(response.data.count);
+            console.log(response.data.message);
+          } else if (response.status === 204) {
+            setGood(false);
+            setGoodCount(0);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .get(`http://localhost:8080/getGoodPost2/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            setGoodCount(response.data.count);
+          } else if (response.status === 204) {
+            setGood(false);
+            setGoodCount(0);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    scrollToTop();
+  }, []);
+
+  const clickGood = () => {
+    if (user.token !== null) {
+      axios
+        .post(`http://localhost:8080/setGoodPost/${id}`, null, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setGood(!good);
+            if (!good) {
+              setGoodCount((prevCount) => prevCount + 1);
+            } else {
+              setGoodCount((prevCount) => prevCount - 1);
+            }
+          } else if (response.status === 201) {
+            setGood(!good);
+            setGoodCount(1);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      alert("로그인 해주세요.");
+    }
+  };
 
   useEffect(() => {
     const fetchReply = async () => {
@@ -101,9 +216,6 @@ const View = () => {
  
   }, []);
 
-  const handlePodastClick = (postId) => {
-    setPostId(postId);
-  };
 
   const navigate = useNavigate();
 
@@ -227,193 +339,211 @@ const View = () => {
 
   
   return (
-    <div className={styles.detail}>
-      <div className={styles.content_4}>
-        <div className={styles.content_4_a}>
-          <div>
-            <button
-              className={progress ? styles.falseBtn : styles.cbtn}
-            >
-              {progress ? "모집완료" : "모집중"}
-            </button>
+    <>
+      <Header />
+      <div className={styles.detail}>
+        <div className={styles.content_4}>
+          <div className={styles.content_4_a}>
+            <div>
+              <button
+                className={progress ? styles.falseBtn : styles.cbtn}
+              >
+                {progress ? "모집완료" : "모집중"}
+              </button>
+            </div>
           </div>
+          {sameUser && (
+            <div className={styles.content_4_b}>
+              <input
+                  type="button"
+                  value="삭제"
+                  onClick={() => {
+                    deleteHandler();
+                  }}
+                />
+              <input
+                type="button"
+                value="수정"
+                onClick={() => {
+                  navigate(`/modifyPost/${id}`);
+                }}
+              />
+            </div>
+          )}
         </div>
-        {sameUser && (
-          <div className={styles.content_4_b}>
-            <input type="button" value="삭제" />
+        <div className={styles.content_1}>
+          <div>제목{write.title}</div>
+        </div>
+        <div className={styles.content_2}>
+          <div className={styles.content_2_a}>
+            <div>작성자{write.writer}</div>
+            <div>|</div>
+            <div>
+                날짜{" "}
+                {write.writeDate !== undefined &&
+                  formatDate(new Date(write.writeDate))}
+            </div>
+          </div>
+        
+        </div>
+        <div className={styles.content_5}>
+          <div className={styles.content_5_a}>
+            <div>모집인원{write.number}</div>
+            <div>시작 예정일{write.date}</div>
+          </div>
+          <div className={styles.content_5_b}>
+            <div>진행기간{write.period}</div>
+            <div>
+                태그
+                {write.tag !== undefined &&
+                  write.tag.map((x, i) => {
+                    return <span key={x + i}>{x}</span>;
+                  })}
+              </div>
+            </div>
+          </div>
+          <div className={styles.content_3}>
+            <div>내용</div>
+            <div dangerouslySetInnerHTML={{ __html: htmlString }} />
+            <span onClick={clickGood} className={good ? `styles.goodBtn` : null}>
+              좋아요{goodCount}
+            </span>
+            <span>조회수{write.views}</span>
+          </div>
+        {/* 댓글 입력 폼 */}
+        <form onSubmit={handleSubmit}>
+          <div className={styles.content_6}>
             <input
-              type="button"
-              value="수정"
-              onClick={() => {
-                navigate(`/write/${id}`);
-              }}
+              type="text"
+              className={styles.reply_input}
+              placeholder="댓글 내용을 입력해주세요."
+              value={replyInput}
+              onChange={replyInputChangeHandler}
             />
+            <div className={styles.reply_choose}>
+
+              <text className= {isSecret ? styles.falseSecret : styles.trueSecret}>비밀댓글: {isSecret ? '체크됨' : '체크안됨'}</text>
+
+              <input type="checkbox" checked={isSecret} className={styles.secret} onChange={(e) => setIsSecret(e.target.checked)}></input>
+              <text className={styles.rc1}>비밀댓글</text>            
+              <input type="submit" className={styles.sbtn} value="등록"></input>
+            </div>
           </div>
-        )}
-      </div>
-      <div className={styles.content_1}>
-        <div>제목{write.title}</div>
-      </div>
-      <div className={styles.content_2}>
-        <div className={styles.content_2_a}>
-          <div>작성자{write.writer}</div>
-          <div>|</div>
-          <div>
-              날짜{" "}
-              {write.writeDate !== undefined &&
-                formatDate(new Date(write.writeDate))}
-          </div>
-        </div>
-      
-      </div>
-      <div className={styles.content_5}>
-        <div className={styles.content_5_a}>
-          <div>모집인원{write.number}</div>
-          <div>시작 예정일{write.date}</div>
-        </div>
-        <div className={styles.content_5_b}>
-          <div>진행기간{write.period}</div>
-          {/* <div>태그{String(write?.tag)}</div> */}
-        </div>
-      </div>
-      <div className={styles.content_3}>
-        <div>내용</div>
-        <div dangerouslySetInnerHTML={{ __html: htmlString }} />
-      </div>
-      {/* 댓글 입력 폼 */}
-      <form onSubmit={handleSubmit}>
-        <div className={styles.content_6}>
-          <input
-            type="text"
-            className={styles.reply_input}
-            placeholder="댓글 내용을 입력해주세요."
-            value={replyInput}
-            onChange={replyInputChangeHandler}
-          />
-          <div className={styles.reply_choose}>
+        </form>
+        {/* 비밀댓글 체크 여부 출력 */}
+        
 
-            <text className= {isSecret ? styles.falseSecret : styles.trueSecret}>비밀댓글: {isSecret ? '체크됨' : '체크안됨'}</text>
-
-            <input type="checkbox" checked={isSecret} className={styles.secret} onChange={(e) => setIsSecret(e.target.checked)}></input>
-            <text className={styles.rc1}>비밀댓글</text>            
-            <input type="submit" className={styles.sbtn} value="등록"></input>
-          </div>
-        </div>
-      </form>
-      {/* 비밀댓글 체크 여부 출력 */}
-      
-
-      <div className={styles.rr_reply}>
-        <table>
-          <thead>
-            <tr className={styles.replyName}>
-              <th>닉네임</th>
-              <th>비밀댓글 여부</th>
-              <th>댓글 내용</th>
-              <th>날짜</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {reply.map((r) => (
-            
-            <tr className={styles.replyTitle} key={r._id}>
-              <td>{r.rwriter}</td>
-              <td>{r.isSecret ? "비밀댓글" : "공개댓글"}</td>
-              <td>{r.reply}</td>
-              <td>{" "}
-              {r.rwriteDate !== undefined &&
-                formatDate(new Date(r.rwriteDate))}</td>
-
-              {sameUsers && (
-                <td>
-                  <input type="button" className={styles.rdbtn} value="삭제"></input>
-                  <input type="button" className={styles.rmbtn} value="수정"></input>
-                </td>
-              )}
-
-              <td>
-                {!showReplyInput && (
-                  <button onClick={() => {
-                    setShowReplyInput(selectedRId === r._id ? null : r._id);
-                    setSelectedRId(selectedRId === r._id ? null : r._id);
-                  }}>대댓글 추가</button>
-                )}
-                {showReplyInput === r._id && (
-                    <form onSubmit={rhandleSubmit}> 
-                      <div className={styles.rhandle}>
-                      
-                        <input
-                          type="text"
-                          className={styles.reply_input}
-                          placeholder="대댓글 내용을 입력해주세요."
-                          value={replyRInput}
-                          onChange={replyInputRChangeHandler}
-                        />
-                        <div className={styles.reply_choose}>
-                          <input type="checkbox" checked={isRSecret} className={styles.secret} onChange={(e) => setIsRSecret(e.target.checked)}></input>
-                          <text className={styles.rc1}>비밀 대댓글</text>
-                          <input type="submit" value="대댓글 등록"></input>
-                          <button onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
-                        </div>
-                      </div>
-                  </form>
+        <div className={styles.rr_reply}>
+          <table>
+            <thead>
+              <tr className={styles.replyName}>
+                <th>닉네임</th>
+                <th>비밀댓글 여부</th>
+                <th>댓글 내용</th>
+                <th>날짜</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {reply.map((r) => (
               
+              <tr className={styles.replyTitle} key={r._id}>
+                <td>{r.rwriter}</td>
+                <td>{r.isSecret ? "비밀댓글" : "공개댓글"}</td>
+                <td>{r.reply}</td>
+                <td>{" "}
+                {r.rwriteDate !== undefined &&
+                  formatDate(new Date(r.rwriteDate))}</td>
+
+                {sameUsers && (
+                  <td>
+                    <input type="button" className={styles.rdbtn} value="삭제"></input>
+                    <input type="button" className={styles.rmbtn} value="수정"></input>
+                  </td>
                 )}
-                {!showReplyList && (
-                  <button onClick={() => {
-                    setShowReplyList(selectedRId === r._id ? null : r._id);
-                    setSelectedRId(selectedRId === r._id ? null : r._id);
-                  }}>대댓글 목록 보기</button>
-                )}
-                <div>
-                  {showReplyList && (
+
+                <td>
+                  {!showReplyInput && (
+                    <button onClick={() => {
+                      setShowReplyInput(selectedRId === r._id ? null : r._id);
+                      setSelectedRId(selectedRId === r._id ? null : r._id);
+                    }}>대댓글 추가</button>
+                  )}
+                  {showReplyInput === r._id && (
+                      <form onSubmit={rhandleSubmit}> 
+                        <div className={styles.rhandle}>
+                        
+                          <input
+                            type="text"
+                            className={styles.reply_input}
+                            placeholder="대댓글 내용을 입력해주세요."
+                            value={replyRInput}
+                            onChange={replyInputRChangeHandler}
+                          />
+                          <div className={styles.reply_choose}>
+                            <input type="checkbox" checked={isRSecret} className={styles.secret} onChange={(e) => setIsRSecret(e.target.checked)}></input>
+                            <text className={styles.rc1}>비밀 대댓글</text>
+                            <input type="submit" value="대댓글 등록"></input>
+                            <button onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
+                          </div>
+                        </div>
+                    </form>
+                
+                  )}
+                  {!showReplyList && (
                     <button onClick={() => {
                       setShowReplyList(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
-                    }}>대댓글 목록 닫기</button>
+                    }}>대댓글 목록 보기</button>
                   )}
-                
-                </div>
-                {showReplyList === r._id && (
+                  <div>
+                    {showReplyList && (
+                      <button onClick={() => {
+                        setShowReplyList(selectedRId === r._id ? null : r._id);
+                        setSelectedRId(selectedRId === r._id ? null : r._id);
+                      }}>대댓글 목록 닫기</button>
+                    )}
                   
-                  <div className={styles.rr_reply2}>
-                    {/* 대댓글 목록 보여주는 코드 */}
-                    
-                      <table>
-                        <thead>
-                          <tr className={styles.ttrrr}>
-                            <td>닉네임</td>
-                            <td>비밀댓글 여부</td>
-                            <td>대댓글 내용</td>
-                            <td>작성 날짜</td>
-                          </tr>
-                        </thead>
-                        {r_reply.map((rr) => (
-                        <tbody>
-                          <tr>
-                            <td>{rr.r_rwriter}</td>
-                            <td>{rr.isRSecret ? "비밀댓글" : "공개댓글"}</td>
-                            <td>{rr.r_reply}</td>
-                            <td>{" "}{rr.r_rwriteDate !== undefined && formatDate(new Date(rr.r_rwriteDate))}</td>
-                          </tr>
-                        </tbody>
-                        ))}
-                      </table>
-                    
                   </div>
-                )}
-              </td>
+                  {showReplyList === r._id && (
+                    
+                    <div className={styles.rr_reply2}>
+                      {/* 대댓글 목록 보여주는 코드 */}
+                      
+                        <table>
+                          <thead>
+                            <tr className={styles.ttrrr}>
+                              <td>닉네임</td>
+                              <td>비밀댓글 여부</td>
+                              <td>대댓글 내용</td>
+                              <td>작성 날짜</td>
+                            </tr>
+                          </thead>
+                          {r_reply.map((rr) => (
+                          <tbody>
+                            <tr>
+                              <td>{rr.r_rwriter}</td>
+                              <td>{rr.isRSecret ? "비밀댓글" : "공개댓글"}</td>
+                              <td>{rr.r_reply}</td>
+                              <td>{" "}{rr.r_rwriteDate !== undefined && formatDate(new Date(rr.r_rwriteDate))}</td>
+                            </tr>
+                          </tbody>
+                          ))}
+                        </table>
+                      
+                    </div>
+                  )}
+                </td>
 
-            </tr>
-            ))}
-    
-           
-          </tbody>
-        </table>
+              </tr>
+              ))}
+      
+            
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
-
 export default View;

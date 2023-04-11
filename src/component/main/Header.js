@@ -7,10 +7,21 @@ import userStore from "../../store/user.store";
 const Header = () => {
   const hook = useHeader();
   const user = userStore();
+  const logout = () => {
+    user.logout();
+    hook.navigate("/login");
+  };
 
   return (
     <div className={styles.container}>
-      <label className={styles.linkLabel}>Link</label>
+      <label
+        className={styles.linkLabel}
+        onClick={() => {
+          hook.navigate("/login");
+        }}
+      >
+        Link
+      </label>
       <div className={styles.smallContainer}>
         <div className={styles.smallContainer2}>
           {user.token !== null && (
@@ -44,8 +55,9 @@ const Header = () => {
                       key={x.title}
                       className={styles.profileDropItem}
                       style={{ cursor: "pointer" }}
-                      //   onClick={()=>window.open(x.url)}
-                      // 나중에 URL 추가하고 활성화
+                      onClick={() => {
+                        hook.navigate(x.url);
+                      }}
                     >
                       {x.emo}
                       {x.title}
@@ -63,7 +75,7 @@ const Header = () => {
         </div>
         <button
           onClick={() => {
-            user.token !== null ? user.logout() : hook.navigate("/login");
+            user.token !== null ? logout() : hook.navigate("/login");
           }}
           className={styles.logButton}
         >
