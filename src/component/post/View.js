@@ -97,6 +97,8 @@ const View = () => {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [showReplyList, setShowReplyList] = useState(false);
 
+  const [showReplyModifyInput, setShowModifyReplyInput] = useState(false);
+
   const handleShowReplyInput = () => {
     setShowReplyInput(!showReplyInput);
     //setShowReplyList(false); // 대댓글 입력 칸을 보여주면서 대댓글 목록도 함께 보여줌
@@ -130,6 +132,9 @@ const View = () => {
   const [sameUsers, setSameUsers] = useState(false);
   const [postId, setPostId] = useState(); 
   const [replyInput, setReplyInput] = useState("");
+  const [replyModifyInput, setReplyModifyInput] = useState("");
+
+  const [replies, setReplies] = useState([]); // 수정된 댓글 가져올 때
 
   useEffect(() => {
     if (user.token !== null) {
@@ -235,12 +240,51 @@ const View = () => {
   };
 
   // 댓글수정
-  const modifyReply = (replyId) => {
-    axios
+  const modifyHandleSubmit = async (e, replyId) => {
+    e.preventDefault();
+
+    if(replyModifyInput === "") {
+      alert("내용을 작성해주세요.");
+      return;
+    }
+    
+    try {
+      const response = await axios.post("http://localhost:8080/viewReplyModify", {
+        postId: id,
+        _id: replyId,
+        rWriteDate: today,
+        reply: String(replyModifyInput),
+        isSecret: Boolean(isSecret), 
+      });
+
+      alert("수정이 완료되었습니다.");
+      navigate(`/view/${id}`);
+
+      //console.log("data", res.data);
+
+    } catch(error) {
+      console.log(error);
+    }
+  };
+
+  // 댓글수정(가져오기)
+  const modifyReply = async (replyId) => {
+    try {
+      const res = await axios
       .get(`http://localhost:8080/view/${id}/modify/${replyId}`)
-      .then((res) => {
-        
-      })
+      
+      if(res.data !== undefined) {
+        setIsSecret(res.data.result[0].isSecret);
+        setReplyModifyInput(res.data.result[0].reply);
+      }
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  // 댓글수정(내용반영)
+  const modifyReplyInputChangeHandler = (e) => {
+    setReplyModifyInput(e.target.value);
   }
 
 
@@ -263,7 +307,7 @@ const View = () => {
           setRSameUsers(res.data.RsameUsers);
           console.log(res.data.message);
           console.log(res.data.data);
-        }console.log(res.data);
+        }console.log('rid: ', res.data);
       } catch (err) {
         console.error(err);
       }
@@ -482,6 +526,7 @@ const View = () => {
                 {r.rwriteDate !== undefined &&
                   formatDate(new Date(r.rwriteDate))}</td>
 
+                {/* 댓글수정 */}
                 {!sameUsers && (
                   <td>
                     <input type="button" className={styles.rdbtn} value="삭제" onClick={ deleteReply.bind(null, r._id) }></input>
@@ -489,10 +534,31 @@ const View = () => {
                       type="button" 
                       className={styles.rmbtn} 
                       value="수정" 
-                      /* onClick={ () => {
-                        setShowReplyInput()
-                      }} */
+                      onClick={ () => {
+                        setShowModifyReplyInput(selectedId === r._id ? null : r._id);
+                        setSelectedId(selectedId === r._id ? null : r._id);
+                        modifyReply(r._id);
+                      }}
                      ></input>
+                     { showReplyModifyInput === r._id && (
+                      <form onSubmit={(e) => modifyHandleSubmit(e, r._id)}> 
+                          <div className={styles.handle}>
+                          
+                            <input
+                              type="text"
+                              className={styles.reply_input}
+                              value={replyModifyInput}
+                              onChange={modifyReplyInputChangeHandler}
+                            />
+                            <div className={styles.reply_choose}>
+                              <input type="checkbox" checked={isSecret} className={styles.secret} onChange={(e) => setIsSecret(e.target.checked)}></input>
+                              <text className={styles.rc1}>비밀 댓글</text>
+                              <input type="submit" value="댓글수정"></input>
+                              <button onClick={() => {setShowModifyReplyInput(null); setSelectedId(null);}}>댓글수정 취소</button>
+                            </div>
+                          </div>
+                      </form>
+                    ) }
                   </td>
                 )}
 

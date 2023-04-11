@@ -1713,6 +1713,45 @@ app.get('/myLikedQuestion', auth, async(req, res) => {
   }
 });
 
+app.get("/view/:id/modify/:replyId", async(req, res) => {
+  const postId = req.params.id;
+  const replyId = req.params.replyId;
+
+  try {
+    const result = await Reply.find({ postId: Number(postId), _id: Number(replyId)  });
+    console.log(result);
+    if(result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    }
+  } catch(error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+})
+
+app.post("/viewReplyModify", async(req, res) => {
+  const { postId, _id, rWriteDate, reply, isSecret } = req.body;
+
+  try {
+    const updatedViewReplyModify = await Reply.findOneAndUpdate(
+      { postId, _id },
+      {
+        $set: { rWriteDate, reply, isSecret },
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: `reply ${_id} updated successfully`, updatedViewReplyModify });
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
 // 댓글삭제
 app.delete("/view/:id/reply/:replyId", async(req, res) => {
   const postId = req.params.id;
