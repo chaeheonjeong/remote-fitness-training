@@ -336,6 +336,18 @@ const View = () => {
     return formattedDate;
   };
 
+  const handleRDelete = async (rrid) => {
+    try {
+      const response = await axios.delete(`http://localhost:8080/postr_reply/${id}/${selectedRId}/${rrid}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      console.log(response.data);
+      setR_Reply(r_reply.filter((r) => r._id !== rrid)); // 삭제된 대댓글을 제외하고 대댓글 목록을 업데이트합니다.
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
   
   return (
@@ -455,7 +467,7 @@ const View = () => {
                 {r.rwriteDate !== undefined &&
                   formatDate(new Date(r.rwriteDate))}</td>
 
-                {sameUsers && (
+                {!sameUsers && (
                   <td>
                     <input type="button" className={styles.rdbtn} value="삭제"></input>
                     <input type="button" className={styles.rmbtn} value="수정"></input>
@@ -526,6 +538,12 @@ const View = () => {
                               <td>{rr.isRSecret ? "비밀댓글" : "공개댓글"}</td>
                               <td>{rr.r_reply}</td>
                               <td>{" "}{rr.r_rwriteDate !== undefined && formatDate(new Date(rr.r_rwriteDate))}</td>
+                              {!sameUsers && (
+                                <td>
+                                  <input type="button" className={styles.rrdbtn} value="삭제" onClick={() => handleRDelete(rr._id)}></input>
+                                  <input type="button" className={styles.rrmbtn} value="수정"></input>
+                                </td>
+                              )}
                             </tr>
                           </tbody>
                           ))}

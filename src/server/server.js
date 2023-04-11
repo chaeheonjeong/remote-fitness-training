@@ -592,6 +592,35 @@ app.post("/postAr_reply/:id/:rid", async (req, res) => {
   }
 });
 
+// 대댓글 삭제
+app.delete("/postr_reply/:id/:rid/:rrid", async (req, res) => {
+  const { id, rid, rrid } = req.params;
+  
+  const post = await Write.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+  
+  const reply = await Reply.findOne({ _id: rid });
+    if (!reply) {
+  return res.status(404).json({ message: "Reply not found" });
+  }
+  
+  const r_reply = await R_Reply.findOne({ _id: rrid });
+    if (!r_reply) {
+    return res.status(404).json({ message: "R_Reply not found" });
+  }
+  
+  try {
+    await R_Reply.deleteOne({ _id: rrid });
+  
+    return res.status(200).json({ message: `R_Reply ${rrid} deleted successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
 /// 질문글 작성
 app.post("/postAsk", async (req, res) => {
   const authHeader = req.headers.authorization;
