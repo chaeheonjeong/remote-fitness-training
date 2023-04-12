@@ -79,13 +79,13 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
           tags.map((tag, index) => {
             if (typeof tag === "object" && tag.id) {
               return (
-                <a className={styles.studyTag} key={tag.id} id={tag.id}>
+                <a className={styles.questionTag} key={tag.id} id={tag.id}>
                   {"#" + tag}
                 </a>
               );
             } else {
               return (
-                <a className={styles.studyTag} key={index}>
+                <a className={styles.questionTag} key={index}>
                   {"#" + tag}
                 </a>
               );

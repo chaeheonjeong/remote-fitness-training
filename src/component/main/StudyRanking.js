@@ -83,6 +83,19 @@ const StudyRanking = () => {
     touchRatio={0}
   }); */
 
+  /* useEffect(() => {
+    axios
+      .get("http://localhost:8080/ranking")
+      .then((response) => {
+        if (response.status === 200) {
+          setRankers(response.data.rankTime);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []); */
+
   useEffect(() => {
     axios
       .get("http://localhost:8080/ranking")

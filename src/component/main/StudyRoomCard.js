@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+<<<<<<< HEAD
+=======
+import axios from "axios";
+
+>>>>>>> 6ae451e67ce0c1653ae2ccea32978c81a1e48f7e
 import emptyHeart from "../../images/emptyHeart.png";
 import fullHeart from "../../images/heart.png";
 import view from "../../images/view.png";
 import comment from "../../images/comment.png";
 import styles from "./StudyRoomCard.module.css";
-import axios from "axios";
 import userStore from "../../store/user.store";
 
 function StudyRoomCard({ title, tags, id, onClick }) {

@@ -1,9 +1,11 @@
 .studyBox {
-  display: inline-block;
-  width: 90%; /*w: 300(19.3rem), h: 230(15rem)*/
-  height: 20rem;
-  padding: 0.7rem;
-  margin: 0 auto 0 auto;
+    display: inline-block;
+    border: 1.5px solid rgb(189, 188, 188);
+    border-radius: 7px;
+    width: 90%; /*w: 300(19.3rem), h: 230(15rem)*/
+    height: 18rem;
+    padding: 0.7rem;
+    margin: 0 auto 0 auto;
 }
 
 .heart {

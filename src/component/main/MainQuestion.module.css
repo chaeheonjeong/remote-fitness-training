@@ -28,6 +28,7 @@
 }
 
 .question {
+  border: 1.5px solid rgb(255, 187, 0);
   border-color: rgb(255, 187, 0);
   border-style: solid;
 }
