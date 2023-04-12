@@ -637,7 +637,6 @@ setReplyModifyAInput(e.target.value);
                                         { showAR_ReplyModifyInput === rr._id && (
                                           <form onSubmit={(e) => modifyARHandleSubmit(e, rr.selectedARId, rr._id)}> 
                                               <div className={styles.handle}>
-                                              
                                                 <input
                                                   type="text"
                                                   className={styles.reply_input}
