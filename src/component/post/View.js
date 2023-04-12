@@ -675,7 +675,7 @@ const View = () => {
                           <thead>
                             <tr className={styles.ttrrr}>
                               <td>닉네임</td>
-                              <td>비밀댓글 여부</td>
+                              <td>비밀대댓글 여부</td>
                               <td>대댓글 내용</td>
                               <td>작성 날짜</td>
                             </tr>
@@ -684,7 +684,7 @@ const View = () => {
                           <tbody>
                             <tr>
                               <td>{rr.r_rwriter}</td>
-                              <td>{rr.isRSecret ? "비밀댓글" : "공개댓글"}</td>
+                              <td>{rr.isRSecret ? "비밀대댓글" : "공개대댓글"}</td>
                               <td>{rr.r_reply}</td>
                               <td>{" "}{rr.r_rwriteDate !== undefined && formatDate(new Date(rr.r_rwriteDate))}</td>
                            
