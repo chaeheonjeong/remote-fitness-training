@@ -1191,7 +1191,7 @@ app.get("/questions", async (req, res) => {
       }
       else if(option === "tags") {
         studiesSearch = await Write.find(
-          { tags: { $regex: value, $options: "i" } }, 
+          { tag: { $regex: value, $options: "i" } }, 
           null, 
           { skip: offset, limit: limit }
         );
@@ -1237,7 +1237,7 @@ app.get("/questions", async (req, res) => {
       }
       else if(option === "tags") {
         questionsSearch = await Ask.find(
-          { tags: { $regex: value, $options: "i" } }, 
+          { tag: { $regex: value, $options: "i" } }, 
           null, 
           { skip: offset, limit: limit }
         );
