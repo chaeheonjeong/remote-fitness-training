@@ -642,12 +642,41 @@ const View = () => {
                 {r.rwriteDate !== undefined &&
                   formatDate(new Date(r.rwriteDate))}</td>
 
-              {sameUsers && (
-                <td>
-                  <input type="button" className={styles.rdbtn} value="삭제"></input>
-                  <input type="button" className={styles.rmbtn} value="수정"></input>
-                </td>
-              )}
+{ /* 댓글수정 */ }
+                {!sameUsers && (
+                  <td>
+                    <input type="button" className={styles.rdbtn} value="삭제" onClick={ deleteReply.bind(null, r._id) }></input>
+                    <input 
+                      type="button" 
+                      className={styles.rmbtn} 
+                      value="수정" 
+                      onClick={ () => {
+                        setShowModifyReplyInput(selectedId === r._id ? null : r._id);
+                        setSelectedId(selectedId === r._id ? null : r._id);
+                        modifyReply(r._id);
+                      }}
+                     ></input>
+                     { showReplyModifyInput === r._id && (
+                      <form onSubmit={(e) => modifyHandleSubmit(e, r._id)}> 
+                          <div className={styles.handle}>
+                          
+                            <input
+                              type="text"
+                              className={styles.reply_input}
+                              value={replyModifyInput}
+                              onChange={modifyReplyInputChangeHandler}
+                            />
+                            <div className={styles.reply_choose}>
+                              <input type="checkbox" checked={isSecret} className={styles.secret} onChange={(e) => setIsSecret(e.target.checked)}></input>
+                              <text className={styles.rc1}>비밀 댓글</text>
+                              <input type="submit" value="댓글수정"></input>
+                              <button onClick={() => {setShowModifyReplyInput(null); setSelectedId(null);}}>댓글수정 취소</button>
+                            </div>
+                          </div>
+                      </form>
+                    ) }
+                  </td>
+                )}
 
                 <td>
                   {!showReplyInput && (
