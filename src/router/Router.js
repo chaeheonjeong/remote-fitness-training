@@ -9,8 +9,8 @@ import Write from "../component/post/Write";
 import View from "../component/post//View";
 import Ask from "../component/post//Ask";
 import AskView from "../component/post//AskView";
-import View2 from "../component/post//View2";
-import View3 from "../component/post/View3";
+//import View2 from "../component/post//View2";
+//import View3 from "../component/post/View3";
 import Jitsi from "../component/videochat/jitsi";
 
 import MainOpenStudy from "../component/main/MainOpenStudy";
@@ -51,8 +51,8 @@ const Router = () => {
         <Route path="/View/:id" element={<View />} />
         <Route path="/Ask" element={<Ask />} />
         <Route path="/modifyAsk/:id" element={<ModifyAsk />} />
-        <Route path="/View2" element={<View2 />} />
-        <Route path="/View3" element={<View3 />} />
+        {/*<Route path="/View2" element={<View2 />} />
+        <Route path="/View3" element={<View3 />} />*/}
         <Route path="/AskView/:id" element={<AskView />} />
         <Route path="/MyInfo" element={<MyInfo />} />
         <Route path="/MyCalendar" element={<MyCalendar />} />
