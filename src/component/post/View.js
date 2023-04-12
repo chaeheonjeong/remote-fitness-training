@@ -227,26 +227,26 @@ const View = () => {
   const [isRSecret, setIsRSecret] = useState(false); // 비밀댓글 여부
   const [RsameUsers, setRSameUsers] = useState(false);
   const [postRId, setPostRId] = useState(); 
-  useEffect(() => {
-    const fetchR_Reply = async () => {
-      try {
-        const res = await axios.get(`http://localhost:8080/getR_Reply/${id}`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        if (res.data !== undefined) {
-          setR_Reply(res.data.data);
-          setRSameUsers(res.data.RsameUsers);
-          console.log(res.data.message);
-          console.log(res.data.data);
-        }console.log(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    
-    fetchR_Reply();
- 
-  }, []);
+  
+  const fetchR_Reply = async (rid) => {
+    try {
+      const res = await axios.get(`http://localhost:8080/getR_Reply/${id}/${rid}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+
+      if(res.data.data.length) {
+        setR_Reply(res.data.data);
+        //setRSameUsers(res.data.RsameUsers);
+        console.log(res.data.messgae);
+        console.log(res.data.data);
+      } else {
+       setR_Reply([]); 
+       console.log('대댓글이 없습니다.');
+      }//console.log('here: ', res.data.data);
+    } catch(error) {
+      console.log(error);
+    }
+  };
 
   //----------------------------------------------------------------
   const [getReplyId, setReplyId] = useState();
@@ -656,6 +656,7 @@ const View = () => {
                     <button onClick={() => {
                       setShowReplyList(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
+                      fetchR_Reply(r._id);
                     }}>대댓글 목록 보기</button>
                   )}
                   <div>
@@ -663,6 +664,7 @@ const View = () => {
                       <button onClick={() => {
                         setShowReplyList(selectedRId === r._id ? null : r._id);
                         setSelectedRId(selectedRId === r._id ? null : r._id);
+                        fetchR_Reply(r._id);
                       }}>대댓글 목록 닫기</button>
                     )}
                   

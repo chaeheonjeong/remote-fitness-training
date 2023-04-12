@@ -510,7 +510,7 @@ app.post("/viewReplyRModify", async(req, res) => {
 app.delete("/postAr_reply/:id/:rid/:rrid", async (req, res) => {
   const { id, rid, rrid } = req.params;
   
-  const post = await Write.findOne({ _id: id });
+  const post = await Ask.findOne({ _id: id });
   if (!post) {
     return res.status(404).json({ message: "Post not found" });
   }
@@ -536,7 +536,7 @@ app.delete("/postAr_reply/:id/:rid/:rrid", async (req, res) => {
 });
 
 /// 질문글 대댓글 수정
-app.get("/view/:id/modify/:selectedARId/:rrid", async(req, res) => {
+app.get("/askview/:id/modify/:selectedARId/:rrid", async(req, res) => {
   const postRId = req.params.id;
   const selectedARId = req.params.selectedARId;
   const rrid = req.params.rrid;
@@ -556,7 +556,7 @@ app.get("/view/:id/modify/:selectedARId/:rrid", async(req, res) => {
   }
 })
 
-app.post("/viewReplyARModify", async(req, res) => {
+app.post("/askviewReplyARModify", async(req, res) => {
   const { postRId, selectedARId, _id, Ar_rWriteDate, Ar_reply, isARSecret } = req.body;
 
   try {
@@ -569,7 +569,7 @@ app.post("/viewReplyARModify", async(req, res) => {
 
     return res
       .status(200)
-      .json({ message: `r_reply ${_id} updated successfully`, updatedViewReplyARModify });
+      .json({ message: `Ar_reply ${_id} updated successfully`, updatedViewReplyARModify });
   } catch(error) {
     console.log(error);
     res.status(500).json({ message: 'Server Error' });
@@ -913,7 +913,7 @@ app.get("/getWrite/:id", async (req, res) => {
     const result = await Write.find({ _id: Number(req.params.id) });
     if (result) {
       let sameUser = false;
-      if (userId === result[0]._user) sameUser = true;
+      //if (userId === result[0]._user) sameUser = true;
       return res.status(200).json({
         result: result,
         sameUser: sameUser,
@@ -1052,7 +1052,6 @@ app.get("/getReply/:id", async (req, res) => {
     if (result) {
 
       let sameUsers = false;
-      if (userId === result[0]._user) sameUsers = true;
       console.log(req.params.postId);
       return res.status(200).json({
         data: result,
@@ -1102,8 +1101,76 @@ app.get("/getAReply/:id", async (req, res) => {
   }
 });
 
+// 댓글 내용 가져오기 Ask
+app.get("/askView/:id/modify/:replyId", async(req, res) => {
+  const postId = req.params.id;
+  const replyId = req.params.replyId;
+
+  try {
+    const result = await AReply.find({ postId: Number(postId), _id: Number(replyId)  });
+    console.log(result);
+    if(result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    }
+  } catch(error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+})
+
+// 댓글 수정 Ask
+app.post("/viewAReplyModify", async(req, res) => {
+  const { postId, _id, ArWriteDate, Areply, isASecret } = req.body;
+
+  try {
+    const updatedViewReplyModify = await AReply.findOneAndUpdate(
+      { postId, _id },
+      {
+        $set: { ArWriteDate, Areply, isASecret },
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: `reply ${_id} updated successfully`, updatedViewReplyModify });
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// 댓글삭제 Ask
+app.delete("/askView/:id/reply/:replyId", async(req, res) => {
+  const postId = req.params.id;
+  const replyId = req.params.replyId;
+
+  try {
+    const reply = await AReply.findOne({ postId: postId, _id: replyId });
+
+    if(!reply) {
+      return res.status(404).json({ message: "댓글을 찾을 수 없습니다." });
+    }
+
+    console.log(reply);
+
+    await AReply.deleteOne({ postId: postId, _id: replyId });
+
+    res.status(200).json({ message: "댓글을 삭제하였습니다." });
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: "댓글삭제 실패" });
+  }
+});
+
+app.get("/", (req, res) => {
+  res.send("hello world!");
+});
+
 // 대댓글 
-app.get("/getR_Reply/:id", async (req, res) => {
+app.get("/getR_Reply/:id/:rid", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.split(" ")[1];
   const decodedToken = jwt.verify(token, mysecretkey);
@@ -1111,11 +1178,10 @@ app.get("/getR_Reply/:id", async (req, res) => {
   const selectedRId = req.params.rid;
 
   try {
-    const result = await R_Reply.find({ postRId : req.params.id})
+    const result = await R_Reply.find({ postRId : req.params.id, selectedRId : Number(selectedRId)})
     if (result) {
       console.log(result);
       let RsameUsers = false;
-      if (userId === result[0]._user) RsameUsers = true;
       console.log(req.params.postRId);
       console.log(req.params.rid);
       return res.status(200).json({
@@ -1138,7 +1204,7 @@ app.get("/getR_Reply/:id", async (req, res) => {
 
 
 // 질문 대댓글 
-app.get("/getAR_Reply/:id", async (req, res) => {
+app.get("/getAR_Reply/:id/:rid", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.split(" ")[1];
   const decodedToken = jwt.verify(token, mysecretkey);
@@ -1146,13 +1212,12 @@ app.get("/getAR_Reply/:id", async (req, res) => {
   const selectedARId = req.params.rid;
 
   try {
-    const result = await AR_Reply.find({ postRId : req.params.id})
+    const result = await AR_Reply.find({ postRId : req.params.id, selectedARId : Number(selectedARId)})
     if (result) {
       console.log(result);
       let ARsameUsers = false;
-      if (userId === result[0]._user) ARsameUsers = true;
-      console.log(req.params.postARId);
-      console.log(req.params.rid);
+      //if (userId === result[0]._user) ARsameUsers = true;
+
       return res.status(200).json({
         data: result, selectedARId,
         ARsameUsers: ARsameUsers,
@@ -1162,9 +1227,6 @@ app.get("/getAR_Reply/:id", async (req, res) => {
     else {
       return res.status(404).json({ message: "대댓글이 존재하지 않습니다." });
     }
-
-    
-    
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
