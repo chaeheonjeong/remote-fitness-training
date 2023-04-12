@@ -538,37 +538,23 @@ const View = () => {
                 }}
               />
             </div>
-          )}
-        </div>
-        <div className={styles.content_1}>
-          <div>제목{write.title}</div>
-        </div>
-        <div className={styles.content_2}>
-          <div className={styles.content_2_a}>
-            <div>작성자{write.writer}</div>
-            <div>|</div>
-            <div>
-                날짜{" "}
-                {write.writeDate !== undefined &&
-                  formatDate(new Date(write.writeDate))}
+
+            <div className='content_1'>
+                <div>제목{write?.title}</div>
             </div>
-          </div>
-        
-        </div>
-        <div className={styles.content_5}>
-          <div className={styles.content_5_a}>
-            <div>모집인원{write.number}</div>
-            <div>시작 예정일{write.date}</div>
-          </div>
-          <div className={styles.content_5_b}>
-            <div>진행기간{write.period}</div>
-            <div>
-                태그
-                {write.tag !== undefined &&
-                  write.tag.map((x, i) => {
-                    return <span key={x + i}>{x}</span>;
-                  })}
-              </div>
+
+            <div className='content_2'>
+                <div className='content_2_a'>
+                    <div>작성자</div>
+                    <div>|</div>
+                    <div>날짜</div>
+                </div>
+                <div className='content_2_c'>
+                    <div></div>
+                </div>
+                <div className='content_2_b'>
+                    <div></div>
+                </div>
             </div>
           </div>
           <div className={styles.content_3}>

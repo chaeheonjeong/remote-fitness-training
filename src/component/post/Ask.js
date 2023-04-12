@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-//import "./Ask.css";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
 import styles from './Ask.module.css';
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -152,10 +151,9 @@ function Ask() {
   return (
     <>
       <Header />
-      <div className={styles.body}>
-    <div className={styles.ask}>
+      <div className={styles.ask}>
         <div className={styles.title_input}>
-          <text className={styles.cc}>제목</text>
+          <text className={styles.tt}>제목</text>
           <input
             onChange={titleHandler}
             className={styles.title_tinput}
@@ -165,14 +163,15 @@ function Ask() {
         </div>
         <div>
           <input
-            className={styles.tag_input}
+            
             onKeyPress={handleKeyPress}
             type="text"
             placeholder="해시태그 입력(최대 5개)"
+            className={styles.tag_input}
           />
           <div className={styles.tag_tagPackage}>
             {tags.map((tag, index) => (
-              <span key={index} className="tag_tagindex">
+              <span key={index} className={styles.tag_tagindex}>
                 {tag}
                 <button
                   className={styles.tag_Btn}
@@ -232,7 +231,6 @@ function Ask() {
           />
         </div>
       </div>
-    </div>
     </>
   );
 }

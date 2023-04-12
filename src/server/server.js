@@ -7,6 +7,8 @@ const path = require("path");
 const Ask = require("./models/ask");
 const Reply = require("./models/reply");
 const R_Reply = require("./models/r_reply");
+const Reply = require("./models/reply");
+const R_Reply = require("./models/r_reply");
 const Counter = require("./models/counter");
 const Counter2 = require("./models/counter2");
 const ReplyCounter = require("./models/replycounter");
@@ -575,6 +577,54 @@ app.get("/ggoal-time", async (req, res) => {
     return res.status(500).json({ message: "Server Error" });
   }
 });
+
+/* app.get("/ranking", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const today = new Date();
+    today.setDate(today.getDate() - 1);
+    const yesterday = today.toLocaleDateString();
+
+    const rankTime = await StudyTime.find({ date: yesterday })
+      .sort({ studyTime: -1 })
+      .limit(10);
+
+    if (rankTime) {
+      const result = [];
+      for (let i = 0; i < rankTime.length; i++) {
+        const time = rankTime[i].studyTime;
+        const timeH = Math.floor(time / 3600);
+        const timeM = Math.floor((time % 3600) / 60);
+        const timeS = time % 60;
+        let userName = null;
+        try {
+          const user = await User.findById(rankTime[i]._user);
+          userName = user.name;
+        } catch (error) {
+          console.log(error);
+        }
+        result.push({ timeH, timeM, timeS, userName });
+      }
+
+      return res.status(200).json({
+        rankTime: result,
+        message: "공부 시간 랭킹 가져오기 성공",
+      });
+    } else {
+      res.status(400).json({
+        message: "목표 공부시간을 설정해주세요.",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+});
+ */
 
 app.get("/ranking", async (req, res) => {
   try {
@@ -1304,7 +1354,6 @@ app.get("/getReply/:id", async (req, res) => {
     if (result) {
 
       let sameUsers = false;
-      if (userId === result[0]._user) sameUsers = true;
       console.log(req.params.postId);
       return res.status(200).json({
         data: result,
@@ -1354,8 +1403,76 @@ app.get("/getAReply/:id", async (req, res) => {
   }
 });
 
+// 댓글 내용 가져오기 Ask
+app.get("/askView/:id/modify/:replyId", async(req, res) => {
+  const postId = req.params.id;
+  const replyId = req.params.replyId;
+
+  try {
+    const result = await AReply.find({ postId: Number(postId), _id: Number(replyId)  });
+    console.log(result);
+    if(result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    }
+  } catch(error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+})
+
+// 댓글 수정 Ask
+app.post("/viewAReplyModify", async(req, res) => {
+  const { postId, _id, ArWriteDate, Areply, isASecret } = req.body;
+
+  try {
+    const updatedViewReplyModify = await AReply.findOneAndUpdate(
+      { postId, _id },
+      {
+        $set: { ArWriteDate, Areply, isASecret },
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: `reply ${_id} updated successfully`, updatedViewReplyModify });
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// 댓글삭제 Ask
+app.delete("/askView/:id/reply/:replyId", async(req, res) => {
+  const postId = req.params.id;
+  const replyId = req.params.replyId;
+
+  try {
+    const reply = await AReply.findOne({ postId: postId, _id: replyId });
+
+    if(!reply) {
+      return res.status(404).json({ message: "댓글을 찾을 수 없습니다." });
+    }
+
+    console.log(reply);
+
+    await AReply.deleteOne({ postId: postId, _id: replyId });
+
+    res.status(200).json({ message: "댓글을 삭제하였습니다." });
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: "댓글삭제 실패" });
+  }
+});
+
+app.get("/", (req, res) => {
+  res.send("hello world!");
+});
+
 // 대댓글 
-app.get("/getR_Reply/:id", async (req, res) => {
+app.get("/getR_Reply/:id/:rid", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.split(" ")[1];
   const decodedToken = jwt.verify(token, mysecretkey);
@@ -1363,11 +1480,10 @@ app.get("/getR_Reply/:id", async (req, res) => {
   const selectedRId = req.params.rid;
 
   try {
-    const result = await R_Reply.find({ postRId : req.params.id})
+    const result = await R_Reply.find({ postRId : req.params.id, selectedRId : Number(selectedRId)})
     if (result) {
       console.log(result);
       let RsameUsers = false;
-      if (userId === result[0]._user) RsameUsers = true;
       console.log(req.params.postRId);
       console.log(req.params.rid);
       return res.status(200).json({
@@ -1390,7 +1506,7 @@ app.get("/getR_Reply/:id", async (req, res) => {
 
 
 // 질문 대댓글 
-app.get("/getAR_Reply/:id", async (req, res) => {
+app.get("/getAR_Reply/:id/:rid", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.split(" ")[1];
   const decodedToken = jwt.verify(token, mysecretkey);
@@ -1398,13 +1514,12 @@ app.get("/getAR_Reply/:id", async (req, res) => {
   const selectedARId = req.params.rid;
 
   try {
-    const result = await AR_Reply.find({ postRId : req.params.id})
+    const result = await AR_Reply.find({ postRId : req.params.id, selectedARId : Number(selectedARId)})
     if (result) {
       console.log(result);
       let ARsameUsers = false;
-      if (userId === result[0]._user) ARsameUsers = true;
-      console.log(req.params.postARId);
-      console.log(req.params.rid);
+      //if (userId === result[0]._user) ARsameUsers = true;
+
       return res.status(200).json({
         data: result, selectedARId,
         ARsameUsers: ARsameUsers,
@@ -1414,16 +1529,22 @@ app.get("/getAR_Reply/:id", async (req, res) => {
     else {
       return res.status(404).json({ message: "대댓글이 존재하지 않습니다." });
     }
-
-    
-    
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 });
 
-app.post("/openStudy", async (req, res) => {
+
+
+app.listen(8080, () => {
+  console.log("서버가 시작되었습니다.");
+});
+
+// -------------------------------------------------------------------------
+
+app.use(express.json());
+app.post('/openStudy', async (req, res) => {
   try {
     const { img, title, hashtag, personNum } = req.body;
 
@@ -1431,527 +1552,98 @@ app.post("/openStudy", async (req, res) => {
       img: img,
       title: title,
       tags: hashtag,
-      personNum: personNum,
+      personNum: personNum
     });
-
-    console.log("img.size : ", img.size);
 
     await newOpenStudy.save();
     res.status(200).json({ message: `OpenStudy created successfully` });
-  } catch (err) {
+  } catch(err) {
     console.log(err);
     res.status(500).json({ message: `err.message` });
   }
 });
 
-app.get("/openStudies", async (req, res) => {
-  const page = parseInt(req.query.page);
-  const limit = parseInt(req.query.limit);
-
-  const offset = (page - 1) * limit;
-
-  try {
-    const openStudies = await OpenStudy.find().skip(offset).limit(limit);
-    //const totalOpenStudies = openStudies.length;
-    //console.log(totalOpenStudies);
-
-    //const currentOpenStudies = await OpenStudy.find().skip(offset).limit(limit);
-
-    /* if(openStudies){
-        return res.status(200).json({
-          openStudies: openStudies,
-          message: '오픈스터디 목록 가져오기 성공',
-        });
-      } */
-    if (openStudies.length > 0) {
-      return res.status(200).json({
-        openStudies: openStudies,
-        //totalOpenStudies,
-        message: "오픈스터디 목록 가져오기 성공",
-        success: true,
-        openStudies,
-      });
-    } else {
-      return res.status(404).json({
-        message: "데이터가 존재하지 않습니다",
-        success: false,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Server Error" });
-  }
-});
-
-app.get("/studies", async (req, res) => {
-  const page = parseInt(req.query.page);
-  const limit = parseInt(req.query.limit);
-
-  const offset = (page - 1) * limit;
-
-  try {
-    const studies = await Write.find()
-      .sort({ writeDate: -1 })
-      .skip(offset)
-      .limit(limit);
-    const counter = await Write.count();
-    const hasMore = counter > page * limit;
-
-    if (studies.length > 0) {
-      return res.status(200).json({
-        studies: studies,
-        message: "스터디 모집글 목록 가져오기",
-        success: true,
-        hasMore: hasMore,
-        studies,
-      });
-    } else {
-      return res.status(404).json({
-        message: "데이터가 존재하지 않습니다.",
-        success: false,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Server Error" });
-  }
-});
-
-app.get("/myStudies", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-
-  const page = parseInt(req.query.page);
-  const limit = parseInt(req.query.limit);
-
-  const offset = (page - 1) * limit;
-
-  try {
-    const studies = await Write.find({ _user: userId })
-      .sort({ writeDate: -1 })
-      .skip(offset)
-      .limit(limit);
-    const counter = await Write.count();
-    const hasMore = counter > page * limit;
-
-    if (studies.length > 0) {
-      return res.status(200).json({
-        studies: studies,
-        message: "스터디 모집글 목록 가져오기",
-        success: true,
-        hasMore: hasMore,
-        studies,
-      });
-    } else {
-      return res.status(204).json({
-        message: "데이터가 존재하지 않습니다.",
-        success: false,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Server Error" });
-  }
-});
-
-app.get("/myAsks", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-
-  const page = parseInt(req.query.page);
-  const limit = parseInt(req.query.limit);
-
-  const offset = (page - 1) * limit;
-
-  try {
-    const studies = await Ask.find({ _user: userId })
-      .sort({ writeDate: -1 })
-      .skip(offset)
-      .limit(limit);
-    const counter = await Ask.count();
-    const hasMore = counter > page * limit;
-
-    if (studies.length > 0) {
-      return res.status(200).json({
-        studies: studies,
-        message: "스터디 모집글 목록 가져오기",
-        success: true,
-        hasMore: hasMore,
-        studies,
-      });
-    } else {
-      return res.status(204).json({
-        message: "데이터가 존재하지 않습니다.",
-        success: false,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Server Error" });
-  }
-});
-
-app.get("/questions", async (req, res) => {
-  const page = parseInt(req.query.page);
-  const limit = parseInt(req.query.limit);
-
-  const offset = (page - 1) * limit;
-
-  try {
-    const questions = await Ask.find()
-      .sort({ writeDate: -1 })
-      .skip(offset)
-      .limit(limit);
-    const counter = await Ask.count();
-    const hasMore = counter > page * limit;
-
-    if (questions.length > 0) {
-      return res.status(200).json({
-        questions: questions,
-        message: "스터디 모집글 목록 가져오기",
-        success: true,
-        hasMore: hasMore,
-      });
-    } else {
-      return res.status(404).json({
-        message: "데이터가 존재하지 않습니다.",
-        success: false,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Server Error" });
-  }
-});
-
-app.get("/search", async (req, res) => {
-  const option = req.query.selected;
-  const value = decodeURIComponent(req.query.value);
-
-  const page = parseInt(req.query.page);
-  const limit = parseInt(req.query.limit);
-
-  const offset = (page - 1) * limit;
-  var openStudiesSearch = [];
-
-  try {
-    if (option === "title") {
-      openStudiesSearch = await OpenStudy.find({ title: value }, null, {
-        skip: offset,
-        limit: limit,
-      });
-    } else if (option === "tags") {
-      openStudiesSearch = await OpenStudy.find(
-        { tags: { $in: [value] } },
-        null,
-        { skip: offset, limit: limit }
-      );
-    }
-
-    if (openStudiesSearch.length > 0) {
-      return res.status(200).json({
-        openStudies: openStudiesSearch,
-        //totalOpenStudies,
-        message: "검색목록 가져오기 성공",
-        success: true,
-      });
-    } else {
-      return res.status(200).json({
-        openStudies: [],
-        message: "검색결과가 없습니다",
-        success: true,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Server Error" });
-  }
-});
-
-app.get("/getGood/:id", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-
-  try {
-    const result = await AskGood.findOne({ _id: Number(req.params.id) });
-    if (result) {
-      let isUser = false;
-      for (let i = 0; i < result._users.length; i++) {
-        if (userId === result._users[i]) isUser = true;
-      }
-      return res.status(200).json({
-        good: isUser,
-        count: result.goodCount,
-        message: `좋아요 리스트 가져오기 성공`,
-      });
-    } else {
-      return res.status(204).json({
-        message: `좋아요가 없습니다`,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
-
-app.get("/getGood2/:id", async (req, res) => {
-  try {
-    const result = await AskGood.findOne({ _id: Number(req.params.id) });
-    if (result) {
-      return res.status(200).json({
-        count: result.goodCount,
-        message: `좋아요 리스트 가져오기 성공`,
-      });
-    } else {
-      return res.status(204).json({
-        message: `좋아요가 없습니다`,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
-
-app.post("/setGood/:id", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-
-  try {
-    const result = await AskGood.findOne({ _id: Number(req.params.id) });
-
-    if (!result) {
-      const newDoc = new AskGood({
-        _id: Number(req.params.id),
-        _users: [{ user: userId, time: new Date() }],
-        goodCount: 1,
-      });
-      await newDoc.save();
-      return res.status(201).json({
-        goodCount: 1,
-        message: `좋아요가 추가되었습니다`,
-      });
-    } else {
-      const index = result._users.findIndex((obj) => obj.user === userId);
-      if (index > -1) {
-        result._users.splice(index, 1);
-        result.goodCount--;
-        await result.save();
-        return res.status(200).json({
-          goodCount: result.goodCount,
-          message: `좋아요가 취소되었습니다`,
-        });
-      } else {
-        result._users.push({ user: userId, time: new Date() });
-        result.goodCount++;
-        await result.save();
-        return res.status(200).json({
-          goodCount: result.goodCount,
-          message: `좋아요가 추가되었습니다`,
-        });
-      }
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
-
-app.get("/getGoodPost/:id", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-
-  try {
-    const result = await PostGood.findOne({ _id: Number(req.params.id) });
-    if (result) {
-      let isUser = false;
-      for (let i = 0; i < result._users.length; i++) {
-        if (userId === result._users[i]) isUser = true;
-      }
-      return res.status(200).json({
-        good: isUser,
-        count: result.goodCount,
-        message: `좋아요 리스트 가져오기 성공`,
-      });
-    } else {
-      return res.status(204).json({
-        message: `좋아요가 없습니다`,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
-
-app.get("/getGoodPost2/:id", async (req, res) => {
-  try {
-    const result = await PostGood.findOne({ _id: Number(req.params.id) });
-    if (result) {
-      return res.status(200).json({
-        count: result.goodCount,
-        message: `좋아요 리스트 가져오기 성공`,
-      });
-    } else {
-      return res.status(204).json({
-        message: `좋아요가 없습니다`,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
-
-app.post("/setGoodPost/:id", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-
-  try {
-    const result = await PostGood.findOne({ _id: Number(req.params.id) });
-
-    if (!result) {
-      const newDoc = new PostGood({
-        _id: Number(req.params.id),
-        _users: [{ user: userId, time: new Date() }],
-        goodCount: 1,
-      });
-      await newDoc.save();
-      return res.status(201).json({
-        goodCount: 1,
-        message: `좋아요가 추가되었습니다`,
-      });
-    } else {
-      const index = result._users.findIndex((obj) => obj.user === userId);
-      if (index > -1) {
-        result._users.splice(index, 1);
-        result.goodCount--;
-        await result.save();
-        return res.status(200).json({
-          goodCount: result.goodCount,
-          message: `좋아요가 취소되었습니다`,
-        });
-      } else {
-        result._users.push({ user: userId, time: new Date() });
-        result.goodCount++;
-        await result.save();
-        return res.status(200).json({
-          goodCount: result.goodCount,
-          message: `좋아요가 추가되었습니다`,
-        });
-      }
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
-
-app.post("/view", async (req, res) => {
-  const { id, postName } = req.body;
-
-  if (postName === "question") {
+  app.get("/openStudies", async (req, res) => {
+    //const { page, limit } = req.query;
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+  
+    const offset = (page - 1) * limit;
+  
     try {
-      const ask = await Ask.findOneAndUpdate(
-        { _id: id },
-        { $inc: { views: 1 } }, // views 필드를 1 증가시킴
-        { new: true }
-      );
-      res.json({ message: "조회수 +1 성공" });
-    } catch (err) {
-      console.log(err);
-      res.json({ error: err.message });
-    }
-  } else if (postName === "study") {
-    try {
-      const write = await Write.findOneAndUpdate(
-        { _id: id },
-        { $inc: { views: 1 } }, // views 필드를 1 증가시킴
-        { new: true }
-      );
-      res.json({ message: "조회수 +1 성공" });
-    } catch (err) {
-      console.log(err);
-      res.json({ error: err.message });
-    }
-  }
-});
-app.post("/getViewCount", async (req, res) => {
-  const { id, postName } = req.body;
+      const openStudies = await OpenStudy.find().skip(offset).limit(limit);
+      //const totalOpenStudies = openStudies.length;
+      //console.log(totalOpenStudies);
 
-  if (postName === "question") {
-    try {
-      const ask = await Ask.findOne({ _id: id });
-      if (ask) {
-        return res.status(200).json({
-          count: ask.views,
-          message: `조회수 가져오기 성공`,
-        });
+      //const currentOpenStudies = await OpenStudy.find().skip(offset).limit(limit);
+    
+        /* if(openStudies){
+          return res.status(200).json({
+            openStudies: openStudies,
+            message: '오픈스터디 목록 가져오기 성공',
+          });
+        } */
+        if(openStudies.length > 0) {
+          return res.status(200).json({ 
+            openStudies: openStudies,
+            //totalOpenStudies,
+            message: '오픈스터디 목록 가져오기 성공',
+            success: true, 
+            openStudies 
+          });
+        } else {
+          return res.status(404).json({
+            message: "데이터가 존재하지 않습니다",
+            success: false,
+          });
+        }
       }
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server Error" });
-    }
-  } else if (postName === "study") {
-    try {
-      const write = await Write.findOne({ _id: id });
-      if (write) {
-        return res.status(200).json({
-          count: write.views,
-          message: `조회수 가져오기 성공`,
-        });
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
       }
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server Error" });
-    }
-  }
-});
-
-app.get("/header-profile", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-
-  try {
-    const user = await User.findOne({ _id: userId });
-    if (user.image) {
-      return res.status(200).json({ image: user.image });
-    } else {
-      return res.status(204).json({
-        message: `이미지가 없습니다.`,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
-
-app.post("/upload", upload.single("file"), (req, res) => {
-  // (7)
-  res.status(200).json(req.file);
-});
-
-app.get("/", (req, res) => {
-  res.send("hello world!");
-});
+    });
 
 
-app.listen(8080, () => {
-  console.log("서버가 시작되었습니다.");
-});
+
+
+
+
+
+    app.get("/search", async (req, res) => {
+      const option = decodeURIComponent(req.query.selected);
+      const value = decodeURIComponent(req.query.value);
+    
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+      var openStudiesSearch = [];
+
+      try {
+        if(option === 'title') {
+          openStudiesSearch = await OpenStudy.find({ title: value }, null, { skip: offset, limit: limit });
+        }
+        else if(option === 'tags') {
+          openStudiesSearch = await OpenStudy.find({ tags: { $in: [value] } }, null, { skip: offset, limit: limit });
+        }
+    
+        if(openStudiesSearch.length > 0) {
+          return res.status(200).json({ 
+            openStudies: openStudiesSearch,
+            //totalOpenStudies,
+            message: '검색목록 가져오기 성공',
+            success: true
+          });
+        } else {
+          return res.status(404).json({
+            message: "데이터가 존재하지 않습니다",
+            success: false,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    })
+
