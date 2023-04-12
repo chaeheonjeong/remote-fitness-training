@@ -11,11 +11,12 @@ import Ask from "../component/post//Ask";
 import AskView from "../component/post//AskView";
 import View2 from "../component/post//View2";
 import View3 from "../component/post//View3";
-import MyCalendar from "../component/mypage/MyCalendar";
-import MyInfo from "../component/mypage/MyInfo";
+import MyInfo from '../component/mypage/MyInfo';
+import Jitsi from '../component/videochat/jitsi';
 import MainOpenStudy from "../component/main/MainOpenStudy";
 import MainStudy from "../component/main/MainStudy";
 import MainQuestion from "../component/main/MainQuestion";
+import MyCalendar from "../component/mypage/MyCalendar";
 import ModifyPost from "../component/post/ModifyPost";
 import ModifyAsk from "../component/post/ModifyAsk";
 import MyPost from "../component/mypage/MyPost";
@@ -54,6 +55,7 @@ const Router = () => {
         <Route path="/View/:id" element={<View />} />
         <Route path="myAsk" element={<MyAsk />} />
         <Route path="myPost" element={<MyPost />} />
+        <Route path="/Jitsi" element={<Jitsi />} />
       </Routes>
     </BrowserRouter>
   );
