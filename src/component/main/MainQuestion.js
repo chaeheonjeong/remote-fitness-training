@@ -4,7 +4,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 import "./InfiniteScroll.css";
 import styles from "./MainQuestion.module.css";
-//import cardStyles from  "./QuestionRoomCard.module.css";
 import QuestionRoomCard from "./QuestionRoomCard";
 
 import loadingImg from "../../images/loadingImg.gif";
@@ -21,6 +20,16 @@ function MainQuestion() {
 
   const [searchInput, setSearchInput] = useState("");
 
+
+  const [questions, setQuestions] = useState([]);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [selected, setSelected] = useState("title");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searching, setSearching] = useState(false);
+  const [noResult, setNoResult] = useState(false);
+
   const limit = 12;
   function LoaderImg() {
     return (
@@ -34,6 +43,65 @@ function MainQuestion() {
       </div>
     );
   }
+
+  // 검색
+  const changeSelectHandler = (event) => {
+    setSelected(event.target.value);
+  };
+
+  const searchResult = () => {
+    console.log('btn click!!!!!!!!');
+    console.log(selected);
+
+    setSearching(true);
+    setNoResult(false);
+
+    if(searchInput === '') {
+        
+    }
+
+    axios
+            .get(`http://localhost:8080/searchQuestion?selected=${selected}&value=${encodeURIComponent(searchInput)}&page=${page}&limit=6`)
+            .then((response) => {
+                console.log('검색결과를 가져오겠습니다.');
+                const newSearchQuestion = response.data.questions;
+                const isLastPage = newSearchQuestion.length < 6;
+
+                try {
+                    if(isLastPage) {
+                        setHasMore(false);
+                    }
+
+                    const prevSearchQuestion = [...questions];
+                    setSearchResults(prevSearchQuestion => [...prevSearchQuestion, ...newSearchQuestion]);
+                    setPage(prevSearchPage => prevSearchPage + 1);
+
+                    console.log(response.data.questions.length);
+                    if(response.data.questions.length === 0) {
+                        setNoResult(true);
+                    }
+                } catch(error) {
+                    console.log('검색결과: ', error);
+                    setHasMore(false);
+                    setIsLoading(false);
+                } finally {
+                }
+            })
+        
+    };
+
+    const searchHandler = (event) => {
+      event.preventDefault();
+      searchResult();
+      setSearchResults([]);
+  };
+
+  useEffect(() => {
+      setQuestions([]);
+      setPage(1);
+      setHasMore(true);
+  }, [searchInput]);
+
 
   const moreQuestions = () => {
     if (hasMore)
@@ -99,19 +167,20 @@ function MainQuestion() {
             </Link>
           </div>
 
-          <div className={styles.searchAndMake}>
+          <div className={styles.searchAndMake} onSubmit={searchHandler}>
             <form className={styles.search}>
-              <select>
+              <select onChange={changeSelectHandler}>
                 <option value="title">제목</option>
                 <option value="tags">태그</option>
                 <option value="writer">작성자</option>
               </select>
               <input
-                className="searchInput"
+                id="searchInput"
                 name="searchInput"
+                value={searchInput} 
                 onChange={(e) => setSearchInput(e.target.value)}
               />
-              <button>검색</button>
+              <button type="submit">검색</button>
             </form>
             <button
               className={styles.makeBtn}
@@ -126,6 +195,38 @@ function MainQuestion() {
 
         <h1>Question</h1>
 
+        {/* 검색 */}
+        {searching && !noResult && (
+                    <InfiniteScroll
+                        dataLength = {questions.length}
+                        next = { page !== 1 ? searchResult : null }
+                        hasMore = {hasMore}
+                        loader = {<LoaderImg />}
+                    >
+                    {
+                        searchResults.map((data, index) => {
+                            return (
+                                <QuestionRoomCard 
+                                    title={data.title}
+                                    tags={Array.isArray(data.tag) ? [...data.tag] : []} 
+                                    id={data._id}
+                                    key={data._id}
+                                />
+                            );
+                        })
+                    }
+                    </InfiniteScroll>
+                )}
+
+                {
+                    noResult ? (
+                        <div className={styles.noResult}>
+                            <a>⚠️ 검색결과가 없습니다 ⚠️{noResult}</a>
+                        </div>
+                    ) : null
+                }
+
+      {!searching && (
         <InfiniteScroll
           dataLength={renderQ.length}
           next={moreQuestions}
@@ -148,6 +249,7 @@ function MainQuestion() {
               );
             })}
         </InfiniteScroll>
+      )}
       </div>
     </>
   );

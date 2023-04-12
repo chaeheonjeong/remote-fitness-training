@@ -3,6 +3,12 @@
   display: flex;
 }
 
+.calendar {
+  flex: 4;
+  background-color: #fffbf5;
+  display: flex;
+}
+
 .calendar{
   flex: 4;
   background-color: #FFFBF5;

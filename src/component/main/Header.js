@@ -7,13 +7,17 @@ import userStore from "../../store/user.store";
 const Header = () => {
   const hook = useHeader();
   const user = userStore();
+  const logout = () => {
+    user.logout();
+    hook.navigate("/login");
+  };
 
   return (
     <div className={styles.container}>
       <label
         className={styles.linkLabel}
         onClick={() => {
-          hook.navigate("/");
+          hook.navigate("/login");
         }}
       >
         Link
@@ -71,7 +75,7 @@ const Header = () => {
         </div>
         <button
           onClick={() => {
-            user.token !== null ? user.logout() : hook.navigate("/login");
+            user.token !== null ? logout() : hook.navigate("/login");
           }}
           className={styles.logButton}
         >

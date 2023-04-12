@@ -1,17 +1,17 @@
 import { useState } from "react";
 
-import styles from "./OpenStudyRoomCard.module.css";
+import styles from  "./OpenStudyRoomCard.module.css";
 import "./InfiniteScroll.css";
 
 import emptyHeart from "../../images/emptyHeart.png";
 import fullHeart from "../../images/heart.png";
 
-function OpenStudyRoomCard({ img, title, personNum, tags, id }) {
-  const [heart, setHeart] = useState(false);
+function OpenStudyRoomCard( {img, title, pw, personNum, tags, id} ) {
+    const [heart, setHeart] = useState(false);
 
-  const changeHeart = () => {
-    setHeart(!heart);
-  };
+    const changeHeart = () => {
+        setHeart(!heart);
+    };
 
   // 관심글
   function heartBtn() {
