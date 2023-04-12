@@ -122,10 +122,7 @@ function MyInfo() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-<<<<<<< HEAD
-=======
     console.log(user._id);
->>>>>>> 8a2ebbddf09fc2f58de55ce25a175e34d66a856a
 
     try {
       const response = await axios.post(
@@ -141,18 +138,7 @@ function MyInfo() {
         alert("닉네임이 변경되었습니다.");
         tuser.changeName(user.name);
 
-<<<<<<< HEAD
         console.log(tuser.name);
-=======
-        const res = await axios.put(`http://localhost:8080/img-change/${user._id}`,{image: imgFile},{
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        console.log('이미지 업로드에 성공 했습니다.');
-      } catch (error) {
-        console.error('이미 존재하는 닉네임 입니다.',error);
-        setNameError('이미 존재하는 닉네임 입니다.');
-        console.error('이미지 업로드에 실패했습니다.',error);
->>>>>>> 8a2ebbddf09fc2f58de55ce25a175e34d66a856a
       }
       setNameError(false);
 
@@ -189,7 +175,6 @@ function MyInfo() {
     };
   };
 
-<<<<<<< HEAD
   return (
     <div>
       <Header imgFile={imgFile} callback={call} />
@@ -210,22 +195,6 @@ function MyInfo() {
           />
           <form className="Information" onSubmit={handleFormSubmit}>
             <label className="nickname">닉네임 </label>
-=======
-    return(
-        <div>
-        <Header />
-        <SideBar/>
-        {user ? (
-            <div className="MyInfo">
-            <img
-                className="Profile"
-                src={imgFile ? imgFile : profile}
-                alt="프로필 이미지"
-            />
-            <label className='img-btn' for="ProfileImg">
-                프로필 변경
-            </label>
->>>>>>> 8a2ebbddf09fc2f58de55ce25a175e34d66a856a
             <input
               type="text"
               value={user.name}
