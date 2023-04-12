@@ -6,7 +6,6 @@ import emptyHeart from "../../images/emptyHeart.png";
 import fullHeart from "../../images/heart.png";
 import view from "../../images/view.png";
 import comment from "../../images/comment.png";
-
 import styles from "./StudyRoomCard.module.css";
 import userStore from "../../store/user.store";
 

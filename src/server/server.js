@@ -1645,3 +1645,285 @@ app.post('/openStudy', async (req, res) => {
       }
     })
 
+    app.get("/getGood/:id", async (req, res) => {
+      const authHeader = req.headers.authorization;
+      const token = authHeader.split(" ")[1];
+      const decodedToken = jwt.verify(token, mysecretkey);
+      const userId = decodedToken.id;
+    
+      try {
+        const result = await AskGood.findOne({ _id: Number(req.params.id) });
+        if (result) {
+          let isUser = false;
+          for (let i = 0; i < result._users.length; i++) {
+            if (userId === result._users[i].user) isUser = true;
+          }
+          return res.status(200).json({
+            good: isUser,
+            count: result.goodCount,
+            message: `좋아요 리스트 가져오기 성공`,
+          });
+        } else {
+          return res.status(204).json({
+            message: `좋아요가 없습니다`,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+    
+    app.get("/getGood2/:id", async (req, res) => {
+      try {
+        const result = await AskGood.findOne({ _id: Number(req.params.id) });
+        if (result) {
+          return res.status(200).json({
+            count: result.goodCount,
+            message: `좋아요 리스트 가져오기 성공`,
+          });
+        } else {
+          return res.status(204).json({
+            message: `좋아요가 없습니다`,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+    
+    app.post("/setGood/:id", async (req, res) => {
+      const authHeader = req.headers.authorization;
+      const token = authHeader.split(" ")[1];
+      const decodedToken = jwt.verify(token, mysecretkey);
+      const userId = decodedToken.id;
+    
+      try {
+        const result = await AskGood.findOne({ _id: Number(req.params.id) });
+    
+        if (!result) {
+          const newDoc = new AskGood({
+            _id: Number(req.params.id),
+            _users: [{ user: userId, time: new Date() }],
+            goodCount: 1,
+          });
+          await newDoc.save();
+          return res.status(201).json({
+            goodCount: 1,
+            message: `좋아요가 추가되었습니다`,
+          });
+        } else {
+          const index = result._users.findIndex((obj) => obj.user === userId);
+          if (index > -1) {
+            result._users.splice(index, 1);
+            result.goodCount--;
+            await result.save();
+            return res.status(200).json({
+              goodCount: result.goodCount,
+              message: `좋아요가 취소되었습니다`,
+            });
+          } else {
+            result._users.push({ user: userId, time: new Date() });
+            result.goodCount++;
+            await result.save();
+            return res.status(200).json({
+              goodCount: result.goodCount,
+              message: `좋아요가 추가되었습니다`,
+            });
+          }
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+    
+    app.get("/getGoodPost/:id", async (req, res) => {
+      const authHeader = req.headers.authorization;
+      const token = authHeader.split(" ")[1];
+      const decodedToken = jwt.verify(token, mysecretkey);
+      const userId = decodedToken.id;
+    
+      try {
+        const result = await PostGood.findOne({ _id: Number(req.params.id) });
+        if (result) {
+          let isUser = false;
+          for (let i = 0; i < result._users.length; i++) {
+            if (userId === result._users[i].user) {
+              isUser = true;
+            }
+          }
+          return res.status(200).json({
+            good: isUser,
+            count: result.goodCount,
+            message: `좋아요 리스트 가져오기 성공`,
+          });
+        } else {
+          return res.status(204).json({
+            message: `좋아요가 없습니다`,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+    
+    app.get("/getGoodPost2/:id", async (req, res) => {
+      try {
+        const result = await PostGood.findOne({ _id: Number(req.params.id) });
+        if (result) {
+          return res.status(200).json({
+            count: result.goodCount,
+            message: `좋아요 리스트 가져오기 성공`,
+          });
+        } else {
+          return res.status(204).json({
+            message: `좋아요가 없습니다`,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+    
+    app.post("/setGoodPost/:id", async (req, res) => {
+      const authHeader = req.headers.authorization;
+      const token = authHeader.split(" ")[1];
+      const decodedToken = jwt.verify(token, mysecretkey);
+      const userId = decodedToken.id;
+    
+      try {
+        const result = await PostGood.findOne({ _id: Number(req.params.id) });
+    
+        if (!result) {
+          const newDoc = new PostGood({
+            _id: Number(req.params.id),
+            _users: [{ user: userId, time: new Date() }],
+            goodCount: 1,
+          });
+          await newDoc.save();
+          return res.status(201).json({
+            goodCount: 1,
+            message: `좋아요가 추가되었습니다`,
+          });
+        } else {
+          const index = result._users.findIndex((obj) => obj.user === userId);
+          if (index > -1) {
+            result._users.splice(index, 1);
+            result.goodCount--;
+            await result.save();
+            return res.status(200).json({
+              goodCount: result.goodCount,
+              message: `좋아요가 취소되었습니다`,
+            });
+          } else {
+            result._users.push({ user: userId, time: new Date() });
+            result.goodCount++;
+            await result.save();
+            return res.status(200).json({
+              goodCount: result.goodCount,
+              message: `좋아요가 추가되었습니다`,
+            });
+          }
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+    
+    app.post("/view", async (req, res) => {
+      const { id, postName } = req.body;
+    
+      if (postName === "question") {
+        try {
+          const ask = await Ask.findOneAndUpdate(
+            { _id: id },
+            { $inc: { views: 1 } }, // views 필드를 1 증가시킴
+            { new: true }
+          );
+          res.json({ message: "조회수 +1 성공" });
+        } catch (err) {
+          console.log(err);
+          res.json({ error: err.message });
+        }
+      } else if (postName === "study") {
+        try {
+          const write = await Write.findOneAndUpdate(
+            { _id: id },
+            { $inc: { views: 1 } }, // views 필드를 1 증가시킴
+            { new: true }
+          );
+          res.json({ message: "조회수 +1 성공" });
+        } catch (err) {
+          console.log(err);
+          res.json({ error: err.message });
+        }
+      }
+    });
+    
+    app.post("/getViewCount", async (req, res) => {
+      const { id, postName } = req.body;
+    
+      if (postName === "question") {
+        try {
+          const ask = await Ask.findOne({ _id: id });
+          if (ask) {
+            return res.status(200).json({
+              count: ask.views,
+              message: `조회수 가져오기 성공`,
+            });
+          }
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: "Server Error" });
+        }
+      } else if (postName === "study") {
+        try {
+          const write = await Write.findOne({ _id: id });
+          if (write) {
+            return res.status(200).json({
+              count: write.views,
+              message: `조회수 가져오기 성공`,
+            });
+          }
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: "Server Error" });
+        }
+      }
+    });
+    
+    app.get("/header-profile", async (req, res) => {
+      const authHeader = req.headers.authorization;
+      const token = authHeader.split(" ")[1];
+      const decodedToken = jwt.verify(token, mysecretkey);
+      const userId = decodedToken.id;
+    
+      try {
+        const user = await User.findOne({ _id: userId });
+        if (user.image) {
+          return res.status(200).json({ image: user.image });
+        } else {
+          return res.status(204).json({
+            message: `이미지가 없습니다.`,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+    
+    app.post("/upload", upload.single("file"), (req, res) => {
+      // (7)
+      res.status(200).json(req.file);
+    });
+    
+    app.get("/", (req, res) => {
+      res.send("hello world!");
+    });
+

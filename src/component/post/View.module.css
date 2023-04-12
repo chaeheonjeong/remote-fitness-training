@@ -17,14 +17,17 @@
 }
 
 .content_1 {
+  display: flex;
     font-size: 20px;
     border-bottom:3px solid black;
     padding : 5px;
+  gap: 1rem;
 }
 
 .content_2_a {
     display: flex;
     justify-content: space-between;
+  gap: 1rem;
 }
 
 .content_2_b {
@@ -66,11 +69,18 @@
 
 
 .content_5{
-    display: grid;
     font-size: 18px;
     grid-template-columns:50% 50% ;
     border-bottom:3px solid black;
     padding: 5px;
+  display: flex;
+}
+
+.content_5a {
+  display: flex;
+  font-size: 18px;
+  border-bottom: 3px solid black;
+  padding: 5px;
 }
 
 .content_6 {
@@ -201,4 +211,15 @@ td {
     width: 100%;
 
 }
-  
+
+.profile {
+  width: 33px;
+  height: 33px;
+  border-radius: 100%;
+  border: 1px solid #555555;
+  cursor: pointer;
+}
+
+.goodBtn {
+  color: #f0ae16;
+}

@@ -7,6 +7,7 @@ import styles from './AskView.module.css';
 import userStore from "../../store/user.store";
 import { useParams } from "react-router-dom";
 import Reply from '../../server/models/reply';
+import { HiUserCircle } from "react-icons/hi";
 
 function A_View() {
   const [sameUsers, setSameUsers] = useState(false);
@@ -19,6 +20,7 @@ function A_View() {
   const [good, setGood] = useState(false);
   const [goodCount, setGoodCount] = useState(0);
   const [selectedAId, setSelectedAId] = useState();
+  const [profileImg, setProfileImg] = useState(null);
 
   const navigate = useNavigate();
 
@@ -32,25 +34,27 @@ function A_View() {
           if (response.status === 200) {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
+            setProfileImg(response.data.profileImg);
           }
         })
         .catch((error) => {
           console.log(error);
         });
     } else {
-        axios
-          .get(`http://localhost:8080/getAsk2/${id}`)
-          .then((response) => {
-            if (response.status === 200) {
-              setWrite(response.data.result[0]);
-              setSameUser(response.data.sameUser);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        }
-      }, []);
+      axios
+        .get(`http://localhost:8080/getAsk2/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            setWrite(response.data.result[0]);
+            setSameUser(response.data.sameUser);
+            setProfileImg(response.data.profileImg);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
 
       useEffect(() => {
         if (write.content !== undefined) {
@@ -100,8 +104,7 @@ function A_View() {
     
   useEffect(() => {
     scrollToTop();
-  });
-
+  }, []);
 
   const clickGood = () => {
     if (user.token !== null) {
@@ -446,7 +449,23 @@ setReplyModifyAInput(e.target.value);
           </div>
           <div className={styles.content_2}>
             <div className={styles.content_2_a}>
-              <div>작성자{write.writer}</div>
+              <div>
+              작성자
+              {profileImg === null ? (
+                <HiUserCircle
+                  size="40"
+                  color="#5a5a5a"
+                  style={{ cursor: "pointer" }}
+                />
+              ) : (
+                <img
+                  className={styles.profile}
+                  src={profileImg}
+                  alt="프로필 이미지"
+                />
+              )}
+              {write.writer}
+            </div>
               <div>|</div>
               <div>
                 날짜
@@ -469,7 +488,7 @@ setReplyModifyAInput(e.target.value);
           <div className={styles.content_3}>
             <div>내용</div>
               <div dangerouslySetInnerHTML={{ __html: htmlString }} />
-              <span onClick={clickGood} className={good ? `styles.goodBtn` : null}>
+              <span onClick={clickGood} className={good ? styles.goodBtn : null}>
                 좋아요{goodCount}
               </span>
               <span> 조회수 {write.views} </span>
