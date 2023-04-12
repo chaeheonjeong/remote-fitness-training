@@ -7,6 +7,7 @@ import Header from "../main/Header";
 import styles from "./View.module.css";
 import axios from "axios";
 import { scrollToTop } from "../../util/common";
+import { HiUserCircle } from "react-icons/hi";
 
 function AskView() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ function AskView() {
   const [sameUser, setSameUser] = useState();
   const [good, setGood] = useState(false);
   const [goodCount, setGoodCount] = useState(0);
+  const [profileImg, setProfileImg] = useState(null);
 
   /*   useEffect(() => {
     const fetchWrite = async () => {
@@ -45,6 +47,7 @@ function AskView() {
           if (response.status === 200) {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
+            setProfileImg(response.data.profileImg);
           }
         })
         .catch((error) => {
@@ -57,6 +60,7 @@ function AskView() {
           if (response.status === 200) {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
+            setProfileImg(response.data.profileImg);
           }
         })
         .catch((error) => {
@@ -113,7 +117,7 @@ function AskView() {
 
   useEffect(() => {
     scrollToTop();
-  });
+  }, []);
 
   const clickGood = () => {
     if (user.token !== null) {
@@ -196,7 +200,23 @@ function AskView() {
         </div>
         <div className={styles.content_2}>
           <div className={styles.content_2_a}>
-            <div>작성자{write.writer}</div>
+            <div>
+              작성자
+              {profileImg === null ? (
+                <HiUserCircle
+                  size="40"
+                  color="#5a5a5a"
+                  style={{ cursor: "pointer" }}
+                />
+              ) : (
+                <img
+                  className={styles.profile}
+                  src={profileImg}
+                  alt="프로필 이미지"
+                />
+              )}
+              {write.writer}
+            </div>
             <div>|</div>
             <div>
               날짜
@@ -219,7 +239,7 @@ function AskView() {
         <div className={styles.content_3}>
           <div>내용</div>
           <div dangerouslySetInnerHTML={{ __html: htmlString }} />
-          <span onClick={clickGood} className={good ? `styles.goodBtn` : null}>
+          <span onClick={clickGood} className={good ? styles.goodBtn : null}>
             좋아요{goodCount}
           </span>
           <span> 조회수 {write.views} </span>

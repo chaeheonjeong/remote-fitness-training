@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-
 import emptyHeart from "../../images/emptyHeart.png";
 import fullHeart from "../../images/heart.png";
 import view from "../../images/view.png";
 import comment from "../../images/comment.png";
-
 import styles from "./StudyRoomCard.module.css";
 import axios from "axios";
 import userStore from "../../store/user.store";

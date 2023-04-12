@@ -9,7 +9,7 @@ import Header from "../main/Header";
 import userStore from "../../store/user.store";
 
 function MyInfo() {
-  const [imgFile, setImgFile] = useState("");
+  const [imgFile, setImgFile] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const imgRef = useRef();
   const navigate = useNavigate();
@@ -20,6 +20,7 @@ function MyInfo() {
   const [errorMessage, setErrorMessage] = useState(false);
   const [nameError, setNameError] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(false);
+  const [call, setCall] = useState(false);
   const token = localStorage.getItem("token");
   const tuser = userStore();
 
@@ -135,6 +136,7 @@ function MyInfo() {
       if (response.status === 200) {
         alert("닉네임이 변경되었습니다.");
         tuser.changeName(user.name);
+
         console.log(tuser.name);
       }
       setNameError(false);
@@ -146,7 +148,11 @@ function MyInfo() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("이미지 업로드에 성공 했습니다.");
+      if (res.status === 200) {
+        console.log("이미지 업로드에 성공 했습니다.");
+        setCall((prev) => !prev);
+        setImgFile(res.data.image);
+      }
     } catch (error) {
       if (
         error.response &&
@@ -170,7 +176,7 @@ function MyInfo() {
 
   return (
     <div>
-      <Header />
+      <Header imgFile={imgFile} callback={call} />
       <SideBar />
       {user ? (
         <div className="MyInfo">

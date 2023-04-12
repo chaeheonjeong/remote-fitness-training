@@ -127,3 +127,10 @@
     opacity: 0;
   }
 }
+
+.profile {
+  width: 33px;
+  height: 33px;
+  border-radius: 100%;
+  border: 1px solid #555555;
+}

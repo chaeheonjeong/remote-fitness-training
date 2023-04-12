@@ -34,7 +34,6 @@ function MainStudy() {
   }
 
   const moreStudies = () => {
-    console.log(hasMore);
     if (hasMore) {
       axios
         .get(

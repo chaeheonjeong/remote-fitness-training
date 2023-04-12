@@ -775,9 +775,17 @@ app.get("/getWrite/:id", async (req, res) => {
     if (result) {
       let sameUser = false;
       if (userId === result[0]._user) sameUser = true;
+
+      let profileImg = null;
+      const user = await User.findOne({ _id: result[0]._user });
+      if (user.image) {
+        profileImg = user.image;
+      }
+
       return res.status(200).json({
         result: result,
         sameUser: sameUser,
+        profileImg: profileImg,
         message: `id 가져오기 성공`,
       });
     }
@@ -790,10 +798,18 @@ app.get("/getWrite/:id", async (req, res) => {
 app.get("/getWrite2/:id", async (req, res) => {
   try {
     const result = await Write.find({ _id: Number(req.params.id) });
+
     if (result) {
+      let profileImg = null;
+      const user = await User.findOne({ _id: result[0]._user });
+      if (user.image) {
+        profileImg = user.image;
+      }
+
       return res.status(200).json({
         result: result,
         sameUser: false,
+        profileImg: profileImg,
         message: `id 가져오기 성공`,
       });
     }
@@ -833,9 +849,17 @@ app.get("/getAsk/:id", async (req, res) => {
     if (result) {
       let sameUser = false;
       if (userId === result[0]._user) sameUser = true;
+
+      let profileImg = null;
+      const user = await User.findOne({ _id: result[0]._user });
+      if (user.image) {
+        profileImg = user.image;
+      }
+
       return res.status(200).json({
         result: result,
         sameUser: sameUser,
+        profileImg: profileImg,
         message: `id 가져오기 성공`,
       });
     }
@@ -849,9 +873,16 @@ app.get("/getAsk2/:id", async (req, res) => {
   try {
     const result = await Ask.find({ _id: Number(req.params.id) });
     if (result) {
+      let profileImg = null;
+      const user = await User.findOne({ _id: result[0]._user });
+      if (user.image) {
+        profileImg = user.image;
+      }
+
       return res.status(200).json({
         result: result,
         sameUser: false,
+        profileImg: profileImg,
         message: `id 가져오기 성공`,
       });
     }
@@ -1397,6 +1428,27 @@ app.post("/getViewCount", async (req, res) => {
       console.error(error);
       res.status(500).json({ message: "Server Error" });
     }
+  }
+});
+
+app.get("/header-profile", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const user = await User.findOne({ _id: userId });
+    if (user.image) {
+      return res.status(200).json({ image: user.image });
+    } else {
+      return res.status(204).json({
+        message: `이미지가 없습니다.`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
