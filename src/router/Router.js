@@ -12,6 +12,7 @@ import AskView from "../component/post//AskView";
 /* import View2 from "../component/post//View2";
 import View3 from "../component/post/View3"; */
 
+import Jitsi from '../component/videochat/jitsi';
 import MainOpenStudy from "../component/main/MainOpenStudy";
 import MainStudy from "../component/main/MainStudy";
 import MainQuestion from "../component/main/MainQuestion";
@@ -58,9 +59,10 @@ const Router = () => {
         <Route path="/MyLikedPost" element={<MyLikedPost />} />
         <Route path="/MyLikedQuestion" element={<MyLikedQuestion />} />
         <Route path="/View/:id" element={<View />} />
-                <Route path="/AskView/:id" element={<AskView />} />
+        <Route path="/AskView/:id" element={<AskView />} />
         <Route path="myAsk" element={<MyAsk />} />
         <Route path="myPost" element={<MyPost />} />
+        <Route path="/Jitsi" element={<Jitsi />} />
       </Routes>
     </BrowserRouter>
   );

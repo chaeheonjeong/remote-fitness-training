@@ -103,7 +103,6 @@ function MainStudy() {
   }, [searchInput]);
 
   const moreStudies = () => {
-    console.log(hasMore);
     if (hasMore) {
       axios
         .get(

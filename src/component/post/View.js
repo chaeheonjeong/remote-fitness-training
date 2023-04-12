@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import userStore from "../../store/user.store";
 import Header from "../main/Header";
 import { scrollToTop } from "../../util/common";
+import { HiUserCircle } from "react-icons/hi";
 
 const View = () => {
   const { id } = useParams();
@@ -17,6 +18,7 @@ const View = () => {
   const [selectedRId, setSelectedRId] = useState();
   const [good, setGood] = useState(false);
   const [goodCount, setGoodCount] = useState(0);
+  const [profileImg, setProfileImg] = useState(null);
 
   const [getReplyId, setReplyId] = useState();
 
@@ -42,6 +44,7 @@ const View = () => {
           if (response.status === 200) {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
+            setProfileImg(response.data.profileImg);
           }
         })
         .catch((error) => {
@@ -54,6 +57,7 @@ const View = () => {
           if (response.status === 200) {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
+            setProfileImg(response.data.profileImg);
           }
         })
         .catch((error) => {
@@ -541,44 +545,60 @@ const View = () => {
           )}
         </div>
         <div className={styles.content_1}>
-          <div>제목{write.title}</div>
+          <div>제목</div>
+          <div>{write.title}</div>
         </div>
         <div className={styles.content_2}>
-          <div className={styles.content_2_a}>
-            <div>작성자{write.writer}</div>
-            <div>|</div>
-            <div>
-                날짜{" "}
-                {write.writeDate !== undefined &&
-                  formatDate(new Date(write.writeDate))}
-            </div>
+        <div>작성자</div>
+          <div style={{ marginRight: "12.5rem" }}>
+            {profileImg === null ? (
+              <HiUserCircle
+                size="40"
+                color="#5a5a5a"
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <img
+                className={styles.profile}
+                src={profileImg}
+                alt="프로필 이미지"
+              />
+            )}
+            {write.writer}
           </div>
-        
+          <div>
+            날짜{" "}
+            {write.writeDate !== undefined &&
+              formatDate(new Date(write.writeDate))}
+          </div>
         </div>
         <div className={styles.content_5}>
-          <div className={styles.content_5_a}>
-            <div>모집인원{write.number}</div>
-            <div>시작 예정일{write.date}</div>
+          <div style={{ marginRight: "1rem" }}>모집인원</div>
+          <div style={{ marginRight: "15rem" }}>{write.number}</div>
+          <div style={{ marginRight: "1rem" }}> 시작 예정일</div>
+          <div>{write.date}</div>
+        </div>
+        <div className={styles.content_5a}>
+          <div style={{ marginRight: "1rem" }}>진행기간</div>
+          <div style={{ marginRight: "14rem" }}>{write.period}</div>
+          <div>태그</div>
+          <div>
+            {write.tag !== undefined &&
+              write.tag.map((x, i) => {
+                return <span key={x + i}>{x}</span>;
+              })}
           </div>
-          <div className={styles.content_5_b}>
-            <div>진행기간{write.period}</div>
-            <div>
-                태그
-                {write.tag !== undefined &&
-                  write.tag.map((x, i) => {
-                    return <span key={x + i}>{x}</span>;
-                  })}
-              </div>
-            </div>
-          </div>
-          <div className={styles.content_3}>
-            <div>내용</div>
-            <div dangerouslySetInnerHTML={{ __html: htmlString }} />
-            <span onClick={clickGood} className={good ? `styles.goodBtn` : null}>
-              좋아요{goodCount}
-            </span>
-            <span>조회수{write.views}</span>
-          </div>
+        </div>
+        <div className={styles.content_3}>
+          <div>내용</div>
+          <div dangerouslySetInnerHTML={{ __html: htmlString }} />
+          <span onClick={clickGood} className={good ? styles.goodBtn : null}>
+            좋아요{goodCount}
+          </span>
+          <span>조회수{write.views}</span>
+        </div>
+
+        
         {/* 댓글 입력 폼 */}
         <form onSubmit={handleSubmit}>
           <div className={styles.content_6}>

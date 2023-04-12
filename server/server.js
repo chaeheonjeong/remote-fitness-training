@@ -28,7 +28,7 @@ const StudyTime = require("./models/studyTime");
 const GoalTime = require("./models/goalTime");
 const AskGood = require("./models/askGood");
 const PostGood = require("./models/postGood");
-const { dblClick } = require("@testing-library/user-event/dist/click");
+//const { dblClick } = require("@testing-library/user-event/dist/click");
 
 const OpenStudy = require("./models/openStudy");
 //const { default: StudyRoomCard } = require("../component/StudyRoomCard");
@@ -792,9 +792,17 @@ app.get("/getWrite/:id", async (req, res) => {
     if (result) {
       let sameUser = false;
       if (userId === result[0]._user) sameUser = true;
+
+      let profileImg = null;
+      const user = await User.findOne({ _id: result[0]._user });
+      if (user.image) {
+        profileImg = user.image;
+      }
+
       return res.status(200).json({
         result: result,
         sameUser: sameUser,
+        profileImg: profileImg,
         message: `id 가져오기 성공`,
       });
     }
@@ -807,10 +815,18 @@ app.get("/getWrite/:id", async (req, res) => {
 app.get("/getWrite2/:id", async (req, res) => {
   try {
     const result = await Write.find({ _id: Number(req.params.id) });
+
     if (result) {
+      let profileImg = null;
+      const user = await User.findOne({ _id: result[0]._user });
+      if (user.image) {
+        profileImg = user.image;
+      }
+
       return res.status(200).json({
         result: result,
         sameUser: false,
+        profileImg: profileImg,
         message: `id 가져오기 성공`,
       });
     }
@@ -850,9 +866,17 @@ app.get("/getAsk/:id", async (req, res) => {
     if (result) {
       let sameUser = false;
       if (userId === result[0]._user) sameUser = true;
+
+      let profileImg = null;
+      const user = await User.findOne({ _id: result[0]._user });
+      if (user.image) {
+        profileImg = user.image;
+      }
+
       return res.status(200).json({
         result: result,
         sameUser: sameUser,
+        profileImg: profileImg,
         message: `id 가져오기 성공`,
       });
     }
@@ -866,9 +890,16 @@ app.get("/getAsk2/:id", async (req, res) => {
   try {
     const result = await Ask.find({ _id: Number(req.params.id) });
     if (result) {
+      let profileImg = null;
+      const user = await User.findOne({ _id: result[0]._user });
+      if (user.image) {
+        profileImg = user.image;
+      }
+
       return res.status(200).json({
         result: result,
         sameUser: false,
+        profileImg: profileImg,
         message: `id 가져오기 성공`,
       });
     }
@@ -1522,7 +1553,6 @@ app.get("/getReply/:id", async (req, res) => {
   const userId = decodedToken.id;
 
   try {
-    
     const result = await Reply.find({ postId: req.params.id})
 
     if (result) {
@@ -1560,7 +1590,7 @@ app.get("/getAReply/:id", async (req, res) => {
     if (result) {
 
       let sameAUsers = false;
-      if (userId === result[0]._user) sameAUsers = true;
+      //if (userId === result[0]._user) sameAUsers = true;
       console.log(req.params.postId);
       return res.status(200).json({
         data: result,
@@ -1798,12 +1828,6 @@ app.delete("/postr_reply/:id/:rid/:rrid", async (req, res) => {
   }
 });
 
-
-app.post("/upload", upload.single("file"), (req, res) => {
-  // (7)
-  res.status(200).json(req.file);
-});
-
 app.get('/myLikedPost', auth, async(req, res) => {
   const page = parseInt(req.query.page);
   const limit = parseInt(req.query.limit);
@@ -2020,6 +2044,32 @@ app.delete("/askView/:id/reply/:replyId", async(req, res) => {
     console.log(error);
     res.status(500).json({ message: "댓글삭제 실패" });
   }
+});
+
+app.get("/header-profile", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const user = await User.findOne({ _id: userId });
+    if (user.image) {
+      return res.status(200).json({ image: user.image });
+    } else {
+      return res.status(204).json({
+        message: `이미지가 없습니다.`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/upload", upload.single("file"), (req, res) => {
+  // (7)
+  res.status(200).json(req.file);
 });
 
 app.get("/", (req, res) => {

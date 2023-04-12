@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-//import "./Ask.css";
-import styles from './Ask.module.css';
+import "./Ask.css";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from "axios";
@@ -152,30 +151,29 @@ function Ask() {
   return (
     <>
       <Header />
-      <div className={styles.body}>
-        <div className={styles.ask}>
-            <div className={styles.title_input}>
-              <text className={styles.cc}>제목</text>
-              <input
-                onChange={titleHandler}
-                className={styles.title_tinput}
-                value={title}
-                placeholder="제목을 입력하세요."
-              />
+      <div className="ask">
+        <div className="title_input">
+          <text className="cc">제목</text>
+          <input
+            onChange={titleHandler}
+            className="title_tinput"
+            value={title}
+            placeholder="제목을 입력하세요."
+          />
         </div>
         <div>
           <input
-            className={styles.tag_input}
+            className="tag_input"
             onKeyPress={handleKeyPress}
             type="text"
             placeholder="해시태그 입력(최대 5개)"
           />
-          <div className={styles.tag_tagPackage}>
+          <div className="tag_tagPackage">
             {tags.map((tag, index) => (
               <span key={index} className="tag_tagindex">
                 {tag}
                 <button
-                  className={styles.tag_Btn}
+                  className="tag_Btn"
                   onClick={() => {
                     setTags(tags.filter((tag, i) => i !== index));
                   }}
@@ -187,7 +185,7 @@ function Ask() {
           </div>
         </div>
 
-        <div className={styles.content}>
+        <div className="content">
           <CKEditor
             editor={ClassicEditor}
             data=""
@@ -215,11 +213,11 @@ function Ask() {
           />
         </div>
 
-        <div className={styles.btn}>
+        <div className="btn">
           <input
             type="button"
             value="취소"
-            className={styles.cancel}
+            className="cancel"
             onClick={() => {
               navigate("/question");
             }}
@@ -227,12 +225,11 @@ function Ask() {
           <input
             type="submit"
             value="등록"
-            className={styles.submit}
+            className="submit"
             onClick={handleSubmit}
           />
         </div>
       </div>
-    </div>
     </>
   );
 }

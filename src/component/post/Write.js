@@ -1,5 +1,5 @@
 import usePost from "../../hooks/usePost";
-import styles from "./Write.module.css";
+import "./Write.css";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Header from "../main/Header";
@@ -98,13 +98,13 @@ const Write = () => {
   return (
     <>
       <Header />
-      <div className={styles.choose}>
-        <div className={styles.ch1}>
-          <text className={styles.nn}>모집인원</text>
+      <div className="choose">
+        <div className="ch1">
+          <text className="nn">모집인원</text>
 
           <select
             name="number"
-            className={styles.number}
+            className="number"
             defaultValue="default"
             onChange={(e) => {
               hook.setPCondition(e.target.value);
@@ -123,10 +123,10 @@ const Write = () => {
             ))}
           </select>
 
-          <text className={styles.ww}>진행기간</text>
+          <text className="ww">진행기간</text>
           <select
             name="period"
-            className={styles.period}
+            className="period"
             defaultValue="default"
             onChange={(e) => {
               hook.setPeriodCondition(e.target.value);
@@ -148,31 +148,31 @@ const Write = () => {
           </select>
         </div>
 
-        <div className={styles.ch2}>
-          <text className={styles.ss}>시작예정일</text>
+        <div className="ch2">
+          <text className="ss">시작예정일</text>
           <input
             type="date"
             id="date"
-            className={styles.date}
+            className="date"
             onChange={(event) => {
               hook.setDate(event.target.value);
             }}
           ></input>
-          <text className={styles.tt}>태그</text>
+          <text className="tt">태그</text>
 
           <div>
             <input
-              className={styles.tag_input}
+              className="tag_input"
               onKeyPress={hook.handleKeyPress}
               type="text"
               placeholder="해시태그 입력(최대 5개)"
             />
-            <div className={styles.tag_tagPackage}>
+            <div className="tag_tagPackage">
               {hook.tags.map((tag, index) => (
-                <span key={index} className={styles.tag_tagindex}>
+                <span key={index} className="tag_tagindex">
                   {tag}
                   <button
-                    className={styles.tag_Btn}
+                    className="tag_Btn"
                     onClick={() => {
                       hook.setTags(hook.tags.filter((tag, i) => i !== index));
                     }}
@@ -185,18 +185,18 @@ const Write = () => {
           </div>
         </div>
 
-        <div className={styles.title_input}>
-         <text className={styles.cc}>제목</text>
+        <div className="title_input">
+          <text className="cc">제목</text>
           <input
             onChange={(e) => {
               hook.setTitle(e.target.value);
             }}
-            className={styles.title_tinput}
+            className="title_tinput"
             placeholder="제목을 입력하세요."
           />
         </div>
 
-        <div className={styles.content}>
+        <div className="content">
           <CKEditor
             editor={ClassicEditor}
             data=""
@@ -219,11 +219,11 @@ const Write = () => {
           />
         </div>
       </div>
-      <div className={styles.btn}>
+      <div className="btn">
         <input
           type="button"
           value="취소"
-          className={styles.cancel}
+          className="cancel"
           onClick={() => {
             hook.navigate("/study");
           }}
@@ -231,7 +231,7 @@ const Write = () => {
         <input
           type="submit"
           value="등록"
-          className={styles.submit}
+          className="submit"
           onClick={hook.handleSubmit}
         />
       </div>
