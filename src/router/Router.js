@@ -13,6 +13,7 @@ import View2 from "../component/post//View2";
 
 import View3 from "../component/post//View3";
 import MyInfo from '../component/mypage/MyInfo';
+import Jitsi from '../component/videochat/jitsi';
 
 import MainOpenStudy from "../component/main/MainOpenStudy";
 import MainStudy from "../component/main/MainStudy";
@@ -55,6 +56,7 @@ const Router = () => {
         <Route path="/MyInfo" element={<MyInfo />} />
         <Route path="/MyCalendar" element={<MyCalendar />} />
         <Route path="/View/:id" element={<View />} />
+        <Route path="/Jitsi" element={<Jitsi />} />
       </Routes>
     </BrowserRouter>
   );
