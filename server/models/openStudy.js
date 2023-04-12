@@ -5,6 +5,7 @@ const openStudySchema = new Schema(
   {
     img: { type: String },
     title: { type: String, required: true },
+    pw: { type: Number },
     tags: { type: Array, required: true },
     personNum: { type: String, required: true },
   },

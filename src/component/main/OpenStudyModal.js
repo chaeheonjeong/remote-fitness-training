@@ -39,10 +39,11 @@ export default function OpenStudyModal({
       const response = await axios.post("http://localhost:8080/openStudy", {
         img: image,
         title: title,
+        pw: pw,
         hashtag: tags,
         personNum: personNum,
       });
-      addModalHandler(image, title, tags, personNum);
+      addModalHandler(image, title, pw, tags, personNum);
       console.log("사진 크기: ", image.size);
       alert("오픈스터디가 생성되었습니다.");
     } catch (error) {
@@ -154,6 +155,14 @@ export default function OpenStudyModal({
                 name="title"
                 onChange={(e) => setTitle(e.target.value)}
                 autoFocus
+              />
+            </div>
+            <div>
+              <a>비밀번호</a>
+              <input 
+                type="password"
+                name="pw"
+                onChange={(e) => setPW(e.target.value) }
               />
             </div>
             <div>

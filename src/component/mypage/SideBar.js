@@ -20,7 +20,14 @@ function SideBar() {
               </Link>
             </li>
             <li className="SideBarListItem">서랍</li>
-            <li className="SideBarListItem">관심글</li>
+            <li className="SideBarListItem">
+              <Link
+                to="/myLikedPost"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                관심글
+              </Link>
+              </li>
             <li className="SideBarListItem">
               <Link
                 to="/myPost"

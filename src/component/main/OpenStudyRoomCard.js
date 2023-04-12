@@ -6,7 +6,7 @@ import "./InfiniteScroll.css";
 import emptyHeart from "../../images/emptyHeart.png";
 import fullHeart from "../../images/heart.png";
 
-function OpenStudyRoomCard( {img, title, personNum, tags, id} ) {
+function OpenStudyRoomCard( {img, title, pw, personNum, tags, id} ) {
     const [heart, setHeart] = useState(false);
 
     const changeHeart = () => {
