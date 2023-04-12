@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 //import "./Ask.css";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
 import styles from './Ask.module.css';
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -153,15 +153,15 @@ function Ask() {
     <>
       <Header />
       <div className={styles.body}>
-    <div className={styles.ask}>
-        <div className={styles.title_input}>
-          <text className={styles.cc}>제목</text>
-          <input
-            onChange={titleHandler}
-            className={styles.title_tinput}
-            value={title}
-            placeholder="제목을 입력하세요."
-          />
+        <div className={styles.ask}>
+            <div className={styles.title_input}>
+              <text className={styles.cc}>제목</text>
+              <input
+                onChange={titleHandler}
+                className={styles.title_tinput}
+                value={title}
+                placeholder="제목을 입력하세요."
+              />
         </div>
         <div>
           <input

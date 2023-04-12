@@ -3,13 +3,10 @@ const Schema = mongoose.Schema;
 
 const writeSchema = new Schema(
   {
-    //_id: { type: Number, required: true /*, unique: true*/ }, // unique index constraint를 걸어줍니다.
-    _id : { type: Number, required: true}, 
+    _id: { type: Number, required: true /*, unique: true*/ }, // unique index constraint를 걸어줍니다.
     _user: { type: String, required: true },
-    /* number: { type: String, required: true },
-    period: { type: String, required: true }, */
-    number: { type: Array, required: true },
-    period: { type: Array, required: true },
+    number: { type: String, required: true },
+    period: { type: String, required: true },
     date: { type: String, required: true },
     tag: { type: Array, required: false },
     title: { type: String, required: true },

@@ -9,10 +9,10 @@ import { useParams } from "react-router-dom";
 import Reply from '../../server/models/reply';
 
 function A_View() {
-
-    const { id } = useParams();
-    const user = userStore();
-    const [write, setWrite] = useState([]);
+  const [sameUsers, setSameUsers] = useState(false);
+  const { id } = useParams();
+  const user = userStore();    
+  const [write, setWrite] = useState([]);
 
     const [htmlString, setHtmlString] = useState();
     const [sameUser, setSameUser] = useState(false);
@@ -22,7 +22,7 @@ function A_View() {
     
   const [selectedAId, setSelectedAId] = useState();
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
     useEffect(() => {
         if (user.token !== null) {
@@ -258,32 +258,15 @@ function A_View() {
     setReplyModifyAInput(e.target.value);
   }
 
+//-------------------------------------------
 
       const [Ar_reply, setAR_Reply] = useState([]);
       const { Arid } = useParams();
       const [isARSecret, setIsARSecret] = useState(false); // 비밀댓글 여부
       const [ARsameUsers, setARSameUsers] = useState(false);
       const [postARId, setPostARId] = useState(); 
-      /* useEffect(() => {
-        const fetchAR_Reply = async () => {
-          try {
-            const res = await axios.get(`http://localhost:8080/getAR_Reply/${id}`, {
-              headers: { Authorization: `Bearer ${user.token}` },
-            });
-            if (res.data !== undefined) {
-              setAR_Reply(res.data.data);
-              setARSameUsers(res.data.ARsameUsers);
-              console.log(res.data.message);
-              console.log(res.data.data);
-            }console.log(res.data);
-          } catch (err) {
-            console.error(err);
-          }
-        };
-        
-        fetchAR_Reply();
-     
-      }, []); */
+      const [showAR_ReplyModifyInput, setShowARModifyReplyInput] = useState(false);
+      const [replyARModifyInput, setReplyARModifyInput] = useState("");
 
       const fetchAR_Reply = async (rid) => {
         try {
@@ -326,11 +309,7 @@ function A_View() {
             headers: { Authorization: `Bearer ${user.token}` },
           });
           const data = { Ar_reply : replyARInput, isARSecret : isARSecret};
-          console.log(typeof isASecret);
-          
-          
-          console.log(typeof data);
-          //console.log(res.data.datas);
+
           console.log("success", response.data.message);
     
           // 새로운 댓글을 추가합니다.
@@ -378,7 +357,69 @@ function A_View() {
           console.log(error);
         }
       };
-    
+
+      //질문글 대댓글 삭제
+      const handleARDelete = async (rrid) => {
+        const confirmARDelete = window.confirm("대댓글을 삭제하시겠습니까?");
+        if(confirmARDelete) {
+          try {
+            const response = await axios.delete(`http://localhost:8080/postAr_reply/${id}/${selectedARId}/${rrid}`, {
+              headers: { Authorization: `Bearer ${user.token}` },
+            });
+            console.log(response.data);
+            alert("대댓글이 삭제되었습니다.");
+            setAR_Reply(Ar_reply.filter((r) => r._id !== rrid)); // 삭제된 대댓글을 제외하고 대댓글 목록을 업데이트합니다.
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      };
+
+      // 대댓글수정
+  const modifyARHandleSubmit = async (e, selectedARId, rrid) => {
+    e.preventDefault();
+
+    if(replyARModifyInput === "") {
+      alert("내용을 작성해주세요.");
+      return;
+    }
+    try {
+      const response = await axios.post("http://localhost:8080/askviewReplyARModify", {
+        postRId: id,
+        selectedARId: selectedARId,
+        _id: rrid,
+        Ar_rWriteDate: today,
+        Ar_reply: String(replyARModifyInput),
+        isARSecret: Boolean(isARSecret), 
+      });
+
+      alert("대댓글 수정이 완료되었습니다.");
+      navigate(`/askView/${id}`);
+
+    } catch(error) {
+      console.log(error);
+    }
+  };
+  // 대댓글수정(가져오기)
+  const modifyAR_Reply = async (rrid) => {
+    try {
+      const res = await axios
+      .get(`http://localhost:8080/askview/${id}/modify/${selectedARId}/${rrid}`)
+      
+      if(res.data !== undefined) {
+        setIsARSecret(res.data.result[0].isARSecret);
+        setReplyARModifyInput(res.data.result[0].Ar_reply);
+      }
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  // 대댓글수정(내용반영)
+  const modifyAR_ReplyInputChangeHandler = (e) => {
+    setReplyARModifyInput(e.target.value);
+  }
+
     
     return (
         <>
@@ -592,7 +633,43 @@ function A_View() {
                                           <td>{rr.isARSecret ? "비밀댓글" : "공개댓글"}</td>
                                           <td>{rr.Ar_reply}</td>
                                           <td>{" "}{rr.Ar_rwriteDate !== undefined && formatDate(new Date(rr.Ar_rwriteDate))}</td>
-                                          </tr>
+                                           
+                                          {/* 대댓글수정 */}
+                                          {!sameAUsers && (
+                                            <td>
+                                              <input type="button" className={styles.rrdbtn} value="삭제" onClick={() => handleARDelete(rr._id)}></input>
+                                              <input 
+                                                type="button" 
+                                                className={styles.rrmbtn} 
+                                                value="수정" 
+                                                onClick={ () => {
+                                                  setShowARModifyReplyInput(selectedARId === rr._id ? null : rr._id);
+                                                  setSelectedARId(selectedARId === rr._id ? null : rr._id);
+                                                  modifyAR_Reply(rr._id);
+                                                }}
+                                              ></input>
+                                              { showAR_ReplyModifyInput === rr._id && (
+                                                <form onSubmit={(e) => modifyARHandleSubmit(e, rr.selectedARId, rr._id)}> 
+                                                    <div className={styles.handle}>
+                                                    
+                                                      <input
+                                                        type="text"
+                                                        className={styles.reply_input}
+                                                        value={replyARModifyInput}
+                                                        onChange={modifyAR_ReplyInputChangeHandler}
+                                                      />
+                                                      <div className={styles.reply_choose}>
+                                                        <input type="checkbox" checked={isARSecret} className={styles.secret} onChange={(e) => setIsARSecret(e.target.checked)}></input>
+                                                        <text className={styles.rc1}>비밀 대댓글</text>
+                                                        <input type="submit" value="대댓글수정"></input>
+                                                        <button onClick={() => {setShowARModifyReplyInput(null); setSelectedARId(null);}}>대댓글수정 취소</button>
+                                                      </div>
+                                                    </div>
+                                                </form>
+                                              )}
+                                            </td>
+                                          )}
+                                        </tr>
                                       </tbody>
                                       ))}
                                     </table>

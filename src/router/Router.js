@@ -58,6 +58,7 @@ const Router = () => {
         <Route path="/MyLikedPost" element={<MyLikedPost />} />
         <Route path="/MyLikedQuestion" element={<MyLikedQuestion />} />
         <Route path="/View/:id" element={<View />} />
+                <Route path="/AskView/:id" element={<AskView />} />
         <Route path="myAsk" element={<MyAsk />} />
         <Route path="myPost" element={<MyPost />} />
       </Routes>
