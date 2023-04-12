@@ -812,7 +812,7 @@ app.delete("/postAr_reply/:id/:rid/:rrid", async (req, res) => {
 });
 
 /// 질문글 대댓글 수정
-app.get("/view/:id/modify/:selectedARId/:rrid", async(req, res) => {
+app.get("/askview/:id/modify/:selectedARId/:rrid", async(req, res) => {
   const postRId = req.params.id;
   const selectedARId = req.params.selectedARId;
   const rrid = req.params.rrid;
@@ -832,11 +832,11 @@ app.get("/view/:id/modify/:selectedARId/:rrid", async(req, res) => {
   }
 })
 
-app.post("/viewReplyARModify", async(req, res) => {
+app.post("/askviewReplyARModify", async(req, res) => {
   const { postRId, selectedARId, _id, Ar_rWriteDate, Ar_reply, isARSecret } = req.body;
 
   try {
-    const updatedViewReplyARModify = await AR_Reply.findOneAndUpdate(
+    const updatedaskViewReplyARModify = await AR_Reply.findOneAndUpdate(
       { postRId, selectedARId, _id },
       {
         $set: { Ar_rWriteDate, Ar_reply, isARSecret },
@@ -845,7 +845,7 @@ app.post("/viewReplyARModify", async(req, res) => {
 
     return res
       .status(200)
-      .json({ message: `r_reply ${_id} updated successfully`, updatedViewReplyARModify });
+      .json({ message: `Ar_reply ${_id} updated successfully`, updatedaskViewReplyARModify });
   } catch(error) {
     console.log(error);
     res.status(500).json({ message: 'Server Error' });
@@ -1917,6 +1917,442 @@ app.post('/openStudy', async (req, res) => {
         res.status(500).json({ message: "Server Error" });
       }
     });
+
+    app.get('/myLikedPost', auth, async(req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      const userId = req.user.id;
+    
+      console.log(userId);
+    
+      try {
+        const studyLiked = await PostGood.find(
+          { '_users.user': userId }
+        );
+        
+        console.log(studyLiked);
+    
+        const studyLikedIds = studyLiked.map(post => post._id);
+        console.log(studyLikedIds);
+    
+        const likedPosts = await Write.find({ _id: { $in: studyLiked } })
+          .skip(offset)
+          .limit(limit);
+        console.log(likedPosts); 
+    
+        
+    
+        if(studyLiked.length > 0) {
+          return res.status(200).json({ 
+            likePosts: likedPosts,
+            success: true,
+           });
+        } else {
+          return res.status(400).json({ 
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+           });
+        }
+    
+      } catch(error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+    
+    app.get('/myLikedQuestion', auth, async(req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      const userId = req.user.id;
+    
+      console.log(userId);
+    
+      try {
+        const questionLiked = await AskGood.find(
+          { '_users.user': userId }
+        );
+        
+        console.log(questionLiked);
+    
+        const questionLikedIds = questionLiked.map(question => question._id);
+        console.log(questionLikedIds);
+    
+        const likedQuestions = await Ask.find({ _id: { $in: questionLiked } })
+          .skip(offset)
+          .limit(limit);
+        console.log(likedQuestions); 
+    
+        
+    
+        if(questionLiked.length > 0) {
+          return res.status(200).json({ 
+            likeQuestions: likedQuestions,
+            success: true,
+           });
+        } else {
+          return res.status(400).json({ 
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+           });
+        }
+    
+      } catch(error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+
+    app.post("/openStudy", async (req, res) => {
+      try {
+        const { img, title, pw, hashtag, personNum } = req.body;
+    
+        const newOpenStudy = new OpenStudy({
+          img: img,
+          title: title,
+          pw: pw,
+          tags: hashtag,
+          personNum: personNum,
+        });
+    
+        console.log("img.size : ", img.size);
+    
+        await newOpenStudy.save();
+        res.status(200).json({ message: `OpenStudy created successfully` });
+      } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: `err.message` });
+      }
+    });
+    
+    app.get("/openStudies", async (req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      try {
+        const openStudies = await OpenStudy.find().skip(offset).limit(limit);
+        //const totalOpenStudies = openStudies.length;
+        //console.log(totalOpenStudies);
+    
+        //const currentOpenStudies = await OpenStudy.find().skip(offset).limit(limit);
+    
+        /* if(openStudies){
+            return res.status(200).json({
+              openStudies: openStudies,
+              message: '오픈스터디 목록 가져오기 성공',
+            });
+          } */
+        if (openStudies.length > 0) {
+          return res.status(200).json({
+            openStudies: openStudies,
+            //totalOpenStudies,
+            message: "오픈스터디 목록 가져오기 성공",
+            success: true,
+            openStudies,
+          });
+        } else {
+          return res.status(404).json({
+            message: "데이터가 존재하지 않습니다",
+            success: false,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    });
+    
+    app.get("/studies", async (req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      try {
+        const studies = await Write.find()
+          .sort({ writeDate: -1 })
+          .skip(offset)
+          .limit(limit);
+        const counter = await Write.count();
+        const hasMore = counter > page * limit;
+    
+        if (studies.length > 0) {
+          return res.status(200).json({
+            studies: studies,
+            message: "스터디 모집글 목록 가져오기",
+            success: true,
+            hasMore: hasMore,
+            studies,
+          });
+        } else {
+          return res.status(404).json({
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    });
+    
+    app.get("/myStudies", async (req, res) => {
+      const authHeader = req.headers.authorization;
+      const token = authHeader.split(" ")[1];
+      const decodedToken = jwt.verify(token, mysecretkey);
+      const userId = decodedToken.id;
+    
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      try {
+        const studies = await Write.find({ _user: userId })
+          .sort({ writeDate: -1 })
+          .skip(offset)
+          .limit(limit);
+        const counter = await Write.count();
+        const hasMore = counter > page * limit;
+    
+        if (studies.length > 0) {
+          return res.status(200).json({
+            studies: studies,
+            message: "스터디 모집글 목록 가져오기",
+            success: true,
+            hasMore: hasMore,
+            studies,
+          });
+        } else {
+          return res.status(204).json({
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    });
+    
+    app.get("/myAsks", async (req, res) => {
+      const authHeader = req.headers.authorization;
+      const token = authHeader.split(" ")[1];
+      const decodedToken = jwt.verify(token, mysecretkey);
+      const userId = decodedToken.id;
+    
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      try {
+        const studies = await Ask.find({ _user: userId })
+          .sort({ writeDate: -1 })
+          .skip(offset)
+          .limit(limit);
+        const counter = await Ask.count();
+        const hasMore = counter > page * limit;
+    
+        if (studies.length > 0) {
+          return res.status(200).json({
+            studies: studies,
+            message: "스터디 모집글 목록 가져오기",
+            success: true,
+            hasMore: hasMore,
+            studies,
+          });
+        } else {
+          return res.status(204).json({
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    });
+    
+    app.get("/questions", async (req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      try {
+        const questions = await Ask.find()
+          .sort({ writeDate: -1 })
+          .skip(offset)
+          .limit(limit);
+        const counter = await Ask.count();
+        const hasMore = counter > page * limit;
+    
+        if (questions.length > 0) {
+          return res.status(200).json({
+            questions: questions,
+            message: "스터디 모집글 목록 가져오기",
+            success: true,
+            hasMore: hasMore,
+          });
+        } else {
+          return res.status(404).json({
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    });
+    
+      // openStudy 검색
+      app.get("/searchOpenStudy", async (req, res) => {
+        const option = req.query.selected;
+        const value = decodeURIComponent(req.query.value);
+      
+        const page = parseInt(req.query.page);
+        const limit = parseInt(req.query.limit);
+      
+        const offset = (page - 1) * limit;
+        var openStudiesSearch = [];
+    
+        try {
+          if(option === "title") {
+            openStudiesSearch = await OpenStudy.find(
+                { title: { $regex: value, $options: "i" } }, 
+                null, 
+                { skip: offset, limit: limit }
+              );
+          }
+          else if(option === "tags") {
+            openStudiesSearch = await OpenStudy.find(
+              { tags: { $regex: value, $options: "i" } }, 
+              null, 
+              { skip: offset, limit: limit }
+            );
+          }
+      
+          if(openStudiesSearch.length > 0) {
+            return res.status(200).json({ 
+              openStudies: openStudiesSearch,
+              //totalOpenStudies,
+              message: '검색목록 가져오기 성공',
+              success: true
+            });
+          } else {
+            return res.status(200).json({
+              openStudies: [],
+              message: "검색결과가 없습니다",
+              success: true,
+            });
+          }
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ success: false, message: "Server Error" });
+        }
+      });
+    
+    
+      // Study게시판 검색
+      app.get("/searchStudy", async (req, res) => {
+        const option = req.query.selected;
+        const value = decodeURIComponent(req.query.value);
+      
+        const page = parseInt(req.query.page);
+        const limit = parseInt(req.query.limit);
+      
+        const offset = (page - 1) * limit;
+        var studiesSearch = [];
+    
+        try {
+          if(option === "title") {
+            studiesSearch = await Write.find(
+                { title: { $regex: value, $options: "i" } }, 
+                null, 
+                { skip: offset, limit: limit }
+              );
+          }
+          else if(option === "tags") {
+            studiesSearch = await Write.find(
+              { tag: { $regex: value, $options: "i" } }, 
+              null, 
+              { skip: offset, limit: limit }
+            );
+          }
+      
+          if(studiesSearch.length > 0) {
+            return res.status(200).json({ 
+              studies: studiesSearch,
+              message: '검색목록 가져오기 성공',
+              success: true
+            });
+          } else {
+            return res.status(200).json({
+              studies: [],
+              message: "검색결과가 없습니다",
+              success: true,
+            });
+          }
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ success: false, message: "Server Error" });
+        }
+      });
+    
+      // 질문게시판 검색
+      app.get("/searchQuestion", async (req, res) => {
+        const option = req.query.selected;
+        const value = decodeURIComponent(req.query.value);
+      
+        const page = parseInt(req.query.page);
+        const limit = parseInt(req.query.limit);
+      
+        const offset = (page - 1) * limit;
+        var questionsSearch = [];
+    
+        try {
+          if(option === "title") {
+            questionsSearch = await Ask.find(
+                { title: { $regex: value, $options: "i" } }, 
+                null, 
+                { skip: offset, limit: limit }
+              );
+          }
+          else if(option === "tags") {
+            questionsSearch = await Ask.find(
+              { tag: { $regex: value, $options: "i" } }, 
+              null, 
+              { skip: offset, limit: limit }
+            );
+          }
+      
+          if(questionsSearch.length > 0) {
+            return res.status(200).json({ 
+              questions: questionsSearch,
+              message: '검색목록 가져오기 성공',
+              success: true
+            });
+          } else {
+            return res.status(200).json({
+              questions: [],
+              message: "검색결과가 없습니다",
+              success: true,
+            });
+          }
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ success: false, message: "Server Error" });
+        }
+      });
     
     app.post("/upload", upload.single("file"), (req, res) => {
       // (7)
@@ -1926,4 +2362,3 @@ app.post('/openStudy', async (req, res) => {
     app.get("/", (req, res) => {
       res.send("hello world!");
     });
-
