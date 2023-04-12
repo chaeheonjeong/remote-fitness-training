@@ -13,7 +13,7 @@ const Notification = () => {
       {hook.rendData.map((x, i) => {
         return (
           <div
-            key={x.id}
+            key={x.id + i}
             className={`${styles.smallContainer} ${
               x.read === 0 && styles.unRead
             }`}
@@ -31,8 +31,7 @@ const Notification = () => {
                 </div>
               )}
             </div>
-            <div
-            >
+            <div>
               {x.content.length >= 70
                 ? x.content.substring(0, 70) + "..."
                 : x.content}

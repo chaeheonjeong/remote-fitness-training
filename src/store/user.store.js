@@ -24,6 +24,9 @@ const userStore = create((set, get) => ({
     localStorage.removeItem("name");
     set({ token: null });
   },
+  changeName: (newName) => {
+    set({ name: newName });
+  },
 }));
 
 export default userStore;

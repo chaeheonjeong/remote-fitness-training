@@ -8,6 +8,7 @@
   height: 100vh;
   width: 100%;
   backdrop-filter: brightness(0.6);
+  z-index: 10;
 }
 .closeBox {
   position: fixed;
@@ -15,29 +16,32 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  z-index: 10;
 }
 
 .modalWrapper {
   background-color: white;
-  width: 300px;
+  width: 450px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  border-radius: 2rem;
-  z-index: 20;
+  border-radius: 0.7rem;
   position: relative;
-  padding: 2rem 1rem;
+}
+
+.contentWrapper {
+  gap: 1.8rem;
+  padding: 1.2rem 3rem 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .btnCancle {
   height: 1.8rem;
   font-size: 0.8rem;
-  border-radius: 0.8rem;
-  border: 2px solid;
-  border: none;
-  background-color: #b9ead0;
+  border-radius: 0.5rem;
+  border: 0.5px solid rgb(203, 203, 203);
+  background-color: #ffffff;
   color: rgb(49, 49, 49);
   cursor: pointer;
   padding: 0 0.5rem;
@@ -50,9 +54,8 @@
 .btnOk {
   height: 1.8rem;
   font-size: 0.8rem;
-  border-radius: 0.8rem;
-  border: 2px solid;
-  border: none;
+  border-radius: 0.5rem;
+  border: 0.5px solid #b9ead0;
   background-color: #b9ead0;
   color: rgb(49, 49, 49);
   cursor: pointer;
@@ -65,8 +68,8 @@
   display: flex;
   flex-direction: row;
   width: 100%;
-  justify-content: flex-end;
-  gap: 0.4rem;
+  justify-content: center;
+  gap: 0.3rem;
 }
 .inputStyle {
   width: 2.5rem;
@@ -92,6 +95,14 @@
 .ModalOpen {
   visibility: visible;
   animation: fadeIn 0.2s;
+}
+
+.clock {
+  border-radius: 10rem;
+  padding: 0.6rem;
+  background-color: #b9ead0;
+  margin-top: 2rem;
+  color: #409969;
 }
 
 @keyframes fadeIn {

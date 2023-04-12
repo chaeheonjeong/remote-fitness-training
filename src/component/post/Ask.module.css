@@ -1,3 +1,6 @@
+.ask {
+  margin-top: 10px;
+}
 
 .ask{
     padding: 2rem;
@@ -40,13 +43,25 @@
     width: 90%;
     padding: 5px;
     border: solid 1.6px black;
-
   }
 
-  .content {
-    margin-top: 20px;
-    width: 90%;
-    height: 400px;
-    margin-left: 73px;
-    border: solid 1.6px black;
-  }
+.cc {
+  margin-right: 30px;
+}
+
+.btn {
+  text-align: end;
+}
+
+.title_tinput {
+  width: 90%;
+  padding: 5px;
+  border: solid 1.6px black;
+}
+
+.content {
+  margin-top: 20px;
+  width: 90%;
+  margin-left: 73px;
+  border: solid 1.6px black;
+}

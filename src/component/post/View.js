@@ -13,6 +13,7 @@ const View = () => {
   const [write, setWrite] = useState([]);
   const [htmlString, setHtmlString] = useState();
   const [sameUser, setSameUser] = useState(false);
+  const [selectedId, setSelectedId] = useState();
   const [selectedRId, setSelectedRId] = useState();
 
   const [good, setGood] = useState(false);
@@ -95,6 +96,8 @@ const View = () => {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [showReplyList, setShowReplyList] = useState(false);
 
+  const [showReplyModifyInput, setShowModifyReplyInput] = useState(false);
+
   const handleShowReplyInput = () => {
     setShowReplyInput(!showReplyInput);
     //setShowReplyList(false); // 대댓글 입력 칸을 보여주면서 대댓글 목록도 함께 보여줌
@@ -115,6 +118,8 @@ const View = () => {
     setShowReplyInput(false);
     setShowReplyList(false);
   };
+
+  
 
   
 
@@ -422,7 +427,6 @@ const View = () => {
         .catch((err) => console.log(err));
     }
   };
-  const [showReplyModifyInput, setShowModifyReplyInput] = useState(false);
   const [replyModifyInput, setReplyModifyInput] = useState("");
 
   const [replies, setReplies] = useState([]); // 수정된 댓글 가져올 때
@@ -556,6 +560,7 @@ const View = () => {
             />
             <div className={styles.reply_choose}>
 
+              <text className= {isSecret ? styles.falseSecret : styles.trueSecret}>비밀댓글: {isSecret ? '체크됨' : '체크안됨'}</text>
               <text className= {isSecret ? styles.falseSecret : styles.trueSecret}>비밀댓글: {isSecret ? '체크됨' : '체크안됨'}</text>
 
               <input type="checkbox" checked={isSecret} className={styles.secret} onChange={(e) => setIsSecret(e.target.checked)}></input>
@@ -736,8 +741,7 @@ const View = () => {
 
               </tr>
               ))}
-      
-            
+              
             </tbody>
           </table>
         </div>

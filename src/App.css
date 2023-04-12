@@ -3,6 +3,12 @@
   display: flex;
 }
 
+.calendar {
+  flex: 4;
+  background-color: #fffbf5;
+  display: flex;
+}
+
 .calendar{
   flex: 4;
   background-color: #FFFBF5;
@@ -41,4 +47,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.infinite-scroll-component__outerdiv {
+  width: 100%;
 }
