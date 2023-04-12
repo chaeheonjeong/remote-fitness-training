@@ -163,11 +163,10 @@ function Ask() {
         </div>
         <div>
           <input
-            
-            onKeyPress={handleKeyPress}
-            type="text"
-            placeholder="해시태그 입력(최대 5개)"
             className={styles.tag_input}
+            onKeyPress={handleKeyPress}
+            type='text'
+            placeholder="해시태그 입력(최대 5개)"
           />
           <div className={styles.tag_tagPackage}>
             {tags.map((tag, index) => (

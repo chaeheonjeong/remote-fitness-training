@@ -1,12 +1,9 @@
-
-.detail{
-    padding:1.5em;
-    border-radius: 5px;
-    border: 4px solid black;
-    margin: 20px;
-    
+.detail {
+  padding: 1.5em;
+  border-radius: 5px;
+  border: 4px solid black;
+  margin: 20px;
 }
-
 
 .write2 {
     border: 4px solid #FFC947;

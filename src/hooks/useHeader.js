@@ -56,18 +56,6 @@ export default function useHeader() {
     };
   }, [el]);
 
-  useEffect(() => {
-    const handleCloseDrop = (e) => {
-      if (el.current && !el.current.contains(e.target)) {
-        setDropVisible(false);
-      }
-    };
-    window.addEventListener("click", handleCloseDrop);
-    return () => {
-      window.removeEventListener("click", handleCloseDrop);
-    };
-  }, [el]);
-
   return {
     popUrl,
     popTarget,

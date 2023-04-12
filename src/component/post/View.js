@@ -13,8 +13,8 @@ const View = () => {
   const [write, setWrite] = useState([]);
   const [htmlString, setHtmlString] = useState();
   const [sameUser, setSameUser] = useState(false);
+  const [selectedId, setSelectedId] = useState();
   const [selectedRId, setSelectedRId] = useState();
-
   const [good, setGood] = useState(false);
   const [goodCount, setGoodCount] = useState(0);
 
@@ -129,6 +129,7 @@ const View = () => {
   const [postId, setPostId] = useState(); 
   const [replyInput, setReplyInput] = useState("");
 
+
   useEffect(() => {
     if (user.token !== null) {
       axios
@@ -227,7 +228,30 @@ const View = () => {
   const [isRSecret, setIsRSecret] = useState(false); // 비밀댓글 여부
   const [RsameUsers, setRSameUsers] = useState(false);
   const [postRId, setPostRId] = useState(); 
+
+
+  /* useEffect(() => {
+    const fetchR_Reply = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8080/getR_Reply/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        if (res.data !== undefined) {
+          setR_Reply(res.data.data);
+          setRSameUsers(res.data.RsameUsers);
+          console.log(res.data.message);
+          console.log(res.data.data);
+        }console.log('here: ', res.data.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    
+    fetchR_Reply();
+ 
+  }, []); */
   
+
   const fetchR_Reply = async (rid) => {
     try {
       const res = await axios.get(`http://localhost:8080/getR_Reply/${id}/${rid}`, {
@@ -565,6 +589,8 @@ const View = () => {
           </div>
         </form>
         {/* 비밀댓글 체크 여부 출력 */}
+        
+
         <div className={styles.rr_reply}>
           <table>
             <thead>
@@ -587,42 +613,12 @@ const View = () => {
                 {r.rwriteDate !== undefined &&
                   formatDate(new Date(r.rwriteDate))}</td>
 
-                {/* 댓글수정 */}
-                {!sameUsers && (
-                  <td>
-                    <input type="button" className={styles.rdbtn} value="삭제" onClick={ deleteReply.bind(null, r._id) }></input>
-                    <input 
-                      type="button" 
-                      className={styles.rmbtn} 
-                      value="수정" 
-                      onClick={ () => {
-                        setShowModifyReplyInput(selectedRId === r._id ? null : r._id);
-                        setSelectedRId(selectedRId === r._id ? null : r._id);
-                        modifyReply(r._id);
-                      }}
-                     ></input>
-                     { showReplyModifyInput === r._id && (
-                      <form onSubmit={(e) => modifyHandleSubmit(e, r._id)}> 
-                          <div className={styles.handle}>
-                          
-                            <input
-                              type="text"
-                              className={styles.reply_input}
-                              value={replyModifyInput}
-                              onChange={modifyReplyInputChangeHandler}
-                            />
-                            <div className={styles.reply_choose}>
-                              <input type="checkbox" checked={isSecret} className={styles.secret} onChange={(e) => setIsSecret(e.target.checked)}></input>
-                              <text className={styles.rc1}>비밀 댓글</text>
-                              <input type="submit" value="댓글수정"></input>
-                              <button onClick={() => {setShowModifyReplyInput(null); setSelectedRId(null);}}>댓글수정 취소</button>
-                            </div>
-                          </div>
-                      </form>
-                    ) }
-                  </td>
-                )}
-
+              {sameUsers && (
+                <td>
+                  <input type="button" className={styles.rdbtn} value="삭제"></input>
+                  <input type="button" className={styles.rmbtn} value="수정"></input>
+                </td>
+              )}
 
                 <td>
                   {!showReplyInput && (
@@ -673,11 +669,12 @@ const View = () => {
                     
                     <div className={styles.rr_reply2}>
                       {/* 대댓글 목록 보여주는 코드 */}
+                      
                         <table>
                           <thead>
                             <tr className={styles.ttrrr}>
                               <td>닉네임</td>
-                              <td>비밀대댓글 여부</td>
+                              <td>비밀댓글 여부</td>
                               <td>대댓글 내용</td>
                               <td>작성 날짜</td>
                             </tr>
@@ -686,12 +683,12 @@ const View = () => {
                           <tbody>
                             <tr>
                               <td>{rr.r_rwriter}</td>
-                              <td>{rr.isRSecret ? "비밀대댓글" : "공개대댓글"}</td>
+                              <td>{rr.isRSecret ? "비밀댓글" : "공개댓글"}</td>
                               <td>{rr.r_reply}</td>
                               <td>{" "}{rr.r_rwriteDate !== undefined && formatDate(new Date(rr.r_rwriteDate))}</td>
-                           
-                              {/* 대댓글수정 */}
-                              {!sameUsers && (
+
+                             {/* 대댓글수정 */}
+                             {!sameUsers && (
                                 <td>
                                   <input type="button" className={styles.rrdbtn} value="삭제" onClick={() => handleRDelete(rr._id)}></input>
                                   <input 

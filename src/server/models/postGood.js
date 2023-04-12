@@ -16,8 +16,4 @@ postGoodSchema.set("collection", "postGood");
 
 const PostGood = mongoose.model("postGood", postGoodSchema);
 
-<<<<<<< HEAD
 module.exports = PostGood;
-=======
-module.exports = PostGood;
->>>>>>> e30a2c32be3ef1563102f960be9510bf239890c3
