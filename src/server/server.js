@@ -436,6 +436,140 @@ app.get("/ranking", async (req, res) => {
 
 
 //+++++++++++++++++++++++++++++++++++++++++
+// 대댓글 삭제
+app.delete("/postr_reply/:id/:rid/:rrid", async (req, res) => {
+  const { id, rid, rrid } = req.params;
+  
+  const post = await Write.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+  
+  const reply = await Reply.findOne({ _id: rid });
+    if (!reply) {
+  return res.status(404).json({ message: "Reply not found" });
+  }
+  
+  const r_reply = await R_Reply.findOne({ _id: rrid });
+    if (!r_reply) {
+    return res.status(404).json({ message: "R_Reply not found" });
+  }
+  
+  try {
+    await R_Reply.deleteOne({ _id: rrid });
+  
+    return res.status(200).json({ message: `R_Reply ${rrid} deleted successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+///대댓글 수정
+app.get("/view/:id/modify/:selectedRId/:rrid", async(req, res) => {
+  const postRId = req.params.id;
+  const selectedRId = req.params.selectedRId;
+  const rrid = req.params.rrid;
+
+  try {
+    const result = await R_Reply.find({ postRId: Number(postRId), selectedRId: Number(selectedRId), _id: Number(rrid)  });
+    console.log(result);
+    if(result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    }
+  } catch(error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+})
+
+app.post("/viewReplyRModify", async(req, res) => {
+  const { postRId, selectedRId, _id, r_rWriteDate, r_reply, isRSecret } = req.body;
+
+  try {
+    const updatedViewReplyRModify = await R_Reply.findOneAndUpdate(
+      { postRId, selectedRId, _id },
+      {
+        $set: { r_rWriteDate, r_reply, isRSecret },
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: `r_reply ${_id} updated successfully`, updatedViewReplyRModify });
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+//댓글 수정
+app.get("/view/:id/modify/:replyId", async(req, res) => {
+  const postId = req.params.id;
+  const replyId = req.params.replyId;
+
+  try {
+    const result = await Reply.find({ postId: Number(postId), _id: Number(replyId)  });
+    console.log(result);
+    if(result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    }
+  } catch(error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+})
+
+app.post("/viewReplyModify", async(req, res) => {
+  const { postId, _id, rWriteDate, reply, isSecret } = req.body;
+
+  try {
+    const updatedViewReplyModify = await Reply.findOneAndUpdate(
+      { postId, _id },
+      {
+        $set: { rWriteDate, reply, isSecret },
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: `reply ${_id} updated successfully`, updatedViewReplyModify });
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// 댓글삭제
+app.delete("/view/:id/reply/:replyId", async(req, res) => {
+  const postId = req.params.id;
+  const replyId = req.params.replyId;
+
+  try {
+    const reply = await Reply.findOne({ postId: postId, _id: replyId });
+
+    if(!reply) {
+      return res.status(404).json({ message: "댓글을 찾을 수 없습니다." });
+    }
+
+    console.log(reply);
+
+    await Reply.deleteOne({ postId: postId, _id: replyId });
+
+    res.status(200).json({ message: "댓글을 삭제하였습니다." });
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: "댓글삭제 실패" });
+  }
+});
+
+
 /// 댓글 작성
 app.post("/postreply/:id", async (req, res) => {
   const { reply, isSecret, rwriter, rwriteDate } = req.body;
@@ -592,34 +726,6 @@ app.post("/postAr_reply/:id/:rid", async (req, res) => {
   }
 });
 
-// 대댓글 삭제
-app.delete("/postr_reply/:id/:rid/:rrid", async (req, res) => {
-  const { id, rid, rrid } = req.params;
-  
-  const post = await Write.findOne({ _id: id });
-  if (!post) {
-    return res.status(404).json({ message: "Post not found" });
-  }
-  
-  const reply = await Reply.findOne({ _id: rid });
-    if (!reply) {
-  return res.status(404).json({ message: "Reply not found" });
-  }
-  
-  const r_reply = await R_Reply.findOne({ _id: rrid });
-    if (!r_reply) {
-    return res.status(404).json({ message: "R_Reply not found" });
-  }
-  
-  try {
-    await R_Reply.deleteOne({ _id: rrid });
-  
-    return res.status(200).json({ message: `R_Reply ${rrid} deleted successfully` });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: `서버오류` });
-  }
-});
 
 /// 질문글 작성
 app.post("/postAsk", async (req, res) => {
@@ -660,6 +766,7 @@ app.post("/postAsk", async (req, res) => {
   }
 });
 
+//글 작성
 app.post("/postWrite", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.split(" ")[1];
@@ -1104,3 +1211,4 @@ app.post('/openStudy', async (req, res) => {
         res.status(500).json({ success: false, message: "Server Error" });
       }
     })
+

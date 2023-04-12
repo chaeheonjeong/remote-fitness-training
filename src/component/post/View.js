@@ -14,6 +14,7 @@ const View = () => {
   const [htmlString, setHtmlString] = useState();
   const [sameUser, setSameUser] = useState(false);
   const [selectedRId, setSelectedRId] = useState();
+
   const [good, setGood] = useState(false);
   const [goodCount, setGoodCount] = useState(0);
 
@@ -222,6 +223,7 @@ const View = () => {
   //-----------------------------------------------------------
   const [r_reply, setR_Reply] = useState([]);
   const { rid } = useParams();
+  const { rrid } = useParams();
   const [isRSecret, setIsRSecret] = useState(false); // 비밀댓글 여부
   const [RsameUsers, setRSameUsers] = useState(false);
   const [postRId, setPostRId] = useState(); 
@@ -247,7 +249,7 @@ const View = () => {
   }, []);
 
   //----------------------------------------------------------------
-
+  const [getReplyId, setReplyId] = useState();
   const replyHandler = (e) => {
     setReply(e.target.value);
   };
@@ -315,9 +317,9 @@ const View = () => {
       console.log(typeof data);
       console.log("success", response.data.message);
 
-      // 새로운 댓글을 추가합니다.
+      // 새로운 대댓글을 추가합니다.
       setR_Reply([...r_reply, replyRInput]);
-      setReplyRInput(""); // 댓글 입력창을 초기화합니다.
+      setReplyRInput(""); // 대댓글 입력창을 초기화합니다.
 
       navigate("/");
     } catch (error) {
@@ -336,20 +338,140 @@ const View = () => {
     return formattedDate;
   };
 
+
+  //대댓글 삭제
   const handleRDelete = async (rrid) => {
+    const confirmRDelete = window.confirm("대댓글을 삭제하시겠습니까?");
+    if(confirmRDelete) {
+      try {
+        const response = await axios.delete(`http://localhost:8080/postr_reply/${id}/${selectedRId}/${rrid}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        console.log(response.data);
+        alert("대댓글이 삭제되었습니다.");
+        setR_Reply(r_reply.filter((r) => r._id !== rrid)); // 삭제된 대댓글을 제외하고 대댓글 목록을 업데이트합니다.
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    
+  };
+  
+
+  const [showR_ReplyModifyInput, setShowRModifyReplyInput] = useState(false);
+  const [replyRModifyInput, setReplyRModifyInput] = useState("");
+
+
+  // 대댓글수정
+  const modifyRHandleSubmit = async (e, selectedRId, rrid) => {
+    e.preventDefault();
+
+    if(replyRModifyInput === "") {
+      alert("내용을 작성해주세요.");
+      return;
+    }
+
     try {
-      const response = await axios.delete(`http://localhost:8080/postr_reply/${id}/${selectedRId}/${rrid}`, {
-        headers: { Authorization: `Bearer ${user.token}` },
+      const response = await axios.post("http://localhost:8080/viewReplyRModify", {
+        postRId: id,
+        selectedRId: selectedRId,
+        _id: rrid,
+        r_rWriteDate: today,
+        r_reply: String(replyRModifyInput),
+        isRSecret: Boolean(isRSecret), 
       });
-      console.log(response.data);
-      setR_Reply(r_reply.filter((r) => r._id !== rrid)); // 삭제된 대댓글을 제외하고 대댓글 목록을 업데이트합니다.
-    } catch (error) {
-      console.error(error);
+
+      alert("대댓글 수정이 완료되었습니다.");
+      navigate(`/view/${id}`);
+
+    } catch(error) {
+      console.log(error);
+    }
+  };
+  // 대댓글수정(가져오기)
+  const modifyR_Reply = async (rrid) => {
+    try {
+      const res = await axios
+      .get(`http://localhost:8080/view/${id}/modify/${selectedRId}/${rrid}`)
+      
+      if(res.data !== undefined) {
+        setIsRSecret(res.data.result[0].isRSecret);
+        setReplyRModifyInput(res.data.result[0].r_reply);
+      }
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  // 대댓글수정(내용반영)
+  const modifyR_ReplyInputChangeHandler = (e) => {
+    setReplyRModifyInput(e.target.value);
+  }
+ 
+  // 댓글삭제 
+  const deleteReply = (replyId) => {
+    const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
+    if(confirmDelete) {
+      axios
+        .delete(`http://localhost:8080/view/${id}/reply/${replyId}`)
+        .then((res) => {
+          setReply(reply.filter(reply => reply._id !== replyId));
+          console.log("data", res.data);
+          alert("댓글이 삭제되었습니다.");
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+  const [showReplyModifyInput, setShowModifyReplyInput] = useState(false);
+  const [replyModifyInput, setReplyModifyInput] = useState("");
+
+  const [replies, setReplies] = useState([]); // 수정된 댓글 가져올 때
+
+  // 댓글수정
+  const modifyHandleSubmit = async (e, replyId) => {
+    e.preventDefault();
+
+    if(replyModifyInput === "") {
+      alert("내용을 작성해주세요.");
+      return;
+    }
+    try {
+      const response = await axios.post("http://localhost:8080/viewReplyModify", {
+        postId: id,
+        _id: replyId,
+        rWriteDate: today,
+        reply: String(replyModifyInput),
+        isSecret: Boolean(isSecret), 
+      });
+
+      alert("수정이 완료되었습니다.");
+      navigate(`/view/${id}`);
+
+    } catch(error) {
+      console.log(error);
     }
   };
 
+  // 댓글수정(가져오기)
+  const modifyReply = async (replyId) => {
+    try {
+      const res = await axios
+      .get(`http://localhost:8080/view/${id}/modify/${replyId}`)
+      
+      if(res.data !== undefined) {
+        setIsSecret(res.data.result[0].isSecret);
+        setReplyModifyInput(res.data.result[0].reply);
+      }
+    } catch(error) {
+      console.log(error);
+    }
+  }
 
-  
+  // 댓글수정(내용반영)
+  const modifyReplyInputChangeHandler = (e) => {
+    setReplyModifyInput(e.target.value);
+  }
+
   return (
     <>
       <Header />
@@ -443,8 +565,6 @@ const View = () => {
           </div>
         </form>
         {/* 비밀댓글 체크 여부 출력 */}
-        
-
         <div className={styles.rr_reply}>
           <table>
             <thead>
@@ -467,12 +587,42 @@ const View = () => {
                 {r.rwriteDate !== undefined &&
                   formatDate(new Date(r.rwriteDate))}</td>
 
+                {/* 댓글수정 */}
                 {!sameUsers && (
                   <td>
-                    <input type="button" className={styles.rdbtn} value="삭제"></input>
-                    <input type="button" className={styles.rmbtn} value="수정"></input>
+                    <input type="button" className={styles.rdbtn} value="삭제" onClick={ deleteReply.bind(null, r._id) }></input>
+                    <input 
+                      type="button" 
+                      className={styles.rmbtn} 
+                      value="수정" 
+                      onClick={ () => {
+                        setShowModifyReplyInput(selectedRId === r._id ? null : r._id);
+                        setSelectedRId(selectedRId === r._id ? null : r._id);
+                        modifyReply(r._id);
+                      }}
+                     ></input>
+                     { showReplyModifyInput === r._id && (
+                      <form onSubmit={(e) => modifyHandleSubmit(e, r._id)}> 
+                          <div className={styles.handle}>
+                          
+                            <input
+                              type="text"
+                              className={styles.reply_input}
+                              value={replyModifyInput}
+                              onChange={modifyReplyInputChangeHandler}
+                            />
+                            <div className={styles.reply_choose}>
+                              <input type="checkbox" checked={isSecret} className={styles.secret} onChange={(e) => setIsSecret(e.target.checked)}></input>
+                              <text className={styles.rc1}>비밀 댓글</text>
+                              <input type="submit" value="댓글수정"></input>
+                              <button onClick={() => {setShowModifyReplyInput(null); setSelectedRId(null);}}>댓글수정 취소</button>
+                            </div>
+                          </div>
+                      </form>
+                    ) }
                   </td>
                 )}
+
 
                 <td>
                   {!showReplyInput && (
@@ -521,7 +671,6 @@ const View = () => {
                     
                     <div className={styles.rr_reply2}>
                       {/* 대댓글 목록 보여주는 코드 */}
-                      
                         <table>
                           <thead>
                             <tr className={styles.ttrrr}>
@@ -538,10 +687,40 @@ const View = () => {
                               <td>{rr.isRSecret ? "비밀댓글" : "공개댓글"}</td>
                               <td>{rr.r_reply}</td>
                               <td>{" "}{rr.r_rwriteDate !== undefined && formatDate(new Date(rr.r_rwriteDate))}</td>
+                           
+                              {/* 대댓글수정 */}
                               {!sameUsers && (
                                 <td>
                                   <input type="button" className={styles.rrdbtn} value="삭제" onClick={() => handleRDelete(rr._id)}></input>
-                                  <input type="button" className={styles.rrmbtn} value="수정"></input>
+                                  <input 
+                                    type="button" 
+                                    className={styles.rrmbtn} 
+                                    value="수정" 
+                                    onClick={ () => {
+                                      setShowRModifyReplyInput(selectedRId === rr._id ? null : rr._id);
+                                      setSelectedRId(selectedRId === rr._id ? null : rr._id);
+                                      modifyR_Reply(rr._id);
+                                    }}
+                                  ></input>
+                                  { showR_ReplyModifyInput === rr._id && (
+                                    <form onSubmit={(e) => modifyRHandleSubmit(e, rr.selectedRId, rr._id)}> 
+                                        <div className={styles.handle}>
+                                        
+                                          <input
+                                            type="text"
+                                            className={styles.reply_input}
+                                            value={replyRModifyInput}
+                                            onChange={modifyR_ReplyInputChangeHandler}
+                                          />
+                                          <div className={styles.reply_choose}>
+                                            <input type="checkbox" checked={isRSecret} className={styles.secret} onChange={(e) => setIsRSecret(e.target.checked)}></input>
+                                            <text className={styles.rc1}>비밀 대댓글</text>
+                                            <input type="submit" value="대댓글수정"></input>
+                                            <button onClick={() => {setShowRModifyReplyInput(null); setSelectedRId(null);}}>대댓글수정 취소</button>
+                                          </div>
+                                        </div>
+                                    </form>
+                                  ) }
                                 </td>
                               )}
                             </tr>
