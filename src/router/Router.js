@@ -9,15 +9,12 @@ import Write from "../component/post/Write";
 import View from "../component/post//View";
 import Ask from "../component/post//Ask";
 import AskView from "../component/post//AskView";
-import View2 from "../component/post//View2";
-import View3 from "../component/post//View3";
-import MyInfo from '../component/mypage/MyInfo';
-import Jitsi from '../component/videochat/jitsi';
+import MyInfo from "../component/mypage/MyInfo";
+import Jitsi from "../component/videochat/jitsi";
 import MainOpenStudy from "../component/main/MainOpenStudy";
 import MainStudy from "../component/main/MainStudy";
 import MainQuestion from "../component/main/MainQuestion";
 import MyCalendar from "../component/mypage/MyCalendar";
-import MyInfo from "../component/mypage/MyInfo";
 import MyLikedPost from "../component/mypage/MyLikedPost";
 import MyLikedQuestion from "../component/mypage/MyLikedQuestion";
 import ModifyPost from "../component/post/ModifyPost";
@@ -41,7 +38,7 @@ const Router = () => {
           path="/question"
           element={[<Main key="qmain" />, <MainQuestion key="question" />]}
         />
-        
+
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/findPassword" element={<FindPw />} />

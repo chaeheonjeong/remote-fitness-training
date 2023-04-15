@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-//import "./Ask.css";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import styles from './Ask.module.css';
+import styles from "./Ask.module.css";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -153,86 +152,86 @@ function Ask() {
     <>
       <Header />
       <div className={styles.body}>
-    <div className={styles.ask}>
-        <div className={styles.title_input}>
-          <text className={styles.cc}>제목</text>
-          <input
-            onChange={titleHandler}
-            className={styles.title_tinput}
-            value={title}
-            placeholder="제목을 입력하세요."
-          />
-        </div>
-        <div>
-          <input
-            className={styles.tag_input}
-            onKeyPress={handleKeyPress}
-            type="text"
-            placeholder="해시태그 입력(최대 5개)"
-          />
-          <div className={styles.tag_tagPackage}>
-            {tags.map((tag, index) => (
-              <span key={index} className="tag_tagindex">
-                {tag}
-                <button
-                  className={styles.tag_Btn}
-                  onClick={() => {
-                    setTags(tags.filter((tag, i) => i !== index));
-                  }}
-                >
-                  &times;
-                </button>
-              </span>
-            ))}
+        <div className={styles.ask}>
+          <div className={styles.title_input}>
+            <text className={styles.cc}>제목</text>
+            <input
+              onChange={titleHandler}
+              className={styles.title_tinput}
+              value={title}
+              placeholder="제목을 입력하세요."
+            />
           </div>
-        </div>
+          <div>
+            <input
+              className={styles.tag_input}
+              onKeyPress={handleKeyPress}
+              type="text"
+              placeholder="해시태그 입력(최대 5개)"
+            />
+            <div className={styles.tag_tagPackage}>
+              {tags.map((tag, index) => (
+                <span key={index} className="tag_tagindex">
+                  {tag}
+                  <button
+                    className={styles.tag_Btn}
+                    onClick={() => {
+                      setTags(tags.filter((tag, i) => i !== index));
+                    }}
+                  >
+                    &times;
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
 
-        <div className={styles.content}>
-          <CKEditor
-            editor={ClassicEditor}
-            data=""
-            config={{
-              placeholder: "내용을 입력하세요.",
-              extraPlugins: [uploadPlugin],
-            }}
-            /*             onReady={(editor) => {
+          <div className={styles.content}>
+            <CKEditor
+              editor={ClassicEditor}
+              data=""
+              config={{
+                placeholder: "내용을 입력하세요.",
+                extraPlugins: [uploadPlugin],
+              }}
+              /*             onReady={(editor) => {
               // You can store the "editor" and use when it is needed.
               console.log("Editor is ready to use!", editor);
             }} */
-            onChange={(e, editor) => {
-              const data = editor.getData();
-              console.log({ e, editor, data });
-              setContent({
-                content: data,
-              });
-            }}
-            /*             onBlur={(e, editor) => {
+              onChange={(e, editor) => {
+                const data = editor.getData();
+                console.log({ e, editor, data });
+                setContent({
+                  content: data,
+                });
+              }}
+              /*             onBlur={(e, editor) => {
               console.log("Blur.", editor);
             }}
             onFocus={(e, editor) => {
               console.log("Focus.", editor);
             }} */
-          />
-        </div>
+            />
+          </div>
 
-        <div className={styles.btn}>
-          <input
-            type="button"
-            value="취소"
-            className={styles.cancel}
-            onClick={() => {
-              navigate("/question");
-            }}
-          />
-          <input
-            type="submit"
-            value="등록"
-            className={styles.submit}
-            onClick={handleSubmit}
-          />
+          <div className={styles.btn}>
+            <input
+              type="button"
+              value="취소"
+              className={styles.cancel}
+              onClick={() => {
+                navigate("/question");
+              }}
+            />
+            <input
+              type="submit"
+              value="등록"
+              className={styles.submit}
+              onClick={handleSubmit}
+            />
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 }
