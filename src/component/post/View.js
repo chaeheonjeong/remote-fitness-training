@@ -500,6 +500,32 @@ const View = () => {
     setReplyModifyInput(e.target.value);
   }
 
+  //댓글 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage] = useState(5);
+
+  // 현재 페이지에 보여질 댓글들 추출
+  const startIndex = (currentPage - 1) * perPage;
+  const endIndex = startIndex + perPage;
+  const currentReply = reply.slice(startIndex, endIndex);
+
+  // 페이지네이션 컴포넌트
+  const totalPages = Math.ceil(reply.length / perPage);
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  const renderPageNumbers = pageNumbers.map(number => {
+    return (
+      <li key={number}>
+        <button onClick={() => setCurrentPage(number)}>
+          {number}
+        </button>
+      </li>
+    );
+  });
+
   return (
     <>
       <Header />
@@ -632,7 +658,7 @@ const View = () => {
               </tr>
             </thead>
             <tbody>
-              {reply.map((r) => (
+              {currentReply.map((r) => (
               
               <tr className={styles.replyTitle} key={r._id}>
                 <td>{r.rwriter}</td>
@@ -642,7 +668,7 @@ const View = () => {
                 {r.rwriteDate !== undefined &&
                   formatDate(new Date(r.rwriteDate))}</td>
 
-{ /* 댓글수정 */ }
+
                 {!sameUsers && (
                   <td>
                     <input type="button" className={styles.rdbtn} value="삭제" onClick={ deleteReply.bind(null, r._id) }></input>
@@ -795,6 +821,11 @@ const View = () => {
             
             </tbody>
           </table>
+          <div className={styles.pagination}>
+            <ul className={styles.pageNumbers}>
+              {renderPageNumbers}
+            </ul>
+          </div>
         </div>
     </>
   );

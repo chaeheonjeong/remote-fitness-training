@@ -22,6 +22,7 @@ function A_View() {
   const [selectedAId, setSelectedAId] = useState();
   const [profileImg, setProfileImg] = useState(null);
 
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -156,10 +157,6 @@ function A_View() {
     return formattedDate;
   };
 
-  const [Aprogress, setAProgress] = useState(false);
-
-  const [BtnAColorRed, setBtnAColorRed] = useState(false);
-
   const [showAReplyInput, setShowAReplyInput] = useState(false);
   const [showAReplyList, setShowAReplyList] = useState(false);
   const [showAReplyModifyInput, setShowModifyAReplyInput] = useState(false);
@@ -190,10 +187,8 @@ function A_View() {
   }, []);
 
   const [Ar_reply, setAR_Reply] = useState([]);
-  const { Arid } = useParams();
   const [isARSecret, setIsARSecret] = useState(false); // 비밀댓글 여부
-  const [ARsameUsers, setARSameUsers] = useState(false);
-  const [postARId, setPostARId] = useState(); 
+
   
   const fetchAR_Reply = async (rid) => {
     try {
@@ -203,13 +198,12 @@ function A_View() {
 
       if(res.data.data.length) {
         setAR_Reply(res.data.data);
-        //setRSameUsers(res.data.RsameUsers);
         console.log(res.data.messgae);
         console.log(res.data.data);
       } else {
        setAR_Reply([]); 
        console.log('대댓글이 없습니다.');
-      }//console.log('here: ', res.data.data);
+      }
     } catch(error) {
       console.log(error);
     }
@@ -411,6 +405,100 @@ setReplyModifyAInput(e.target.value);
   const modifyAR_ReplyInputChangeHandler = (e) => {
     setReplyARModifyInput(e.target.value);
   }
+
+  //댓글 페이지네이션
+  const [AcurrentPage, setACurrentPage] = useState(1);
+  const [AperPage] = useState(5);
+
+  // 현재 페이지에 보여질 댓글들 추출
+  const startIndex = (AcurrentPage - 1) * AperPage;
+  const endIndex = startIndex + AperPage;
+  const AcurrentReply = Areply.slice(startIndex, endIndex);
+
+  // 페이지네이션 컴포넌트
+  const totalPages = Math.ceil(Areply.length / AperPage);
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  const renderAPageNumbers = pageNumbers.map(number => {
+    return (
+      <li key={number}>
+        <button onClick={() => setACurrentPage(number)}>
+          {number}
+        </button>
+      </li>
+    );
+  });
+
+
+  //질문글 댓글 좋아요
+  useEffect(() => {
+    if (user.token !== null) {
+      axios
+        .get(`http://localhost:8080/getARGood/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setARGood(response.data.ARgood);
+            setARGoodCount(response.data.ARcount);
+            console.log(response.data.message);
+          } else if (response.status === 204) {
+            setARGood(false);
+            setARGoodCount(0);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .get(`http://localhost:8080/getARGood2/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            setARGoodCount(response.data.count);
+          } else if (response.status === 204) {
+            setARGood(false);
+            setARGoodCount(0);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
+
+const [ARgood, setARGood] = useState([]);
+const [ARgoodCount, setARGoodCount] = useState(0);
+
+const clickARGood = () => {
+  if (user.token !== null) {
+    axios
+      .post(`http://localhost:8080/setARGood/${id}`, null, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setARGood(!ARgood);
+          if (!ARgood) {
+            setARGoodCount((ARprevCount) => ARprevCount + 1);
+          } else {
+            setARGoodCount((ARprevCount) => ARprevCount - 1);
+          }
+        } else if (response.status === 201) {
+          setARGood(!ARgood);
+          setARGoodCount(1);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  } else {
+    alert("로그인 해주세요.");
+  }
+};
     
     
   return (
@@ -526,7 +614,7 @@ setReplyModifyAInput(e.target.value);
                 </tr>
               </thead>
               <tbody>
-                {Areply.map((r) => (
+                {AcurrentReply.map((r) => (
                         
                   <tr className={styles.replyTitle} key={r._id}>
                     <td>{r.Arwriter}</td>
@@ -681,10 +769,18 @@ setReplyModifyAInput(e.target.value);
                           </div>
                         )}
                       </td>
+                      <span onClick={clickARGood} className={ARgood ? styles.goodBtn : null}>
+                        좋아요{ARgoodCount}
+                      </span>
                     </tr>
                   ))}
               </tbody>
             </table>
+            <div className={styles.pagination}>
+            <ul className={styles.pageNumbers}>
+              {renderAPageNumbers}
+            </ul>
+          </div>
           </div>
         </div>
     </>    
@@ -692,8 +788,3 @@ setReplyModifyAInput(e.target.value);
 }
 
 export default A_View;
-
-/*
-<input type='number' id='number' classname='number'></input>
-<input type='button' value='취소' id='cancel' className='cancel' onClick={onReset}/>
-*/
