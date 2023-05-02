@@ -12,7 +12,9 @@ import AskView from "../component/post//AskView";
 //import View2 from "../component/post//View2";
 //import View3 from "../component/post/View3";
 import Jitsi from "../component/videochat/jitsi";
-
+import Portfolio from "../component/mypage/Portfolio";
+import PortfolioView from "../component/mypage/PortfolioView";
+import PortfolioModify from "../component/mypage/PortfolioModify";
 import MainOpenStudy from "../component/main/MainOpenStudy";
 import MainStudy from "../component/main/MainStudy";
 import MainQuestion from "../component/main/MainQuestion";
@@ -62,6 +64,9 @@ const Router = () => {
         <Route path="myAsk" element={<MyAsk />} />
         <Route path="myPost" element={<MyPost />} />
         <Route path="Jitsi" element={<Jitsi/>}/>
+        <Route path="Portfolio" element={<Portfolio/>}/>
+        <Route path="PortfolioView" element={<PortfolioView/>}/>
+        <Route path="PortfolioModify" element={<PortfolioModify/>}/>
       </Routes>
     </BrowserRouter>
   );

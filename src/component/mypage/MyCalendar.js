@@ -145,6 +145,8 @@ function MyCalendar() {
            
     };
 
+    console.log(selectedSchedule);
+
     const tileContent = ({date,view}) => {
         const filteredSchedules = schedules.filter((schedule) => {
             const scheduleDate = new Date(schedule.date);

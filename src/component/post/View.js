@@ -43,6 +43,7 @@ const View = () => {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
+            console.log(response.data);
           }
         })
         .catch((error) => {
@@ -56,6 +57,7 @@ const View = () => {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
+            console.log(response.data);
           }
         })
         .catch((error) => {

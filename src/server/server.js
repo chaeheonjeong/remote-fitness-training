@@ -25,6 +25,7 @@ const nodemailer = require("nodemailer");
 const Verify = require("./models/verify");
 const AskGood = require("./models/askGood");
 const PostGood = require("./models/postGood");
+const Portfolio = require("./models/portfolio");
 const auth = require("./auth");
 //const { dblClick } = require("@testing-library/user-event/dist/cjs/event/behavior/click");
 
@@ -36,36 +37,11 @@ const Schedule = require("./models/schedule");
 
 const ObjectId = mongoose.Types.ObjectId;
 
-//const storage = multer.diskStorage({
-  // (2)
-//  destination: (req, file, cb) => {
-    // (3)
-//    cb(null, "./server/images");
-//  },
-//  filename: (req, file, cb) => {
-    // (4)
-//    cb(null, `${uuid()}.${mime.extension(file.mimetype)}`); // (5)
-//  },
-//});
-
-//const upload = multer({
-  // (6)
-//  storage,
-//  fileFilter: (req, file, cb) => {
-//    if (["image/jpeg", "image/jpg", "image/png"].includes(file.mimetype))
-//      cb(null, true);
-//    else cb(new Error("해당 파일의 형식을 지원하지 않습니다."), false);
-//  },
-//  limits: {
-//    fileSize: 1024 * 1024 * 5,
-// },
-//});
-
 const storage = multer.diskStorage({
   // (2)
   destination: (req, file, cb) => {
     // (3)
-    cb(null, "./server/images");
+    cb(null, "./src/server/images");
   },
   filename: (req, file, cb) => {
     // (4)
@@ -89,7 +65,7 @@ const upload = multer({
 app.use(cors());
 app.use(bodyParser.json({ limit : '10mb'}));
 app.use(bodyParser.urlencoded({ limit : '10mb', extended: true }));
-app.use("/images", express.static("./server/images"));
+app.use("/images", express.static("./src/server/images"));
 const mysecretkey = "capstone";
 
 var db;
@@ -114,6 +90,86 @@ app.get("/user", async (req, res) => {
     //console.log(res.data);
   } catch (err) {
     res.status(401).send({ message: "Invalid token" });
+  }
+});
+
+//프로필을 클릭한 사용자 찾기.
+app.get("/profileUsers/:id", async(req,res) => {
+  const { userName } = req.params.id;
+  console.log(req.params.id);
+  try{
+    const writer = await User.find({name : userName});
+    console.log(writer);
+    return res.status(200).json(writer);
+  }catch(err){
+    res.status(500).send({message : "Server Error"});
+  }
+})
+
+//포트폴리오 작성 저장
+app.post('/portfolio', auth, async(req, res) => {
+  const {title, content, writer, writeDate} = req.body;
+
+  try{
+    const newPortfolio = new Portfolio({
+      title : title,
+      content : content,
+      writer : writer,
+      writeDate : writeDate,
+      userId : req.user.id
+    })
+    await newPortfolio.save();
+    return res.status(201).json(newPortfolio);
+  }catch(err){
+    console.error(err);
+    res.status(500).send({message : 'Server Error'});
+  }
+});
+
+//포트폴리오 작성한 것 불러오기
+app.get('/portfolio', auth, async(req, res) => {
+  try{
+    const portfolios = await Portfolio.find({userId : req.user.id});
+    console.log(portfolios);
+    return res.status(200).json(portfolios);
+  }catch(err){
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+});
+
+//클릭한 프로필에 해당하는 사용자의 포트폴리오를 불러오기
+app.get('/portfolio/:id', async(req,res) => {
+  const userId = req.params.id;
+
+  try{
+    const userPortfolios = await Portfolio.find({userId: userId});
+    console.log(userPortfolios);
+    return res.status(200).json(userPortfolios);
+  }catch(err){
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+});
+
+//포트폴리오 수정
+app.post("/portfolioModify", auth, async (req, res) => {
+  const { title, content } = req.body;
+  const userId = req.user.id;
+  console.log(req.body);
+  try {
+    const updatedPortfolio = await Portfolio.findOneAndUpdate(
+      { userId : userId },
+      {
+        $set: { title, content },
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: `updated successfully`, updatedPortfolio });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
   }
 });
 
@@ -1214,9 +1270,17 @@ app.get("/getWrite/:id", async (req, res) => {
     if (result) {
       let sameUser = false;
       if (userId === result[0]._user) sameUser = true;
+
+      let profileImg = null;
+      const user = await User.findOne({ _id: result[0]._user });
+      if (user.image) {
+        profileImg = user.image;
+      }
+
       return res.status(200).json({
         result: result,
         sameUser: sameUser,
+        profileImg: profileImg,
         message: `id 가져오기 성공`,
       });
     }
@@ -1229,10 +1293,18 @@ app.get("/getWrite/:id", async (req, res) => {
 app.get("/getWrite2/:id", async (req, res) => {
   try {
     const result = await Write.find({ _id: Number(req.params.id) });
+
     if (result) {
+      let profileImg = null;
+      const user = await User.findOne({ _id: result[0]._user });
+      if (user.image) {
+        profileImg = user.image;
+      }
+
       return res.status(200).json({
         result: result,
         sameUser: false,
+        profileImg: profileImg,
         message: `id 가져오기 성공`,
       });
     }
@@ -1272,9 +1344,17 @@ app.get("/getAsk/:id", async (req, res) => {
     if (result) {
       let sameUser = false;
       if (userId === result[0]._user) sameUser = true;
+
+      let profileImg = null;
+      const user = await User.findOne({ _id: result[0]._user });
+      if (user?.image) {
+        profileImg = user?.image;
+      }
+
       return res.status(200).json({
         result: result,
         sameUser: sameUser,
+        profileImg: profileImg,
         message: `id 가져오기 성공`,
       });
     }
@@ -1288,9 +1368,16 @@ app.get("/getAsk2/:id", async (req, res) => {
   try {
     const result = await Ask.find({ _id: Number(req.params.id) });
     if (result) {
+      let profileImg = null;
+      const user = await User.findOne({ _id: result[0]._user });
+      if (user?.image) {
+        profileImg = user?.image;
+      }
+
       return res.status(200).json({
         result: result,
         sameUser: false,
+        profileImg: profileImg,
         message: `id 가져오기 성공`,
       });
     }
@@ -1299,6 +1386,7 @@ app.get("/getAsk2/:id", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
 
 app.post("/askModify", async (req, res) => {
   const { _id, tag, title, content } = req.body;
@@ -1383,7 +1471,7 @@ app.get("/getAReply/:id", async (req, res) => {
     if (result) {
 
       let sameAUsers = false;
-      if (userId === result[0]._user) sameAUsers = true;
+      //if (userId === result[0]._user) sameAUsers = true;
       console.log(req.params.postId);
       return res.status(200).json({
         data: result,
@@ -1602,11 +1690,289 @@ app.post('/openStudy', async (req, res) => {
       }
     });
 
+    app.get("/studies", async (req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      try {
+        const studies = await Write.find()
+          .sort({ writeDate: -1 })
+          .skip(offset)
+          .limit(limit);
+        const counter = await Write.count();
+        const hasMore = counter > page * limit;
+    
+        if (studies.length > 0) {
+          return res.status(200).json({
+            studies: studies,
+            message: "스터디 모집글 목록 가져오기",
+            success: true,
+            hasMore: hasMore,
+            studies,
+          });
+        } else {
+          return res.status(404).json({
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    });
 
+    app.get("/myStudies", async (req, res) => {
+      const authHeader = req.headers.authorization;
+      const token = authHeader.split(" ")[1];
+      const decodedToken = jwt.verify(token, mysecretkey);
+      const userId = decodedToken.id;
+    
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      try {
+        const studies = await Write.find({ _user: userId })
+          .sort({ writeDate: -1 })
+          .skip(offset)
+          .limit(limit);
+        const counter = await Write.count();
+        const hasMore = counter > page * limit;
+    
+        if (studies.length > 0) {
+          return res.status(200).json({
+            studies: studies,
+            message: "스터디 모집글 목록 가져오기",
+            success: true,
+            hasMore: hasMore,
+            studies,
+          });
+        } else {
+          return res.status(204).json({
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    });
+    
+    app.get("/myAsks", async (req, res) => {
+      const authHeader = req.headers.authorization;
+      const token = authHeader.split(" ")[1];
+      const decodedToken = jwt.verify(token, mysecretkey);
+      const userId = decodedToken.id;
+    
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      try {
+        const studies = await Ask.find({ _user: userId })
+          .sort({ writeDate: -1 })
+          .skip(offset)
+          .limit(limit);
+        const counter = await Ask.count();
+        const hasMore = counter > page * limit;
+    
+        if (studies.length > 0) {
+          return res.status(200).json({
+            studies: studies,
+            message: "스터디 모집글 목록 가져오기",
+            success: true,
+            hasMore: hasMore,
+            studies,
+          });
+        } else {
+          return res.status(204).json({
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    });
+    
+    app.get("/questions", async (req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      try {
+        const questions = await Ask.find()
+          .sort({ writeDate: -1 })
+          .skip(offset)
+          .limit(limit);
+        const counter = await Ask.count();
+        const hasMore = counter > page * limit;
+    
+        if (questions.length > 0) {
+          return res.status(200).json({
+            questions: questions,
+            message: "스터디 모집글 목록 가져오기",
+            success: true,
+            hasMore: hasMore,
+          });
+        } else {
+          return res.status(404).json({
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+      }
+    });
 
+    // openStudy 검색
+  app.get("/searchOpenStudy", async (req, res) => {
+    const option = req.query.selected;
+    const value = decodeURIComponent(req.query.value);
+  
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+  
+    const offset = (page - 1) * limit;
+    var openStudiesSearch = [];
 
+    try {
+      if(option === "title") {
+        openStudiesSearch = await OpenStudy.find(
+            { title: { $regex: value, $options: "i" } }, 
+            null, 
+            { skip: offset, limit: limit }
+          );
+      }
+      else if(option === "tags") {
+        openStudiesSearch = await OpenStudy.find(
+          { tags: { $regex: value, $options: "i" } }, 
+          null, 
+          { skip: offset, limit: limit }
+        );
+      }
+  
+      if(openStudiesSearch.length > 0) {
+        return res.status(200).json({ 
+          openStudies: openStudiesSearch,
+          //totalOpenStudies,
+          message: '검색목록 가져오기 성공',
+          success: true
+        });
+      } else {
+        return res.status(200).json({
+          openStudies: [],
+          message: "검색결과가 없습니다",
+          success: true,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: "Server Error" });
+    }
+  });
 
+      // Study게시판 검색
+  app.get("/searchStudy", async (req, res) => {
+    const option = req.query.selected;
+    const value = decodeURIComponent(req.query.value);
+  
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+  
+    const offset = (page - 1) * limit;
+    var studiesSearch = [];
 
+    try {
+      if(option === "title") {
+        studiesSearch = await Write.find(
+            { title: { $regex: value, $options: "i" } }, 
+            null, 
+            { skip: offset, limit: limit }
+          );
+      }
+      else if(option === "tags") {
+        studiesSearch = await Write.find(
+          { tag: { $regex: value, $options: "i" } }, 
+          null, 
+          { skip: offset, limit: limit }
+        );
+      }
+  
+      if(studiesSearch.length > 0) {
+        return res.status(200).json({ 
+          studies: studiesSearch,
+          message: '검색목록 가져오기 성공',
+          success: true
+        });
+      } else {
+        return res.status(200).json({
+          studies: [],
+          message: "검색결과가 없습니다",
+          success: true,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: "Server Error" });
+    }
+  });
+
+  // 질문게시판 검색
+  app.get("/searchQuestion", async (req, res) => {
+    const option = req.query.selected;
+    const value = decodeURIComponent(req.query.value);
+  
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+  
+    const offset = (page - 1) * limit;
+    var questionsSearch = [];
+
+    try {
+      if(option === "title") {
+        questionsSearch = await Ask.find(
+            { title: { $regex: value, $options: "i" } }, 
+            null, 
+            { skip: offset, limit: limit }
+          );
+      }
+      else if(option === "tags") {
+        questionsSearch = await Ask.find(
+          { tag: { $regex: value, $options: "i" } }, 
+          null, 
+          { skip: offset, limit: limit }
+        );
+      }
+  
+      if(questionsSearch.length > 0) {
+        return res.status(200).json({ 
+          questions: questionsSearch,
+          message: '검색목록 가져오기 성공',
+          success: true
+        });
+      } else {
+        return res.status(200).json({
+          questions: [],
+          message: "검색결과가 없습니다",
+          success: true,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: "Server Error" });
+    }
+  });
 
     app.get("/search", async (req, res) => {
       const option = decodeURIComponent(req.query.selected);
@@ -1644,6 +2010,96 @@ app.post('/openStudy', async (req, res) => {
         res.status(500).json({ success: false, message: "Server Error" });
       }
     })
+
+    app.get('/myLikedPost', auth, async(req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      const userId = req.user.id;
+    
+      console.log(userId);
+    
+      try {
+        const studyLiked = await PostGood.find(
+          { '_users.user': userId }
+        );
+        
+        console.log(studyLiked);
+    
+        const studyLikedIds = studyLiked.map(post => post._id);
+        console.log(studyLikedIds);
+    
+        const likedPosts = await Write.find({ _id: { $in: studyLiked } })
+          .skip(offset)
+          .limit(limit);
+        console.log(likedPosts); 
+    
+        
+    
+        if(studyLiked.length > 0) {
+          return res.status(200).json({ 
+            likePosts: likedPosts,
+            success: true,
+           });
+        } else {
+          return res.status(400).json({ 
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+           });
+        }
+    
+      } catch(error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+
+    app.get('/myLikedQuestion', auth, async(req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      const userId = req.user.id;
+    
+      console.log(userId);
+    
+      try {
+        const questionLiked = await AskGood.find(
+          { '_users.user': userId }
+        );
+        
+        console.log(questionLiked);
+    
+        const questionLikedIds = questionLiked.map(question => question._id);
+        console.log(questionLikedIds);
+    
+        const likedQuestions = await Ask.find({ _id: { $in: questionLiked } })
+          .skip(offset)
+          .limit(limit);
+        console.log(likedQuestions); 
+    
+        
+    
+        if(questionLiked.length > 0) {
+          return res.status(200).json({ 
+            likeQuestions: likedQuestions,
+            success: true,
+           });
+        } else {
+          return res.status(400).json({ 
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+           });
+        }
+    
+      } catch(error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
 
     app.get("/getGood/:id", async (req, res) => {
       const authHeader = req.headers.authorization;

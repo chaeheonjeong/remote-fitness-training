@@ -35,6 +35,7 @@ function A_View() {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
+            console.log(response.data);
           }
         })
         .catch((error) => {
@@ -48,6 +49,7 @@ function A_View() {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
+            console.log(response.data);
           }
         })
         .catch((error) => {
@@ -56,15 +58,15 @@ function A_View() {
     }
   }, []);
 
-      useEffect(() => {
-        if (write.content !== undefined) {
-          const contentString = JSON.stringify(write.content); // 객체를 문자열로 변환합니다.
-          const cleanedString = contentString.replace(/undefined/g, "");
-          const parsedContent = JSON.parse(cleanedString); // 문자열을 JSON 객체로 변환합니다.
-          const htmlString = parsedContent.content;
-          setHtmlString(htmlString);
-        }
-      }, [write]);
+  useEffect(() => {
+    if (write.content !== undefined) {
+      const contentString = JSON.stringify(write.content); // 객체를 문자열로 변환합니다.
+      const cleanedString = contentString.replace(/undefined/g, "");
+      const parsedContent = JSON.parse(cleanedString); // 문자열을 JSON 객체로 변환합니다.
+      const htmlString = parsedContent.content;
+      setHtmlString(htmlString);
+    }
+  }, [write]);
 
   useEffect(() => {
     if (user.token !== null) {

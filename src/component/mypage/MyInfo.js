@@ -181,7 +181,11 @@ function MyInfo() {
       <SideBar />
       {user ? (
         <div className="MyInfo">
-          <img className="Profile" src={imgFile} alt="프로필 이미지" />
+          {imgFile ? (
+            <img className="Profile" src={imgFile} alt="프로필 이미지" />
+          ) : (
+            <img className="Profile" src={profile} alt="프로필 기본 이미지" />
+          )}
           <label className="img-btn" for="ProfileImg">
             프로필 변경
           </label>
