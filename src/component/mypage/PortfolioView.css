@@ -3,7 +3,7 @@
     border: 1.5px solid #555;
     border-radius: 7px;
     width: 70%; 
-    height: 20rem;
+    height: auto;
     padding: 0.7rem;
     margin-top: 20px;
     margin-left: 370px;
@@ -19,6 +19,7 @@
 }
 
 .reviewContent{
+    display: inline-block;
     margin-top: 30px;
     border-top: solid 1.5px #555;
 }

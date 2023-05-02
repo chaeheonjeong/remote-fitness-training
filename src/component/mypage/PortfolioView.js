@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import axios from 'axios';
 import Header from "../main/Header";
 import userStore from "../../store/user.store";
@@ -7,32 +8,37 @@ import './PortfolioView.css';
 import ProfileSideBar from './ProfileSideBar';
 import { FcCancel } from "react-icons/fc";
 
-function PortfolioView({writerId}) {
+function PortfolioView() {
     
     const [portfolio, setPortfolio] = useState([]);
     const token = localStorage.getItem('token');
     const user = userStore;
     const [contents, setContents] = useState();
     const [isRegistered, setIsRegistered] = useState(false);
+    const { writerId } = useParams();
 
+    console.log(writerId);
+    
     useEffect(() => {
         const fetchPortfolio = async () => {
-            try{
-                const res = await axios.get(`http://localhost:8080/portfolio/${writerId}`);
-                const portfolio = res.data;
-                if(portfolio.length !== 0){
-                    setPortfolio(res.data);
-                    setIsRegistered(true);
-                }else{
-                    setIsRegistered(false);
+            if(writerId){
+                try{
+                    const res = await axios.get(`http://localhost:8080/portfolio/${writerId}`);
+                    const portfolio = res.data;
+                    if(portfolio.length !== 0){
+                        setPortfolio(res.data);
+                        setIsRegistered(true);
+                    }else{
+                        setIsRegistered(false);
+                    }
+                    console.log(res.data);
+                }catch(err){
+                    console.error(err);
                 }
-                console.log(res.data);
-            }catch(err){
-                console.error(err);
-            }
+            }    
         };
         fetchPortfolio();
-    }, []);
+    }, [writerId]);
 
     useEffect(() => {
         if (portfolio[0]?.content !== undefined){

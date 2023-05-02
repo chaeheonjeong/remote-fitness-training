@@ -65,7 +65,7 @@ const Router = () => {
         <Route path="myPost" element={<MyPost />} />
         <Route path="Jitsi" element={<Jitsi/>}/>
         <Route path="Portfolio" element={<Portfolio/>}/>
-        <Route path="PortfolioView" element={<PortfolioView/>}/>
+        <Route path="PortfolioView/:writerId" element={<PortfolioView/>}/>
         <Route path="PortfolioModify" element={<PortfolioModify/>}/>
       </Routes>
     </BrowserRouter>

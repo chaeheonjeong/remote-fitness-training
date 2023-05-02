@@ -21,8 +21,12 @@ function A_View() {
   const [goodCount, setGoodCount] = useState(0);
   const [selectedAId, setSelectedAId] = useState();
   const [profileImg, setProfileImg] = useState(null);
-
   const navigate = useNavigate();
+  const [writerId, setWriterId] = useState(null);
+
+  const passHandler = () => {
+    navigate(`/PortfolioView/${writerId}`);
+  }
 
   useEffect(() => {
     if (user.token !== null) {
@@ -35,6 +39,7 @@ function A_View() {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
+            setWriterId(response.data.result[0]._user);
             console.log(response.data);
           }
         })
@@ -49,6 +54,7 @@ function A_View() {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
+            setWriterId(response.data.result[0]._user);
             console.log(response.data);
           }
         })
@@ -451,7 +457,7 @@ setReplyModifyAInput(e.target.value);
           </div>
           <div className={styles.content_2}>
             <div className={styles.content_2_a}>
-              <div>
+              <div onClick={passHandler}>
               작성자
               {profileImg === null ? (
                 <HiUserCircle

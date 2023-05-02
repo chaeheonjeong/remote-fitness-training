@@ -1,45 +1,33 @@
 import './ProfileSideBar.css'
 import {useState, useEffect} from 'react';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import profile from "./icon/profile.png";
 import axios from 'axios';
 
 function ProfileSideBar() {
 
     const [profileImg, setProfileImg] = useState(null);
-    const token = localStorage.getItem("token");
     const [user, setUser] = useState(null);
+    const {writerId}  = useParams();
 
     useEffect(() => {
-        if (token) {
-          axios
-            .get("http://localhost:8080/users", {
-              headers: { Authorization: `Bearer ${token}` },
-            })
-            .then((res) => {
-              setUser(res.data);
-              console.log(res.data);
-            })
-            .catch((err) => {
-              console.error(err);
-            });
+      const fetchUser = async() => {
+        if(writerId){
+          try{
+            const res = await  axios.get(`http://localhost:8080/portfolioInfo/${writerId}`);
+            setUser(res.data[0]);
+            setProfileImg(res.data[0].image);
+            console.log(res.data);
+            console.log("이미지 불러오기에 성공했습니다.");
+          }catch(err){
+            console.error("이미지 불러오기에 실패했습니다.", err);
+          }
         }
-      }, [token]);
+       
+      };
+      fetchUser();
+      }, [writerId]);
 
-    useEffect(() => {
-        const fetchData = async() => {
-            try{
-                const res = await axios.get(`http://localhost:8080/img-change`,{
-                    headers: {Authorization: `Bearer ${token}`},
-                });
-                setProfileImg(res.data.image);
-                console.log("이미지 가져오기에 성공했습니다.", res.data);
-            }catch(err){
-                console.log("이미지 가져오기에 실패했습니다.", err);
-            }
-        };
-        fetchData();
-    }, []);
     return (
         <div className="SideBar">
           <div className="SideBarWrapper">

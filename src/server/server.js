@@ -93,19 +93,6 @@ app.get("/user", async (req, res) => {
   }
 });
 
-//프로필을 클릭한 사용자 찾기.
-app.get("/profileUsers/:id", async(req,res) => {
-  const { userName } = req.params.id;
-  console.log(req.params.id);
-  try{
-    const writer = await User.find({name : userName});
-    console.log(writer);
-    return res.status(200).json(writer);
-  }catch(err){
-    res.status(500).send({message : "Server Error"});
-  }
-})
-
 //포트폴리오 작성 저장
 app.post('/portfolio', auth, async(req, res) => {
   const {title, content, writer, writeDate} = req.body;
@@ -126,7 +113,7 @@ app.post('/portfolio', auth, async(req, res) => {
   }
 });
 
-//포트폴리오 작성한 것 불러오기
+//포트폴리오 자신이 작성한 것 불러오기
 app.get('/portfolio', auth, async(req, res) => {
   try{
     const portfolios = await Portfolio.find({userId : req.user.id});
@@ -149,6 +136,20 @@ app.get('/portfolio/:id', async(req,res) => {
   }catch(err){
     console.error(err);
     res.status(500).send("Server Error");
+  }
+});
+
+//포트폴리오 작성자 정보 가져오기
+app.get('/portfolioInfo/:id', async(req, res) => {
+  const userId = req.params.id;
+
+  try{
+    const writerInfo = await User.find({_id: userId});
+    console.log(writerInfo);
+    return res.status(200).json(writerInfo);
+  }catch(err){
+    console.error(err);
+    res.status(500).send("Server error");
   }
 });
 
@@ -1347,8 +1348,8 @@ app.get("/getAsk/:id", async (req, res) => {
 
       let profileImg = null;
       const user = await User.findOne({ _id: result[0]._user });
-      if (user?.image) {
-        profileImg = user?.image;
+      if (user.image) {
+        profileImg = user.image;
       }
 
       return res.status(200).json({
@@ -1370,8 +1371,8 @@ app.get("/getAsk2/:id", async (req, res) => {
     if (result) {
       let profileImg = null;
       const user = await User.findOne({ _id: result[0]._user });
-      if (user?.image) {
-        profileImg = user?.image;
+      if (user.image) {
+        profileImg = user.image;
       }
 
       return res.status(200).json({
@@ -1386,7 +1387,6 @@ app.get("/getAsk2/:id", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
-
 
 app.post("/askModify", async (req, res) => {
   const { _id, tag, title, content } = req.body;

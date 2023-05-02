@@ -19,6 +19,7 @@ const View = () => {
   const [good, setGood] = useState(false);
   const [goodCount, setGoodCount] = useState(0);
   const [profileImg, setProfileImg] = useState(null);
+  const [writerId, setWriterId] = useState(null);
 
   const deleteHandler = () => {
     const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
@@ -32,6 +33,10 @@ const View = () => {
     }
   };
 
+  const passHandler = () => {
+    navigate(`/PortfolioView/${writerId}`);
+  }
+
   useEffect(() => {
     if (user.token !== null) {
       axios
@@ -43,7 +48,9 @@ const View = () => {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
+            setWriterId(response.data.result[0]._user);
             console.log(response.data);
+            console.log(response.data.result[0]._user);
           }
         })
         .catch((error) => {
@@ -57,6 +64,7 @@ const View = () => {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
+            setWriterId(response.data._user);
             console.log(response.data);
           }
         })
@@ -552,7 +560,8 @@ const View = () => {
         
         </div>
           <div>작성자</div>
-          <div style={{ marginRight: "12.5rem" }}>
+          <div onClick={passHandler} 
+          style={{ marginRight: "12.5rem" }}>
             {profileImg === null ? (
               <HiUserCircle
                 size="40"
