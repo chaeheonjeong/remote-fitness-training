@@ -2,6 +2,7 @@ import './ProfileSideBar.css'
 import {useState, useEffect} from 'react';
 import { Link, useParams } from "react-router-dom";
 import profile from "./icon/profile.png";
+import { HiUserCircle } from "react-icons/hi";
 import axios from 'axios';
 
 function ProfileSideBar() {
@@ -38,7 +39,7 @@ function ProfileSideBar() {
                     {profileImg ? (
                         <img className='profileImg' src={profileImg} alt='프로필 이미지'/>
                     ):(
-                        <img className='noneProfileImg' src={profile} alt='프로필 기본 이미지'/>
+                        <HiUserCircle size="180"/>
                     )}
                 </li>
               </ul>

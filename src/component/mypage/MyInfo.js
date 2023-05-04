@@ -6,6 +6,7 @@ import SideBar from "./SideBar";
 import axios from "axios";
 import Modal from "react-modal";
 import Header from "../main/Header";
+import { HiUserCircle } from "react-icons/hi";
 import userStore from "../../store/user.store";
 
 function MyInfo() {
@@ -184,7 +185,7 @@ function MyInfo() {
           {imgFile ? (
             <img className="Profile" src={imgFile} alt="프로필 이미지" />
           ) : (
-            <img className="Profile" src={profile} alt="프로필 기본 이미지" />
+            <HiUserCircle size="180" />
           )}
           <label className="img-btn" for="ProfileImg">
             프로필 변경

@@ -19,6 +19,7 @@ function MyCalendar() {
     const [selectedSchedule, setSelectedSchedule] = useState(null);
     const token = localStorage.getItem('token');
     const [scheduleList, setScheduleList] = useState([]);
+    const [reviewModalIsOpen, setReviewModalIsOpen] = useState(false);
 
     useEffect(() => {
         const fetchSchedules = async () => {
@@ -175,6 +176,15 @@ function MyCalendar() {
         <div>
         <Header />
         <SideBar/>
+        <div className='reviewBtn'>
+            <button type="submit" onClick={() => setReviewModalIsOpen(true)}>후기 작성</button>
+            <Modal className='Modal' ariaHideApp={false} isOpen={reviewModalIsOpen} onRequestClose={() => setReviewModalIsOpen(false)} overlayClassName='Overlay'>
+            <button type="submit" onClick={() => setReviewModalIsOpen(false)} className='ModalButton'>X</button>
+            <h2>
+                후기 작성
+            </h2>
+            </Modal>
+        </div>
         <div className = "MyCalendar">
             <Calendar onClickDay={handleSelectDate} value={date}
                 formatDay={(locale, date) => moment(date).format("DD")}

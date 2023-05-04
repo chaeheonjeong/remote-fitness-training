@@ -1010,9 +1010,11 @@ app.post("/postreply/:id", async (req, res) => {
 
 
 /// 질문글 댓글 작성
-app.post("/postAreply/:id", async (req, res) => {
+app.post("/postAreply/:id", auth, async (req, res) => {
   const { Areply, isASecret, Arwriter, ArwriteDate } = req.body;
   const { id } = req.params;
+  const userId = req.user.id;
+  console.log(userId);
 
   const post = await Ask.findOne({ _id: id });
   if (!post) {
@@ -1032,7 +1034,8 @@ app.post("/postAreply/:id", async (req, res) => {
       Arwriter: Arwriter,
       ArwriteDate : ArwriteDate,
       Areply : Areply,
-      isASecret : isASecret
+      isASecret : isASecret,
+      userId : userId
     });
     await newAReply.save();
     console.log(isASecret)
@@ -1088,9 +1091,10 @@ app.post("/postr_reply/:id/:rid", async (req, res) => {
 });
 
 /// 질문글 대댓글 작성
-app.post("/postAr_reply/:id/:rid", async (req, res) => {
+app.post("/postAr_reply/:id/:rid", auth, async (req, res) => {
   const { Ar_reply, isARSecret, Ar_rwriteDate, Ar_rwriter } = req.body;
   const { id, rid } = req.params;
+  const userId = req.user.id;
 
   console.log(rid);
 
@@ -1119,7 +1123,8 @@ app.post("/postAr_reply/:id/:rid", async (req, res) => {
       Ar_rwriter : Ar_rwriter,
       Ar_rwriteDate : Ar_rwriteDate,
       Ar_reply : Ar_reply,
-      isARSecret : isARSecret
+      isARSecret : isARSecret,
+      userId : userId
     });
     await newAR_Reply.save();
     console.log(isARSecret)

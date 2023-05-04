@@ -24,8 +24,8 @@ function A_View() {
   const navigate = useNavigate();
   const [writerId, setWriterId] = useState(null);
 
-  const passHandler = () => {
-    navigate(`/PortfolioView/${writerId}`);
+  const passHandler = (userId) => {
+    navigate(`/PortfolioView/${userId}`); 
   }
 
   useEffect(() => {
@@ -39,7 +39,6 @@ function A_View() {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
-            setWriterId(response.data.result[0]._user);
             console.log(response.data);
           }
         })
@@ -178,6 +177,12 @@ function A_View() {
   const [replyAInput, setReplyAInput] = useState("");
   const [replyModifyAInput, setReplyModifyAInput] = useState("");
 
+  const AReplyProfileClick = (userId) => {
+
+    navigate(`/PortfolioView/${userId}`);
+    
+  }
+
   useEffect(() => {
     const fetchAReply = async () => {
       try {
@@ -203,6 +208,11 @@ function A_View() {
   const [ARsameUsers, setARSameUsers] = useState(false);
   const [postARId, setPostARId] = useState(); 
   
+  const AR_ReplyProfileClick = (userId) => {
+    navigate(`/PortfolioView/${userId}`);
+    
+  }
+
   const fetchAR_Reply = async (rid) => {
     try {
       const res = await axios.get(`http://localhost:8080/getAR_Reply/${id}/${rid}`, {
@@ -457,7 +467,7 @@ setReplyModifyAInput(e.target.value);
           </div>
           <div className={styles.content_2}>
             <div className={styles.content_2_a}>
-              <div onClick={passHandler}>
+              <div onClick={() => {passHandler(write._user)}}>
               작성자
               {profileImg === null ? (
                 <HiUserCircle
@@ -485,7 +495,7 @@ setReplyModifyAInput(e.target.value);
           <div className={styles.content_5}>
             <div className={styles.content_5_a}>
               <div>
-                태그
+                태그 : 
                 {write.tag !== undefined &&
                   write.tag.map((x, i) => {
                     return <span key={x + i}>{x}</span>;
@@ -494,7 +504,6 @@ setReplyModifyAInput(e.target.value);
             </div>
           </div>
           <div className={styles.content_3}>
-            <div>내용</div>
               <div dangerouslySetInnerHTML={{ __html: htmlString }} />
               <span onClick={clickGood} className={good ? styles.goodBtn : null}>
                 좋아요{goodCount}
@@ -537,7 +546,7 @@ setReplyModifyAInput(e.target.value);
                 {Areply.map((r) => (
                         
                   <tr className={styles.replyTitle} key={r._id}>
-                    <td>{r.Arwriter}</td>
+                    <td key={r._id} onClick={() => AReplyProfileClick(r.userId)}>{r.Arwriter}</td>
                     <td>{r.isASecret ? "비밀댓글" : "공개댓글"}</td>
                     <td>{r.Areply}</td>
                     <td>{" "}
@@ -642,7 +651,7 @@ setReplyModifyAInput(e.target.value);
                               {Ar_reply.map((rr) => (
                                 <tbody>
                                   <tr>
-                                    <td>{rr.Ar_rwriter}</td>
+                                    <td key={rr._id} onClick={() => AR_ReplyProfileClick(rr.userId)}>{rr.Ar_rwriter}</td>
                                     <td>{rr.isARSecret ? "비밀대댓글" : "공개대댓글"}</td>
                                     <td>{rr.Ar_reply}</td>
                                     <td>{" "}{rr.Ar_rwriteDate !== undefined && formatDate(new Date(rr.Ar_rwriteDate))}</td>
