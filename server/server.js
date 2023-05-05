@@ -32,6 +32,7 @@ const { dblClick } = require("@testing-library/user-event/dist/click");
 const OpenStudy = require("./models/openStudy");
 //const { default: StudyRoomCard } = require("../component/StudyRoomCard");
 const Schedule = require("./models/schedule");
+const boot = require("./lib/RTC/boot");
 
 const ObjectId = mongoose.Types.ObjectId;
 const auth = require("./auth");
@@ -76,6 +77,7 @@ mongoose
   .then(() => console.log("DB 접속완료"))
   .catch((err) => console.log(err));
 
+boot();
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -2351,12 +2353,10 @@ app.post("/askviewReplyARModify", async (req, res) => {
       }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: `Ar_reply ${_id} updated successfully`,
-        updatedaskViewReplyARModify,
-      });
+    return res.status(200).json({
+      message: `Ar_reply ${_id} updated successfully`,
+      updatedaskViewReplyARModify,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server Error" });

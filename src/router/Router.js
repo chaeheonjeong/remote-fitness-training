@@ -21,7 +21,7 @@ import ModifyPost from "../component/post/ModifyPost";
 import ModifyAsk from "../component/post/ModifyAsk";
 import MyPost from "../component/mypage/MyPost";
 import MyAsk from "../component/mypage/MyAsk";
-
+import RTCChat from "../component/class/RTCChat";
 const Router = () => {
   return (
     <BrowserRouter>
@@ -59,6 +59,7 @@ const Router = () => {
         <Route path="myAsk" element={<MyAsk />} />
         <Route path="myPost" element={<MyPost />} />
         <Route path="/Jitsi" element={<Jitsi />} />
+        <Route path="/class/chat" element={<RTCChat />} />
       </Routes>
     </BrowserRouter>
   );
