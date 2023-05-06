@@ -278,46 +278,71 @@ const View = () => {
 
   //----------------------------------------------------------------
   const [getReplyId, setReplyId] = useState();
-  const replyHandler = (e) => {
-    setReply(e.target.value);
-  };
+const replyHandler = (e) => {
+  setReply(e.target.value);
+};
 
-  const replyInputChangeHandler = (e) => {
-    setReplyInput(e.target.value);
-  };
+const replyInputChangeHandler = (e) => {
+  setReplyInput(e.target.value);
+};
 
-  const today = new Date();
+const today = new Date();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const data = { reply: replyInput, isSecret: isSecret };
+const getPostWriter = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8080/postwriter/${id}`, {
+      headers: { Authorization: `Bearer ${user.token}` },
+    });
+    return response.data.writer;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const data = { reply: replyInput, isSecret: isSecret };
+  
+  console.log(data);
+  try {
+    const response = await axios.post(`http://localhost:8080/postreply/${id}`, {
+      reply: String(replyInput),
+      isSecret : Boolean(isSecret),
+      rwriter: user.name,
+      rwriteDate: today,
+    }, {
+      headers: { Authorization: `Bearer ${user.token}` },
+    });
+    console.log(typeof isSecret);
     
-    console.log(data);
-    try {
-      const response = await axios.post(`http://localhost:8080/postreply/${id}`, {
-        reply: String(replyInput),
-        isSecret : Boolean(isSecret),
-        rwriter: user.name,
-        rwriteDate: today,
-      }, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      console.log(typeof isSecret);
-      
-      
-      console.log(typeof data);
-      //console.log(res.data.datas);
-      console.log("success", response.data.message);
+    // 게시물 작성자 정보를 가져옵니다.
+    const writer = await getPostWriter();
 
-      // 새로운 댓글을 추가합니다.
-      setReply([...reply, replyInput]);
-      setReplyInput(""); // 댓글 입력창을 초기화합니다.
+    console.log(typeof data);
+    //console.log(res.data.datas);
+    console.log("success", response.data.message);
 
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    // 새로운 댓글을 추가합니다.
+    setReply([...reply, replyInput]);
+    setReplyInput(""); // 댓글 입력창을 초기화합니다.
+
+    // 게시물 작성자에게 알림을 전송합니다.
+    await sendNotification(writer);
+
+    navigate("/");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const sendNotification = async (writer) => {
+  try {
+    // 알림을 전송하는 코드를 작성합니다.
+    console.log(`${writer}님에게 댓글이 작성되었습니다.`);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 
   const replyInputRChangeHandler = (e) => {

@@ -30,7 +30,6 @@ const AskGood = require("./models/askGood");
 const PostGood = require("./models/postGood");
 
 const AskARGood = require("./models/askARGood");
-const PostARGood = require("./models/postARGood");
 //const { dblClick } = require("@testing-library/user-event/dist/click");
 
 const OpenStudy = require("./models/openStudy");
@@ -56,7 +55,7 @@ const storage = multer.diskStorage({
   // (2)
   destination: (req, file, cb) => {
     // (3)
-    cb(null, "./server/images");
+    cb(null, "./src/server/images");
   },
   filename: (req, file, cb) => {
     // (4)
@@ -80,7 +79,7 @@ const upload = multer({
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/images", express.static("./server/images"));
+app.use("/images", express.static("./src/server/images"));
 // app.use("/images", express.static("./server/uploads"));
 const mysecretkey = "capstone";
 
@@ -2050,66 +2049,75 @@ app.delete("/askView/:id/reply/:replyId", async(req, res) => {
 });
 
 //댓글 좋아요
-app.get("/getARGood/:id", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-
+app.get("/getARGood/:clickedAReplyId", async (req, res) => {
   try {
-    const result = await AskARGood.findOne({ _id: Number(req.params.id) });
-    if (result) {
-      let isUser = false;
-      for (let i = 0; i < result._users.length; i++) {
-        if (userId === result._users[i].user) isUser = true;
-      }
-      return res.status(200).json({
-        ARgood: isUser,
-        ARcount: result.ARgoodCount,
-        message: `좋아요 리스트 가져오기 성공`,
-      });
-    } else {
-      return res.status(204).json({
-        message: `좋아요가 없습니다`,
-      });
+    //const id = req.params.clickedAReplyId;
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
+    const decodedToken = jwt.verify(token, mysecretkey);
+    const userId = decodedToken.id;
+
+    /*const reply = await AReply.findOne({ _id: Number(req.params.id) });
+    if (!reply) {
+      return res.status(404).json({ message: `댓글이 없습니다` });
+    }*/
+
+    const result = await AskARGood.findOne({ _id: req.params.clickedAReplyId });
+    if (!result) {
+      return res.status(404).json({ message: `좋아요가 없습니다` });
+    }
+
+    const isUser = result._users.some((user) => user.user === userId);
+    return res.status(200).json({
+      isARGood: isUser,
+      ARgoodCount: result.ARgoodCount,
+      message: `좋아요 리스트 가져오기 성공`,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 });
 
-app.get("/getARGood2/:id", async (req, res) => {
+app.get("/getARGood2/:clickedAReplyId", async (req, res) => {
   try {
-    const result = await AskARGood.findOne({ _id: Number(req.params.id) });
-    if (result) {
-      return res.status(200).json({
-        ARcount: result.ARgoodCount,
-        message: `좋아요 리스트 가져오기 성공`,
-      });
-    } else {
-      return res.status(204).json({
-        message: `좋아요가 없습니다`,
-      });
+    /*const reply = await AReply.findOne({ _id: Number(req.params.id) });
+    if (!reply) {
+      return res.status(404).json({ message: `댓글이 없습니다` });
+    }*/
+
+    const result = await AskARGood.findOne({ _id: String(req.params.clickedAReplyId) });
+    if (!result) {
+      return res.status(404).json({ message: `좋아요가 없습니다` });
     }
+    return res.status(200).json({
+      ARgoodCount: result.ARgoodCount,
+      message: `좋아요 리스트 가져오기 성공`,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 });
 
-app.post("/setARGood/:id", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
+app.post("/setARGood/:clickedAReplyId", async (req, res) => {
+
+  const { clickedAReplyId } = req.params;
 
   try {
-    const result = await AskARGood.findOne({ _id: Number(req.params.id) });
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, mysecretkey);
+    const userId = decodedToken.id;
 
+    const result = await AskARGood.findOne({ _id: clickedAReplyId });
     if (!result) {
       const newDoc = new AskARGood({
-        _id: Number(req.params.id),
+        _id: clickedAReplyId,
         _users: [{ user: userId, time: new Date() }],
         ARgoodCount: 1,
       });
@@ -2118,127 +2126,31 @@ app.post("/setARGood/:id", async (req, res) => {
         ARgoodCount: 1,
         message: `좋아요가 추가되었습니다`,
       });
-    } else {
-      const index = result._users.findIndex((obj) => obj.user === userId);
-      if (index > -1) {
-        result._users.splice(index, 1);
-        result.ARgoodCount--;
-        await result.save();
-        return res.status(200).json({
-          ARgoodCount: result.ARgoodCount,
-          message: `좋아요가 취소되었습니다`,
-        });
-      } else {
-        result._users.push({ user: userId, time: new Date() });
-        result.ARgoodCount++;
-        await result.save();
-        return res.status(200).json({
-          ARgoodCount: result.ARgoodCount,
-          message: `좋아요가 추가되었습니다`,
-        });
-      }
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
-
-app.get("/getARGoodPost/:id", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-
-  try {
-    const result = await PostARGood.findOne({ _id: Number(req.params.id) });
-    if (result) {
-      let isUser = false;
-      for (let i = 0; i < result._users.length; i++) {
-        if (userId === result._users[i].user) {
-          isUser = true;
-        }
-      }
+    const index = result._users.findIndex((obj) => obj.user === userId);
+    if (index > -1) {
+      result._users.splice(index, 1);
+      result.ARgoodCount--;
+      await result.save();
       return res.status(200).json({
-        ARgood: isUser,
-        ARcount: result.ARgoodCount,
-        message: `좋아요 리스트 가져오기 성공`,
+        ARgoodCount: result.ARgoodCount,
+        message: `좋아요가 취소되었습니다`,
       });
     } else {
-      return res.status(204).json({
-        message: `좋아요가 없습니다`,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
-
-app.get("/getARGoodPost2/:id", async (req, res) => {
-  try {
-    const result = await PostARGood.findOne({ _id: Number(req.params.id) });
-    if (result) {
+      result._users.push({ user: userId, time: new Date() });
+      result.ARgoodCount++;
+      await result.save();
       return res.status(200).json({
-        ARcount: result.ARgoodCount,
-        message: `좋아요 리스트 가져오기 성공`,
-      });
-    } else {
-      return res.status(204).json({
-        message: `좋아요가 없습니다`,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
-
-app.post("/setARGoodPost/:id", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-
-  try {
-    const result = await PostARGood.findOne({ _id: Number(req.params.id) });
-
-    if (!result) {
-      const newDoc = new PostARGood({
-        _id: Number(req.params.id),
-        _users: [{ user: userId, time: new Date() }],
-        ARgoodCount: 1,
-      });
-      await newDoc.save();
-      return res.status(201).json({
-        ARgoodCount: 1,
+        ARgoodCount: result.ARgoodCount,
         message: `좋아요가 추가되었습니다`,
       });
-    } else {
-      const index = result._users.findIndex((obj) => obj.user === userId);
-      if (index > -1) {
-        result._users.splice(index, 1);
-        result.ARgoodCount--;
-        await result.save();
-        return res.status(200).json({
-          ARgoodCount: result.ARgoodCount,
-          message: `좋아요가 취소되었습니다`,
-        });
-      } else {
-        result._users.push({ user: userId, time: new Date() });
-        result.ARgoodCount++;
-        await result.save();
-        return res.status(200).json({
-          ARgoodCount: result.ARgoodCount,
-          message: `좋아요가 추가되었습니다`,
-        });
-      }
     }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 });
+
 
 app.get("/header-profile", async (req, res) => {
   const authHeader = req.headers.authorization;
@@ -2272,6 +2184,4 @@ app.get("/", (req, res) => {
 
 app.listen(8080, () => {
   console.log("서버가 시작되었습니다.");
-  // delete require.cache["axios"];
-  // console.log(require.cache);
 });
