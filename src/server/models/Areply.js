@@ -8,7 +8,7 @@ const AreplySchema = new Schema(
     Arwriter: { type: String, required: true },
     ArwriteDate: { type: String, required: true },
     Areply: { type: String, required: true },
-    isASecret: { type: Boolean, default: false },
+    /* isASecret: { type: Boolean, default: false }, */
   },
 );
 

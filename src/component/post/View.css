@@ -1,19 +1,4 @@
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
 
-.body{
-    padding:1.5em;
-    border-radius: 5px;
-    border: 4px solid black;
-    margin: 20px;
-    
-}
-
-
-=======
->>>>>>> aae62bccb2a9a695be3134443397e77122ea13e1
->>>>>>> 8a2ebbddf09fc2f58de55ce25a175e34d66a856a
 .write2 {
   border: 4px solid #ffc947;
   border-radius: 10px;
@@ -172,8 +157,4 @@ td {
 
 .rdbtn {
   margin-right: 5px;
-}
-
-.replyContent {
-  width: 100%;
 }

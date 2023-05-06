@@ -6,8 +6,11 @@ const writeSchema = new Schema(
     _id: { type: Number, required: true /*, unique: true*/ }, // unique index constraint를 걸어줍니다.
     _user: { type: String, required: true },
     number: { type: String, required: true },
-    period: { type: String, required: true },
+    /* period: { type: String, required: true }, */
     date: { type: String, required: true },
+    startTime: { type: String, required: true },
+    runningTime: { type: String, required: true },
+    estimateAmount: { type: String, required: true },
     tag: { type: Array, required: false },
     title: { type: String, required: true },
     content: { type: Object, required: true },
@@ -15,6 +18,7 @@ const writeSchema = new Schema(
     writeDate: { type: String, required: true },
     recruit: { type: Boolean, required: true },
     views: { type: Number, required: true },
+    startTime: { type: String, required: true },
   },
   {
     versionKey: false,

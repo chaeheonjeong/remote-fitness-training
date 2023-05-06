@@ -1,14 +1,20 @@
 import usePost from "../../hooks/usePost";
-//import "./Write.css";
+import "./Write.css";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../main/Header";
 
+import SelectModal from "./SelectModal";
+
 const ModifyPost = () => {
   const hook = usePost();
+
   const [flag, setFlag] = useState(false);
+  const [modal, setModal] = useState(false);
+
+  /* const hook2 = SelectModal({ modal, setModal }); */
 
   const imgLink = "http://localhost:8080/images";
 
@@ -138,14 +144,34 @@ const ModifyPost = () => {
     return false;
   };
 
+  const selection = () => {
+    setModal(!modal);
+  }
+
+  const [recruitChange, setRecruitChange] = useState();
+
+  const handleRecruitChange = (value) => {
+    setRecruitChange(value);
+    hook.setRecruit(value);
+  };
+
   return (
     <>
+    { modal && (
+        <SelectModal
+          modal = {modal}
+          setModal = {setModal}
+          onRecruitChange={handleRecruitChange}
+        />
+      )
+    }
+
       <Header />
       <div className="choose">
         <button
           className={hook.recruit ? "cbtn" : "falseBtn"}
           onClick={() => {
-            hook.setRecruit(!hook.recruit);
+            selection();
           }}
         >
           {hook.recruit ? "모집중" : "모집완료"}
@@ -160,7 +186,7 @@ const ModifyPost = () => {
               hook.setPCondition(e.target.value);
             }}
           >
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, "10명 이상"].map((number, index) => (
+            {[1, 2].map((number, index) => (
               <option
                 key={number + index}
                 value={typeof number === "number" ? `${number}명` : "10명 이상"}

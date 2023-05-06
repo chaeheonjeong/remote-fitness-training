@@ -9,10 +9,10 @@ import Write from "../component/post/Write";
 import View from "../component/post//View";
 import Ask from "../component/post//Ask";
 import AskView from "../component/post//AskView";
-/* import View2 from "../component/post//View2";
-import View3 from "../component/post/View3"; */
+//import View2 from "../component/post//View2";
+//import View3 from "../component/post/View3";
+import Jitsi from "../component/videochat/jitsi";
 
-import Jitsi from '../component/videochat/jitsi';
 import MainOpenStudy from "../component/main/MainOpenStudy";
 import MainStudy from "../component/main/MainStudy";
 import MainQuestion from "../component/main/MainQuestion";
@@ -24,6 +24,7 @@ import ModifyPost from "../component/post/ModifyPost";
 import ModifyAsk from "../component/post/ModifyAsk";
 import MyPost from "../component/mypage/MyPost";
 import MyAsk from "../component/mypage/MyAsk";
+import MyPAReviews from "../component/mypage/MyPAReviews";
 
 const Router = () => {
   return (
@@ -51,18 +52,16 @@ const Router = () => {
         <Route path="/View/:id" element={<View />} />
         <Route path="/Ask" element={<Ask />} />
         <Route path="/modifyAsk/:id" element={<ModifyAsk />} />
-        {/* <Route path="/View2" element={<View2 />} />
-        <Route path="/View3" element={<View3 />} /> */}
         <Route path="/AskView/:id" element={<AskView />} />
         <Route path="/MyInfo" element={<MyInfo />} />
         <Route path="/MyCalendar" element={<MyCalendar />} />
         <Route path="/MyLikedPost" element={<MyLikedPost />} />
         <Route path="/MyLikedQuestion" element={<MyLikedQuestion />} />
-        <Route path="/View/:id" element={<View />} />
-        <Route path="/AskView/:id" element={<AskView />} />
+        <Route path="/MyPAReviews/:name" element={<MyPAReviews />} />
+        {/* <Route path="/View/:id" element={<View />} /> */}
         <Route path="myAsk" element={<MyAsk />} />
         <Route path="myPost" element={<MyPost />} />
-        <Route path="/Jitsi" element={<Jitsi />} />
+        <Route path="Jitsi" element={<Jitsi/>}/>
       </Routes>
     </BrowserRouter>
   );
