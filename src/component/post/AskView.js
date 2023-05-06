@@ -63,8 +63,8 @@ function A_View() {
           const parsedContent = JSON.parse(cleanedString); // 문자열을 JSON 객체로 변환합니다.
           const htmlString = parsedContent.content;
           setHtmlString(htmlString);
-        }
-      }, [write]);
+    }
+  }, [write]);
 
   useEffect(() => {
     if (user.token !== null) {
@@ -459,7 +459,7 @@ function A_View() {
             setARGood(response.data.ARgood);
             setARGoodCount(response.data.ARgoodCount);
             console.log(response.data.message);
-            console.log(response.data.ARgoodCount);
+            
             console.log("");
           } else if (response.status === 204) {
             setARGood(false);

@@ -37,6 +37,7 @@ const AskARGood = require("./models/askARGood");
 const OpenStudy = require("./models/openStudy");
 //const { default: StudyRoomCard } = require("../component/StudyRoomCard");
 const Schedule = require("./models/schedule");
+//const boot = require("./lib/RTC/boot");
 
 const ObjectId = mongoose.Types.ObjectId;
 const auth = require("./auth");
@@ -649,6 +650,7 @@ app.get("/myRanking", async (req, res) => {
 });
 
 // 댓글 작성
+// 댓글 작성
 app.post("/postreply/:id", async (req, res) => {
   const { reply, isSecret, rwriter, rwriteDate } = req.body;
   const { id } = req.params;
@@ -658,23 +660,72 @@ app.post("/postreply/:id", async (req, res) => {
     return res.status(404).json({ message: "Post not found" });
   }
 
-  const replycounter = await ReplyCounter.findOneAndUpdate({ name: '댓글 수' }, { $inc: { totalReply: 1 } }, { new: true, upsert: true });
-  const 총댓글수 = (replycounter.totalReply +1);
+  const replycounter = await ReplyCounter.findOneAndUpdate(
+    { name: "댓글 수" },
+    { $inc: { totalReply: 1 } },
+    { new: true, upsert: true }
+  );
+  const 총댓글수 = replycounter.totalReply + 1;
 
   if (!replycounter) {
     return res.status(500).json({ message: "Counter not found" });
   }
   try {
     const newReply = new Reply({
-      postId : id,
-      _id: 총댓글수 + 1, 
+      postId: id,
+      _id: 총댓글수 + 1,
       rwriter: rwriter,
-      rwriteDate : rwriteDate,
-      reply : reply,
-      isSecret : isSecret
+      rwriteDate: rwriteDate,
+      reply: reply,
+      isSecret: isSecret,
     });
     await newReply.save();
-    console.log(isSecret)
+    console.log(isSecret);
+    return res.status(200).json({ message: `Reply created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+app.post("/postAr_reply/:id/:rid", async (req, res) => {
+  const { Ar_reply, isARSecret, Ar_rwriteDate, Ar_rwriter } = req.body;
+  const { id, rid } = req.params;
+
+  console.log(rid);
+
+  const post = await Ask.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const reply = await AReply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "Reply not found" });
+  }
+
+  const Ar_replycounter = await AR_ReplyCounter.findOneAndUpdate(
+    { name: "대댓글 수" },
+    { $inc: { totalR_Reply: 1 } },
+    { new: true, upsert: true }
+  );
+  const 총대댓글수 = Ar_replycounter.totalR_Reply + 1;
+
+  if (!Ar_replycounter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newAR_Reply = new AR_Reply({
+      postRId: id,
+      selectedARId: rid,
+      _id: 총대댓글수 + 1, //댓글번호
+      Ar_rwriter: Ar_rwriter,
+      Ar_rwriteDate: Ar_rwriteDate,
+      Ar_reply: Ar_reply,
+      isARSecret: isARSecret,
+    });
+    await newAR_Reply.save();
+    console.log(isARSecret);
     return res.status(200).json({ message: `Reply created successfully` });
   } catch (error) {
     console.error(error);
@@ -940,11 +991,7 @@ app.delete("/askDelete/:id", async (req, res) => {
     const result = await Ask.deleteOne({ _id: id });
 
     // Counter collection에서 "게시물 수" name 값을 가진 document의 totalWrite 필드값을 -1 해줌
-    const counter = await Counter.findOneAndUpdate(
-      { name: "질문 게시물 수" },
-      { $inc: { totalWrite: -1 } }
-    );
-    res.status(200).json({ message: "글이 삭제되었습니다.", counter });
+    res.status(200).json({ message: "글이 삭제되었습니다." });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "글 삭제에 실패하였습니다." });
@@ -1588,24 +1635,20 @@ app.get("/getAReply/:id", async (req, res) => {
   const userId = decodedToken.id;
 
   try {
-    
-    const result = await AReply.find({ postId: req.params.id})
+    const result = await AReply.find({ postId: req.params.id });
 
     if (result) {
-
       let sameAUsers = false;
-      //if (userId === result[0]._user) sameAUsers = true;
+      if (userId === result[0]._user) sameAUsers = true;
       console.log(req.params.postId);
       return res.status(200).json({
         data: result,
         sameAUsers: sameAUsers,
         message: ` ${typeof req.params.postId}댓글 가져오기 성공`,
       });
-    } 
-    else {
+    } else {
       return res.status(404).json({ message: "댓글이 존재하지 않습니다." });
     }
-    
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
