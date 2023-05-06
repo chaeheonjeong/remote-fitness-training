@@ -10,6 +10,8 @@ const Counter = require("./models/counter");
 const ReplyCounter = require("./models/replycounter");
 const R_ReplyCounter = require("./models/r_replycounter");
 
+const ALikes = require("./models/ALikes");
+
 const AReply = require("./models/Areply");
 const AR_Reply = require("./models/Ar_reply");
 const AReplyCounter = require("./models/Areplycounter");
@@ -2144,6 +2146,53 @@ app.post("/setARGood/:clickedAReplyId", async (req, res) => {
         ARgoodCount: result.ARgoodCount,
         message: `좋아요가 추가되었습니다`,
       });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// 좋아요 수 업데이트 API
+app.put('/updateALikes/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { likes } = req.body;
+    const result = await AReply.findByIdAndUpdate(id, { likes });
+    return res.status(200).json({ message: '댓글 좋아요 수 업데이트 성공', data: result });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// 댓글 목록 API에서 좋아요 수 반환 추가
+app.get("/getAReply/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const result = await AReply.find({ postId: req.params.id})
+
+    if (result) {
+      let sameAUsers = false;
+      //if (userId === result[0]._user) sameAUsers = true;
+      console.log(req.params.postId);
+      // 좋아요 수를 반환하는 코드 추가
+      const repliesWithLikes = await Promise.all(result.map(async reply => {
+        const likes = await ALikes.countDocuments({ replyId: reply._id });
+        return { ...reply.toObject(), likes };
+      }));
+      return res.status(200).json({
+        data: repliesWithLikes,
+        sameAUsers: sameAUsers,
+        message: ` ${typeof req.params.postId}댓글 가져오기 성공`,
+      });
+    } 
+    else {
+      return res.status(404).json({ message: "댓글이 존재하지 않습니다." });
     }
   } catch (error) {
     console.error(error);

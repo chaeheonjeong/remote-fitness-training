@@ -437,154 +437,7 @@ function A_View() {
   const [ARgood, setARGood] = useState([]);
   const [ARgoodCount, setARGoodCount] = useState([]);
   const [clickedAReplyId, setClickedAReplyId] = useState(null); // 초기값은 null로 설정
-  /*const fetchARGood = async (clickedAReplyId) => {
-    if (user.token !== null) {
-      try {
-        const response = await axios.get(`http://localhost:8080/getARGood/${clickedAReplyId}`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        if (response.status === 200) {
-          setARGoodCount((prev) => ({ ...prev, [clickedAReplyId]: response.data.ARcount }));
-          console.log(response.data.message);
-          console.log(response.data.ARgoodCount);
-          console.log("");
-        } else if (response.status === 204) {
-          setARGoodCount((prev) => ({ ...prev, [clickedAReplyId]: null }));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
-        const response = await axios.get(`http://localhost:8080/getARGood2/${clickedAReplyId}`);
-        if (response.status === 200) {
-          setARGoodCount((prev) => ({ ...prev, [clickedAReplyId]: response.data.ARcount }));
-        } else if (response.status === 204) {
-          setARGoodCount((prev) => ({ ...prev, [clickedAReplyId]: null }));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
-
-  const clickARGood = (clickedAReplyId) => {
-    if (user.token !== null) {
-      axios
-        .post(`http://localhost:8080/setARGood/${clickedAReplyId}`, null, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setARGood((prevARGood) => {
-              const newARGood = { ...prevARGood };
-              newARGood[clickedAReplyId] = !newARGood[clickedAReplyId];
-              return newARGood;
-            });
-            setARGoodCount((prevARgoodCount) => {
-              const newARgoodCount = { ...prevARgoodCount };
-              if (!prevARgoodCount[clickedAReplyId]) {
-                newARgoodCount[clickedAReplyId] += 1;
-              } else {
-                newARgoodCount[clickedAReplyId] -= 1;
-              }
-              return newARgoodCount;
-            });
-          } else if (response.status === 201) {
-            setARGood((prevARGood) => {
-              const newARGood = { ...prevARGood };
-              newARGood[clickedAReplyId] = !newARGood[clickedAReplyId];
-              return newARGood;
-            });
-            setARGoodCount((prevARgoodCount) => {
-              const newARgoodCount = { ...prevARgoodCount };
-              newARgoodCount[clickedAReplyId] += 1;
-              return newARgoodCount;
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      alert("로그인 해주세요.");
-    }
-  };*/
-
-  /*8const fetchARGood = async (clickedAReplyId) => {
-    if (user.token !== null) {
-      try {
-        const response = await axios.get(`http://localhost:8080/getARGood/${clickedAReplyId}`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        if (response.status === 200) {
-          setARGoodCount((prev) => ({ ...prev, [clickedAReplyId]: response.data.ARcount }));
-          console.log(response.data.message);
-          console.log(response.data.ARgoodCount);
-          console.log("");
-        } else if (response.status === 204) {
-          setARGoodCount((prev) => ({ ...prev, [clickedAReplyId]: null }));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
-        const response = await axios.get(`http://localhost:8080/getARGood2/${clickedAReplyId}`);
-        if (response.status === 200) {
-          setARGoodCount((prev) => ({ ...prev, [clickedAReplyId]: response.data.ARcount }));
-        } else if (response.status === 204) {
-          setARGoodCount((prev) => ({ ...prev, [clickedAReplyId]: null }));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-  
-  const clickARGood = (clickedAReplyId) => {
-    if (user.token !== null) {
-      axios
-        .post(`http://localhost:8080/setARGood/${clickedAReplyId}`, null, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setARGood((prevARGood) => {
-              const newARGood = { ...prevARGood };
-              newARGood[clickedAReplyId] = !newARGood[clickedAReplyId];
-              return newARGood;
-            });
-            setARGoodCount((prevARgoodCount) => {
-              const newARgoodCount = { ...prevARgoodCount };
-              if (!prevARgoodCount[clickedAReplyId]) {
-                newARgoodCount[clickedAReplyId] = 1;
-              } else {
-                newARgoodCount[clickedAReplyId] -= 1;
-              }
-              return newARgoodCount;
-            });
-          } else if (response.status === 201) {
-            setARGood((prevARGood) => {
-              const newARGood = { ...prevARGood };
-              newARGood[clickedAReplyId] = !newARGood[clickedAReplyId];
-              return newARGood;
-            });
-            setARGoodCount((prevARgoodCount) => {
-              const newARgoodCount = [...prevARgoodCount];
-              newARgoodCount[clickedAReplyId] = 1;
-              return newARgoodCount;
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else{
-      alert("로그인 해주세요.");
-    }
-  };*/
+  const [clickedAReplyLiked, setClickedAReplyLiked] = useState(false);
 
   const handleAReplyClick = (clickedAReplyId) => {
     setClickedAReplyId(clickedAReplyId);
@@ -595,26 +448,6 @@ function A_View() {
     console.log("댓글 번호는 : " , clickedAReplyId);
   };
 
-  /*useEffect(() => {
-    const fetchNARgood = async () => {
-      try {
-        const res = await axios.get(`http://localhost:8080/getARGood/${clickedAReplyId}`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        if (res.data !== undefined) {
-          setNARgood(res.data.ARgood);
-          setNARgoodCount(res.data.ARgoodBtn);
-          console.log(res.data.ARgood);
-          console.log(res.data.ARgoodCount);
-          console.log(res.data.data);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };    
-    fetchNARgood();
-  }, []);*/
-  
   const fetchARGood = (clickedAReplyId) => {
     if (user.token !== null) {
       axios
@@ -796,8 +629,8 @@ function A_View() {
                     <td>{r.Arwriter}</td>
 
                     <td><span onClick={() => {handleAReplyClick(r._id)}}
-                      className={ARgood? styles.ARgoodBtn : null}>
-                      좋아요 {ARgoodCount}
+                      className={r._id === clickedAReplyId && ARgood ? styles.ARgoodBtn : null}>
+                      좋아요 {r._id !== clickedAReplyId ? '' : ARgoodCount}
                     </span></td>
 
                     <td>{r.Areply}</td>
