@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const askSchema = new Schema(
   {
     _id : { type: Number, required: true/*, unique: true*/ }, // unique index constraint를 걸어줍니다.
+    _user: { type: String, required: true },
     title: { type: String, required: true },
     content: { type: Object, required: true },
     tag: { type: Array, required: false },

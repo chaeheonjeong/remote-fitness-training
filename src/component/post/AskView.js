@@ -21,6 +21,8 @@ function A_View() {
   const [goodCount, setGoodCount] = useState(0);
   const [selectedAId, setSelectedAId] = useState();
   const [profileImg, setProfileImg] = useState(null);
+  const [pImg, setPImg] = useState([]);
+  const [rPImg, setRPImg] = useState([]);
 
   const [aBookmarkCount, setABookmarkCount] = useState(0);
 
@@ -197,6 +199,8 @@ function A_View() {
         if (res.data !== undefined) {
           setAReply(res.data.data);
           setSameAUsers(res.data.sameAUsers);
+          setPImg(res.data.profileImgs);
+
           console.log(res.data.message);
           console.log(res.data.data);
         }console.log(res.data);
@@ -221,7 +225,9 @@ function A_View() {
 
       if(res.data.data.length) {
         setAR_Reply(res.data.data);
-        //setRSameUsers(res.data.RsameUsers);
+        setARSameUsers(res.data.RsameUsers);
+        setRPImg(res.data.profileImgs);
+
         console.log(res.data.messgae);
         console.log(res.data.data);
       } else {
@@ -288,6 +294,7 @@ function A_View() {
     
       // 새로운 댓글을 추가합니다.
       setAR_Reply([...Ar_reply, replyARInput]);
+      console.log(Ar_reply, replyARInput);
       setReplyARInput(""); // 댓글 입력창을 초기화합니다.
     
       navigate("/");
@@ -467,23 +474,23 @@ setReplyModifyAInput(e.target.value);
           </div>
           <div className={styles.content_2}>
             <div className={styles.content_2_a}>
+              <div>작성자</div>
               <div>
-              작성자
-              {profileImg === null ? (
-                <HiUserCircle
-                  size="40"
-                  color="#5a5a5a"
-                  style={{ cursor: "pointer" }}
-                />
-              ) : (
-                <img
-                  className={styles.profile}
-                  src={profileImg}
-                  alt="프로필 이미지"
-                />
-              )}
+                {profileImg === null ? (
+                  <HiUserCircle
+                    size="40"
+                    color="#5a5a5a"
+                    style={{ cursor: "pointer" }}
+                  />
+                ) : (
+                  <img
+                    className={styles.profile}
+                    src={profileImg}
+                    alt="프로필 이미지"
+                  />
+                )}
               {write.writer}
-            </div>
+              </div>
               <div>|</div>
               <div>
                 날짜
@@ -544,10 +551,33 @@ setReplyModifyAInput(e.target.value);
                 </tr>
               </thead>
               <tbody>
-                {Areply.map((r) => (
+                {Areply.map((r, index) => (
                         
                   <tr className={styles.replyTitle} key={r._id}>
-                    <td>{r.Arwriter}</td>
+                    <td>
+                      <div>
+                      {!pImg || !pImg[index] ? (
+                        <HiUserCircle
+                          size="40"
+                          color="#5a5a5a"
+                          style={{ cursor: "pointer" }}
+                          /* onClick={() => {
+                            profileClick(write.writer, id);
+                          }} */
+                        />
+                      ) : (
+                        <img
+                          className={styles.profile}
+                          src={pImg[index]}
+                          alt="프로필 이미지"
+                          /* onClick={() => {
+                            profileClick(write.writer, id);
+                          }} */
+                        />
+                      )}
+                      </div>
+                      {r.Arwriter}
+                    </td>
                     {/* <td>{r.isASecret ? "비밀댓글" : "공개댓글"}</td> */}
                     <td>{r.Areply}</td>
                     <td>{" "}
@@ -555,7 +585,7 @@ setReplyModifyAInput(e.target.value);
                     formatDate(new Date(r.ArwriteDate))}</td>
                     
                     {/* 댓글수정 */}
-                    {!sameAUsers && (
+                    {sameAUsers[index] && (
                       <td>
                         <input type="button" className={styles.rdbtn} value="삭제" onClick={ deleteAReply.bind(null, r._id) }></input>
                         <input 
@@ -649,16 +679,37 @@ setReplyModifyAInput(e.target.value);
                                   <td>작성 날짜</td>
                                 </tr>
                               </thead>
-                              {Ar_reply.map((rr) => (
+                              {Ar_reply.map((rr, index) => (
                                 <tbody>
                                   <tr>
+                                    <div>
+                                    {!rPImg || !rPImg[index] ? (
+                                      <HiUserCircle
+                                        size="40"
+                                        color="#5a5a5a"
+                                        style={{ cursor: "pointer" }}
+                                        /* onClick={() => {
+                                          profileClick(write.writer, id);
+                                        }} */
+                                      />
+                                    ) : (
+                                      <img
+                                        className={styles.profile}
+                                        src={pImg[index]}
+                                        alt="프로필 이미지"
+                                        /* onClick={() => {
+                                          profileClick(write.writer, id);
+                                        }} */
+                                      />
+                                    )}
+                                    </div>
                                     <td>{rr.Ar_rwriter}</td>
                                     {/* <td>{rr.isARSecret ? "비밀대댓글" : "공개대댓글"}</td> */}
                                     <td>{rr.Ar_reply}</td>
                                     <td>{" "}{rr.Ar_rwriteDate !== undefined && formatDate(new Date(rr.Ar_rwriteDate))}</td>
                                     
                                     {/* 대댓글수정 */}
-                                    {!sameAUsers && (
+                                    {ARsameUsers[index] && (
                                       <td>
                                         <input type="button" className={styles.rrdbtn} value="삭제" onClick={() => handleARDelete(rr._id)}></input>
                                         <input 

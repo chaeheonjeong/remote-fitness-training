@@ -113,7 +113,7 @@ const Write = () => {
             <option value="default" disabled hidden>
               모집 인원 선택
             </option>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, "10명 이상"].map((number, index) => (
+            {[1, 2].map((number, index) => (
               <option
                 key={number + index}
                 value={typeof number === "number" ? `${number}명` : "10명 이상"}

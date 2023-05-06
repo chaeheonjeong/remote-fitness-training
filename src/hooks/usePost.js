@@ -99,13 +99,13 @@ export default function useWrite() {
           number: pCondition,
           /* period: periodCondition, */
           date: String(date),
+          startTime: startTime,
+          runningTime: runningTime,
+          estimateAmount: estimateAmount,
           tag: tags,
           title: title,
           content: JSON.parse(JSON.stringify(content)),
           recruit: recruit,
-          startTime: startTime,
-          runningTime: runningTime,
-          estimateAmount: estimateAmount,
         });
         alert("수정이 완료되었습니다.");
         navigate(`/view/${id}`);

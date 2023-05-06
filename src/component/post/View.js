@@ -53,16 +53,6 @@ const View = () => {
   }
   useEffect(getBookmarkCount, []);
 
-  /* const rWriterImg = () => {
-    axios
-      .get(`http://localhost:8080/getReply/${id}`)
-      .then((reponse) => {
-        if(response.status === 200) {
-
-        }
-      })
-  } */
-
   useEffect(() => {
     if (user.token !== null) {
       axios
@@ -247,7 +237,7 @@ const View = () => {
           setSameUsers(res.data.sameUsers);
           setPImg(res.data.profileImgs);
 
-          console.log("sameUsers: ", sameUsers);
+          /* console.log("sameUsers: ", res.data.sameUsers); */
 
           console.log(pImg);
 
@@ -337,7 +327,8 @@ const View = () => {
     e.preventDefault();
     const data = { reply: replyInput, /* isSecret: isSecret */ };
     
-    console.log(data);
+    console.log("data: ", data);
+    
     try {
       const response = await axios.post(`http://localhost:8080/postreply/${id}`, {
         reply: String(replyInput),
@@ -347,11 +338,8 @@ const View = () => {
       }, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
-      console.log(typeof isSecret);
-      
       
       console.log(typeof data);
-      //console.log(res.data.datas);
       console.log("success", response.data.message);
 
       // 새로운 댓글을 추가합니다.
@@ -372,19 +360,19 @@ const View = () => {
 
   const rhandleSubmit = async (e) => {
     e.preventDefault();
-    const data = { r_reply : replyRInput, isRSecret : isRSecret};
+    const data = { r_reply : replyRInput/* , isRSecret : isRSecret */};
     console.log(data);
     try {
       const response = await axios.post(`http://localhost:8080/postr_reply/${id}/${selectedRId}`, {
         r_reply: String(replyRInput),
-        isRSecret : Boolean(isRSecret),
+        /* isRSecret : Boolean(isRSecret), */
         r_rwriter: user.name,
         r_rwriteDate: today,
         
       }, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
-      console.log(typeof isRSecret);
+      /* console.log(typeof isRSecret); */
       
       
       console.log(typeof data);
@@ -451,7 +439,7 @@ const View = () => {
         _id: rrid,
         r_rWriteDate: today,
         r_reply: String(replyRModifyInput),
-        isRSecret: Boolean(isRSecret), 
+        /* isRSecret: Boolean(isRSecret),  */
       });
 
       alert("대댓글 수정이 완료되었습니다.");
@@ -468,7 +456,7 @@ const View = () => {
       .get(`http://localhost:8080/view/${id}/modify/${selectedRId}/${rrid}`)
       
       if(res.data !== undefined) {
-        setIsRSecret(res.data.result[0].isRSecret);
+        /* setIsRSecret(res.data.result[0].isRSecret); */
         setReplyRModifyInput(res.data.result[0].r_reply);
       }
     } catch(error) {
@@ -535,6 +523,7 @@ const View = () => {
         //setIsSecret(res.data.result[0].isSecret);
         setReplyModifyInput(res.data.result[0].reply);
       }
+      
     } catch(error) {
       console.log(error);
     }
@@ -768,7 +757,7 @@ const View = () => {
 
 
                 {/* 댓글 수정 & 삭제 */}
-                {sameUsers && (
+                {sameUsers[index] && (
                   <td>
                     <input type="button" className={styles.rdbtn} value="삭제" onClick={ deleteReply.bind(null, r._id) }></input>
                     <input 
@@ -895,7 +884,7 @@ const View = () => {
                               <td>{" "}{rr.r_rwriteDate !== undefined && formatDate(new Date(rr.r_rwriteDate))}</td>
 
                              {/* 대댓글수정 */}
-                             {!sameUsers && (
+                             {RsameUsers[index] && (
                                 <td>
                                   <input type="button" className={styles.rrdbtn} value="삭제" onClick={() => handleRDelete(rr._id)}></input>
                                   <input 

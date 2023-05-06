@@ -40,6 +40,7 @@ const Schedule = require("./models/schedule");
 
 const ObjectId = mongoose.Types.ObjectId;
 const auth = require("./auth");
+const { profile } = require("console");
 
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
@@ -661,6 +662,8 @@ app.post("/postreply/:id", async (req, res) => {
   const replycounter = await ReplyCounter.findOneAndUpdate({ name: '댓글 수' }, { $inc: { totalReply: 1 } }, { new: true, upsert: true });
   const 총댓글수 = (replycounter.totalReply +1);
 
+  const rwriterId = await User.findOne({ name: rwriter });
+
   if (!replycounter) {
     return res.status(500).json({ message: "Counter not found" });
   }
@@ -669,6 +672,7 @@ app.post("/postreply/:id", async (req, res) => {
       postId : id,
       _id: 총댓글수 + 1, 
       rwriter: rwriter,
+      _user: rwriterId._id,
       rwriteDate : rwriteDate,
       reply : reply,
       //isSecret : isSecret
@@ -801,13 +805,13 @@ app.post("/postWrite", async (req, res) => {
 });
 
 app.post("/postModify", async (req, res) => {
-  const { _id, number, period, date, tag, title, content, recruit } = req.body;
+  const { _id, number, date, startTime, runningTime, estimateAmount, tag, title, content, recruit } = req.body;
 
   try {
     const updatedWrite = await Write.findOneAndUpdate(
       { _id },
       {
-        $set: { number, period, date, tag, title, content, recruit },
+        $set: { number, date, startTime, runningTime, estimateAmount, tag, title, content, recruit },
       }
     );
 
@@ -905,6 +909,8 @@ app.get("/getAsk/:id", async (req, res) => {
     const result = await Ask.find({ _id: Number(req.params.id) });
     if (result) {
       let sameUser = false;
+      console.log(result);
+      console.log("***: ", userId, result[0]._user);
       if (userId === result[0]._user) sameUser = true;
 
       let profileImg = null;
@@ -1694,10 +1700,9 @@ app.get("/getReply/:id", async (req, res) => {
     const result = await Reply.find({ postId: req.params.id});
 
     if (result) {
-      let sameUsers = false;
-      if (userId === result[0]._user) sameUsers = true;
+      const sameUsers = result.map((reply) => reply._user === userId);
 
-      console.log(req.params.postId);
+      console.log(sameUsers);
 
       // 사용자 프로필 이미지 반환
       const profileImgs = await Promise.all(
@@ -1800,12 +1805,26 @@ app.get("/getAReply/:id", async (req, res) => {
 
     if (result) {
 
-      let sameAUsers = false;
-      //if (userId === result[0]._user) sameAUsers = true;
+      const sameAUsers = result.map((reply) => reply._user === userId);
+
       console.log(req.params.postId);
+
+      const profileImgs = await Promise.all(
+        result.map(async (reply) => {
+          const user = await User.findOne({ name: reply.Arwriter });
+        
+          if(!user) {
+            throw new Error(`User with name "${reply.Arwriter} not found`);
+          }
+
+          return user.image;
+        })
+      )
+
       return res.status(200).json({
         data: result,
         sameAUsers: sameAUsers,
+        profileImgs: profileImgs,
         message: ` ${typeof req.params.postId}댓글 가져오기 성공`,
       });
     } 
@@ -1816,6 +1835,52 @@ app.get("/getAReply/:id", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
+  }
+});
+
+/// 대댓글 작성
+app.post("/postAr_reply/:id/:rid", async (req, res) => {
+  const { Ar_reply, /* isASecret, */ Ar_rwriter, Ar_rwriteDate } = req.body;
+  const { id, rid } = req.params;
+
+  console.log(rid);
+
+
+  const post = await Ask.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const Areply = await AReply.findOne({ _id: rid });
+  if (!Areply) {
+    return res.status(404).json({ message: "Reply not found" });
+  }
+
+  const Ar_replycounter = await AR_ReplyCounter.findOneAndUpdate({ name: '대댓글 수' }, { $inc: { totalR_Reply: 1 } }, { new: true, upsert: true });
+  const 총대댓글수 = Ar_replycounter.totalR_Reply + 1;
+
+  const Ar_rwriterId = await User.findOne({ name: Ar_rwriter });
+
+  if (!Ar_replycounter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newAR_Reply = new AR_Reply({
+      postRId : id,
+      selectedARId : rid,
+      _id: 총대댓글수 + 1, //댓글번호
+      Ar_rwriter : Ar_rwriter,
+      _user: Ar_rwriterId._id,
+      Ar_rwriteDate : Ar_rwriteDate,
+      Ar_reply : Ar_reply,
+      //isRSecret : isRSecret
+    });
+    await newAR_Reply.save();
+    
+    return res.status(200).json({ message: `Reply created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
   }
 });
 
@@ -1832,17 +1897,25 @@ app.get("/getAR_Reply/:id/:rid", async (req, res) => {
   try {
     const result = await AR_Reply.find({ postRId : Number(postRId), selectedARId : Number(selectedARId) })
     if (result) {
-      //console.log('result: ', result);
+      const RsameUsers = result.map((reply) => reply._user === userId);
 
-      //let RsameUsers = false;
-      //console.log('result[0]: ', result[0].r_rwriter);
-      //if (userId === result[0].r_rwriter) RsameUsers = true;
-      //console.log(postRId);
-      //console.log(selectedRId);
+      // 사용자 프로필 이미지 반환
+      const profileImgs = await Promise.all(
+        result.map(async (Ar_reply) => {
+          const user = await User.findOne({ name: Ar_reply.Ar_rwriter });
+
+          if(!user) {
+            throw new Error(`User with name "${Ar_reply.Ar_rwriter}" not found`);
+          }
+
+          return user.image;
+        })
+      );
 
       return res.status(200).json({
         data: result,
-        //RsameUsers: RsameUsers,
+        RsameUsers: RsameUsers,
+        profileImgs: profileImgs,
         message: ` ${typeof selectedARId}대댓글 가져오기 성공`,
       });
     } 
@@ -1868,6 +1941,8 @@ app.post("/postAreply/:id", async (req, res) => {
   const Areplycounter = await AReplyCounter.findOneAndUpdate({ name: '댓글 수' }, { $inc: { totalReply: 1 } }, { new: true, upsert: true });
   const 총댓글수 = (Areplycounter.totalReply +1);
 
+  const ArwriterId = await User.findOne({ name: Arwriter });
+
   if (!Areplycounter) {
     return res.status(500).json({ message: "Counter not found" });
   }
@@ -1876,6 +1951,7 @@ app.post("/postAreply/:id", async (req, res) => {
       postId : id,
       _id: 총댓글수 + 1, 
       Arwriter: Arwriter,
+      _user: ArwriterId._id,
       ArwriteDate : ArwriteDate,
       Areply : Areply,
       //isASecret : isASecret
@@ -1902,14 +1978,15 @@ app.get("/getR_Reply/:id/:rid", async (req, res) => {
   try {
     const result = await R_Reply.find({ postRId : Number(postRId), selectedRId : Number(selectedRId) })
     if (result) {
-      //console.log('result: ', result);
+
+      const RsameUsers = result.map((reply) => reply._user === userId);
+      console.log(RsameUsers);
 
       //let RsameUsers = false;
       //console.log('result[0]: ', result[0].r_rwriter);
       //if (userId === result[0].r_rwriter) RsameUsers = true;
       //console.log(postRId);
       //console.log(selectedRId);
-      let RsameUsers = false;
       
       // 사용자 프로필 이미지 반환
       const profileImgs = await Promise.all(
@@ -1946,9 +2023,6 @@ app.post("/postr_reply/:id/:rid", async (req, res) => {
   const { r_reply, /* isRSecret, */ r_rwriteDate, r_rwriter } = req.body;
   const { id, rid } = req.params;
 
-  console.log(rid);
-
-
   const post = await Write.findOne({ _id: id });
   if (!post) {
     return res.status(404).json({ message: "Post not found" });
@@ -1962,6 +2036,8 @@ app.post("/postr_reply/:id/:rid", async (req, res) => {
   const r_replycounter = await R_ReplyCounter.findOneAndUpdate({ name: '대댓글 수' }, { $inc: { totalR_Reply: 1 } }, { new: true, upsert: true });
   const 총대댓글수 = r_replycounter.totalR_Reply + 1;
 
+  const r_rwriterId = await User.findOne({ name: r_rwriter });
+
   if (!r_replycounter) {
     return res.status(500).json({ message: "Counter not found" });
   }
@@ -1971,6 +2047,7 @@ app.post("/postr_reply/:id/:rid", async (req, res) => {
       selectedRId : rid,
       _id: 총대댓글수 + 1, //댓글번호
       r_rwriter : r_rwriter,
+      _user: r_rwriterId._id,
       r_rwriteDate : r_rwriteDate,
       r_reply : r_reply,
       //isRSecret : isRSecret
