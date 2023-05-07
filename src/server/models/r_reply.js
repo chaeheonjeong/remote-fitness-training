@@ -10,6 +10,7 @@ const r_replySchema = new Schema(
     r_rwriteDate: { type: String, required: true },
     r_reply: { type: String, required: true }, // 대댓글
     isRSecret: { type: Boolean, default: false }, //대댓글비밀댓글 설정 여부
+    _user: {type: String, required: true}
   },
   { timestamps: true }
 

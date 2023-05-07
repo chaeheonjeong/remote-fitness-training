@@ -22,7 +22,6 @@ function A_View() {
   const [selectedAId, setSelectedAId] = useState();
   const [profileImg, setProfileImg] = useState(null);
   const navigate = useNavigate();
-  const [writerId, setWriterId] = useState(null);
 
   const passHandler = (userId) => {
     navigate(`/PortfolioView/${userId}`); 
@@ -53,7 +52,6 @@ function A_View() {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
-            setWriterId(response.data.result[0]._user);
             console.log(response.data);
           }
         })
@@ -546,7 +544,7 @@ setReplyModifyAInput(e.target.value);
                 {Areply.map((r) => (
                         
                   <tr className={styles.replyTitle} key={r._id}>
-                    <td key={r._id} onClick={() => AReplyProfileClick(r.userId)}>{r.Arwriter}</td>
+                    <td key={r._id} onClick={() => AReplyProfileClick(r._user)}>{r.Arwriter}</td>
                     <td>{r.isASecret ? "비밀댓글" : "공개댓글"}</td>
                     <td>{r.Areply}</td>
                     <td>{" "}
@@ -651,7 +649,7 @@ setReplyModifyAInput(e.target.value);
                               {Ar_reply.map((rr) => (
                                 <tbody>
                                   <tr>
-                                    <td key={rr._id} onClick={() => AR_ReplyProfileClick(rr.userId)}>{rr.Ar_rwriter}</td>
+                                    <td key={rr._id} onClick={() => AR_ReplyProfileClick(rr._user)}>{rr.Ar_rwriter}</td>
                                     <td>{rr.isARSecret ? "비밀대댓글" : "공개대댓글"}</td>
                                     <td>{rr.Ar_reply}</td>
                                     <td>{" "}{rr.Ar_rwriteDate !== undefined && formatDate(new Date(rr.Ar_rwriteDate))}</td>

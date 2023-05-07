@@ -975,9 +975,10 @@ app.delete("/view/:id/reply/:replyId", async(req, res) => {
 
 
 /// 댓글 작성
-app.post("/postreply/:id", async (req, res) => {
+app.post("/postreply/:id", auth, async (req, res) => {
   const { reply, isSecret, rwriter, rwriteDate } = req.body;
   const { id } = req.params;
+  const userId = req.user.id;
 
   const post = await Write.findOne({ _id: id });
   if (!post) {
@@ -997,7 +998,8 @@ app.post("/postreply/:id", async (req, res) => {
       rwriter: rwriter,
       rwriteDate : rwriteDate,
       reply : reply,
-      isSecret : isSecret
+      isSecret : isSecret,
+      _user: userId
     });
     await newReply.save();
     console.log(isSecret)
@@ -1035,7 +1037,7 @@ app.post("/postAreply/:id", auth, async (req, res) => {
       ArwriteDate : ArwriteDate,
       Areply : Areply,
       isASecret : isASecret,
-      userId : userId
+      _user : userId
     });
     await newAReply.save();
     console.log(isASecret)
@@ -1048,9 +1050,10 @@ app.post("/postAreply/:id", auth, async (req, res) => {
 
 
 /// 대댓글 작성
-app.post("/postr_reply/:id/:rid", async (req, res) => {
+app.post("/postr_reply/:id/:rid", auth, async (req, res) => {
   const { r_reply, isRSecret, r_rwriteDate, r_rwriter } = req.body;
   const { id, rid } = req.params;
+  const userId = req.user.id;
 
   console.log(rid);
 
@@ -1079,7 +1082,8 @@ app.post("/postr_reply/:id/:rid", async (req, res) => {
       r_rwriter : r_rwriter,
       r_rwriteDate : r_rwriteDate,
       r_reply : r_reply,
-      isRSecret : isRSecret
+      isRSecret : isRSecret,
+      _user: userId
     });
     await newR_Reply.save();
     console.log(isRSecret)
@@ -1124,7 +1128,7 @@ app.post("/postAr_reply/:id/:rid", auth, async (req, res) => {
       Ar_rwriteDate : Ar_rwriteDate,
       Ar_reply : Ar_reply,
       isARSecret : isARSecret,
-      userId : userId
+      _user : userId
     });
     await newAR_Reply.save();
     console.log(isARSecret)

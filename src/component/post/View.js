@@ -19,7 +19,6 @@ const View = () => {
   const [good, setGood] = useState(false);
   const [goodCount, setGoodCount] = useState(0);
   const [profileImg, setProfileImg] = useState(null);
-  const [writerId, setWriterId] = useState(null);
 
   const deleteHandler = () => {
     const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
@@ -33,8 +32,8 @@ const View = () => {
     }
   };
 
-  const passHandler = () => {
-    navigate(`/PortfolioView/${writerId}`);
+  const passHandler = (userId) => {
+    navigate(`/PortfolioView/${userId}`);
   }
 
   useEffect(() => {
@@ -48,7 +47,6 @@ const View = () => {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
-            setWriterId(response.data.result[0]._user);
             console.log(response.data);
             console.log(response.data.result[0]._user);
           }
@@ -64,7 +62,6 @@ const View = () => {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
-            setWriterId(response.data._user);
             console.log(response.data);
           }
         })
@@ -142,6 +139,17 @@ const View = () => {
   const [sameUsers, setSameUsers] = useState(false);
   const [postId, setPostId] = useState(); 
   const [replyInput, setReplyInput] = useState("");
+
+  const ReplyProfileClick = (userId) => {
+
+    navigate(`/PortfolioView/${userId}`);
+    
+  }
+
+  const R_ReplyProfileClick = (userId) => {
+    navigate(`/PortfolioView/${userId}`);
+    
+  }
 
 
   useEffect(() => {
@@ -322,8 +330,7 @@ const View = () => {
       // 새로운 댓글을 추가합니다.
       setReply([...reply, replyInput]);
       setReplyInput(""); // 댓글 입력창을 초기화합니다.
-
-      navigate("/");
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
@@ -560,7 +567,7 @@ const View = () => {
         
         </div>
           <div>작성자</div>
-          <div onClick={passHandler} 
+          <div onClick={() => {passHandler(write._user)}} 
           style={{ marginRight: "12.5rem" }}>
             {profileImg === null ? (
               <HiUserCircle
@@ -646,7 +653,7 @@ const View = () => {
               {reply.map((r) => (
               
               <tr className={styles.replyTitle} key={r._id}>
-                <td>{r.rwriter}</td>
+                <td key={r._id} onClick={() => ReplyProfileClick(r._user)} >{r.rwriter}</td>
                 <td>{r.isSecret ? "비밀댓글" : "공개댓글"}</td>
                 <td>{r.reply}</td>
                 <td>{" "}
@@ -722,7 +729,7 @@ const View = () => {
                           {r_reply.map((rr) => (
                           <tbody>
                             <tr>
-                              <td>{rr.r_rwriter}</td>
+                              <td key={rr._id} onClick={() => R_ReplyProfileClick(rr._user)} >{rr.r_rwriter}</td>
                               <td>{rr.isRSecret ? "비밀댓글" : "공개댓글"}</td>
                               <td>{rr.r_reply}</td>
                               <td>{" "}{rr.r_rwriteDate !== undefined && formatDate(new Date(rr.r_rwriteDate))}</td>
