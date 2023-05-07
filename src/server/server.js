@@ -1838,6 +1838,56 @@ app.get("/getAReply/:id", async (req, res) => {
   }
 });
 
+app.post("/askviewReplyARModify", async(req, res) => {
+  const { postRId, selectedARId, _id, Ar_rWriteDate, Ar_reply/* , isRSecret */ } = req.body;
+
+  console.log(postRId + selectedARId+ _id + Ar_rWriteDate + Ar_reply);
+  try {
+    const updatedViewAReplyRModify = await AR_Reply.findOneAndUpdate(
+      { postRId, selectedARId, _id },
+      {
+        $set: { Ar_rWriteDate, Ar_reply/* , isRSecret */ },
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: `Ar_reply ${_id} updated successfully`, updatedViewAReplyRModify });
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// Ask 대댓글 삭제
+app.delete("/postAr_reply/:id/:rid/:rrid", async (req, res) => {
+  const { id, rid, rrid } = req.params;
+  
+  const post = await Ask.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+  
+  const Areply = await AReply.findOne({ _id: rid });
+    if (!Areply) {
+  return res.status(404).json({ message: "Reply not found" });
+  }
+  
+  const Ar_reply = await AR_Reply.findOne({ _id: rrid });
+    if (!Ar_reply) {
+    return res.status(404).json({ message: "AR_Reply not found" });
+  }
+  
+  try {
+    await AR_Reply.deleteOne({ _id: rrid });
+  
+    return res.status(200).json({ message: `AR_Reply ${rrid} deleted successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
 /// 대댓글 작성
 app.post("/postAr_reply/:id/:rid", async (req, res) => {
   const { Ar_reply, /* isASecret, */ Ar_rwriter, Ar_rwriteDate } = req.body;
@@ -2067,14 +2117,15 @@ app.get("/view/:id/modify/:selectedRId/:rrid", async(req, res) => {
   const rrid = req.params.rrid;
 
   try {
-    const result = await R_Reply.find({ postRId: Number(postId), selectedRId: Number(selectedRId), _id: Number(rrid)  });
+    const result = await R_Reply.find({ postRId: Number(postId), selectedRId: Number(selectedRId), _id: Number(rrid) });
     console.log(result);
+
     if(result) {
       return res.status(200).json({
         result: result,
         message: `댓글 id 가져오기 성공`,
       });
-    }reply
+    }/* reply */
   } catch(error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
@@ -2284,6 +2335,28 @@ app.delete("/view/:id/reply/:replyId", async(req, res) => {
     res.status(500).json({ message: "댓글삭제 실패" });
   }
 });
+
+// 대댓글 내용 가져오기 Ask
+app.get("/askView/:id/modify/:selectedARId/:rrid", async(req, res) => {
+  const postId = req.params.id;
+  const selectedARId = req.params.selectedARId;
+  const rrid = req.params.rrid;
+
+  try {
+    const result = await AR_Reply.find({ postRId: Number(postId), selectedARId: Number(selectedARId), _id: Number(rrid) });
+    console.log(result);
+
+    if(result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    }
+  } catch(error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+})
 
 // 댓글 내용 가져오기 Ask
 app.get("/askView/:id/modify/:replyId", async(req, res) => {
