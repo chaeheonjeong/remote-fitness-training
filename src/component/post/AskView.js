@@ -449,6 +449,8 @@ function A_View() {
     console.log("댓글 번호는 : " , clickedAReplyId);
   };
 
+
+
   
 
   const fetchARGood = (clickedAReplyId) => {
@@ -459,9 +461,12 @@ function A_View() {
         })
         .then((response) => {
           if (response.status === 200) {
-            setARGood(response.data.ARgood);
+            console.log(response.data.ARgoodCount);
+            //console.log(response.data.ARgoodCount);
+            setARGood(true);
             setARGoodCount(response.data.ARgoodCount);
             console.log(response.data.message);
+            //console.log(response.data.ARgood);
             
             console.log("");
           } else if (response.status === 204) {
@@ -489,11 +494,10 @@ function A_View() {
     }
   };
 
-  const sortReplies = (replies) => {
-    return replies.sort((a, b) => b.ARgoodCount - a.ARgoodCount);
-  };
+  
+  
 
-  const fetchAReply = async () => {
+  /* const fetchAReply = async () => {
     try {
       const res = await axios.get(`http://localhost:8080/getAReply/${id}`, {
         headers: { Authorization: `Bearer ${user.token}` },
@@ -501,7 +505,7 @@ function A_View() {
   
       if (res.data !== undefined) {
         const sortedReplies = sortReplies(res.data.data);
-        setAReply(sortedReplies);
+        setAcurrentReplySorted(sortedReplies);
         setSameAUsers(res.data.sameAUsers);
         console.log(res.data.message);
         console.log(res.data.data);
@@ -511,6 +515,10 @@ function A_View() {
       console.error(err);
     }
   };
+
+  const sortReplies = (replies) => {
+    return replies.sort((a, b) => b.ARgoodCount - a.ARgoodCount);
+  }; */
 
 
    
@@ -523,11 +531,22 @@ function A_View() {
         })
         .then((response) => {
           if (response.status === 200) {
+            console.log("@### ", response);
             setARGood(!ARgood);
-            if (!ARgood) {
+           
+            /* if (!ARgood) {
               setARGoodCount((prevARCount) => prevARCount + 1);
             } else {
               setARGoodCount((prevARCount) => prevARCount - 1);
+            }  */
+            if (!ARgood) {
+              setARGoodCount((prevARCount) => {
+                return prevARCount + 1;
+              });
+            } else {
+              setARGoodCount((prevARCount) => {
+                return prevARCount - 1;
+              });
             }
           } 
         })
@@ -538,6 +557,7 @@ function A_View() {
       alert("로그인 해주세요.");
     }
   };
+
 
   /*const fetchARGood = () => {
     if (user.token !== null) {
@@ -695,7 +715,7 @@ function A_View() {
                 </tr>
               </thead>
               <tbody>
-                {AcurrentReplySorted.map((r) => (
+                {AcurrentReply.map((r) => (
                   <tr className={styles.replyTitle} key={r._id}>
                     <td>{r.Arwriter}</td>
 

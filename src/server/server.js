@@ -2224,12 +2224,12 @@ app.get("/getARGood/:clickedAReplyId", async (req, res) => {
       return res.status(404).json({ message: `댓글이 없습니다` });
     }*/
 
-
-
     const result = await AskARGood.findOne({ _id: req.params.clickedAReplyId });
     if (!result) {
       return res.status(404).json({ message: `좋아요가 없습니다` });
     }
+
+    console.log("get: ", result.ARgoodCount);
 
     const isUser = result._users.some((user) => user.user === userId);
     return res.status(200).json({
@@ -2298,6 +2298,7 @@ app.post("/setARGood/:clickedAReplyId", async (req, res) => {
     if (index > -1) {
       result._users.splice(index, 1);
       result.ARgoodCount--;
+      //console.log("sub: ", result.ARgoodCount);
       await result.save();
       return res.status(200).json({
         ARgoodCount: result.ARgoodCount,
@@ -2306,6 +2307,7 @@ app.post("/setARGood/:clickedAReplyId", async (req, res) => {
     } else {
       result._users.push({ user: userId, time: new Date() });
       result.ARgoodCount++;
+      //console.log("add: ", result.ARgoodCount);
       await result.save();
       return res.status(200).json({
         ARgoodCount: result.ARgoodCount,
