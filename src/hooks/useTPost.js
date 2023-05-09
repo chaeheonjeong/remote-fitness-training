@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import userStore from "../store/user.store";
 
-export default function useWrite() {
+export default function useTWrite() {
   const today = new Date();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -64,7 +64,6 @@ export default function useWrite() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (pCondition === "") alert("모집 인원을 입력해주세요.");
-    //else if (periodCondition === "") alert("진행 기간을 입력해주세요.");
     else if (startTime === "") alert("시작 시간을 입력해주세요.");
     else if (runningTime === "") alert("예상 진행시간을 입력해주세요.");
     else if (estimateAmount === "") alert("예상 금액을 입력해주세요");
@@ -74,7 +73,7 @@ export default function useWrite() {
     else if (user.token !== null) {
       try {
         const response = await axios.post(
-          "http://localhost:8080/postWrite",
+          "http://localhost:8080/postTWrite",
           {
             number: pCondition,
             /* period: periodCondition, */
@@ -107,7 +106,7 @@ export default function useWrite() {
       alert("내용을 작성해주세요.");
     else if (user.token !== null) {
       try {
-        const response = await axios.post("http://localhost:8080/postModify", {
+        const response = await axios.post("http://localhost:8080/postTModify", {
           _id: id,
           number: pCondition,
           /* period: periodCondition, */
@@ -121,7 +120,7 @@ export default function useWrite() {
           recruit: recruit,
         });
         alert("수정이 완료되었습니다.");
-        navigate(`/view/${id}`);
+        navigate(`/tView/${id}`);
       } catch (error) {
         console.log(error);
       }

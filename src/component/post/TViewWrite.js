@@ -10,10 +10,10 @@ import { HiUserCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import MyPAReviews from "../mypage/MyPAReviews";
 import response from "http-browserify/lib/response";
-import usePost from "../../hooks/usePost";
-import ViewReply from "./ViewReply";
+import usePost from "../../hooks/useTPost";
+import TViewReply from "./TViewReply";
 
-const ViewWrite = () => {
+const ViewTWrite = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const user = userStore();
@@ -32,7 +32,7 @@ const ViewWrite = () => {
       const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
       if (confirmDelete) {
         axios
-          .delete(`http://localhost:8080/writeDelete/${id}`)
+          .delete(`http://localhost:8080/writeTDelete/${id}`)
           .then((res) => {
             navigate("/study");
           })
@@ -43,7 +43,7 @@ const ViewWrite = () => {
     // 스크랩 수
     const getBookmarkCount = () => {
         axios
-        .get(`http://localhost:8080/getBookmarkCount/${id}`)
+        .get(`http://localhost:8080/getTBookmarkCount/${id}`)
         .then((res) => {
             if(res.status === 200) {
             setBookmarkCount(res.data.result.goodCount);
@@ -56,7 +56,7 @@ const ViewWrite = () => {
     useEffect(() => {
         if (user.token !== null) {
         axios
-            .get(`http://localhost:8080/getWrite/${id}`, {
+            .get(`http://localhost:8080/getTWrite/${id}`, {
             headers: { Authorization: `Bearer ${user.token}` },
             })
             .then((response) => {
@@ -72,7 +72,7 @@ const ViewWrite = () => {
             });
         } else {
         axios
-            .get(`http://localhost:8080/getWrite2/${id}`)
+            .get(`http://localhost:8080/getTWrite2/${id}`)
             .then((response) => {
             if (response.status === 200) {
                 setWrite(response.data.result[0]);
@@ -89,7 +89,7 @@ const ViewWrite = () => {
     useEffect(() => {
         const fetchWrite = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/getWrite/${id}`, {
+            const res = await axios.get(`http://localhost:8080/getTWrite/${id}`, {
             headers: { Authorization: `Bearer ${user.token}` },
             });
             if (res.data !== undefined) {
@@ -134,7 +134,7 @@ const ViewWrite = () => {
     const writerProfileClick = (writer, id) => {
         axios
         .post(
-            `http://localhost:8080/view/${id}/${writer}`,
+            `http://localhost:8080/tView/${id}/${writer}`,
             { id: id, writer: writer, postName: "view" }
         )
         .then((response) => {
@@ -147,7 +147,6 @@ const ViewWrite = () => {
             console.log(error);
         })
     }
-
 
 
     return(
@@ -177,7 +176,7 @@ const ViewWrite = () => {
                         type="button"
                         value="수정"
                         onClick={() => {
-                        navigate(`/modifyPost/${id}`);
+                        navigate(`/modifyTPost/${id}`);
                         }}
                     />
                     </div>
@@ -201,9 +200,9 @@ const ViewWrite = () => {
                         className={styles.profile}
                         src={profileImg}
                         alt="프로필 이미지"
-                        onClick={() => {
+                        /* onClick={() => {
                             writerProfileClick(write.writer, id);
-                        }}
+                        }} */
                         />
                     )}
                     {write.writer}
@@ -249,11 +248,11 @@ const ViewWrite = () => {
                 <span>조회수{write.views}</span>
             </div>
 
-            <ViewReply
+            <TViewReply
                 write = {write}
                 setWrite = {setWrite}
             />
         </>
     );
 }
-export default ViewWrite;
+export default ViewTWrite;

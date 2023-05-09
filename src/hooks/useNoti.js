@@ -1,13 +1,37 @@
 import { useEffect, useState } from "react";
-import { noti } from "../util/dummy";
+//import { noti } from "../util/dummy";
+import axios from "axios";
+import userStore from "../store/user.store";
 
 export default function useNoti() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [rendData, setRendData] = useState([]);
   const perPage = 5;
-  const notiData = noti;
+  const [notiData, setNotiData] = useState([]);
+  //const notiData = noti;
   const [readComm, setReadComm] = useState(false);
+
+  const user = userStore();
+  
+  const getNotiData = async () => {
+    try {
+      const res = await axios
+        .get(`http://localhost:8080/getAlarm`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        if(res.data !== undefined) {
+          setNotiData(res.data.data[0]);
+        }
+    } catch(error) {
+      console.log(error);
+    }
+  } 
+  useEffect(() => {
+    getNotiData();
+  }, []);
+
+
 
   const nextPage = () => {
     if (currentPage < totalPage) setCurrentPage(currentPage + 1);
@@ -17,14 +41,45 @@ export default function useNoti() {
   };
 
   useEffect(() => {
-    setTotalPage(Math.ceil(notiData.length / perPage));
-    setCurrentPage(1);
+    if(notiData && notiData.content) {
+      console.log("@@: ", notiData);
+      setTotalPage(Math.ceil(notiData.content.length / perPage));
+      setCurrentPage(1);
+    }
   }, [notiData]);
 
   useEffect(() => {
-    const arr = noti.slice((currentPage - 1) * perPage, perPage * currentPage);
-    setRendData(arr);
+    if(notiData && notiData.content) {
+      const arr = notiData.content.slice((currentPage - 1) * perPage, perPage * currentPage);
+      console.log(arr);
+      setRendData(arr);
+    } else {
+      console.log("알림이없습니다.");
+      setRendData(null);
+    }
   }, [currentPage, notiData]);
+
+  const handleReadComm = async (id) => {
+    console.log('id: ', id);
+    try {
+      const res = await axios.patch(
+        `http://localhost:8080/updateAlarm/${id}`,
+        {
+          read: true,
+        },
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
+      
+      if(res.data.success) {
+        setReadComm(!readComm);
+        console.log('성공', id);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   
   return {
     currentPage,
@@ -34,6 +89,7 @@ export default function useNoti() {
     beforePage,
     rendData,
     readComm,
-    setReadComm
+    setReadComm,
+    handleReadComm
   };
 }

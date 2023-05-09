@@ -1,4 +1,4 @@
-import usePost from "../../hooks/usePost";
+import useTPost from "../../hooks/useTPost";
 import styles from "./Write.module.css";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -6,9 +6,9 @@ import Header from "../main/Header";
 import axios from "axios";
 import { useState } from "react";
 
-const Write = () => {
+const TWrite = () => {
   const [flag, setFlag] = useState(false);
-  const hook = usePost();
+  const hook = useTPost();
 
   const imgLink = "http://localhost:8080/images";
 
@@ -260,4 +260,4 @@ const Write = () => {
   );
 };
 
-export default Write;
+export default TWrite;
