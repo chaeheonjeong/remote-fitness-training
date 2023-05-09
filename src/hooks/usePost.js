@@ -9,6 +9,9 @@ export default function useWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [runningTime, setRunningTime] = useState("");
+  const [estimateAmount, setEstimateAmount] = useState("");
   const [htmlString, setHtmlString] = useState();
   const [sameUser, setSameUser] = useState(false);
   const [tags, setTags] = useState([]);
@@ -48,7 +51,10 @@ export default function useWrite() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (pCondition === "") alert("모집 인원을 입력해주세요.");
-    else if (periodCondition === "") alert("진행 기간을 입력해주세요.");
+    //else if (periodCondition === "") alert("진행 기간을 입력해주세요.");
+    else if (startTime === "") alert("시작 시간을 입력해주세요.");
+    else if (runningTime === "") alert("예상 진행시간을 입력해주세요.");
+    else if (estimateAmount === "") alert("예상 금액을 입력해주세요");
     else if (date === "") alert("시작 예정일을 입력해주세요.");
     else if (title === "") alert("제목을 작성해주세요.");
     else if (content === "") alert("내용을 작성해주세요.");
@@ -58,8 +64,11 @@ export default function useWrite() {
           "http://localhost:8080/postWrite",
           {
             number: pCondition,
-            period: periodCondition,
+            /* period: periodCondition, */
             date: String(date),
+            startTime: startTime,
+            runningTime: runningTime,
+            estimateAmount: estimateAmount,
             tag: tags,
             title: title,
             content: JSON.parse(JSON.stringify(content)),
@@ -88,8 +97,11 @@ export default function useWrite() {
         const response = await axios.post("http://localhost:8080/postModify", {
           _id: id,
           number: pCondition,
-          period: periodCondition,
+          /* period: periodCondition, */
           date: String(date),
+          startTime: startTime,
+          runningTime: runningTime,
+          estimateAmount: estimateAmount,
           tag: tags,
           title: title,
           content: JSON.parse(JSON.stringify(content)),
@@ -121,6 +133,12 @@ export default function useWrite() {
     setPeriodCondition,
     date,
     setDate,
+    startTime,
+    setStartTime,
+    runningTime,
+    setRunningTime,
+    estimateAmount,
+    setEstimateAmount,
     handleKeyPress,
     tags,
     setTags,

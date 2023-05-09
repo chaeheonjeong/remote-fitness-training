@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const askARGoodSchema = new Schema(
   {
     _id: { type: String, required: true },
-    //clickedAReplyId : { type: Number, required: true },
+   
     _users: { type: [Object], required: false },
     ARgoodCount: { type: Number, required: true },
   },

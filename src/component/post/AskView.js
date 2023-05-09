@@ -8,15 +8,16 @@ import userStore from "../../store/user.store";
 import { useParams } from "react-router-dom";
 import Reply from '../../server/models/reply';
 import { HiUserCircle } from "react-icons/hi";
+import AskARGood from '../../server/models/askARGood';
+import AReply from '../../server/models/Areply';
 
 function A_View() {
-  const [sameUsers, setSameUsers] = useState(false);
+  const [sameUser, setSameUser] = useState(false);
   const { id } = useParams();
   const user = userStore();    
   const [write, setWrite] = useState([]);
 
   const [htmlString, setHtmlString] = useState();
-  const [sameUser, setSameUser] = useState(false);
   const [good, setGood] = useState(false);
   const [goodCount, setGoodCount] = useState(0);
   const [selectedAId, setSelectedAId] = useState();
@@ -433,11 +434,11 @@ function A_View() {
     );
   });
 
-
   const [ARgood, setARGood] = useState([]);
   const [ARgoodCount, setARGoodCount] = useState([]);
   const [clickedAReplyId, setClickedAReplyId] = useState(null); // 초기값은 null로 설정
   const [clickedAReplyLiked, setClickedAReplyLiked] = useState(false);
+  const [AcurrentReplySorted, setAcurrentReplySorted] = useState([]); // 추가
 
   const handleAReplyClick = (clickedAReplyId) => {
     setClickedAReplyId(clickedAReplyId);
@@ -447,6 +448,8 @@ function A_View() {
     console.log("글 번호는 : " , id);
     console.log("댓글 번호는 : " , clickedAReplyId);
   };
+
+  
 
   const fetchARGood = (clickedAReplyId) => {
     if (user.token !== null) {
@@ -485,6 +488,31 @@ function A_View() {
         });
     }
   };
+
+  const sortReplies = (replies) => {
+    return replies.sort((a, b) => b.ARgoodCount - a.ARgoodCount);
+  };
+
+  const fetchAReply = async () => {
+    try {
+      const res = await axios.get(`http://localhost:8080/getAReply/${id}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+  
+      if (res.data !== undefined) {
+        const sortedReplies = sortReplies(res.data.data);
+        setAReply(sortedReplies);
+        setSameAUsers(res.data.sameAUsers);
+        console.log(res.data.message);
+        console.log(res.data.data);
+      }
+      console.log(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
    
 
   const clickARGood = (clickedAReplyId) => {
@@ -510,6 +538,49 @@ function A_View() {
       alert("로그인 해주세요.");
     }
   };
+
+  /*const fetchARGood = () => {
+    if (user.token !== null) {
+      axios
+        .get(`http://localhost:8080/getARGood/${clickedAReplyId}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setARGood(response.data.ARgood);
+            setARGoodCount(response.data.ARgoodCount);
+            console.log(response.data.message);
+  
+            
+                
+            console.log("");
+          } else if (response.status === 204) {
+            setARGood(false);
+            setARGoodCount(0);
+            // 좋아요가 가장 많은 댓글이 없을 경우 null 값을 상태로 업데이트
+            setTopAReply(null);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .get(`http://localhost:8080/getARGood2/${clickedAReplyId}`)
+        .then((response) => {
+          if (response.status === 200) {
+            setARGoodCount(response.data.ARcount || 0);
+          } else if (response.status === 204) {
+            setARGood(false);
+            setARGoodCount(0);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };*/
+  
 
   return (
     <>
@@ -624,14 +695,15 @@ function A_View() {
                 </tr>
               </thead>
               <tbody>
-                {AcurrentReply.map((r) => (
+                {AcurrentReplySorted.map((r) => (
                   <tr className={styles.replyTitle} key={r._id}>
                     <td>{r.Arwriter}</td>
 
                     <td><span onClick={() => {handleAReplyClick(r._id)}}
                       className={r._id === clickedAReplyId && ARgood ? styles.ARgoodBtn : null}>
-                      좋아요 {r._id !== clickedAReplyId ? '' : ARgoodCount}
+                      👍 {r._id !== clickedAReplyId ? '' : ARgoodCount}
                     </span></td>
+                    
 
                     <td>{r.Areply}</td>
                     <td>{" "}

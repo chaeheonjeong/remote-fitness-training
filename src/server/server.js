@@ -9,9 +9,11 @@ const R_Reply = require("./models/r_reply");
 const Counter = require("./models/counter");
 const ReplyCounter = require("./models/replycounter");
 const R_ReplyCounter = require("./models/r_replycounter");
+const SelectionInfo = require("./models/selectionInfo");
 
 const ALikes = require("./models/ALikes");
-
+const Alarm = require("./models/alarm");
+const Portfolio = require("./models/portfolio");
 const AReply = require("./models/Areply");
 const AR_Reply = require("./models/Ar_reply");
 const AReplyCounter = require("./models/Areplycounter");
@@ -853,6 +855,7 @@ app.get("/getWrite/:id", async (req, res) => {
       if (user.image) {
         profileImg = user.image;
       }
+      //console.log(user);
 
       return res.status(200).json({
         result: result,
@@ -924,9 +927,9 @@ app.get("/getAsk/:id", async (req, res) => {
 
       let profileImg = null;
       const user = await User.findOne({ _id: result[0]._user });
-      if (user.image) {
+/*       if (user.image) {
         profileImg = user.image;
-      }
+      } */
 
       return res.status(200).json({
         result: result,
@@ -2093,6 +2096,118 @@ app.delete("/askView/:id/reply/:replyId", async(req, res) => {
   }
 });
 
+// 댓글 작성자
+app.get("/getRWriter/:id/:nickname", async (req, res) => {
+  try {
+    const reply = await Reply.find({ postId: req.params.id });
+    const r_reply = await R_Reply.find({ postId: req.params.id });
+
+    const user = await User.findOne({ name: req.params.nickname });
+
+    const myName = req.params.nickname;
+    var result = [];
+
+    console.log("내 이름은 ", myName);
+
+    // 해당 글의 댓글작성자 list
+    /* const replyWriterList = reply.map(r => r.writer);
+    const rReplyWriterList = r_reply.map(r => r.r_rwriter);
+    const rWriters = [...new Set([...replyWriterList, ...rReplyWriterList])]; */
+
+    const rWriters = [...new Set([...reply.map(r => r.rwriter), ...r_reply.map(r => r.r_rwriter)])];
+
+    console.log("나 포함 ", rWriters);
+
+    result = rWriters.filter((rWriter) => rWriter !== myName && !result.includes(rWriter));
+
+    console.log("나 제외 ", result);
+
+    return res.status(200).json({
+      data: result,
+      message: `댓글 작성자 가져오기 성공`,
+    })
+
+
+  } catch(error) {
+    console.log(error);
+  }
+})
+
+// 채택정보 (방장이름, 수강생, 방제목, 예상시작시간)
+app.post("/selectionInfo", async (req, res) => {
+  const { host, applicant, roomTitle, startTime } = req.body;
+
+  try {
+    const newSelectionInfo = new SelectionInfo({
+      host: host,
+      applicant: applicant,
+      roomTitle: roomTitle,
+      startTime: startTime,
+    });
+    await newSelectionInfo.save();
+
+    return res.status(200).json({ message: `created successfully` });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+})
+
+app.get("/users/:id/profileImage", async(req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if(!user) {
+      return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
+    }
+    const profileImage = user.image;
+    res.status(200).json({ profileImage });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+// 채택된 사람들에게 방 생성되었다는 알림
+app.post("/selectedAlarm", async (req, res) => {
+  try {
+    const { selectedStudent,roomTitle } = req.body;
+
+    //const alarms = await Alarm.find({ userName: { $in: selectedStudent } });
+    
+    for(const student of selectedStudent) {
+      const userId = await User.findOne({ userName: student });
+      const alarm = await Alarm.findOneAndUpdate(
+        { userName: student },
+        { 
+          $push: {
+              //userName: student,
+              content: {
+                $each: [{ 
+                  title: "새로운 방이 생성되었습니다",
+                  message: `${roomTitle} 방이 생성되었습니다.`, 
+                  createdAt: new Date(),
+                  _id: new mongoose.mongo.ObjectId(),
+                }],
+              },
+             },
+            $setOnInsert: {
+              userName: student,
+              _user: userId
+            }
+          },
+        { upsert: true, new: true }
+      );
+      console.log(alarm);
+    }
+    
+    res.status(200).send('Alarm created successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+
 //댓글 좋아요
 app.get("/getARGood/:clickedAReplyId", async (req, res) => {
   try {
@@ -2108,6 +2223,8 @@ app.get("/getARGood/:clickedAReplyId", async (req, res) => {
     if (!reply) {
       return res.status(404).json({ message: `댓글이 없습니다` });
     }*/
+
+
 
     const result = await AskARGood.findOne({ _id: req.params.clickedAReplyId });
     if (!result) {
@@ -2159,6 +2276,11 @@ app.post("/setARGood/:clickedAReplyId", async (req, res) => {
     const decodedToken = jwt.verify(token, mysecretkey);
     const userId = decodedToken.id;
 
+    // 새로운 코드 추가
+    //const result2 = await AskARGood.find().sort({ ARgoodCount: -1 }).limit(1);
+    //const topARId = result2[0]._id;
+    //const topAReply = await AReply.findById(topARId);
+
     const result = await AskARGood.findOne({ _id: clickedAReplyId });
     if (!result) {
       const newDoc = new AskARGood({
@@ -2190,58 +2312,45 @@ app.post("/setARGood/:clickedAReplyId", async (req, res) => {
         message: `좋아요가 추가되었습니다`,
       });
     }
+    
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 });
 
-// 좋아요 수 업데이트 API
-app.put('/updateALikes/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { likes } = req.body;
-    const result = await AReply.findByIdAndUpdate(id, { likes });
-    return res.status(200).json({ message: '댓글 좋아요 수 업데이트 성공', data: result });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server Error' });
-  }
-});
-
-// 댓글 목록 API에서 좋아요 수 반환 추가
-app.get("/getAReply/:id", async (req, res) => {
+app.get("/getAlarm", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.split(" ")[1];
   const decodedToken = jwt.verify(token, mysecretkey);
   const userId = decodedToken.id;
 
   try {
-    const result = await AReply.find({ postId: req.params.id})
+    const result = await Alarm.find({ _user: String(userId) });
 
-    if (result) {
-      let sameAUsers = false;
-      //if (userId === result[0]._user) sameAUsers = true;
-      console.log(req.params.postId);
-      // 좋아요 수를 반환하는 코드 추가
-      const repliesWithLikes = await Promise.all(result.map(async reply => {
-        const likes = await ALikes.countDocuments({ replyId: reply._id });
-        return { ...reply.toObject(), likes };
-      }));
+    console.log("userid는", userId);
+    console.log(result);
+
+    console.log(result[0].userName);
+
+    if(result) {
+      console.log(result);
       return res.status(200).json({
-        data: repliesWithLikes,
-        sameAUsers: sameAUsers,
-        message: ` ${typeof req.params.postId}댓글 가져오기 성공`,
-      });
-    } 
-    else {
-      return res.status(404).json({ message: "댓글이 존재하지 않습니다." });
+        data: result,
+        message: `알림 가져오기 성공`
+      })
     }
-  } catch (error) {
+    else {
+      return res.status(404).json({ message: "알림이 존재하지 않습니다." });
+    }
+
+  } catch(error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+
 
 
 app.get("/header-profile", async (req, res) => {

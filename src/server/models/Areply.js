@@ -9,7 +9,6 @@ const AreplySchema = new Schema(
     ArwriteDate: { type: String, required: true },
     Areply: { type: String, required: true },
     isASecret: { type: Boolean, default: false },
-    likes: { type: Number, default: 0 },
   },
 );
 

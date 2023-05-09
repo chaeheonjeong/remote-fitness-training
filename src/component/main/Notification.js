@@ -5,27 +5,8 @@ import { useState } from "react";
 import useNoti from "../../hooks/useNoti";
 import Paginator from "../common/Paginator";
 
-
 const Notification = () => {
   const hook = useNoti();
-
-   // 알림 보내는 함수
-   const sendNotification = (toUser) => {
-    Notification.presentLocalNotificationAsync({
-      title: '새로운 댓글이 달렸어요!',
-      body: '댓글 내용',
-      ios: {
-        sound: true,
-      },
-      android: {
-        sound: true,
-        vibrate: true,
-      },
-      to: toUser, // 알림을 받을 사용자의 정보
-    });
-  };
-
-  
 
   return (
     <div>

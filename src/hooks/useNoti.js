@@ -1,13 +1,37 @@
 import { useEffect, useState } from "react";
-import { noti } from "../util/dummy";
+//import { noti } from "../util/dummy";
+import axios from "axios";
+import userStore from "../store/user.store";
 
 export default function useNoti() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [rendData, setRendData] = useState([]);
   const perPage = 5;
-  const notiData = noti;
+  const [notiData, setNotiData] = useState([]);
+  //const notiData = noti;
   const [readComm, setReadComm] = useState(false);
+
+  const user = userStore();
+  
+  const getNotiData = async () => {
+    try {
+      const res = await axios
+        .get(`http://localhost:8080/getAlarm`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        if(res.data !== undefined) {
+          setNotiData(res.data.data);
+
+          console.log(res.data.data);
+        }
+    } catch(error) {
+      console.log(error);
+    }
+  } 
+  useEffect(() => {
+    getNotiData();
+  }, []);
 
   const nextPage = () => {
     if (currentPage < totalPage) setCurrentPage(currentPage + 1);
@@ -22,7 +46,7 @@ export default function useNoti() {
   }, [notiData]);
 
   useEffect(() => {
-    const arr = noti.slice((currentPage - 1) * perPage, perPage * currentPage);
+    const arr = notiData.slice((currentPage - 1) * perPage, perPage * currentPage);
     setRendData(arr);
   }, [currentPage, notiData]);
   
