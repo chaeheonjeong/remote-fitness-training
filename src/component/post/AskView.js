@@ -162,8 +162,6 @@ function A_View() {
   const [showAReplyModifyInput, setShowModifyAReplyInput] = useState(false);
   const [Areply, setAReply] = useState([]);
 
-  const [NARgood, setNARgood] = useState([]);
-  const [NARgoodCount, setNARgoodCount] = useState([]);
   
   const [isASecret, setIsASecret] = useState(false); // 비밀댓글 여부
   const [sameAUsers, setSameAUsers] = useState(false);
@@ -878,9 +876,9 @@ function A_View() {
               </tbody>
             </table>
             <div className={styles.pagination}>
-            <ul className={styles.pageNumbers}>
-              {renderAPageNumbers}
-            </ul>
+              <ul className={styles.pageNumbers}>
+                {renderAPageNumbers}
+              </ul>
           </div>
           </div>
         </div>

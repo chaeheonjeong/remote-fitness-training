@@ -34,16 +34,29 @@ export default function useWrite() {
   };
 
   function handleKeyPress(e) {
-    if (e.key === "Enter") {
+    if (
+      e.code === "Enter" || 
+      e.code === "Comma" || 
+      e.code === "Space"
+    ) {
       const newTag = e.target.value.trim();
 
-      if (tags.length < 5) {
-        if (newTag !== "") {
-          setTags([...tags, newTag]);
-          e.target.value = "";
-        }
+      if (tags.includes(newTag)) {
+        alert("중복되는 태그가 있습니다");
+        e.target.value = "";
+        e.preventDefault();
       } else {
-        alert("태그는 최대 5개까지 가능합니다.");
+        if (tags.length < 5) {
+          if (newTag !== "") {
+            setTags([...tags, newTag]);
+            e.target.value = "";
+            e.preventDefault();
+          }
+        } else {
+          alert("태그는 최대 5개까지 가능합니다.");
+          e.target.value = "";
+          e.preventDefault();
+        }
       }
     }
   }

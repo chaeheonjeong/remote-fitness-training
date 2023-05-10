@@ -24,6 +24,11 @@ const View = () => {
   const [good, setGood] = useState(false);
   const [bookmarkCount, setBookmarkCount] = useState(0);
   const [profileImg, setProfileImg] = useState(null);
+
+
+  const [reply, setReply] = useState([]);
+  const [pImg, setPImg] = useState([]);
+  const [rPImg, setRPImg] = useState([]);
   
   const hook = usePost();
 
@@ -38,6 +43,32 @@ const View = () => {
         .catch((err) => console.log(err));
     }
   };
+
+   //댓글 페이지네이션
+   const [currentPage, setCurrentPage] = useState(1);
+   const [perPage] = useState(5);
+ 
+   // 현재 페이지에 보여질 댓글들 추출
+   const startIndex = (currentPage - 1) * perPage;
+   const endIndex = startIndex + perPage;
+   const currentReply = reply.slice(startIndex, endIndex);
+ 
+   // 페이지네이션 컴포넌트
+   const totalPages = Math.ceil(reply.length / perPage);
+   const pageNumbers = [];
+   for (let i = 1; i <= totalPages; i++) {
+     pageNumbers.push(i);
+   }
+ 
+   const renderPageNumbers = pageNumbers.map(number => {
+     return (
+       <li key={number}>
+         <button onClick={() => setCurrentPage(number)}>
+           {number}
+         </button>
+       </li>
+     );
+   });
 
 
   // 스크랩 수
@@ -142,15 +173,7 @@ const View = () => {
     setShowReplyList(false);
   };
 
-  
 
-
-  //---------------------------------
-
-
-  const [reply, setReply] = useState([]);
-  const [pImg, setPImg] = useState([]);
-  const [rPImg, setRPImg] = useState([]);
   
   //const [isSecret, setIsSecret] = useState(false); // 비밀댓글 여부
   const [sameUsers, setSameUsers] = useState(false);
@@ -158,72 +181,9 @@ const View = () => {
   const [replyInput, setReplyInput] = useState("");
 
 
-/*   useEffect(() => {
-    if (user.token !== null) {
-      axios
-        .get(`http://localhost:8080/getGoodPost/${id}`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setGood(response.data.good);
-            setGoodCount(response.data.count);
-            console.log(response.data.message);
-          } else if (response.status === 204) {
-            setGood(false);
-            setGoodCount(0);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      axios
-        .get(`http://localhost:8080/getGoodPost2/${id}`)
-        .then((response) => {
-          if (response.status === 200) {
-            setGoodCount(response.data.count);
-          } else if (response.status === 204) {
-            setGood(false);
-            setGoodCount(0);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, []); */
-
   useEffect(() => {
     scrollToTop();
   }, []);
-
-/*   const clickGood = () => {
-    if (user.token !== null) {
-      axios
-        .post(`http://localhost:8080/setGoodPost/${id}`, null, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setGood(!good);
-            if (!good) {
-              setGoodCount((prevCount) => prevCount + 1);
-            } else {
-              setGoodCount((prevCount) => prevCount - 1);
-            }
-          } else if (response.status === 201) {
-            setGood(!good);
-            setGoodCount(1);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      alert("로그인 해주세요.");
-    }
-  }; */
 
   useEffect(() => {
     const fetchReply = async () => {
@@ -263,27 +223,6 @@ const View = () => {
   const [postRId, setPostRId] = useState(); 
 
 
-  /* useEffect(() => {
-    const fetchR_Reply = async () => {
-      try {
-        const res = await axios.get(`http://localhost:8080/getR_Reply/${id}`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        if (res.data !== undefined) {
-          setR_Reply(res.data.data);
-          setRSameUsers(res.data.RsameUsers);
-          console.log(res.data.message);
-          console.log(res.data.data);
-        }console.log('here: ', res.data.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    
-    fetchR_Reply();
- 
-  }, []); */
-  
 
   const fetchR_Reply = async (rid) => {
     try {
@@ -605,6 +544,7 @@ const View = () => {
           {sameUser && (
             <div className={styles.content_4_b}>
               <input
+                  className={styles.dd}
                   type="button"
                   value="삭제"
                   onClick={() => {
@@ -612,6 +552,7 @@ const View = () => {
                   }}
                 />
               <input
+                className={styles.mm}
                 type="button"
                 value="수정"
                 onClick={() => {
@@ -627,7 +568,7 @@ const View = () => {
         </div>
         <div className={styles.content_2}>
             <div>작성자</div>
-            <div style={{ marginRight: "12.5rem" }}>
+            <div className={styles.profile1} style={{ marginRight: "12.5rem" }}>
               {profileImg === null ? (
                 <HiUserCircle
                   size="40"
@@ -653,56 +594,63 @@ const View = () => {
             </div>
         </div>
         </div>
-        <div className={styles.content_5}>
-          <div style={{ marginRight: "1rem" }}>모집인원</div>
-          <div style={{ marginRight: "15rem" }}>{write.number}</div>
-
-          <div style={{ marginRight: "1rem" }}> 시작 예정일</div>
-          <div style={{ marginRight: "15rem" }}>{write.date}</div>
+        <div className={styles.content5_all}>
+          <div className={styles.content_5}>
           
-          <div style={{ marginRight: "1rem" }}> 시작 시간</div>
-          <div>{write.startTime}</div>
-        </div>
-        <div className={styles.content_5a}>
-          {/* <div style={{ marginRight: "1rem" }}>진행기간</div>
-          <div style={{ marginRight: "14rem" }}>{write.period}</div> */}
-          <div style={{ marginRight: "1rem" }}>예상 진행시간</div>
-          <div style={{ marginRight: "14rem" }}>{write.runningTime}</div>
+            <div style={{ marginRight: "1rem" }}>모집인원</div>
+            <div className={styles.css1} style={{ marginRight: "15rem" }}>{write.number}</div>
 
-          <div style={{ marginRight: "1rem" }}>예상 금액</div>
-          <div style={{ marginRight: "14rem" }}>{write.estimateAmount}</div>
-
-          <div>태그</div>
-          <div>
-                {write.tag !== undefined &&
-                write.tag.map((x, i) => {
-                  return <span key={x + i}>{x}</span>;
-                })}
-            </div>
+            <div style={{ marginRight: "1rem" }}> 시작 예정일</div>
+            <div className={styles.css2} style= {{ marginRight: "15rem" }}>{write.date}</div>
+            
+            <div style={{ marginRight: "1rem" }}> 시작 시간</div>
+            <div className={styles.css3}>{write.startTime}</div>
           </div>
+          <div className={styles.content_5a}>
+            {/* <div style={{ marginRight: "1rem" }}>진행기간</div>
+            <div style={{ marginRight: "14rem" }}>{write.period}</div> */}
+            <div style={{ marginRight: "1rem" }}>예상 진행시간</div>
+            <div className={styles.css4} style={{ marginRight: "14rem" }}>{write.runningTime}</div>
+
+            <div style={{ marginRight: "1rem" }}>예상 금액</div>
+            <div className={styles.css5} style={{ marginRight: "14rem" }}>{write.estimateAmount}</div>
+
+            <div style={{ marginRight: "1rem" }}>태그</div>
+            <div className={styles.css6}>
+                  {write.tag !== undefined &&
+                  write.tag.map((x, i) => {
+                    return <span key={x + i}>{x}</span>;
+                  })}
+              </div>
+            </div>
             <div className={styles.content_3}>
-            <div>내용</div>
-            <div dangerouslySetInnerHTML={{ __html: htmlString }} />
-            <span /* onClick={clickGood} */ className={good ? styles.goodBtn : null}>
-              스크랩{bookmarkCount}
-            </span>
-            <span>조회수{write.views}</span>
-          </div>
-        {/* 댓글 입력 폼 */}
-        <form onSubmit={handleSubmit}>
-          <div className={styles.content_6}>
-            <input
-              type="text"
-              className={styles.reply_input}
-              placeholder="댓글 내용을 입력해주세요."
-              value={replyInput}
-              onChange={replyInputChangeHandler}
-            />
-            <div className={styles.reply_choose}>        
-              <input type="submit" className={styles.sbtn} value="등록"></input>
+              <div dangerouslySetInnerHTML={{ __html: htmlString }} />
+              <div className={styles.goodch}>
+                <span /* onClick={clickGood} */ className={good ? styles.goodBtn : null}>
+                  스크랩{bookmarkCount} 
+                </span>
+                <span> </span>
+                <span>조회수{write.views}</span>
+              </div>
+              
             </div>
-          </div>
-        </form>
+          {/* 댓글 입력 폼 */}
+          <form onSubmit={handleSubmit}>
+            <div className={styles.content_6}>
+              <input
+                type="text"
+                className={styles.reply_input}
+                placeholder="댓글 내용을 입력해주세요."
+                value={replyInput}
+                onChange={replyInputChangeHandler}
+              />
+              <div className={styles.reply_choose}>        
+                <input type="submit" className={styles.sbtn} value="등록"></input>
+              </div>
+            </div>
+          </form>
+        </div>
+        
         
 
         <div className={styles.rr_reply}>
@@ -717,7 +665,7 @@ const View = () => {
               </tr>
             </thead>
             <tbody>
-              {reply.map((r, index) => (
+              {currentReply.map((r, index) => (
               
               <tr className={styles.replyTitle} key={r._id}>
                 <td>
@@ -794,7 +742,7 @@ const View = () => {
 
                 <td>
                   {!showReplyInput && (
-                    <button onClick={() => {
+                    <button className={styles.asdf}onClick={() => {
                       setShowReplyInput(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
                     }}>대댓글 추가</button>
@@ -813,15 +761,15 @@ const View = () => {
                           <div className={styles.reply_choose}>
                             {/* <input type="checkbox" checked={isRSecret} className={styles.secret} onChange={(e) => setIsRSecret(e.target.checked)}></input>
                             <text className={styles.rc1}>비밀 대댓글</text> */}
-                            <input type="submit" value="대댓글 등록"></input>
-                            <button onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
+                            <input className={styles.asdf2} type="submit" value="대댓글 등록"></input>
+                            <button className={styles.asdf2} onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
                           </div>
                         </div>
                     </form>
                 
                   )}
                   {!showReplyList && (
-                    <button onClick={() => {
+                    <button className={styles.asdf} onClick={() => {
                       setShowReplyList(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
                       fetchR_Reply(r._id);
@@ -829,7 +777,7 @@ const View = () => {
                   )}
                   <div>
                     {showReplyList && (
-                      <button onClick={() => {
+                      <button className={styles.asdf} onClick={() => {
                         setShowReplyList(selectedRId === r._id ? null : r._id);
                         setSelectedRId(selectedRId === r._id ? null : r._id);
                         fetchR_Reply(r._id);
@@ -888,6 +836,7 @@ const View = () => {
                                 <td>
                                   <input type="button" className={styles.rrdbtn} value="삭제" onClick={() => handleRDelete(rr._id)}></input>
                                   <input 
+  
                                     type="button" 
                                     className={styles.rrmbtn} 
                                     value="수정" 
@@ -910,8 +859,8 @@ const View = () => {
                                           <div className={styles.reply_choose}>
                                             {/* <input type="checkbox" checked={isRSecret} className={styles.secret} onChange={(e) => setIsRSecret(e.target.checked)}></input>
                                             <text className={styles.rc1}>비밀 대댓글</text> */}
-                                            <input type="submit" value="대댓글수정"></input>
-                                            <button onClick={() => {setShowRModifyReplyInput(null); setSelectedRId(null);}}>대댓글수정 취소</button>
+                                            <input className={styles.asdf} type="submit" value="대댓글수정"></input>
+                                            <button className={styles.asdf} onClick={() => {setShowRModifyReplyInput(null); setSelectedRId(null);}}>대댓글수정 취소</button>
                                           </div>
                                         </div>
                                     </form>
@@ -933,7 +882,12 @@ const View = () => {
             
             </tbody>
           </table>
-        </div>
+          <div className={styles.pagination}>
+            <ul className={styles.pageNumbers}>
+              {renderPageNumbers}
+            </ul>
+          </div>
+      </div>
     </>
   );
 }
