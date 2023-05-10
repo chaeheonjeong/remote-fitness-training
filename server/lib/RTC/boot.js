@@ -67,7 +67,19 @@ function boot() {
     });
 
     socket.on("toggle_mic", (data) => {
-      socket.to(data.room).emit("mute", {id: socket.id, muted: data.muted});
+      socket.to(data.room).emit("mute", { id: socket.id, muted: data.muted });
+    });
+
+    socket.on("speaking", (data) => {
+      socket
+        .to(data.room)
+        .emit("speak", { id: socket.id, speaking: data.speaking });
+    });
+
+    socket.on("chat_send", (data) => {
+      socket
+        .to(data.room)
+        .emit("chat_receive", { id: socket.id, msg: data.msg });
     });
 
     socket.on("disconnect", () => {
