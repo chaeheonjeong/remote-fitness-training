@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const AreplySchema = new Schema(
   {
     postId : {type: Number, required: true },
-    _id : { type: Number, required: true }, 
+    _id : { type: Number, required: true },
     Arwriter: { type: String, required: true },
     _user: { type: String, required: true },
     ArwriteDate: { type: String, required: true },

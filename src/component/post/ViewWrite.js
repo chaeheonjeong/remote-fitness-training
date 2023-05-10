@@ -28,6 +28,10 @@ const ViewWrite = () => {
     
     const hook = usePost();
 
+    const passHandler = (userId) => {
+        navigate(`/PortfolioView/${userId}`);
+    };
+
     const deleteHandler = () => {
       const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
       if (confirmDelete) {
@@ -130,26 +134,6 @@ const ViewWrite = () => {
         return formattedDate;
     };
 
-    // 글 쓴 사람의 프로필 이미지 클릭시
-    const writerProfileClick = (writer, id) => {
-        axios
-        .post(
-            `http://localhost:8080/view/${id}/${writer}`,
-            { id: id, writer: writer, postName: "view" }
-        )
-        .then((response) => {
-            console.log(response.data.message);
-            console.log("길이: ", response.data.length);
-            navigate(`/MyPAReviews/${writer}`);
-            console.log('writer: ', writer);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-    }
-
-
-
     return(
         <>
             <Header />
@@ -189,24 +173,22 @@ const ViewWrite = () => {
                 </div>
                 <div className={styles.content_2}>
                     <div>작성자</div>
-                    <div style={{ marginRight: "12.5rem" }}>
-                    {profileImg === null ? (
-                        <HiUserCircle
-                        size="40"
-                        color="#5a5a5a"
-                        style={{ cursor: "pointer" }}
-                        />
-                    ) : (
-                        <img
-                        className={styles.profile}
-                        src={profileImg}
-                        alt="프로필 이미지"
-                        onClick={() => {
-                            writerProfileClick(write.writer, id);
-                        }}
-                        />
-                    )}
-                    {write.writer}
+                    <div onClick={() => {passHandler(write._user)}} 
+                        style={{ marginRight: "12.5rem" }}>
+                        {profileImg === null ? (
+                            <HiUserCircle
+                            size="40"
+                            color="#5a5a5a"
+                            style={{ cursor: "pointer" }}
+                            />
+                        ) : (
+                            <img
+                            className={styles.profile}
+                            src={profileImg}
+                            alt="프로필 이미지"
+                            />
+                        )}
+                        {write.writer}
                     </div>
                     <div>
                         날짜{" "}

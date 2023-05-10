@@ -20,6 +20,9 @@ import SRecruitment from "../component/main/SRecruitment";
 import Recruitment from "../component/main/Recruitment";
 /* import TRecruitment from "../component/main/MainStudy"; */
 
+import Portfolio from "../component/mypage/Portfolio";
+import PortfolioView from "../component/mypage/PortfolioView";
+import PortfolioModify from "../component/mypage/PortfolioModify";
 import MainOpenStudy from "../component/main/MainOpenStudy";
 import MainQuestion from "../component/main/MainQuestion";
 import MyCalendar from "../component/mypage/MyCalendar";
@@ -37,18 +40,10 @@ const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route
-          path="/"
-          element={[<Main key="main" />, <SRecruitment key="srecruitment" />]}
-        /> */}
         <Route
           path="/"
           element={[<Main key="main" />, <Recruitment key="recruitment" />]}
         />
-        {/* <Route
-          path="/study"
-          element={[<Main key="smain" />, <MainStudy key="study" />]}
-        /> */}
         <Route
           path="/question"
           element={[<Main key="qmain" />, <MainQuestion key="question" />]}
@@ -71,6 +66,9 @@ const Router = () => {
         <Route path="/Ask" element={<Ask />} />
         <Route path="/modifyAsk/:id" element={<ModifyAsk />} />
         <Route path="/tView/:id" element={<TView />} />
+        {/*<Route path="/View2" element={<View2 />} />
+        <Route path="/View3" element={<View3 />} />*/}
+
         <Route path="/AskView/:id" element={<AskView />} />
         <Route path="/MyInfo" element={<MyInfo />} />
         <Route path="/MyCalendar" element={<MyCalendar />} />
@@ -78,9 +76,13 @@ const Router = () => {
         <Route path="/MyLikedQuestion" element={<MyLikedQuestion />} />
         <Route path="/MyPAReviews/:name" element={<MyPAReviews />} />
         {/* <Route path="/View/:id" element={<View />} /> */}
+
         <Route path="myAsk" element={<MyAsk />} />
         <Route path="myPost" element={<MyPost />} />
         <Route path="Jitsi" element={<Jitsi/>}/>
+        <Route path="Portfolio" element={<Portfolio/>}/>
+        <Route path="PortfolioView/:writerId" element={<PortfolioView/>}/>
+        <Route path="PortfolioModify" element={<PortfolioModify/>}/>
       </Routes>
     </BrowserRouter>
   );

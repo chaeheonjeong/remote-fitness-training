@@ -9,9 +9,9 @@
 }
 
 .heart {
-  width: 25px;
-  height: 25px;
-  position: absolute;
+width: 25px;
+height: 25px;
+position: absolute;
 }
 
 .studyTitle {
@@ -21,7 +21,7 @@
 }
 
 .tagPackage {
-  height: 35%;
+height: 35%;
 }
 
 .studyTag {
@@ -35,19 +35,19 @@
 }
 
 .reaction {
-  display: flex;
-  float: right;
+display: flex;
+float: right;
 }
 
 .view {
-  width: 25px;
-  height: 25px;
+width: 25px;
+height: 25px;
 }
 
 .comment {
-  margin-left: 5px;
-  width: 25px;
-  height: 25px;
+margin-left: 5px;
+width: 25px;
+height: 25px;
 }
 
 .questionBoxWrapper {

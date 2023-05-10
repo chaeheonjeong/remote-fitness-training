@@ -29,6 +29,10 @@ const AskViewWrite = () => {
 
     const navigate = useNavigate();
 
+    const passHandler = (userId) => {
+        navigate(`/PortfolioView/${userId}`); 
+    }
+
     useEffect(() => {
         if (user.token !== null) {
           axios
@@ -115,17 +119,6 @@ const AskViewWrite = () => {
         return formattedDate;
     };
 
-
-
-
-
-
-
-
-
-
-
-
     return (
         <>
             <Header />
@@ -162,22 +155,22 @@ const AskViewWrite = () => {
                 </div>
                 <div className={styles.content_2}>
                     <div className={styles.content_2_a}>
-                    <div>작성자</div>
-                    <div>
+                    <div onClick={() => {passHandler(write._user)}}>
+                        작성자
                         {profileImg === null ? (
-                        <HiUserCircle
+                            <HiUserCircle
                             size="40"
                             color="#5a5a5a"
                             style={{ cursor: "pointer" }}
-                        />
+                            />
                         ) : (
-                        <img
+                            <img
                             className={styles.profile}
                             src={profileImg}
                             alt="프로필 이미지"
-                        />
+                            />
                         )}
-                    {write.writer}
+                        {write.writer}
                     </div>
                         <div>|</div>
                         <div>

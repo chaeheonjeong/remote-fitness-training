@@ -12,6 +12,9 @@
 width: 25px;
 height: 25px;
 position: absolute;
+
+
+/* display: inline; */
 }
 
 .questionTitle {
@@ -29,6 +32,7 @@ height: 35%;
 border: none;
 display: inline-block;
 background-color: #8AE52E;
+/* background-color: rgb(205, 231, 255); */
 border-radius: 7px;
 text-align: center;
 padding: 0 0.5rem 0 0.5rem;

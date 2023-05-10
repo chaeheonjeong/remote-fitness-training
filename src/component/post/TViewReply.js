@@ -30,6 +30,14 @@ const TViewReply = ({ write, setWrite }) => {
     const [showReplyInput, setShowReplyInput] = useState(false);
     const [showReplyList, setShowReplyList] = useState(false);
 
+    const ReplyProfileClick = (userId) => {
+      navigate(`/PortfolioView/${userId}`);
+    };
+    
+    const R_ReplyProfileClick = (userId) => {
+        navigate(`/PortfolioView/${userId}`);
+    };
+
     const handleShowReplyInput = () => {
         setShowReplyInput(!showReplyInput);
         //setShowReplyList(false); // 대댓글 입력 칸을 보여주면서 대댓글 목록도 함께 보여줌
@@ -339,24 +347,6 @@ const TViewReply = ({ write, setWrite }) => {
         return formattedDate;
     };
 
-    // 댓글 작성자 프로필 이미지 클릭시
-    /* const profileClick = (writer, id) => {
-        axios
-        .post(
-            `http://localhost:8080/tView/${id}/${writer}`,
-            { id: id, writer: writer, postName: "view" }
-        )
-        .then((response) => {
-            console.log(response.data.message);
-            console.log("길이: ", response.data.length);
-            navigate(`/MyPAReviews/${writer}`);
-            console.log('writer: ', writer);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-    } */
-
 
     return(
         <>
@@ -391,25 +381,19 @@ const TViewReply = ({ write, setWrite }) => {
               {reply.map((r, index) => (
               
               <tr className={styles.replyTitle} key={r._id}>
-                <td>
+                <td key={r._id} onClick={() => ReplyProfileClick(r._user)} >
                   <div>
                   {!pImg || !pImg[index] ? (
                     <HiUserCircle
                       size="40"
                       color="#5a5a5a"
                       style={{ cursor: "pointer" }}
-                      /* onClick={() => {
-                        profileClick(write.writer, id);
-                      }} */
                     />
                   ) : (
                     <img
                       className={styles.profile}
                       src={pImg[index]}
                       alt="프로필 이미지"
-                      /* onClick={() => {
-                        profileClick(write.writer, id);
-                      }} */
                     />
                   )}
 
@@ -516,26 +500,19 @@ const TViewReply = ({ write, setWrite }) => {
                           {r_reply.map((rr, index) => (
                           <tbody>
                             <tr>
-                              <td>
+                              <td key={rr._id} onClick={() => R_ReplyProfileClick(rr._user)} >
                               <div>
-
                                 {!rPImg || !rPImg[index] ? (
                                   <HiUserCircle
                                     size="40"
                                     color="#5a5a5a"
                                     style={{ cursor: "pointer" }}
-                                    /* onClick={() => {
-                                      profileClick(write.writer, id);
-                                    }} */
                                   />
                                 ) : (
                                   <img
                                     className={styles.profile}
                                     src={rPImg[index]}
                                     alt="프로필 이미지"
-                                    /* onClick={() => {
-                                      profileClick(write.writer, id);
-                                    }} */
                                   />
                                 )}
                                 {rr.r_rwriter}

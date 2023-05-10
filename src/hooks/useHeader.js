@@ -32,7 +32,7 @@ export default function useHeader() {
       url: "/MyInfo",
       emo: <HiOutlineUser />,
     },
-    { title: "서랍", url: "/", emo: <RiArchiveDrawerLine /> },
+    { title: "포트폴리오", url: "/Portfolio", emo: <RiArchiveDrawerLine /> },
     { title: "관심글", url: "/myLikedPost", emo: <BsPostcardHeart /> },
     { title: "내가 쓴 글", url: "/myPost", emo: <BsPostcard /> },
     {

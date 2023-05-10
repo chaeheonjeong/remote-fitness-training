@@ -408,6 +408,14 @@ const AskViewReply = ({ write, setWrite }) => {
         }
     };
 
+    const AReplyProfileClick = (userId) => {
+        navigate(`/PortfolioView/${userId}`);    
+    };
+
+    const AR_ReplyProfileClick = (userId) => {
+        navigate(`/PortfolioView/${userId}`);  
+    };
+
 
     return(
         <>
@@ -442,29 +450,29 @@ const AskViewReply = ({ write, setWrite }) => {
                     {Areply.map((r, index) => (
                             
                     <tr className={styles.replyTitle} key={r._id}>
-                        <td>
-                        <div>
-                        {!pImg || !pImg[index] ? (
-                            <HiUserCircle
-                            size="40"
-                            color="#5a5a5a"
-                            style={{ cursor: "pointer" }}
-                            /* onClick={() => {
-                                profileClick(write.writer, id);
-                            }} */
-                            />
-                        ) : (
-                            <img
-                            className={styles.profile}
-                            src={pImg[index]}
-                            alt="프로필 이미지"
-                            /* onClick={() => {
-                                profileClick(write.writer, id);
-                            }} */
-                            />
-                        )}
-                        </div>
-                        {r.Arwriter}
+                        <td key={r._id} onClick={() => AReplyProfileClick(r._user)}>
+                            <div>
+                            {!pImg || !pImg[index] ? (
+                                <HiUserCircle
+                                size="40"
+                                color="#5a5a5a"
+                                style={{ cursor: "pointer" }}
+                                /* onClick={() => {
+                                    profileClick(write.writer, id);
+                                }} */
+                                />
+                            ) : (
+                                <img
+                                className={styles.profile}
+                                src={pImg[index]}
+                                alt="프로필 이미지"
+                                /* onClick={() => {
+                                    profileClick(write.writer, id);
+                                }} */
+                                />
+                            )}
+                            </div>
+                            {r.Arwriter}
                         </td>
                         <td>{r.Areply}</td>
                         <td>{" "}
@@ -574,28 +582,24 @@ const AskViewReply = ({ write, setWrite }) => {
                                 {Ar_reply.map((rr, index) => (
                                     <tbody>
                                     <tr>
-                                        <div>
-                                        {!rPImg || !rPImg[index] ? (
-                                        <HiUserCircle
-                                            size="40"
-                                            color="#5a5a5a"
-                                            style={{ cursor: "pointer" }}
-                                            /* onClick={() => {
-                                            profileClick(write.writer, id);
-                                            }} */
-                                        />
-                                        ) : (
-                                        <img
-                                            className={styles.profile}
-                                            src={pImg[index]}
-                                            alt="프로필 이미지"
-                                            /* onClick={() => {
-                                            profileClick(write.writer, id);
-                                            }} */
-                                        />
-                                        )}
-                                        </div>
-                                        <td>{rr.Ar_rwriter}</td>
+                                        <td key={rr._id} onClick={() => AR_ReplyProfileClick(rr._user)}>
+                                            <div>
+                                            {!rPImg || !rPImg[index] ? (
+                                            <HiUserCircle
+                                                size="40"
+                                                color="#5a5a5a"
+                                                style={{ cursor: "pointer" }}
+                                            />
+                                            ) : (
+                                            <img
+                                                className={styles.profile}
+                                                src={pImg[index]}
+                                                alt="프로필 이미지"
+                                            />
+                                            )}
+                                            </div>
+                                            {rr.Ar_rwriter}
+                                        </td>
                                         <td>{rr.Ar_reply}</td>
                                         <td>{" "}{rr.Ar_rwriteDate !== undefined && formatDate(new Date(rr.Ar_rwriteDate))}</td>
                                         
