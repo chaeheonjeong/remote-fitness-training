@@ -22,6 +22,8 @@ const AReply = require("./models/Areply");
 const AR_Reply = require("./models/Ar_reply");
 const AReplyCounter = require("./models/Areplycounter");
 const AR_ReplyCounter = require("./models/Ar_replycounter");
+const AskARGood = require("./models/askARGood");
+
 const Alarm = require("./models/alarm");
 
 const Portfolio = require("./models/portfolio");
@@ -3312,7 +3314,123 @@ app.get("/getAskBookmarkCount/:id", async(req, res) => {
     console.log(error);
     res.status(500).json({ message: "Server Error" });
   }
-})
+});
+
+//댓글 좋아요
+app.get("/getARGood/:clickedAReplyId", async (req, res) => {
+  try {
+    //const id = req.params.clickedAReplyId;
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, mysecretkey);
+    const userId = decodedToken.id;
+
+    /*const reply = await AReply.findOne({ _id: Number(req.params.id) });
+    if (!reply) {
+      return res.status(404).json({ message: `댓글이 없습니다` });
+    }*/
+
+    const result = await AskARGood.findOne({ _id: req.params.clickedAReplyId });
+    if (!result) {
+      return res.status(404).json({ message: `좋아요가 없습니다` });
+    }
+
+    console.log("get: ", result.ARgoodCount);
+
+    const isUser = result._users.some((user) => user.user === userId);
+    return res.status(200).json({
+      isARGood: isUser,
+      ARgoodCount: result.ARgoodCount,
+      message: `좋아요 리스트 가져오기 성공`,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/getARGood2/:clickedAReplyId", async (req, res) => {
+  try {
+    /*const reply = await AReply.findOne({ _id: Number(req.params.id) });
+    if (!reply) {
+      return res.status(404).json({ message: `댓글이 없습니다` });
+    }*/
+
+    const result = await AskARGood.findOne({ _id: String(req.params.clickedAReplyId) });
+    if (!result) {
+      return res.status(404).json({ message: `좋아요가 없습니다` });
+    }
+    return res.status(200).json({
+      ARgoodCount: result.ARgoodCount,
+      message: `좋아요 리스트 가져오기 성공`,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/setARGood/:clickedAReplyId", async (req, res) => {
+
+  const { clickedAReplyId } = req.params;
+
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, mysecretkey);
+    const userId = decodedToken.id;
+
+    // 새로운 코드 추가
+    //const result2 = await AskARGood.find().sort({ ARgoodCount: -1 }).limit(1);
+    //const topARId = result2[0]._id;
+    //const topAReply = await AReply.findById(topARId);
+
+    const result = await AskARGood.findOne({ _id: clickedAReplyId });
+    if (!result) {
+      const newDoc = new AskARGood({
+        _id: clickedAReplyId,
+        _users: [{ user: userId, time: new Date() }],
+        ARgoodCount: 1,
+      });
+      await newDoc.save();
+      return res.status(201).json({
+        ARgoodCount: 1,
+        message: `좋아요가 추가되었습니다`,
+      });
+    }
+    const index = result._users.findIndex((obj) => obj.user === userId);
+    console.log("index1: ", index);
+    if (index > -1) {
+      console.log("index2: ", index);
+      result._users.splice(index, 1);
+      result.ARgoodCount--;
+      //console.log("sub: ", result.ARgoodCount);
+      await result.save();
+      return res.status(200).json({
+        ARgoodCount: result.ARgoodCount,
+        message: `좋아요가 취소되었습니다`,
+      });
+    } else {
+      console.log("index3: ", index);
+      result._users.push({ user: userId, time: new Date() });
+      result.ARgoodCount++;
+      //console.log("add: ", result.ARgoodCount);
+      await result.save();
+      return res.status(200).json({
+        ARgoodCount: result.ARgoodCount,
+        message: `좋아요가 추가되었습니다`,
+      });
+    }
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
 
 app.post("/upload", upload.single("file"), (req, res) => {
   // (7)

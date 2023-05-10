@@ -288,6 +288,127 @@ const AskViewReply = ({ write, setWrite }) => {
         setReplyARModifyInput(e.target.value);
     }
 
+    //-----------------------------------------------------------------------------
+
+    //댓글 페이지네이션
+    const [AcurrentPage, setACurrentPage] = useState(1);
+    const [AperPage] = useState(5);
+
+    // 현재 페이지에 보여질 댓글들 추출
+    const startIndex = (AcurrentPage - 1) * AperPage;
+    const endIndex = startIndex + AperPage;
+    const AcurrentReply = Areply.slice(startIndex, endIndex);
+
+    // 페이지네이션 컴포넌트
+    const totalPages = Math.ceil(Areply.length / AperPage);
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+    }
+
+    const renderAPageNumbers = pageNumbers.map(number => {
+        return (
+          <li key={number}>
+            <button onClick={() => setACurrentPage(number)}>
+              {number}
+            </button>
+          </li>
+        );
+    });
+
+    const [ARgood, setARGood] = useState([]);
+    const [ARgoodCount, setARGoodCount] = useState([]);
+    const [clickedAReplyId, setClickedAReplyId] = useState(null); // 초기값은 null로 설정
+    const [clickedAReplyLiked, setClickedAReplyLiked] = useState(false);
+    const [AcurrentReplySorted, setAcurrentReplySorted] = useState([]); // 추가
+
+    const handleAReplyClick = (clickedAReplyId) => {
+        setClickedAReplyId(clickedAReplyId);
+        fetchARGood(clickedAReplyId);
+        clickARGood(clickedAReplyId);
+
+        console.log("글 번호는 : " , id);
+        console.log("댓글 번호는 : " , clickedAReplyId);
+    };
+
+    const fetchARGood = (clickedAReplyId) => {
+        if (user.token !== null) {
+          axios
+            .get(`http://localhost:8080/getARGood/${clickedAReplyId}`, {
+              headers: { Authorization: `Bearer ${user.token}` },
+            })
+            .then((response) => {
+              if (response.status === 200) {
+                console.log(response.data.ARgoodCount);
+                //console.log(response.data.ARgoodCount);
+                setARGood(true);
+                setARGoodCount(response.data.ARgoodCount);
+                console.log(response.data.message);
+                //console.log(response.data.ARgood);
+                
+                console.log("");
+              } else if (response.status === 204) {
+                setARGood(false);
+                setARGoodCount(0);
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          axios
+            .get(`http://localhost:8080/getARGood2/${clickedAReplyId}`)
+            .then((response) => {
+              if (response.status === 200) {
+                setARGoodCount(response.data.ARcount || 0);
+              } else if (response.status === 204) {
+                setARGood(false);
+                setARGoodCount(0);
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+    };
+
+    const clickARGood = (clickedAReplyId) => {
+        if (user.token !== null) {
+          axios
+            .post(`http://localhost:8080/setARGood/${clickedAReplyId}`, null, {
+              headers: { Authorization: `Bearer ${user.token}` },
+            })
+            .then((response) => {
+              if (response.status === 200) {
+                console.log("@### ", response);
+                setARGood(!ARgood);
+               
+                /* if (!ARgood) {
+                  setARGoodCount((prevARCount) => prevARCount + 1);
+                } else {
+                  setARGoodCount((prevARCount) => prevARCount - 1);
+                }  */
+
+                /* if (!ARgood) {
+                  setARGoodCount((prevARCount) => {
+                    return prevARCount + 1;
+                  });
+                } else {
+                  setARGoodCount((prevARCount) => {
+                    return prevARCount - 1;
+                  });
+                } */
+              } 
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          alert("로그인 해주세요.");
+        }
+    };
+
+
     return(
         <>
            {/* 댓글 입력 폼 */}
@@ -313,6 +434,7 @@ const AskViewReply = ({ write, setWrite }) => {
                     <th>닉네임</th>
                     <th>댓글 내용</th>
                     <th>날짜</th>
+                    <th>좋아요</th>
                     <th></th>
                     </tr>
                 </thead>
@@ -348,6 +470,16 @@ const AskViewReply = ({ write, setWrite }) => {
                         <td>{" "}
                         {r.ArwriteDate !== undefined &&
                         formatDate(new Date(r.ArwriteDate))}</td>
+
+
+                        <td>
+                            <span onClick={() => {handleAReplyClick(r._id)}}
+                                className={r._id === clickedAReplyId && ARgood ? styles.ARgoodBtn : null}
+                            >
+                                👍 {r._id !== clickedAReplyId ? '' : ARgoodCount}
+                            </span>
+                        </td>
+
                         
                         {/* 댓글수정 */}
                         {sameAUsers[index] && (

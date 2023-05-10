@@ -147,7 +147,7 @@ const StudyRanking = () => {
           justifyContent: "space-between",
         }}
       >
-        <span className={styles.title}>공부 시간 랭킹</span>
+        <span className={styles.title}>행복 지수 랭킹</span>
         <span className={styles.date}>{formattedDate} 오전 12:00 기준</span>
       </div>
       <div
@@ -214,7 +214,7 @@ const StudyRanking = () => {
               }}
             >
               <div className={styles.noRanking}>
-                공부 랭킹이 존재하지 않습니다
+                행복 지수 랭킹이 존재하지 않습니다
               </div>
             </div>
           )}
@@ -250,8 +250,8 @@ const StudyRanking = () => {
           <div
             style={{
               height: "50%",
-              backgroundColor: "rgb(245, 245, 245)",
-              borderTop: "1px solid rgb(226, 226, 226)",
+              backgroundColor: "#F4F9F4",
+              borderTop: "1px solid #8AE52E",
               borderRadius: "0 0 0.5rem 0.5rem",
             }}
           >
@@ -262,7 +262,7 @@ const StudyRanking = () => {
                     style={{
                       marginLeft: "0.2rem",
                       width: "1.4rem",
-                      backgroundColor: "rgb(109, 210, 126)",
+                      backgroundColor: "#8AE52E",
                       position: "relative",
                       borderRadius: "0.3rem",
                     }}
@@ -270,7 +270,7 @@ const StudyRanking = () => {
                   <span
                     style={{
                       marginLeft: "0.45rem",
-                      marginTop: "0.05rem",
+                      marginTop: "0.15rem",
                       borderRadius: "0.3rem",
                       color: "white",
                       fontSize: "0.9rem",
@@ -302,7 +302,7 @@ const StudyRanking = () => {
                 }}
               >
                 <div className={styles.loginMyRanking}>
-                  로그인 후 내 공부시간을 확인해주세요
+                  로그인 후 내 행복 지수를 확인해주세요
                 </div>
               </div>
             )}

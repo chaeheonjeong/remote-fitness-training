@@ -15,9 +15,12 @@ import AskView from "../component/post//AskView";
 //import View3 from "../component/post/View3";
 import Jitsi from "../component/videochat/jitsi";
 
+/* import TRecruitment from "../component/main/TRecruitment"; */
 import SRecruitment from "../component/main/SRecruitment";
+import Recruitment from "../component/main/Recruitment";
+/* import TRecruitment from "../component/main/MainStudy"; */
+
 import MainOpenStudy from "../component/main/MainOpenStudy";
-import MainStudy from "../component/main/MainStudy";
 import MainQuestion from "../component/main/MainQuestion";
 import MyCalendar from "../component/mypage/MyCalendar";
 import MyInfo from "../component/mypage/MyInfo";
@@ -34,17 +37,26 @@ const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
+        {/* <Route
           path="/"
           element={[<Main key="main" />, <SRecruitment key="srecruitment" />]}
-        />
+        /> */}
         <Route
+          path="/"
+          element={[<Main key="main" />, <Recruitment key="recruitment" />]}
+        />
+        {/* <Route
           path="/study"
           element={[<Main key="smain" />, <MainStudy key="study" />]}
-        />
+        /> */}
         <Route
           path="/question"
           element={[<Main key="qmain" />, <MainQuestion key="question" />]}
+        />
+
+        <Route
+          path="/sRecruitment"
+          element={[<Main key="main" />, <SRecruitment key="srecruitment" />]}
         />
         
         <Route path="/login" element={<Login />} />

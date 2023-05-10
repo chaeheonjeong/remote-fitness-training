@@ -43,7 +43,7 @@ const Header = ({ ...props }) => {
           hook.navigate("/login");
         }}
       >
-        Link
+        고습도치
       </label>
       <div className={styles.smallContainer}>
         <div className={styles.smallContainer2}>
@@ -51,7 +51,7 @@ const Header = ({ ...props }) => {
             <div style={{ position: "relative" }}>
               <GoBell
                 size="25"
-                color="#5a5a5a"
+                color="#8AE52E"
                 onClick={() =>
                   window.open(hook.popUrl, hook.popTarget, hook.popFeat)
                 }

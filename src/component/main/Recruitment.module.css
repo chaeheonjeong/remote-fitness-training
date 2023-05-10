@@ -4,13 +4,17 @@
 
 /* Select & Search */
 
-.menu {
+.topRow {
   display: flex;
-  padding: 20px 0 70px 0;
+  padding: 0 0 15px 0;
   margin-left: auto;
   margin-right: auto;
   width: 100%;
   justify-content: space-between;
+}
+
+.menu {
+  padding: 20px 0 70px 0;
 }
 
 .menu button {
@@ -27,16 +31,52 @@
   gap: 1rem;
 }
 
-.question {
+.underline {
+  width: 11rem;
+  position: relative;
+  padding: 10px;
+  background-color: #d2e2c3;
+  color: #333;
+  display: inline-block;
+  margin-top: 2px;
+  margin-right: 10px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.underline:before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 30px;
+  border-top: 20px solid transparent;
+  border-left: 20px solid #d2e2c3;
+  transform: rotate(135deg);
+}
+
+.recruitments {
+  width: 10rem;
+  display: inline-grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.recruitment,
+.tRecruitment {
   border-color: #8AE52E;
   border-style: solid;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.recruitment,
+/* .search {
+  display: inline-block;
+  margin-right: 7%;
+} */
+
+
 .sRecruitment,
-.tRecruitment {
-  border: 1.5px solid rgb(189, 188, 188);
+.question {
+  border: 1.5px solid #8AE52E;
 }
 
 .search {
@@ -47,15 +87,15 @@
   border-radius: 7px;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  border: 1.5px solid rgb(189, 188, 188);
+  border: 1.5px solid #8AE52E;
 }
 
 .search input {
-  border: 1.5px solid rgb(189, 188, 188);
+  border: 1.5px solid #8AE52E;
 }
 
 .search button {
-  border: 1.5px solid rgb(189, 188, 188);
+  border: 1.5px solid #8AE52E;
   width: 3rem;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
@@ -67,7 +107,7 @@
 }
 
 .makeBtn {
-  border: 1.5px solid rgb(189, 188, 188);
+  border: 1.5px solid #8AE52E;
   width: 5rem;
   margin-left: 3rem;
 }
