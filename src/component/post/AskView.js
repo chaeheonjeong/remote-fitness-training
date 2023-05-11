@@ -8,6 +8,8 @@ import userStore from "../../store/user.store";
 import { useParams } from "react-router-dom";
 import Reply from '../../server/models/reply';
 import { HiUserCircle } from "react-icons/hi";
+import AskARGood from '../../server/models/askARGood';
+import AReply from '../../server/models/Areply';
 
 function AskView() {
   const [sameUsers, setSameUsers] = useState(false);
@@ -16,7 +18,6 @@ function AskView() {
   const [write, setWrite] = useState([]);
 
   const [htmlString, setHtmlString] = useState();
-  const [sameUser, setSameUser] = useState(false);
   const [good, setGood] = useState(false);
   const [goodCount, setGoodCount] = useState(0);
   const [selectedAId, setSelectedAId] = useState();
@@ -161,14 +162,11 @@ function AskView() {
     return formattedDate;
   };
 
-  const [Aprogress, setAProgress] = useState(false);
-
-  const [BtnAColorRed, setBtnAColorRed] = useState(false);
-
   const [showAReplyInput, setShowAReplyInput] = useState(false);
   const [showAReplyList, setShowAReplyList] = useState(false);
   const [showAReplyModifyInput, setShowModifyAReplyInput] = useState(false);
   const [Areply, setAReply] = useState([]);
+
   
   const [isASecret, setIsASecret] = useState(false); // 비밀댓글 여부
   const [sameAUsers, setSameAUsers] = useState(false);
@@ -201,7 +199,6 @@ function AskView() {
   }, []);
 
   const [Ar_reply, setAR_Reply] = useState([]);
-  const { Arid } = useParams();
   const [isARSecret, setIsARSecret] = useState(false); // 비밀댓글 여부
   const [ARsameUsers, setARSameUsers] = useState(false);
   const [postARId, setPostARId] = useState(); 
@@ -219,13 +216,12 @@ function AskView() {
 
       if(res.data.data.length) {
         setAR_Reply(res.data.data);
-        //setRSameUsers(res.data.RsameUsers);
         console.log(res.data.messgae);
         console.log(res.data.data);
       } else {
        setAR_Reply([]); 
        console.log('대댓글이 없습니다.');
-      }//console.log('here: ', res.data.data);
+      }
     } catch(error) {
       console.log(error);
     }
@@ -311,7 +307,6 @@ function AskView() {
     }
   };
 
-  ///
    // 댓글삭제
    const deleteAReply = (replyId) => {
     const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
@@ -328,54 +323,54 @@ function AskView() {
   };
 
     // 댓글수정
-const modifyAHandleSubmit = async (e, replyId) => {
-e.preventDefault();
+  const modifyAHandleSubmit = async (e, replyId) => {
+  e.preventDefault();
 
-if(replyModifyAInput === "") {
-  alert("내용을 작성해주세요.");
-  return;
-}
-
-try {
-  const response = await axios.post("http://localhost:8080/viewAReplyModify", {
-    postId: id,
-    _id: replyId,
-    ArWriteDate: today,
-    Areply: String(replyModifyAInput),
-    isASecret: Boolean(isASecret), 
-  });
-
-  alert("수정이 완료되었습니다.");
-  navigate(`/askView/${id}`);
-
-  //console.log("data", res.data);
-
-} catch(error) {
-  console.log(error);
-}
-};
-
-// 댓글수정(가져오기)
-const modifyAReply = async (replyId) => {
-try {
-  const res = await axios
-  .get(`http://localhost:8080/askView/${id}/modify/${replyId}`)
-  
-  if(res.data !== undefined) {
-    setIsASecret(res.data.result[0].isASecret);
-    setReplyModifyAInput(res.data.result[0].Areply);
+  if(replyModifyAInput === "") {
+    alert("내용을 작성해주세요.");
+    return;
   }
 
-  console.log(res.data.result[0].isASecret, res.data.result[0].Areply);
-} catch(error) {
-  console.log(error);
-}
-}
+  try {
+    const response = await axios.post("http://localhost:8080/viewAReplyModify", {
+      postId: id,
+      _id: replyId,
+      ArWriteDate: today,
+      Areply: String(replyModifyAInput),
+      isASecret: Boolean(isASecret), 
+    });
 
-// 댓글수정(내용반영)
-const modifyAReplyInputChangeHandler = (e) => {
-setReplyModifyAInput(e.target.value);
-}
+    alert("수정이 완료되었습니다.");
+    navigate(`/askView/${id}`);
+
+    //console.log("data", res.data);
+
+  } catch(error) {
+    console.log(error);
+  }
+  };
+
+  // 댓글수정(가져오기)
+  const modifyAReply = async (replyId) => {
+  try {
+    const res = await axios
+    .get(`http://localhost:8080/askView/${id}/modify/${replyId}`)
+    
+    if(res.data !== undefined) {
+      setIsASecret(res.data.result[0].isASecret);
+      setReplyModifyAInput(res.data.result[0].Areply);
+    }
+
+    console.log(res.data.result[0].isASecret, res.data.result[0].Areply);
+  } catch(error) {
+    console.log(error);
+  }
+  }
+
+  // 댓글수정(내용반영)
+  const modifyAReplyInputChangeHandler = (e) => {
+  setReplyModifyAInput(e.target.value);
+  }
 
 
 
@@ -427,8 +422,201 @@ setReplyModifyAInput(e.target.value);
   const modifyAR_ReplyInputChangeHandler = (e) => {
     setReplyARModifyInput(e.target.value);
   }
-    
-    
+
+  //댓글 페이지네이션
+  const [AcurrentPage, setACurrentPage] = useState(1);
+  const [AperPage] = useState(5);
+
+  // 현재 페이지에 보여질 댓글들 추출
+  const startIndex = (AcurrentPage - 1) * AperPage;
+  const endIndex = startIndex + AperPage;
+  const AcurrentReply = Areply.slice(startIndex, endIndex);
+
+  // 페이지네이션 컴포넌트
+  const totalPages = Math.ceil(Areply.length / AperPage);
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  const renderAPageNumbers = pageNumbers.map(number => {
+    return (
+      <li key={number}>
+        <button onClick={() => setACurrentPage(number)}>
+          {number}
+        </button>
+      </li>
+    );
+  });
+
+  const [ARgood, setARGood] = useState([]);
+  const [ARgoodCount, setARGoodCount] = useState([]);
+  const [clickedAReplyId, setClickedAReplyId] = useState(null); // 초기값은 null로 설정
+  const [clickedAReplyLiked, setClickedAReplyLiked] = useState(false);
+  const [AcurrentReplySorted, setAcurrentReplySorted] = useState([]); // 추가
+
+  const handleAReplyClick = (clickedAReplyId) => {
+    setClickedAReplyId(clickedAReplyId);
+    clickARGood(clickedAReplyId);
+    fetchARGood(clickedAReplyId);
+
+    console.log("글 번호는 : " , id);
+    console.log("댓글 번호는 : " , clickedAReplyId);
+  };
+
+
+
+  
+
+  const fetchARGood = (clickedAReplyId) => {
+    if (user.token !== null) {
+      axios
+        .get(`http://localhost:8080/getARGood/${clickedAReplyId}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            console.log(response.data.ARgoodCount);
+            //console.log(response.data.ARgoodCount);
+            setARGood(true);
+            setARGoodCount(response.data.ARgoodCount);
+            console.log(response.data.message);
+            //console.log(response.data.ARgood);
+            
+            console.log("");
+          } else if (response.status === 204) {
+            setARGood(false);
+            setARGoodCount(0);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .get(`http://localhost:8080/getARGood2/${clickedAReplyId}`)
+        .then((response) => {
+          if (response.status === 200) {
+            setARGoodCount(response.data.ARcount || 0);
+          } else if (response.status === 204) {
+            setARGood(false);
+            setARGoodCount(0);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  
+  
+
+  /* const fetchAReply = async () => {
+    try {
+      const res = await axios.get(`http://localhost:8080/getAReply/${id}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+  
+      if (res.data !== undefined) {
+        const sortedReplies = sortReplies(res.data.data);
+        setAcurrentReplySorted(sortedReplies);
+        setSameAUsers(res.data.sameAUsers);
+        console.log(res.data.message);
+        console.log(res.data.data);
+      }
+      console.log(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const sortReplies = (replies) => {
+    return replies.sort((a, b) => b.ARgoodCount - a.ARgoodCount);
+  }; */
+
+
+   
+
+  const clickARGood = (clickedAReplyId) => {
+    if (user.token !== null) {
+      axios
+        .post(`http://localhost:8080/setARGood/${clickedAReplyId}`, null, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            console.log("@### ", response);
+            setARGood(!ARgood);
+           
+            /* if (!ARgood) {
+              setARGoodCount((prevARCount) => prevARCount + 1);
+            } else {
+              setARGoodCount((prevARCount) => prevARCount - 1);
+            }  */
+            if (!ARgood) {
+              setARGoodCount((prevARCount) => {
+                return prevARCount + 1;
+              });
+            } else {
+              setARGoodCount((prevARCount) => {
+                return prevARCount - 1;
+              });
+            }
+          } 
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      alert("로그인 해주세요.");
+    }
+  };
+
+
+  /*const fetchARGood = () => {
+    if (user.token !== null) {
+      axios
+        .get(`http://localhost:8080/getARGood/${clickedAReplyId}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setARGood(response.data.ARgood);
+            setARGoodCount(response.data.ARgoodCount);
+            console.log(response.data.message);
+  
+            
+                
+            console.log("");
+          } else if (response.status === 204) {
+            setARGood(false);
+            setARGoodCount(0);
+            // 좋아요가 가장 많은 댓글이 없을 경우 null 값을 상태로 업데이트
+            setTopAReply(null);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .get(`http://localhost:8080/getARGood2/${clickedAReplyId}`)
+        .then((response) => {
+          if (response.status === 200) {
+            setARGoodCount(response.data.ARcount || 0);
+          } else if (response.status === 204) {
+            setARGood(false);
+            setARGoodCount(0);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };*/
+  
+
   return (
     <>
       <Header />
@@ -534,24 +722,29 @@ setReplyModifyAInput(e.target.value);
               <thead>
                 <tr className={styles.replyName}>
                   <th>닉네임</th>
-                  <th>비밀댓글 여부</th>
+                  <th>good</th>
                   <th>댓글 내용</th>
                   <th>날짜</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                {Areply.map((r) => (
-                        
+                {AcurrentReply.map((r) => (
                   <tr className={styles.replyTitle} key={r._id}>
-                    <td key={r._id} onClick={() => AReplyProfileClick(r._user)}>{r.Arwriter}</td>
-                    <td>{r.isASecret ? "비밀댓글" : "공개댓글"}</td>
+                    <td>{r.Arwriter}</td>
+
+                    <td><span onClick={() => {handleAReplyClick(r._id)}}
+                      className={r._id === clickedAReplyId && ARgood ? styles.ARgoodBtn : null}>
+                      👍 {r._id !== clickedAReplyId ? '' : ARgoodCount}
+                    </span></td>
+                    
+
                     <td>{r.Areply}</td>
                     <td>{" "}
                     {r.ArwriteDate !== undefined &&
                     formatDate(new Date(r.ArwriteDate))}</td>
                     
-                    {/* 댓글수정 */}
+                    {/* 댓글수정 */                                             /* *************************************** */}
                     {!sameAUsers && (
                       <td>
                         <input type="button" className={styles.rdbtn} value="삭제" onClick={ deleteAReply.bind(null, r._id) }></input>
@@ -567,8 +760,7 @@ setReplyModifyAInput(e.target.value);
                         ></input>
                         { showAReplyModifyInput === r._id && (
                           <form onSubmit={(e) => modifyAHandleSubmit(e, r._id)}> 
-                            <div className={styles.handle}>
-                                      
+                            <div className={styles.handle}>     
                               <input
                                 type="text"
                                 className={styles.reply_input}
@@ -595,8 +787,7 @@ setReplyModifyAInput(e.target.value);
                         )}
                         {showAReplyInput === r._id && (
                           <form onSubmit={ArhandleSubmit}> 
-                            <div className={styles.rhandle}>
-                                    
+                            <div className={styles.rhandle}>  
                               <input
                                 type="text"
                                 className={styles.reply_input}
@@ -612,7 +803,6 @@ setReplyModifyAInput(e.target.value);
                               </div>
                             </div>
                           </form>
-                            
                         )}
                         {!showAReplyList && (
                           <button onClick={() => {
@@ -621,7 +811,6 @@ setReplyModifyAInput(e.target.value);
                             fetchAR_Reply(r._id);
                           }}>대댓글 목록 보기</button>
                         )}
-                        
                         <div>
                           {showAReplyList && (
                             <button onClick={() => {
@@ -630,13 +819,10 @@ setReplyModifyAInput(e.target.value);
                               fetchAR_Reply(r._id);
                             }}>대댓글 목록 닫기</button>
                           )}
-                            
                         </div>
-                        {showAReplyList === r._id && (
-                                
+                        {showAReplyList === r._id && (   
                           <div className={styles.rr_reply2}>
-                          {/* 대댓글 목록 보여주는 코드 */}
-                                
+                          {/* 대댓글 목록 보여주는 코드 */}   
                             <table>
                               <thead>
                                 <tr className={styles.ttrrr}>
@@ -671,7 +857,6 @@ setReplyModifyAInput(e.target.value);
                                         { showAR_ReplyModifyInput === rr._id && (
                                           <form onSubmit={(e) => modifyARHandleSubmit(e, rr.selectedARId, rr._id)}> 
                                               <div className={styles.handle}>
-                                              
                                                 <input
                                                   type="text"
                                                   className={styles.reply_input}
@@ -693,7 +878,6 @@ setReplyModifyAInput(e.target.value);
                                 </tbody>
                               ))}
                             </table>
-                                
                           </div>
                         )}
                       </td>
@@ -701,6 +885,11 @@ setReplyModifyAInput(e.target.value);
                   ))}
               </tbody>
             </table>
+            <div className={styles.pagination}>
+              <ul className={styles.pageNumbers}>
+                {renderAPageNumbers}
+              </ul>
+          </div>
           </div>
         </div>
     </>    

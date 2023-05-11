@@ -19,6 +19,14 @@
   padding: 5px;
 }
 
+.ch3 {
+  font-size: 20px;
+  display: flex;
+  margin-bottom: 50px;
+  border-bottom: 3px;
+  padding: 5px;
+}
+
 .title_input {
   display: flex;
   font-size: 20px;
@@ -26,6 +34,15 @@
   border-bottom: 3px;
   padding: 5px;
   height: 40px;
+}
+
+
+.runningTime {
+  margin-right: 36.8%;
+  border-radius: 20px;
+  padding: 5px;
+  border: solid 2px black;
+  height: 10%;
 }
 
 .date {
@@ -72,6 +89,13 @@
   text-align: end;
 }
 
+.startTime_input {
+  /* width: 100%; */
+  border-radius: 20px;
+  padding: 5px;
+  border: solid 2px black;
+}
+
 .tag_input {
   width: 100%;
   border-radius: 20px;
@@ -91,6 +115,14 @@
   align-items: center;
 }
 */
+
+.estimatedAmount_input {
+  /* width: 100%; */
+  border-radius: 20px;
+  padding: 5px;
+  border: solid 2px black;
+  height: 10%;
+}
 
 .title_tinput {
   width: 90%;
@@ -119,4 +151,8 @@
   border-radius: 200px;
   background-color: red;
   color: white;
+}
+
+.ck.ck-editor__editable {
+  z-index: 0; /* or other value lower than modal */
 }

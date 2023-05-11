@@ -4,12 +4,11 @@ const Schema = mongoose.Schema;
 const AreplySchema = new Schema(
   {
     postId : {type: Number, required: true },
-    _id : { type: Number, required: true },
+    _id : { type: Number, required: true }, 
     Arwriter: { type: String, required: true },
     ArwriteDate: { type: String, required: true },
     Areply: { type: String, required: true },
     isASecret: { type: Boolean, default: false },
-    _user: {type: String, required: true}
   },
 );
 
@@ -24,5 +23,3 @@ AreplySchema.pre("save", function (next) {
 });
 
 const AReply = mongoose.model("Areply", AreplySchema);
-
-module.exports = AReply;

@@ -10,7 +10,6 @@ const Ar_replySchema = new Schema(
     Ar_rwriteDate: { type: String, required: true },
     Ar_reply: { type: String, required: true }, // 대댓글
     isARSecret: { type: Boolean, default: false }, //대댓글비밀댓글 설정 여부
-    _user: {type: String, required: true}//대댓글 유저 아이디
   },
   { timestamps: true }
 
@@ -27,5 +26,3 @@ Ar_replySchema.pre("save", function (next) {
 });
 
 const AR_Reply = mongoose.model("Ar_reply", Ar_replySchema);
-
-module.exports = AR_Reply;
