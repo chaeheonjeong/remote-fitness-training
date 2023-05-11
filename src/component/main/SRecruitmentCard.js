@@ -137,7 +137,9 @@ function SRecruitmentCard({ title, tags, id, onClick }) {
     <div key={id + title} className={styles.questionBoxWrapper}>
       <HeartBtn />
       <div className={styles.studyBox} onClick={onClick && onClick}>
-        <h1 className={styles.studyTitle}>{title}</h1>
+        <h1 className={styles.studyTitle}>
+          {title.length > 5 ? title.slice(0, 5) + "..." : title}
+        </h1>
         {<Hashtag />}
         <div className={styles.reaction}>
           <img className={styles.view} src={view} alt="view"></img>
