@@ -1,7 +1,7 @@
 .detail {
   padding: 1.5em;
   border-radius: 5px;
-  border: 4px solid black;
+  border: 3px solid #24B422;
   margin: 20px;
 }
 
@@ -16,12 +16,20 @@
     background-color: #EFEFEF;
 }
 
+.content5_all {
+  padding: 1.5em;
+  border-radius: 5px;
+  border: 3px solid #24B422;
+  margin: 20px;
+  
+}
+
 .content_1 {
   display: flex;
-    font-size: 20px;
-    border-bottom:3px solid black;
-    padding : 5px;
-  gap: 1rem;
+    font-size: 19px;
+    border-bottom:3px solid #1783EA;
+    padding : 10px;
+    gap: 1rem;
 }
 
 .content_2_a {
@@ -30,6 +38,11 @@
   gap: 1rem;
 }
 
+.profile1 {
+  height: 20px;
+  font-size: 18px;
+  text-align: center;
+}
 .content_2_b {
     display: flex;
 
@@ -37,17 +50,26 @@
 }
 .content_2 {
     display: grid;
-    font-size: 18px;
-    grid-template-columns:20% 60% 20%;
-    border-bottom:3px solid black;
+    font-size: 19px;
+    text-align: center;
+    grid-template-columns:5% 25% 20%;
     padding: 5px;
+    
+}
+
+.goodch {
+  margin-top: 40px;
+  font-size: 16px;
+  color: rgb(119, 0, 230);
+  font-weight: 450;
 }
 
 .content_3 {
-    border-bottom:3px solid black;
+    border-bottom:3px solid #24B422;
     min-width : 90%;
     min-height: 300px;
     padding: 5px;
+    font-size: 20px;
 }
 
 .content_4_a {
@@ -69,35 +91,39 @@
 
 
 .content_5{
-    font-size: 18px;
-    grid-template-columns:50% 50% ;
-    border-bottom:3px solid black;
-    padding: 5px;
+  font-size: 18px;
+  text-align: center;
+  grid-template-columns:50% 50% ;
+  border-bottom:3px solid #1984E9;
+  padding: 10px;
   display: flex;
 }
 
 .content_5a {
   display: flex;
   font-size: 18px;
-  border-bottom: 3px solid black;
-  padding: 5px;
+  text-align: center;
+  grid-template-columns:50% 50% ;
+  border-bottom: 3px solid #1984E9;
+  padding: 10px;
 }
+
 
 .content_6 {
     /*border-bottom:3px solid black;*/
     text-align: right;
-    margin-bottom: 20px;
 
 }
 
 
 .reply_input {
     margin-bottom: 10px;
-    margin-top: 10px;
+    margin-top: 20px;
     padding:1em;
-    border: 2px solid #90b2b8;
+    border: 3px solid #1A8C4A;
     border-radius: 5px;
-    min-height: 50px;
+    min-height: 70px;
+    font-size: 16px;
     width: 100%;
 }
 
@@ -118,43 +144,102 @@
 }
 
 .reply_choose {
+
     margin-bottom: 7px;
     margin-right: 10px;
 }
+.reply_choose2 {
+  background-color: #24B422;
+  margin-bottom: 3px;
+  margin-left: 10px;
+  border-radius: 20px;
+}
 
+.asdf {
+  background-color: #1abb17;;
+  margin-right: 5px;
+  border-radius: 20px;
+}
+
+.asdf1 {
+  background-color: #1abb17;;
+  margin-right: 5px;
+  border-radius: 20px;
+}
+
+.asdf2 {
+  background-color: #8df58b;
+  margin-right: 5px;
+  border-radius: 20px;
+}
+
+.asdf3 {
+  background-color: #5f945e;;
+  margin-right: 5px;
+  border-radius: 20px;
+}
 .rc1 {
     margin-right: 10px;
 }
 
 .sbtn {
-    border-radius: 10px;
-    width: 40px;
+    border-radius: 20px;
+    width: 50px;
+    height: 30px;
+    background-color: #69ACEB;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .cbtn {
     border: none;
     padding: 5px;
     border-radius: 200px;
+    width: 70px;
+    font-size: 16px;
+    height: 35px;
     background-color: green;
     color: white;
+    font-weight:bold;
 }
 
 .falseBtn{
     border: none;
     padding: 5px;
+    width: 80px;
+    font-size: 16px;
+    height: 35px;
     border-radius: 200px;
-    background-color: red;
+    background-color: rgb(213, 0, 0);
     color: white;
+    font-weight:bold;
+}
+
+.dd{
+  background-color: #1fb75e;
+  border-radius: 30%;
+  width: 40px;
+  margin-right: 3px;
+  color: white;
+  font-weight: bold;
+}
+
+.mm {
+  background-color: #1fb75e;
+  border-radius: 30%;
+  width: 40px;
+  color: white;
+  font-weight: bold;
+  
 }
 
 
 .rr_reply {
-    margin-top: 30px;
     min-height: 300px;
-    padding:1em;
+    padding:1.3rem;
     border-radius: 5px;
-    border: 3px solid #90b2b8;
-
+    border: 3px;
 }
 
 table {
@@ -174,47 +259,50 @@ th {
     
 thead {
     font-weight: bold;
+    font-size: 120px;
     color: #000000;
-    background: #90b2b8;
+    background: #88DB30;
 }
     
 td, th {
     padding: 1em;
+    font-size: 16px;
     vertical-align: middle;
-    
-}
-    
-td {
     border-bottom: 1px solid rgba(0,0,0,.1);
-    background: #fff;
+    
 }
 
+
 .rrbtn {
-    margin-right: 5px;
+  background-color: #24B422;
+  margin-right: 5px;
 }
 
 .rdbtn {
-    margin-right: 5px;
+  background-color: #24B422;
+  margin-right: 5px;
 }
 
 .rrdbtn {
-    margin-right: 5px;
+  background-color: #24B422;
+  margin-right: 5px;
 }
 
 .rrmbtn {
-    margin-right: 5px;
+  background-color: #24B422;
+  margin-right: 5px;
 }
 
 
 
 .replyContent {
-    width: 100%;
+  width: 100%;
 
 }
 
 .profile {
-  width: 33px;
-  height: 33px;
+  width: 30px;
+  height: 30px;
   border-radius: 100%;
   border: 1px solid #555555;
   cursor: pointer;
@@ -223,3 +311,95 @@ td {
 .goodBtn {
   color: #f0ae16;
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+    
+.pageNumbers {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+    
+.pageNumbers li {
+  margin-right: 10px;
+}
+  
+.pagination button {
+  color: #666;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+    
+.pagination button.active {
+  background-color: #87CEFA;
+  color: #fff;
+}
+    
+.pagination button:hover:not(.active) {
+  background-color: #B8EBF6;
+}
+    
+.pageNumbers {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style-type: none;
+}
+.pageNumbers li + li:before {
+  margin: 0 5px;
+}
+
+.css1 {
+  border: 1px solid #8AE52A;
+  background-color: #8AE52A;
+  border-radius: 10px;
+  width: 50px;
+  height: 30px;
+}
+
+
+  .css2 {
+    border: 1px solid #8AE52A;
+    background-color: #8AE52A;
+    border-radius: 10px;
+    width: 105px;
+    height: 30px;
+  }
+  .css3 {
+    border: 1px solid #8AE52A;
+    background-color: #8AE52A;
+    border-radius: 10px;
+    width: 60px;
+    height: 30px;
+  }
+  .css4 {
+    border: 1px solid #8AE52A;
+    background-color: #8AE52A;
+    border-radius: 10px;
+    width: 50px;
+    height: 30px;
+  }
+  .css5 {
+    border: 1px solid #8AE52A;
+    background-color: #8AE52A;
+    border-radius: 10px;
+    width: 100px;
+    height: 30px;
+  }
+  .css6 {
+    border: 1px solid #8AE52A;
+    background-color: #8AE52A;
+    border-radius: 10px;
+    width: 150px;
+    height: 30px;
+  }

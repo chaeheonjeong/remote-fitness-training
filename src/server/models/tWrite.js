@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const writeSchema = new Schema(
+const tWriteSchema = new Schema(
   {
-    _id: { type: Number, required: true /*, unique: true*/ }, // unique index constraint를 걸어줍니다.
+    _id: { type: Number, required: true }, // unique index constraint를 걸어줍니다.
     _user: { type: String, required: true },
     number: { type: String, required: true },
-    /* period: { type: String, required: true }, */
     date: { type: String, required: true },
     startTime: { type: String, required: true },
     runningTime: { type: String, required: true },
@@ -25,16 +24,16 @@ const writeSchema = new Schema(
   }
 );
 
-writeSchema.set("collection", "write");
+tWriteSchema.set("collection", "tWrite");
 
 // 기존 데이터베이스의 `_id` 값을 `id` 값으로 복사합니다.
-writeSchema.pre("save", function (next) {
+tWriteSchema.pre("save", function (next) {
   if (this.isNew) {
     this.id = this._id;
   }
   next();
 });
 
-const Write = mongoose.model("write", writeSchema);
+const TWrite = mongoose.model("tWrite", tWriteSchema);
 
-module.exports = Write;
+module.exports = TWrite;

@@ -1,14 +1,20 @@
 import usePost from "../../hooks/usePost";
-//import "./Write.css";
+import "./Write.css";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../main/Header";
 
+import SelectModal from "./SelectModal";
+
 const ModifyPost = () => {
   const hook = usePost();
+
   const [flag, setFlag] = useState(false);
+  const [modal, setModal] = useState(false);
+
+  /* const hook2 = SelectModal({ modal, setModal }); */
 
   const imgLink = "http://localhost:8080/images";
 
@@ -106,7 +112,10 @@ const ModifyPost = () => {
         );
         if (res.data !== undefined) {
           hook.setPCondition(res.data.result[0].number);
-          hook.setPeriodCondition(res.data.result[0].number.period);
+          /* hook.setPeriodCondition(res.data.result[0].number.period); */
+          hook.setStartTime(res.data.result[0].startTime);
+          hook.setRunningTime(res.data.result[0].runningTime);
+          hook.setEstimateAmount(res.data.result[0].estimateAmount);
           hook.setDate(res.data.result[0].date);
           hook.setTags(res.data.result[0].tag);
           hook.setTitle(res.data.result[0].title);
@@ -138,14 +147,34 @@ const ModifyPost = () => {
     return false;
   };
 
+  const selection = () => {
+    setModal(!modal);
+  }
+
+  const [recruitChange, setRecruitChange] = useState();
+
+  const handleRecruitChange = (value) => {
+    setRecruitChange(value);
+    hook.setRecruit(value);
+  };
+
   return (
     <>
+    { modal && (
+        <SelectModal
+          modal = {modal}
+          setModal = {setModal}
+          onRecruitChange={handleRecruitChange}
+        />
+      )
+    }
+
       <Header />
       <div className="choose">
         <button
           className={hook.recruit ? "cbtn" : "falseBtn"}
           onClick={() => {
-            hook.setRecruit(!hook.recruit);
+            selection();
           }}
         >
           {hook.recruit ? "모집중" : "모집완료"}
@@ -160,7 +189,7 @@ const ModifyPost = () => {
               hook.setPCondition(e.target.value);
             }}
           >
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, "10명 이상"].map((number, index) => (
+            {[1, 2].map((number, index) => (
               <option
                 key={number + index}
                 value={typeof number === "number" ? `${number}명` : "10명 이상"}
@@ -171,7 +200,7 @@ const ModifyPost = () => {
             ))}
           </select>
 
-          <text className="ww">진행기간</text>
+          {/* <text className="ww">진행기간</text>
           <select
             name="period"
             className="period"
@@ -190,10 +219,65 @@ const ModifyPost = () => {
                 {typeof month === "number" ? `${month}개월` : month}
               </option>
             ))}
-          </select>
+          </select> */}
+
+          <text className="ww">시작시간</text>
+            <input
+              type="time"
+              id="startTime"
+              className="startTime_input"
+              onChange={(event) => {
+                hook.setStartTime(event.target.value);
+              }}
+              defaultValue={hook.startTime}
+            ></input>
         </div>
 
         <div className="ch2">
+          {/* <text className="ss">시작예정일</text>
+          <input
+            type="date"
+            id="date"
+            className="date"
+            onChange={(event) => {
+              hook.setDate(event.target.value);
+            }}
+            defaultValue={hook.date}
+          ></input> */}
+
+            <text className="ww">예상진행시간</text>
+              <input
+                className="runningTime"
+                onChange={(event) => {
+                  hook.setRunningTime(event.target.value);
+                }}
+                defaultValue={hook.runningTime}
+                placeholder="분 단위로 입력" 
+                type="number" 
+                id="runningTime" 
+                name="runningTime" 
+                min="0" 
+                max="1440" 
+                step="1"
+              />
+
+              <text className="ww">예상금액</text> 
+              <input
+                className="estimatedAmount_input"
+                onChange={(event) => {
+                  hook.setEstimateAmount(event.target.value);
+                }}
+                defaultValue={hook.estimateAmount}
+                type="currency"
+                pattern="[0-9]+"
+                id="estimatedAmount" 
+                name="estimatedAmount" 
+                min="0"
+                step="100"
+              ></input> 원
+        </div>
+
+        <div className="ch3">
           <text className="ss">시작예정일</text>
           <input
             type="date"
