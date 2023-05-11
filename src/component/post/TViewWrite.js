@@ -28,6 +28,10 @@ const ViewTWrite = () => {
     
     const hook = usePost();
 
+    const passHandler = (userId) => {
+        navigate(`/PortfolioView/${userId}`);
+    };
+
     const deleteHandler = () => {
       const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
       if (confirmDelete) {
@@ -188,7 +192,10 @@ const ViewTWrite = () => {
                 </div>
                 <div className={styles.content_2}>
                     <div>작성자</div>
-                    <div style={{ marginRight: "12.5rem" }}>
+                    <div 
+                        onClick={() => {passHandler(write._user)}}  
+                        style={{ marginRight: "12.5rem" }}
+                    >
                     {profileImg === null ? (
                         <HiUserCircle
                         size="40"
@@ -200,9 +207,6 @@ const ViewTWrite = () => {
                         className={styles.profile}
                         src={profileImg}
                         alt="프로필 이미지"
-                        /* onClick={() => {
-                            writerProfileClick(write.writer, id);
-                        }} */
                         />
                     )}
                     {write.writer}

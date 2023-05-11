@@ -18,4 +18,3 @@ askARGoodSchema.set("collection", "askARGood");
 const AskARGood = mongoose.model("askARGood", askARGoodSchema);
 
 module.exports = AskARGood;
-

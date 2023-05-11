@@ -6,10 +6,9 @@ const replySchema = new Schema(
     postId : {type: Number, required: true },
     _id : { type: Number, required: true }, 
     rwriter: { type: String, required: true },
+    _user: { type: String, required: true },
     rwriteDate: { type: String, required: true },
     reply: { type: String, required: true },
-    isSecret: { type: Boolean, default: false },
-    _user: {type: String, required: true}
   },
 );
 

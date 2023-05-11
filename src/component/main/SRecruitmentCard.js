@@ -9,7 +9,7 @@ import comment from "../../images/comment.png";
 import styles from "./StudyRoomCard.module.css";
 import userStore from "../../store/user.store";
 
-function StudyRoomCard({ title, tags, id, onClick }) {
+function SRecruitmentCard({ title, tags, id, onClick }) {
   const user = userStore();
   const commentCount = 7;
 
@@ -23,7 +23,7 @@ function StudyRoomCard({ title, tags, id, onClick }) {
   const clickHeart = () => {
     if (user.token !== null) {
       axios
-        .post(`http://localhost:8080/setGoodPost/${id}`, null, {
+        .post(`http://localhost:8080/setTGoodPost/${id}`, null, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -100,7 +100,7 @@ function StudyRoomCard({ title, tags, id, onClick }) {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`http://localhost:8080/getGoodPost/${id}`, {
+        .get(`http://localhost:8080/getTGoodPost/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -120,7 +120,7 @@ function StudyRoomCard({ title, tags, id, onClick }) {
     axios
       .post(
         "http://localhost:8080/getViewCount",
-        { id: id, postName: "study" } // 서버로 전달할 id
+        { id: id, postName: "srecruitment" } // 서버로 전달할 id
       )
       .then((response) => {
         if (response.status === 200) {
@@ -152,4 +152,4 @@ function StudyRoomCard({ title, tags, id, onClick }) {
   );
 }
 
-export default StudyRoomCard;
+export default SRecruitmentCard;

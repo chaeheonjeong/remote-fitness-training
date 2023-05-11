@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mogoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const select_sSchema = new Schema({
@@ -23,8 +23,5 @@ const r_reply = mongoose.model("r_reply", new Schema({}));
         applicant: nickname,
     }));
 }) */
-select_sSchema.set("collection", "select_s");
-
-const Select_s = mongoose.model("select_s", select_sSchema);
 
 module.exports = Select_s;

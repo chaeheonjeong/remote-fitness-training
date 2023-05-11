@@ -1,4 +1,4 @@
-/* import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./View.module.css";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -29,6 +29,15 @@ const ViewReply = ({ write, setWrite }) => {
 
     const [showReplyInput, setShowReplyInput] = useState(false);
     const [showReplyList, setShowReplyList] = useState(false);
+
+    
+    const ReplyProfileClick = (userId) => {
+      navigate(`/PortfolioView/${userId}`);
+    };
+    
+    const R_ReplyProfileClick = (userId) => {
+        navigate(`/PortfolioView/${userId}`);
+    };
 
     const handleShowReplyInput = () => {
         setShowReplyInput(!showReplyInput);
@@ -73,7 +82,7 @@ const ViewReply = ({ write, setWrite }) => {
 
             /* console.log("sameUsers: ", res.data.sameUsers); */
 
-           /* console.log(pImg);
+            console.log(pImg);
 
             console.log(res.data.message);
             }console.log(res.data);
@@ -134,7 +143,7 @@ const ViewReply = ({ write, setWrite }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = { reply: replyInput, /* isSecret: isSecret *//* };
+        const data = { reply: replyInput, /* isSecret: isSecret */ };
         
         console.log("data: ", data);
         
@@ -142,7 +151,7 @@ const ViewReply = ({ write, setWrite }) => {
         const response = await axios.post(`http://localhost:8080/postreply/${id}`, {
             reply: String(replyInput),
             /* isSecret : Boolean(isSecret), */
-          /*  rwriter: user.name,
+            rwriter: user.name,
             rwriteDate: today,
         }, {
             headers: { Authorization: `Bearer ${user.token}` },
@@ -169,13 +178,13 @@ const ViewReply = ({ write, setWrite }) => {
 
     const rhandleSubmit = async (e) => {
         e.preventDefault();
-        const data = { r_reply : replyRInput/* , isRSecret : isRSecret *//*};
+        const data = { r_reply : replyRInput/* , isRSecret : isRSecret */};
         console.log(data);
         try {
         const response = await axios.post(`http://localhost:8080/postr_reply/${id}/${selectedRId}`, {
             r_reply: String(replyRInput),
             /* isRSecret : Boolean(isRSecret), */
-           /* r_rwriter: user.name,
+            r_rwriter: user.name,
             r_rwriteDate: today,
             
         }, {
@@ -184,7 +193,7 @@ const ViewReply = ({ write, setWrite }) => {
         /* console.log(typeof isRSecret); */
         
         
-     /*   console.log(typeof data);
+        console.log(typeof data);
         console.log("success", response.data.message);
 
         // 새로운 대댓글을 추가합니다.
@@ -236,7 +245,7 @@ const ViewReply = ({ write, setWrite }) => {
             r_rWriteDate: today,
             r_reply: String(replyRModifyInput),
             /* isRSecret: Boolean(isRSecret),  */
-       /* });
+        });
 
         alert("대댓글 수정이 완료되었습니다.");
         navigate(`/view/${id}`);
@@ -298,7 +307,7 @@ const ViewReply = ({ write, setWrite }) => {
             rWriteDate: today,
             reply: String(replyModifyInput),
             /* isSecret: Boolean(isSecret),  */
-       /* });
+        });
 
         alert("수정이 완료되었습니다.");
         navigate(`/view/${id}`);
@@ -340,54 +349,10 @@ const ViewReply = ({ write, setWrite }) => {
         return formattedDate;
     };
 
-    // 댓글 작성자 프로필 이미지 클릭시
-    const profileClick = (writer, id) => {
-        axios
-        .post(
-            `http://localhost:8080/view/${id}/${writer}`,
-            { id: id, writer: writer, postName: "view" }
-        )
-        .then((response) => {
-            console.log(response.data.message);
-            console.log("길이: ", response.data.length);
-            navigate(`/MyPAReviews/${writer}`);
-            console.log('writer: ', writer);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-    }
-
-       //댓글 페이지네이션
-   const [currentPage, setCurrentPage] = useState(1);
-   const [perPage] = useState(5);
- 
-   // 현재 페이지에 보여질 댓글들 추출
-   const startIndex = (currentPage - 1) * perPage;
-   const endIndex = startIndex + perPage;
-   const currentReply = reply.slice(startIndex, endIndex);
- 
-   // 페이지네이션 컴포넌트
-   const totalPages = Math.ceil(reply.length / perPage);
-   const pageNumbers = [];
-   for (let i = 1; i <= totalPages; i++) {
-     pageNumbers.push(i);
-   }
- 
-   const renderPageNumbers = pageNumbers.map(number => {
-     return (
-       <li key={number}>
-         <button onClick={() => setCurrentPage(number)}>
-           {number}
-         </button>
-       </li>
-     );
-   });
-
 
     return(
         <>
-        {/* 댓글 입력 폼 *//*}
+        {/* 댓글 입력 폼 */}
         <form onSubmit={handleSubmit}>
           <div className={styles.content_6}>
             <input
@@ -397,7 +362,7 @@ const ViewReply = ({ write, setWrite }) => {
               value={replyInput}
               onChange={replyInputChangeHandler}
             />
-            <div className={styles.reply_choose1}>        
+            <div className={styles.reply_choose}>        
               <input type="submit" className={styles.sbtn} value="등록"></input>
             </div>
           </div>
@@ -415,32 +380,24 @@ const ViewReply = ({ write, setWrite }) => {
               </tr>
             </thead>
             <tbody>
-              {currentReply.map((r, index) => (
+              {reply.map((r, index) => (
               
               <tr className={styles.replyTitle} key={r._id}>
-                <td>
+                <td key={r._id} onClick={() => ReplyProfileClick(r._user)} >
                   <div>
                   {!pImg || !pImg[index] ? (
                     <HiUserCircle
                       size="40"
                       color="#5a5a5a"
                       style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        profileClick(write.writer, id);
-                      }}
                     />
                   ) : (
                     <img
                       className={styles.profile}
                       src={pImg[index]}
                       alt="프로필 이미지"
-                      onClick={() => {
-                        profileClick(write.writer, id);
-                      }}
                     />
                   )}
-
-
                   {r.rwriter}
                   </div>
                 </td>
@@ -450,7 +407,7 @@ const ViewReply = ({ write, setWrite }) => {
                   formatDate(new Date(r.rwriteDate))}</td>
 
 
-                {/* 댓글 수정 & 삭제 *//*}
+                {/* 댓글 수정 & 삭제 */}
                 {sameUsers[index] && (
                   <td>
                     <input type="button" className={styles.rdbtn} value="삭제" onClick={ deleteReply.bind(null, r._id) }></input>
@@ -486,7 +443,7 @@ const ViewReply = ({ write, setWrite }) => {
 
                 <td>
                   {!showReplyInput && (
-                    <button className={styles.asdf} onClick={() => {
+                    <button onClick={() => {
                       setShowReplyInput(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
                     }}>대댓글 추가</button>
@@ -503,15 +460,15 @@ const ViewReply = ({ write, setWrite }) => {
                             onChange={replyInputRChangeHandler}
                           />
                           <div className={styles.reply_choose}>
-                            <input className={styles.asdf3} type="submit" value="대댓글 등록"></input>
-                            <button className={styles.reply_choose2} onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
+                            <input type="submit" value="대댓글 등록"></input>
+                            <button onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
                           </div>
                         </div>
                     </form>
                 
                   )}
                   {!showReplyList && (
-                    <button className={styles.asdf1} onClick={() => {
+                    <button onClick={() => {
                       setShowReplyList(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
                       fetchR_Reply(r._id);
@@ -519,7 +476,7 @@ const ViewReply = ({ write, setWrite }) => {
                   )}
                   <div>
                     {showReplyList && (
-                      <button className={styles.asdf1} onClick={() => {
+                      <button onClick={() => {
                         setShowReplyList(selectedRId === r._id ? null : r._id);
                         setSelectedRId(selectedRId === r._id ? null : r._id);
                         fetchR_Reply(r._id);
@@ -530,7 +487,7 @@ const ViewReply = ({ write, setWrite }) => {
                   {showReplyList === r._id && (
                     
                     <div className={styles.rr_reply2}>
-                      {/* 대댓글 목록 보여주는 코드 *//*}
+                      {/* 대댓글 목록 보여주는 코드 */}
                       
                         <table>
                           <thead>
@@ -543,26 +500,19 @@ const ViewReply = ({ write, setWrite }) => {
                           {r_reply.map((rr, index) => (
                           <tbody>
                             <tr>
-                              <td>
+                              <td key={rr._id} onClick={() => R_ReplyProfileClick(rr._user)} >
                               <div>
-
                                 {!rPImg || !rPImg[index] ? (
                                   <HiUserCircle
                                     size="40"
                                     color="#5a5a5a"
                                     style={{ cursor: "pointer" }}
-                                    onClick={() => {
-                                      profileClick(write.writer, id);
-                                    }}
                                   />
                                 ) : (
                                   <img
                                     className={styles.profile}
                                     src={rPImg[index]}
                                     alt="프로필 이미지"
-                                    onClick={() => {
-                                      profileClick(write.writer, id);
-                                    }}
                                   />
                                 )}
                                 {rr.r_rwriter}
@@ -571,7 +521,7 @@ const ViewReply = ({ write, setWrite }) => {
                               <td>{rr.r_reply}</td>
                               <td>{" "}{rr.r_rwriteDate !== undefined && formatDate(new Date(rr.r_rwriteDate))}</td>
 
-                             {/* 대댓글수정 *//*}
+                             {/* 대댓글수정 */}
                              {RsameUsers[index] && (
                                 <td>
                                   <input type="button" className={styles.rrdbtn} value="삭제" onClick={() => handleRDelete(rr._id)}></input>
@@ -623,4 +573,4 @@ const ViewReply = ({ write, setWrite }) => {
         </>
     );
 }
-export default ViewReply; */
+export default ViewReply;

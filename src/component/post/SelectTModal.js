@@ -2,11 +2,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./SelectModal.module.css";
-import usePost from "../../hooks/usePost";
+import usePost from "../../hooks/useTPost";
 
 import userStore from "../../store/user.store";
 
-const SelectModal = ({ modal, setModal, onRecruitChange }) => { 
+const SelectTModal = ({ modal, setModal, onRecruitChange }) => { 
     const { id } = useParams();
     const user = userStore();
     const [rWriterList, setRWriterList] = useState([]);
@@ -16,8 +16,6 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
     const host = user.name;
     const [roomTitle, setRoomTitle] = useState("");
     const [startTime, setStartTime] = useState("");
-
-    
 
     const hook = usePost();
 
@@ -41,7 +39,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
         }
 
         const response = await axios
-          .post(`http://localhost:8080/selectedAlarm`, data);
+          .post(`http://localhost:8080/selectedTAlarm`, data);
 
           console.log(response.data);
       } catch(error) {
@@ -63,7 +61,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
 
         try {
             const res = await axios
-            .post(`http://localhost:8080/selectionInfo`,  {
+            .post(`http://localhost:8080/selectionTInfo`,  {
                host: host,
                applicant: selectedStudent,
                roomTitle: roomTitle,
@@ -88,7 +86,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
     const getRWriter = async () => {
         try {
             const res = await axios
-            .get(`http://localhost:8080/getRWriter/${id}/${user.name}`)
+            .get(`http://localhost:8080/getTRWriter/${id}/${user.name}`)
 
             console.log(user.name);
 
@@ -130,7 +128,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
             <div className={styles.inputWrapper}>
               <form>
                 <div>
-                    <a>선생님</a>
+                    <a>수강생</a>
                     <div className={styles.selectStudent}>
                         {rWriterList.map((rWriter) => (
                             <div key={rWriter}>
@@ -163,12 +161,12 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
                 </div>
 
                 {/* 이 부분은 수강생이 선생님 모집하는 경우에만 보이기 */}
-                <div>
+                {/* <div>
                     <a className={styles.amount}>
                         선금 결제 금액 : 
                     </a>
                     <button>선금 결제하러 가기</button>
-                </div>
+                </div> */}
 
               </form>
     
@@ -194,4 +192,4 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
         </div>
     );
 };
-export default SelectModal;
+export default SelectTModal;
