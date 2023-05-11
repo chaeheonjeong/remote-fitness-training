@@ -28,8 +28,4 @@ mwriteSchema.pre("save", function (next) {
 
 const MWrite = mongoose.model("mwrite", mwriteSchema);
 
-<<<<<<< HEAD
 module.exports = MWrite;
-=======
-module.exports = MWrite;
->>>>>>> e30a2c32be3ef1563102f960be9510bf239890c3

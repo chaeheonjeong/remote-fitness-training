@@ -66,8 +66,6 @@ const Router = () => {
         <Route path="/Ask" element={<Ask />} />
         <Route path="/modifyAsk/:id" element={<ModifyAsk />} />
         <Route path="/tView/:id" element={<TView />} />
-        {/*<Route path="/View2" element={<View2 />} />
-        <Route path="/View3" element={<View3 />} />*/}
 
         <Route path="/AskView/:id" element={<AskView />} />
         <Route path="/MyInfo" element={<MyInfo />} />
@@ -75,7 +73,6 @@ const Router = () => {
         <Route path="/MyLikedPost" element={<MyLikedPost />} />
         <Route path="/MyLikedQuestion" element={<MyLikedQuestion />} />
         <Route path="/MyPAReviews/:name" element={<MyPAReviews />} />
-        {/* <Route path="/View/:id" element={<View />} /> */}
 
         <Route path="myAsk" element={<MyAsk />} />
         <Route path="myPost" element={<MyPost />} />

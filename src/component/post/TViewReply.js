@@ -347,7 +347,6 @@ const TViewReply = ({ write, setWrite }) => {
         return formattedDate;
     };
 
-
     return(
         <>
         {/* 댓글 입력 폼 */}
