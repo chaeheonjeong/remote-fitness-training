@@ -7,7 +7,6 @@ const userSchema = new Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     image: { type: String },
-    /* userLikedStudy: [{ type: Schema.Types.ObjectId, ref: 'Study' }] */
   },
   {
     versionKey: false,
@@ -19,4 +18,3 @@ userSchema.set("collection", "user");
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
-

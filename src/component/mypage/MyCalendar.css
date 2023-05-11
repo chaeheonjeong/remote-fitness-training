@@ -271,3 +271,8 @@
   border:1px solid #CCC;
   font-family: 'Cafe24SsurroundAir';
 }
+
+.reviewBtn{
+  float: right;
+  margin-top: 10px;
+}

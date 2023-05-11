@@ -10,36 +10,65 @@ const Notification = () => {
 
   return (
     <div>
-      {hook.rendData.map((x, i) => {
-        return (
-          <div
-            key={x.id + i}
-            className={`${styles.smallContainer} ${
-              x.read === 0 && styles.unRead
-            }`}
-            onClick={() => {
-              x.read === 0 && hook.setReadComm(!hook.readComm);
-              x.read = 1;
-            }}
-          >
-            {" "}
-            {/* onClick={()=>window.open(x.url)} 나중에 URL 추가하고 활성화 */}
-            <div className={styles.title}>
-              {x.type === "comment" && (
-                <div>
-                  <VscCommentDiscussion /> 새로운 댓글이 달렸어요!
+      {hook.rendData === null ? (
+        <div>알림이 없습니다.</div>
+      ) : (
+        hook.rendData.map((x, i) => {
+          console.log("%%%%: ", x);
+          return (
+              <div
+                key={x._id/*.id  + i */}
+                className={`${styles.smallContainer} ${
+                  x.read === false && styles.unRead
+                }`}
+                onClick={() => {
+                  x.read === false && hook.handleReadComm(x._id)/* hook.setReadComm(!hook.readComm) */;
+                  console.log(x._id);
+                  x.read = true;
+                }}
+              >
+
+
+                <div className={styles.title}>
+                  {x.type === "comment" && (
+                    <div>
+                      <VscCommentDiscussion /> {x.title}
+                    </div>
+                  )}
+                  {x.type === "write" && (
+                    <div>
+                      작성자: {x.writer}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            <div>
-              {x.content.length >= 70
-                ? x.content.substring(0, 70) + "..."
-                : x.content}
-            </div>
-            <div className={styles.time}>{x.time}</div>
-          </div>
-        );
-      })}
+
+                {/* {" "}
+                onClick={()=>window.open(x.url)} 나중에 URL 추가하고 활성화
+                <div className={styles.title}>
+                  {x.type === "comment" && (
+                    <div>
+                      <VscCommentDiscussion /> {x.title}
+                    </div>
+                  )}
+                </div> */}
+                <div>
+                  {console.log(x.message)}
+                  {x.message.length >= 70
+                    ? x.message.substring(0, 70) + "..."
+                    : x.message}
+                </div>
+                <div className={styles.time}>{x.createAt}</div>
+                {x.role === 'student' ? (
+                  <div>
+                    <button>선금</button>
+                  </div>
+                ) : (
+                  <div></div>
+                )}
+              </div>
+          );
+        })
+      )}
       <Paginator hook={hook} />
     </div>
   );

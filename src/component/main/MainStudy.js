@@ -103,7 +103,6 @@ function MainStudy() {
   }, [searchInput]);
 
   const moreStudies = () => {
-    console.log(hasMore);
     if (hasMore) {
       axios
         .get(
@@ -158,15 +157,24 @@ function MainStudy() {
         <div className={styles.menu}>
           <div className={styles.select}>
             <Link to="/">
-              <button className={styles.openStudy}>오픈스터디</button>
-            </Link>
-            <Link to="/study">
-              <button className={styles.study}>스터디</button>
-            </Link>
-            <Link to="/question">
-              <button className={styles.question}>질문</button>
-            </Link>
-          </div>
+                <button className={styles.openStudy}>모집글</button>
+              </Link>
+              {/* <Link to="/study">
+                <button className={styles.study}>스터디</button>
+              </Link> */}
+              <Link to="/question">
+                <button className={styles.question}>질문</button>
+              </Link>
+            </div>
+
+            <div>
+              <Link to="/">
+                  <button className={styles.tRecruitment}>강사모집</button>
+              </Link>
+              <Link to="/sRecruitment">
+                  <button className={styles.sRecruitment}>학생모집</button>
+              </Link>
+            </div>
 
           <div className={styles.searchAndMake} onSubmit={searchHandler}>
             <form className={styles.search}>

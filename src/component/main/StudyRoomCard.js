@@ -6,7 +6,6 @@ import emptyHeart from "../../images/emptyHeart.png";
 import fullHeart from "../../images/heart.png";
 import view from "../../images/view.png";
 import comment from "../../images/comment.png";
-
 import styles from "./StudyRoomCard.module.css";
 import userStore from "../../store/user.store";
 
@@ -138,8 +137,9 @@ function StudyRoomCard({ title, tags, id, onClick }) {
     <div key={id + title} className={styles.questionBoxWrapper}>
       <HeartBtn />
       <div className={styles.studyBox} onClick={onClick && onClick}>
-        <a>{id}</a>
-        <h1 className={styles.studyTitle}>{title}</h1>
+        <h1 className={styles.studyTitle}>
+          {title.length > 5 ? title.slice(0, 5) + "..." : title}
+        </h1>
         {<Hashtag />}
         <div className={styles.reaction}>
           <img className={styles.view} src={view} alt="view"></img>

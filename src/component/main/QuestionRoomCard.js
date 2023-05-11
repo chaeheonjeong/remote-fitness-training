@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-
 import emptyHeart from "../../images/emptyHeart.png";
 import fullHeart from "../../images/heart.png";
 import view from "../../images/view.png";
 import comment from "../../images/comment.png";
-
 import styles from "./QuestionRoomCard.module.css";
 import "./InfiniteScroll.css";
 import { Fragment } from "react";
@@ -137,7 +135,9 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
     <div key={id + title} className={styles.questionBoxWrapper}>
       <HeartBtn />
       <div className={styles.questionBox} onClick={onClick && onClick}>
-        <h1 className={styles.questionTitle}>{title}</h1>
+        <h1 className={styles.questionTitle}>
+          {title.length > 5 ? title.slice(0, 5) + "..." : title}
+        </h1>
         {<Hashtag />}
         <div className={styles.reaction}>
           <img className={styles.view} src={view} alt="view"></img>

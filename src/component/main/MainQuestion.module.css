@@ -28,14 +28,15 @@
 }
 
 .question {
-  border: 1.5px solid rgb(255, 187, 0);
-  border-color: rgb(255, 187, 0);
+  border: 1.5px solid #8AE52E;
   border-style: solid;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.openStudy,
-.study {
-  border: 1.5px solid rgb(189, 188, 188);
+.recruitment,
+.sRecruitment,
+.tRecruitment {
+  border: 1.5px solid #8AE52E;
 }
 
 .search {
@@ -46,15 +47,15 @@
   border-radius: 7px;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  border: 1.5px solid rgb(189, 188, 188);
+  border: 1.5px solid #8AE52E;
 }
 
 .search input {
-  border: 1.5px solid rgb(189, 188, 188);
+  border: 1.5px solid #8AE52E;
 }
 
 .search button {
-  border: 1.5px solid rgb(189, 188, 188);
+  border: 1.5px solid #8AE52E;
   width: 3rem;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
@@ -66,7 +67,7 @@
 }
 
 .makeBtn {
-  border: 1.5px solid rgb(189, 188, 188);
+  border: 1.5px solid #8AE52E;
   width: 5rem;
   margin-left: 3rem;
 }

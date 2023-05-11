@@ -6,10 +6,11 @@ import SideBar from "./SideBar";
 import axios from "axios";
 import Modal from "react-modal";
 import Header from "../main/Header";
+import { HiUserCircle } from "react-icons/hi";
 import userStore from "../../store/user.store";
 
 function MyInfo() {
-  const [imgFile, setImgFile] = useState("");
+  const [imgFile, setImgFile] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const imgRef = useRef();
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ function MyInfo() {
   const [errorMessage, setErrorMessage] = useState(false);
   const [nameError, setNameError] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(false);
+  const [call, setCall] = useState(false);
   const token = localStorage.getItem("token");
   const tuser = userStore();
 
@@ -121,6 +123,7 @@ function MyInfo() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    console.log(user._id);
 
     try {
       const response = await axios.post(
@@ -135,6 +138,7 @@ function MyInfo() {
       if (response.status === 200) {
         alert("닉네임이 변경되었습니다.");
         tuser.changeName(user.name);
+
         console.log(tuser.name);
       }
       setNameError(false);
@@ -146,7 +150,11 @@ function MyInfo() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("이미지 업로드에 성공 했습니다.");
+      if (res.status === 200) {
+        console.log("이미지 업로드에 성공 했습니다.");
+        setCall((prev) => !prev);
+        setImgFile(res.data.image);
+      }
     } catch (error) {
       if (
         error.response &&
@@ -170,11 +178,15 @@ function MyInfo() {
 
   return (
     <div>
-      <Header />
+      <Header imgFile={imgFile} callback={call} />
       <SideBar />
       {user ? (
         <div className="MyInfo">
-          <img className="Profile" src={imgFile} alt="프로필 이미지" />
+          {imgFile ? (
+            <img className="Profile" src={imgFile} alt="프로필 이미지" />
+          ) : (
+            <HiUserCircle size="180" />
+          )}
           <label className="img-btn" for="ProfileImg">
             프로필 변경
           </label>

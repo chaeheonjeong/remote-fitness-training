@@ -27,7 +27,10 @@
     margin-right: 30px;
   }
 
-  
+.cc {
+  margin-right: 30px;
+}
+
 .tt {
   margin-right: 30px;
 }
@@ -51,12 +54,6 @@
 
 .btn {
   text-align: end;
-}
-
-.title_tinput {
-  width: 90%;
-  padding: 5px;
-  border: solid 1.6px black;
 }
 
 .content {

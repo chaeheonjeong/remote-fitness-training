@@ -5,6 +5,7 @@ import MyGoalModal from "../modal/MyGoalModal";
 import axios from "axios";
 import userStore from "../../store/user.store";
 import { useNavigate } from "react-router-dom";
+import { TbClover2 } from "react-icons/tb";
 
 const MyGoal = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -79,17 +80,9 @@ const MyGoal = () => {
         setOriginTime={setTime}
       />
       <div className={styles.wrapper}>
-        <div className={styles.title}>내 목표</div>
+        <div className={styles.title}>내 행복지수</div>
         <div className={styles.content}>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <label style={{ fontWeight: "570", fontSize: "0.85rem" }}>
-              오늘 공부한 시간
-            </label>
-            <label
-              style={{ fontWeight: "570", fontSize: "0.85rem", color: "gray" }}
-            >
-              &nbsp;/ 내 목표시간
-            </label>
             <button
               className={styles.studyBtn}
               onClick={() => {
@@ -108,17 +101,11 @@ const MyGoal = () => {
             }}
           >
             <label style={{ fontWeight: "500", fontSize: "1.2rem" }}>
-              {user.token !== null
-                ? `${styHour}시간 ${styMinute}분`
-                : `0시간 0분`}
-            </label>
-            <label
-              style={{ fontWeight: "500", fontSize: "1.2rem", color: "gray" }}
-            >
-              &nbsp;/{" "}
-              {user.token !== null
-                ? `${String(hour)}시간 ${String(minute)}분`
-                : `0시간 0분`}
+              행복지수 달성도
+                <TbClover2
+                size="20"
+                className={styles.clover}
+              />
             </label>
             <label className={styles.progLabel1}>
               {user.token !== null ? dealt : `0`}%
