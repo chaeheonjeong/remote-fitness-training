@@ -183,51 +183,51 @@ function Ask() {
               </span>
             ))}
           </div>
-        </div>
 
-        <div className={styles.content}>
-          <CKEditor
-            editor={ClassicEditor}
-            data=""
-            config={{
-              placeholder: "내용을 입력하세요.",
-              extraPlugins: [uploadPlugin],
-            }}
-            /*             onReady={(editor) => {
+          <div className={styles.content}>
+            <CKEditor
+              editor={ClassicEditor}
+              data=""
+              config={{
+                placeholder: "내용을 입력하세요.",
+                extraPlugins: [uploadPlugin],
+              }}
+              /*             onReady={(editor) => {
               // You can store the "editor" and use when it is needed.
               console.log("Editor is ready to use!", editor);
             }} */
-            onChange={(e, editor) => {
-              const data = editor.getData();
-              console.log({ e, editor, data });
-              setContent({
-                content: data,
-              });
-            }}
-            /*             onBlur={(e, editor) => {
+              onChange={(e, editor) => {
+                const data = editor.getData();
+                console.log({ e, editor, data });
+                setContent({
+                  content: data,
+                });
+              }}
+              /*             onBlur={(e, editor) => {
               console.log("Blur.", editor);
             }}
             onFocus={(e, editor) => {
               console.log("Focus.", editor);
             }} */
-          />
-        </div>
+            />
+          </div>
 
-        <div className={styles.btn}>
-          <input
-            type="button"
-            value="취소"
-            className={styles.cancel}
-            onClick={() => {
-              navigate("/question");
-            }}
-          />
-          <input
-            type="submit"
-            value="등록"
-            className={styles.submit}
-            onClick={handleSubmit}
-          />
+          <div className={styles.btn}>
+            <input
+              type="button"
+              value="취소"
+              className={styles.cancel}
+              onClick={() => {
+                navigate("/question");
+              }}
+            />
+            <input
+              type="submit"
+              value="등록"
+              className={styles.submit}
+              onClick={handleSubmit}
+            />
+          </div>
         </div>
       </div>
     </>

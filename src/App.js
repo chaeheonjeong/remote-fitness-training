@@ -7,8 +7,6 @@ import Login from "./component/auth/Login";
 import FindPw from "./component/auth/FindPw";
 import Main from "./component/main/Main";
 
-
-
 function App() {
 
   return (

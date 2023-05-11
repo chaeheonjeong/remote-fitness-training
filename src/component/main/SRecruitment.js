@@ -184,10 +184,10 @@ function SRecruitment() {
                     <button
                     className={styles.makeBtn}
                     onClick={() => {
-                        navigate("/writePost");
+                        navigate("/writeTPost");
                     }}
                     >
-                    만들기
+                    글쓰기
                     </button>
                 </div>
             </div>
