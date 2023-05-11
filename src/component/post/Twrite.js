@@ -246,7 +246,7 @@ const TWrite = () => {
           value="취소"
           className={styles.cancel}
           onClick={() => {
-            hook.navigate("/study");
+            hook.navigate("/sRecruitment");
           }}
         />
         <input

@@ -17,4 +17,3 @@ askGoodSchema.set("collection", "askGood");
 const AskGood = mongoose.model("askGood", askGoodSchema);
 
 module.exports = AskGood;
-

@@ -9,7 +9,7 @@ import { scrollToTop } from "../../util/common";
 import { HiUserCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import MyPAReviews from "../mypage/MyPAReviews";
-import response from "http-browserify/lib/response";
+/* import response from "http-browserify/lib/response"; */
 import usePost from "../../hooks/useTPost";
 
 const TViewReply = ({ write, setWrite }) => {
@@ -346,7 +346,6 @@ const TViewReply = ({ write, setWrite }) => {
     
         return formattedDate;
     };
-
 
     return(
         <>

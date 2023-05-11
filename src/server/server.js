@@ -51,6 +51,7 @@ const TPostGood = require("./models/tPostGood");
 const OpenStudy = require("./models/openStudy");
 //const { default: StudyRoomCard } = require("../component/StudyRoomCard");
 const Schedule = require("./models/schedule");
+const boot = require("./lib/RTC/boot");
 
 const ObjectId = mongoose.Types.ObjectId;
 const auth = require("./auth");
@@ -113,6 +114,7 @@ mongoose
   .then(() => console.log("DB 접속완료"))
   .catch((err) => console.log(err));
 
+boot();
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -1024,20 +1026,39 @@ app.post("/postTreply/:id", async (req, res) => {
 // 댓글 작성
 app.post("/postreply/:id", async (req, res) => {
   const { reply,/*  isSecret, */ rwriter, rwriteDate } = req.body;
-  try {
-    const result = await R_Reply.find({ postRId: Number(postRId), selectedRId: Number(selectedRId), _id: Number(rrid)  });
-    console.log(result);
-    if(result) {
-      return res.status(200).json({
-        result: result,
-        message: `댓글 id 가져오기 성공`,
-      });
-    }
-  } catch(error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
+  const { id } = req.params;
+
+  const post = await Write.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
   }
-})
+
+  const replycounter = await ReplyCounter.findOneAndUpdate({ name: '댓글 수' }, { $inc: { totalReply: 1 } }, { new: true, upsert: true });
+  const 총댓글수 = (replycounter.totalReply +1);
+
+  const rwriterId = await User.findOne({ name: rwriter });
+
+  if (!replycounter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newReply = new Reply({
+      postId : id,
+      _id: 총댓글수 + 1, 
+      rwriter: rwriter,
+      _user: rwriterId._id,
+      rwriteDate : rwriteDate,
+      reply : reply,
+      //isSecret : isSecret
+    });
+    await newReply.save();
+
+    return res.status(200).json({ message: `Reply created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
 
 app.post("/viewReplyRModify", async(req, res) => {
   const { postRId, selectedRId, _id, r_rWriteDate, r_reply, isRSecret } = req.body;

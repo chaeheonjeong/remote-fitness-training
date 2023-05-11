@@ -32,7 +32,7 @@
 }
 
 .underline {
-  width: 11rem;
+  width: 12.2rem;
   position: relative;
   padding: 10px;
   background-color: #d2e2c3;
@@ -63,7 +63,7 @@
 
 .recruitment,
 .tRecruitment {
-  border-color: #8AE52E;
+  border: 1.5px solid #8AE52E;
   border-style: solid;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }

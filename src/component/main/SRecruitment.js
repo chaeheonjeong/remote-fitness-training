@@ -184,10 +184,10 @@ function SRecruitment() {
                     <button
                     className={styles.makeBtn}
                     onClick={() => {
-                        navigate("/writePost");
+                        navigate("/writeTPost");
                     }}
                     >
-                    만들기
+                    글쓰기
                     </button>
                 </div>
             </div>
@@ -233,7 +233,7 @@ function SRecruitment() {
                 {
                     noResult ? (
                         <div className={styles.noResult}>
-                            <a>⚠️ 검색결과가 없습니다 ⚠️{noResult}</a>
+                            <div>⚠️ 검색결과가 없습니다 ⚠️{noResult}</div>
                         </div>
                     ) : null
                 }

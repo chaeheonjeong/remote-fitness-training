@@ -233,7 +233,7 @@ function MainStudy() {
                 {
                     noResult ? (
                         <div className={styles.noResult}>
-                            <a>⚠️ 검색결과가 없습니다 ⚠️{noResult}</a>
+                            <div>⚠️ 검색결과가 없습니다 ⚠️{noResult}</div>
                         </div>
                     ) : null
                 }

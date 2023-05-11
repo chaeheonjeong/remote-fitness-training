@@ -9,7 +9,7 @@ import { scrollToTop } from "../../util/common";
 import { HiUserCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import MyPAReviews from "../mypage/MyPAReviews";
-import response from "http-browserify/lib/response";
+/* import response from "http-browserify/lib/response"; */
 import usePost from "../../hooks/useTPost";
 import TViewReply from "./TViewReply";
 
@@ -247,7 +247,7 @@ const ViewTWrite = () => {
                 <div>내용</div>
                 <div dangerouslySetInnerHTML={{ __html: htmlString }} />
                 <span className={good ? styles.goodBtn : null}>
-                스크랩{bookmarkCount}
+                    스크랩{bookmarkCount}
                 </span>
                 <span>조회수{write.views}</span>
             </div>
