@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'SUITE-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
 .container {
   position: fixed;
   top: 0;
@@ -19,7 +26,7 @@
 }
 
 .modalWrapper {
-  background-color: white;
+  background-color: #FAFAFA;
   width: 450px;
   display: flex;
   flex-direction: column;
@@ -34,6 +41,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-family: 'SUITE-Regular';
 }
 
 .btnCancle {
@@ -45,6 +53,7 @@
   color: rgb(49, 49, 49);
   cursor: pointer;
   padding: 0 0.5rem;
+  font-family: 'SUITE-Regular';
 }
 
 .btnCancle:hover {
@@ -55,14 +64,17 @@
   height: 1.8rem;
   font-size: 0.8rem;
   border-radius: 0.5rem;
-  border: 0.5px solid #b9ead0;
-  background-color: #b9ead0;
+  border: 0.5px solid #8AE52E;
+  background-color: #8AE52E;
   color: rgb(49, 49, 49);
   cursor: pointer;
   padding: 0 0.5rem;
+  font-family: 'SUITE-Regular';
 }
 .btnOk:hover {
   filter: brightness(0.85);
+  background-color: #CFFF8D;
+  border-color: #CFFF8D;
 }
 .buttonWrapper {
   display: flex;
@@ -85,6 +97,7 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  font-family: 'SUITE-Regular';
 }
 
 .ModalClose {
@@ -100,7 +113,7 @@
 .clock {
   border-radius: 10rem;
   padding: 0.6rem;
-  background-color: #b9ead0;
+  background-color: #8AE52E;
   margin-top: 2rem;
   color: #409969;
 }

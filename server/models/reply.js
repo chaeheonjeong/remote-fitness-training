@@ -9,6 +9,7 @@ const replySchema = new Schema(
     rwriteDate: { type: String, required: true },
     reply: { type: String, required: true },
     isSecret: { type: Boolean, default: false },
+    _user: {type: String, required: true}
   },
 );
 

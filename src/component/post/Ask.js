@@ -151,40 +151,39 @@ function Ask() {
   return (
     <>
       <Header />
-      <div className={styles.body}>
-        <div className={styles.ask}>
-          <div className={styles.title_input}>
-            <text className={styles.cc}>제목</text>
-            <input
-              onChange={titleHandler}
-              className={styles.title_tinput}
-              value={title}
-              placeholder="제목을 입력하세요."
-            />
+      <div className={styles.ask}>
+        <div className={styles.title_input}>
+          <text className={styles.tt}>제목</text>
+          <input
+            onChange={titleHandler}
+            className={styles.title_tinput}
+            value={title}
+            placeholder="제목을 입력하세요."
+          />
+        </div>
+        <div>
+          <input
+            className={styles.tag_input}
+            onKeyPress={handleKeyPress}
+            type='text'
+            placeholder="해시태그 입력(최대 5개)"
+          />
+          <div className={styles.tag_tagPackage}>
+            {tags.map((tag, index) => (
+              <span key={index} className={styles.tag_tagindex}>
+                {tag}
+                <button
+                  className={styles.tag_Btn}
+                  onClick={() => {
+                    setTags(tags.filter((tag, i) => i !== index));
+                  }}
+                >
+                  &times;
+                </button>
+              </span>
+            ))}
           </div>
-          <div>
-            <input
-              className={styles.tag_input}
-              onKeyPress={handleKeyPress}
-              type="text"
-              placeholder="해시태그 입력(최대 5개)"
-            />
-            <div className={styles.tag_tagPackage}>
-              {tags.map((tag, index) => (
-                <span key={index} className="tag_tagindex">
-                  {tag}
-                  <button
-                    className={styles.tag_Btn}
-                    onClick={() => {
-                      setTags(tags.filter((tag, i) => i !== index));
-                    }}
-                  >
-                    &times;
-                  </button>
-                </span>
-              ))}
-            </div>
-          </div>
+        </div>
 
           <div className={styles.content}>
             <CKEditor
@@ -214,22 +213,21 @@ function Ask() {
             />
           </div>
 
-          <div className={styles.btn}>
-            <input
-              type="button"
-              value="취소"
-              className={styles.cancel}
-              onClick={() => {
-                navigate("/question");
-              }}
-            />
-            <input
-              type="submit"
-              value="등록"
-              className={styles.submit}
-              onClick={handleSubmit}
-            />
-          </div>
+        <div className={styles.btn}>
+          <input
+            type="button"
+            value="취소"
+            className={styles.cancel}
+            onClick={() => {
+              navigate("/question");
+            }}
+          />
+          <input
+            type="submit"
+            value="등록"
+            className={styles.submit}
+            onClick={handleSubmit}
+          />
         </div>
       </div>
     </>

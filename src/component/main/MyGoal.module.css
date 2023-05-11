@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'SUITE-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
 .wrapper {
   display: flex;
   width: 100%;
@@ -8,12 +15,15 @@
 .title {
   font-size: 1.4rem;
   font-weight: 600;
+  font-family: 'SUITE-Regular';
 }
 
 .content {
-  border: 1.5px solid rgb(189, 188, 188);
+  border: 1.5px solid #8AE52E;
   border-radius: 0.5rem;
   padding: 1.3rem 2rem;
+  font-family: 'SUITE-Regular';
+  background-color: #F4F9F4;
 }
 
 .studyBtn {
@@ -22,11 +32,12 @@
   border-radius: 0.8rem;
   border: 2px solid;
   border: none;
-  background-color: #e4e4e4;
+  background-color: #8AE52E;
   color: rgb(49, 49, 49);
   cursor: pointer;
   padding: 0 0.5rem;
   margin-left: auto;
+  font-family: 'SUITE-Regular';
 }
 
 .studyBtn:hover {
@@ -45,10 +56,16 @@
   margin-left: auto;
   font-size: 0.8rem;
   align-self: flex-end;
-  color: rgb(42, 194, 141);
+  color: #8AE52E;
+  font-family: 'SUITE-Regular';
 }
 
 .progLabel2 {
   font-size: 0.8rem;
   align-self: flex-end;
+  font-family: 'SUITE-Regular';
+}
+
+.clover{
+  color: #8AE52E;
 }

@@ -32,15 +32,49 @@ function View() {
     }
   };
 
-  const formatDate = (today) => {
-    const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1;
-    const dateW = today.getDate();
-    const dayOfWeek = daysOfWeek[today.getDay()];
-    const formattedDate = `${year}.${month}.${dateW}(${dayOfWeek})`;
+  useEffect(() => {
+    if (user.token !== null) {
+      axios
+        .get(`http://localhost:8080/getWrite/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setWrite(response.data.result[0]);
+            setSameUser(response.data.sameUser);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .get(`http://localhost:8080/getWrite2/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            setWrite(response.data.result[0]);
+            setSameUser(response.data.sameUser);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
 
-    return formattedDate;
+  const [good, setGood] = useState(false);
+  const [goodCount, setGoodCount] = useState(0);
+
+  const deleteHandler = () => {
+    const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
+    if (confirmDelete) {
+      axios
+        .delete(`http://localhost:8080/writeDelete/${id}`)
+        .then((res) => {
+          navigate("/study");
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   useEffect(() => {
@@ -54,6 +88,8 @@ function View() {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
+            console.log(response.data);
+            console.log(response.data.result[0]._user);
           }
         })
         .catch((error) => {
@@ -67,6 +103,7 @@ function View() {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
+            console.log(response.data);
           }
         })
         .catch((error) => {
@@ -84,6 +121,52 @@ function View() {
       setHtmlString(htmlString);
     }
   }, [write]);
+
+  const [progress, setProgress] = useState(false);
+
+  const [BtnColorRed, setBtnColorRed] = useState(false);
+
+  const [showReplyInput, setShowReplyInput] = useState(false);
+  const [showReplyList, setShowReplyList] = useState(false);
+
+  const [showReplyModifyInput, setShowModifyReplyInput] = useState(false);
+
+  const handleShowReplyInput = () => {
+    setShowReplyInput(!showReplyInput);
+    //setShowReplyList(false); // 대댓글 입력 칸을 보여주면서 대댓글 목록도 함께 보여줌
+  };
+
+  const handleHideReplyInput = () => {
+    setShowReplyInput(false);
+    //setShowReplyList(false);
+    setSelectedRId(null);
+  };
+
+  const handleShowReplyList = () => {
+    setShowReplyList(true);
+    setShowReplyInput(showReplyInput); // 대댓글 입력 칸을 보여주면서 대댓글 목록도 함께 보여줌
+  };
+
+  const handleHideReplyList = () => {
+    setShowReplyInput(false);
+    setShowReplyList(false);
+  };
+
+  
+
+
+  //---------------------------------
+
+
+  const [reply, setReply] = useState([]);
+  
+  const [isSecret, setIsSecret] = useState(false); // 비밀댓글 여부
+  const [sameUsers, setSameUsers] = useState(false);
+  const [postId, setPostId] = useState(); 
+  const [replyInput, setReplyInput] = useState("");
+  const [replyModifyInput, setReplyModifyInput] = useState("");
+
+  const [replies, setReplies] = useState([]); // 수정된 댓글 가져올 때
 
   useEffect(() => {
     if (user.token !== null) {
@@ -121,36 +204,11 @@ function View() {
     }
   }, []);
 
-  useEffect(() => {
-    scrollToTop();
-  }, []);
+  const R_ReplyProfileClick = (userId) => {
+    navigate(`/PortfolioView/${userId}`);
+    
+  }
 
-  const clickGood = () => {
-    if (user.token !== null) {
-      axios
-        .post(`http://localhost:8080/setGoodPost/${id}`, null, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setGood(!good);
-            if (!good) {
-              setGoodCount((prevCount) => prevCount + 1);
-            } else {
-              setGoodCount((prevCount) => prevCount - 1);
-            }
-          } else if (response.status === 201) {
-            setGood(!good);
-            setGoodCount(1);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      alert("로그인 해주세요.");
-    }
-  };
 
   const [progress, setProgress] = useState(false);
 
@@ -255,47 +313,48 @@ function View() {
     fetchReply();
   }, []);
 
-  // 댓글삭제
+<<<<<<<<< Temporary merge branch 1
+  // 댓글삭제 
   const deleteReply = (replyId) => {
     const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
-    if (confirmDelete) {
+    if(confirmDelete) {
       axios
         .delete(`http://localhost:8080/view/${id}/reply/${replyId}`)
         .then((res) => {
-          setReply(reply.filter((reply) => reply._id !== replyId));
+          setReply(reply.filter(reply => reply._id !== replyId));
           console.log("data", res.data);
           alert("댓글이 삭제되었습니다.");
         })
         .catch((err) => console.log(err));
     }
   };
+=========
+>>>>>>>>> Temporary merge branch 2
 
   // 댓글수정
   const modifyHandleSubmit = async (e, replyId) => {
     e.preventDefault();
 
-    if (replyModifyInput === "") {
+    if(replyModifyInput === "") {
       alert("내용을 작성해주세요.");
       return;
     }
-
+    
     try {
-      const response = await axios.post(
-        "http://localhost:8080/viewReplyModify",
-        {
-          postId: id,
-          _id: replyId,
-          rWriteDate: today,
-          reply: String(replyModifyInput),
-          isSecret: Boolean(isSecret),
-        }
-      );
+      const response = await axios.post("http://localhost:8080/viewReplyModify", {
+        postId: id,
+        _id: replyId,
+        rWriteDate: today,
+        reply: String(replyModifyInput),
+        isSecret: Boolean(isSecret), 
+      });
 
       alert("수정이 완료되었습니다.");
       navigate(`/view/${id}`);
 
       //console.log("data", res.data);
-    } catch (error) {
+
+    } catch(error) {
       console.log(error);
     }
   };
@@ -303,23 +362,23 @@ function View() {
   // 댓글수정(가져오기)
   const modifyReply = async (replyId) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/view/${id}/modify/${replyId}`
-      );
-
-      if (res.data !== undefined) {
+      const res = await axios
+      .get(`http://localhost:8080/view/${id}/modify/${replyId}`)
+      
+      if(res.data !== undefined) {
         setIsSecret(res.data.result[0].isSecret);
         setReplyModifyInput(res.data.result[0].reply);
       }
-    } catch (error) {
+    } catch(error) {
       console.log(error);
     }
-  };
+  }
 
   // 댓글수정(내용반영)
   const modifyReplyInputChangeHandler = (e) => {
     setReplyModifyInput(e.target.value);
-  };
+  }
+
 
   const navigate = useNavigate();
 
@@ -328,7 +387,8 @@ function View() {
   const { rid } = useParams();
   const [isRSecret, setIsRSecret] = useState(false); // 비밀댓글 여부
   const [RsameUsers, setRSameUsers] = useState(false);
-  const [postRId, setPostRId] = useState();
+  const [postRId, setPostRId] = useState(); 
+<<<<<<<<< Temporary merge branch 1
 
   /* useEffect(() => {
     const fetchR_Reply = async () => {
@@ -350,40 +410,36 @@ function View() {
     fetchR_Reply();
  
   }, []); */
+  
 
-  const [showR_ReplyModifyInput, setShowRModifyReplyInput] = useState(false);
-  const [replyRModifyInput, setReplyRModifyInput] = useState("");
-
-  // 대댓글수정
-  const modifyRHandleSubmit = async (e, rid, rrid) => {
+// 대댓글수정
+    const modifyRHandleSubmit = async (e, rid, rrid) => {
     e.preventDefault();
 
-    if (replyRModifyInput === "") {
+    if(replyRModifyInput === "") {
       alert("내용을 작성해주세요.");
       return;
     }
-
+    
     try {
-      console.log("selectedRId: ", rid);
-      console.log("rrid: ", rrid);
+      console.log('selectedRId: ', rid);
+      console.log('rrid: ', rrid);
 
-      const response = await axios.post(
-        "http://localhost:8080/viewReplyRModify",
-        {
-          postRId: id,
-          selectedRId: rid,
-          _id: rrid,
-          r_rWriteDate: today,
-          r_reply: String(replyRModifyInput),
-          isRSecret: Boolean(isRSecret),
-        }
-      );
+      const response = await axios.post("http://localhost:8080/viewReplyRModify", {
+        postRId: id,
+        selectedRId: rid,
+        _id: rrid,
+        r_rWriteDate: today,
+        r_reply: String(replyRModifyInput),
+        isRSecret: Boolean(isRSecret), 
+      });
 
       alert("대댓글 수정이 완료되었습니다.");
       navigate(`/view/${id}`);
 
       //console.log("data", res.data);
-    } catch (error) {
+
+    } catch(error) {
       console.log(error);
     }
   };
@@ -391,24 +447,27 @@ function View() {
   // 대댓글수정(가져오기)
   const modifyR_Reply = async (rrid) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/view/${id}/modify/${selectedRId}/${rrid}`
-      );
-
-      if (res.data !== undefined) {
+      const res = await axios
+      .get(`http://localhost:8080/view/${id}/modify/${selectedRId}/${rrid}`)
+      
+      if(res.data !== undefined) {
         setIsRSecret(res.data.result[0].isRSecret);
         setReplyRModifyInput(res.data.result[0].r_reply);
       }
-    } catch (error) {
+    } catch(error) {
       console.log(error);
     }
-  };
+  }
 
   // 대댓글수정(내용반영)
   const modifyR_ReplyInputChangeHandler = (e) => {
     setReplyRModifyInput(e.target.value);
-  };
+  }
+  
 
+=========
+  
+>>>>>>>>> Temporary merge branch 2
   const fetchR_Reply = async (rid) => {
     try {
       const res = await axios.get(
@@ -434,14 +493,11 @@ function View() {
 
   const handleRDelete = async (rrid) => {
     const confirmRDelete = window.confirm("대댓글을 삭제하시겠습니까?");
-    if (confirmRDelete) {
+    if(confirmRDelete) {
       try {
-        const response = await axios.delete(
-          `http://localhost:8080/postr_reply/${id}/${selectedRId}/${rrid}`,
-          {
-            headers: { Authorization: `Bearer ${user.token}` },
-          }
-        );
+        const response = await axios.delete(`http://localhost:8080/postr_reply/${id}/${selectedRId}/${rrid}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
         console.log(response.data);
         alert("대댓글이 삭제되었습니다.");
         setR_Reply(r_reply.filter((r) => r._id !== rrid)); // 삭제된 대댓글을 제외하고 대댓글 목록을 업데이트합니다.
@@ -449,7 +505,13 @@ function View() {
         console.error(error);
       }
     }
+    
   };
+
+
+
+=========
+>>>>>>>>> Temporary merge branch 2
 
   //----------------------------------------------------------------
 
@@ -490,8 +552,7 @@ function View() {
       // 새로운 댓글을 추가합니다.
       setReply([...reply, replyInput]);
       setReplyInput(""); // 댓글 입력창을 초기화합니다.
-
-      navigate("/");
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
@@ -570,8 +631,45 @@ function View() {
           <div>{write.title}</div>
         </div>
         <div className={styles.content_2}>
+<<<<<<<<< Temporary merge branch 1
+          <div className={styles.content_2_a}>
+            <div>작성자{write.writer}</div>
+            <div>|</div>
+            <div>
+                날짜{" "}
+                {write.writeDate !== undefined &&
+                  formatDate(new Date(write.writeDate))}
+            </div>
+          </div>
+        
+        </div>
+        <div className={styles.content_5}>
+          <div className={styles.content_5_a}>
+            <div>모집인원{write.number}</div>
+            <div>시작 예정일{write.date}</div>
+          </div>
+          <div className={styles.content_5_b}>
+            <div>진행기간{write.period}</div>
+            <div>
+                태그
+                {write.tag !== undefined &&
+                  write.tag.map((x, i) => {
+                    return <span key={x + i}>{x}</span>;
+                  })}
+              </div>
+            </div>
+          </div>
+          <div className={styles.content_3}>
+            <div>내용</div>
+            <div dangerouslySetInnerHTML={{ __html: htmlString }} />
+            <span onClick={clickGood} className={good ? `styles.goodBtn` : null}>
+              좋아요{goodCount}
+            </span>
+            <span>조회수{write.views}</span>
+=========
           <div>작성자</div>
-          <div style={{ marginRight: "12.5rem" }}>
+          <div onClick={() => {passHandler(write._user)}} 
+          style={{ marginRight: "12.5rem" }}>
             {profileImg === null ? (
               <HiUserCircle
                 size="40"
@@ -618,6 +716,18 @@ function View() {
           </span>
           <span>조회수{write.views}</span>
         </div>
+        <div className={styles.content_6}>
+          <input
+            type="text"
+            className={styles.reply_input}
+            placeholder="댓글 내용을 입력해주세요."
+          />
+          <div className={styles.reply_choose}>
+            <input type="checkbox"></input>
+            <text className={styles.rc1}>비밀댓글</text>
+            <input type="button" className={styles.sbtn} value="등록"></input>
+>>>>>>>>> Temporary merge branch 2
+          </div>
         {/* 댓글 입력 폼 */}
         <form onSubmit={handleSubmit}>
           <div className={styles.content_6}>
@@ -647,7 +757,11 @@ function View() {
           </div>
         </form>
         {/* 비밀댓글 체크 여부 출력 */}
+<<<<<<<<< Temporary merge branch 1
+        
 
+=========
+>>>>>>>>> Temporary merge branch 2
         <div className={styles.rr_reply}>
           <table>
             <thead>
@@ -661,40 +775,42 @@ function View() {
             </thead>
             <tbody>
               {reply.map((r) => (
-                <tr className={styles.replyTitle} key={r._id}>
-                  <td>{r.rwriter}</td>
-                  <td>{r.isSecret ? "비밀댓글" : "공개댓글"}</td>
-                  <td>{r.reply}</td>
-                  <td>
-                    {" "}
-                    {r.rwriteDate !== undefined &&
-                      formatDate(new Date(r.rwriteDate))}
-                  </td>
+              
+              <tr className={styles.replyTitle} key={r._id}>
+                <td>{r.rwriter}</td>
+                <td>{r.isSecret ? "비밀댓글" : "공개댓글"}</td>
+                <td>{r.reply}</td>
+                <td>{" "}
+                {r.rwriteDate !== undefined &&
+                  formatDate(new Date(r.rwriteDate))}</td>
 
-                  {/* 댓글수정 */}
-                  {!sameUsers && (
-                    <td>
-                      <input
-                        type="button"
-                        className={styles.rdbtn}
-                        value="삭제"
-                        onClick={deleteReply.bind(null, r._id)}
-                      ></input>
-                      <input
-                        type="button"
-                        className={styles.rmbtn}
-                        value="수정"
-                        onClick={() => {
-                          setShowModifyReplyInput(
-                            selectedId === r._id ? null : r._id
-                          );
-                          setSelectedId(selectedId === r._id ? null : r._id);
-                          modifyReply(r._id);
-                        }}
-                      ></input>
-                      {showReplyModifyInput === r._id && (
-                        <form onSubmit={(e) => modifyHandleSubmit(e, r._id)}>
+<<<<<<<<< Temporary merge branch 1
+                { /* 댓글수정 */ }
+=========
+                {/* 댓글수정 */}
+>>>>>>>>> Temporary merge branch 2
+                {!sameUsers && (
+                  <td>
+                    <input type="button" className={styles.rdbtn} value="삭제" onClick={ deleteReply.bind(null, r._id) }></input>
+                    <input 
+                      type="button" 
+                      className={styles.rmbtn} 
+                      value="수정" 
+                      onClick={ () => {
+<<<<<<<<< Temporary merge branch 1
+                        setShowModifyReplyInput(selectedId === r._id ? null : r._id);
+                        setSelectedId(selectedId === r._id ? null : r._id);
+=========
+                        setShowModifyReplyInput(selectedRId === r._id ? null : r._id);
+                        setSelectedRId(selectedRId === r._id ? null : r._id);
+>>>>>>>>> Temporary merge branch 2
+                        modifyReply(r._id);
+                      }}
+                     ></input>
+                     { showReplyModifyInput === r._id && (
+                      <form onSubmit={(e) => modifyHandleSubmit(e, r._id)}> 
                           <div className={styles.handle}>
+                          
                             <input
                               type="text"
                               className={styles.reply_input}
@@ -702,44 +818,34 @@ function View() {
                               onChange={modifyReplyInputChangeHandler}
                             />
                             <div className={styles.reply_choose}>
-                              <input
-                                type="checkbox"
-                                checked={isSecret}
-                                className={styles.secret}
-                                onChange={(e) => setIsSecret(e.target.checked)}
-                              ></input>
+                              <input type="checkbox" checked={isSecret} className={styles.secret} onChange={(e) => setIsSecret(e.target.checked)}></input>
                               <text className={styles.rc1}>비밀 댓글</text>
                               <input type="submit" value="댓글수정"></input>
-                              <button
-                                onClick={() => {
-                                  setShowModifyReplyInput(null);
-                                  setSelectedId(null);
-                                }}
-                              >
-                                댓글수정 취소
-                              </button>
+<<<<<<<<< Temporary merge branch 1
+                              <button onClick={() => {setShowModifyReplyInput(null); setSelectedId(null);}}>댓글수정 취소</button>
+=========
+                              <button onClick={() => {setShowModifyReplyInput(null); setSelectedRId(null);}}>댓글수정 취소</button>
+>>>>>>>>> Temporary merge branch 2
                             </div>
                           </div>
-                        </form>
-                      )}
-                    </td>
-                  )}
+                      </form>
+                    ) }
+                  </td>
+                )}
 
-                  <td>
-                    {!showReplyInput && (
-                      <button
-                        onClick={() => {
-                          setShowReplyInput(
-                            selectedRId === r._id ? null : r._id
-                          );
-                          setSelectedRId(selectedRId === r._id ? null : r._id);
-                        }}
-                      >
-                        대댓글 추가
-                      </button>
-                    )}
-                    {showReplyInput === r._id && (
-                      <form onSubmit={rhandleSubmit}>
+<<<<<<<<< Temporary merge branch 1
+=========
+
+>>>>>>>>> Temporary merge branch 2
+                <td>
+                  {!showReplyInput && (
+                    <button onClick={() => {
+                      setShowReplyInput(selectedRId === r._id ? null : r._id);
+                      setSelectedRId(selectedRId === r._id ? null : r._id);
+                    }}>대댓글 추가</button>
+                  )}
+                  {showReplyInput === r._id && (
+                      <form onSubmit={rhandleSubmit}> 
                         <div className={styles.rhandle}>
                           <input
                             type="text"
@@ -767,42 +873,34 @@ function View() {
                             </button>
                           </div>
                         </div>
-                      </form>
+                    </form>
+                
+                  )}
+                  {!showReplyList && (
+                    <button onClick={() => {
+                      setShowReplyList(selectedRId === r._id ? null : r._id);
+                      setSelectedRId(selectedRId === r._id ? null : r._id);
+                      fetchR_Reply(r._id);
+                    }}>대댓글 목록 보기</button>
+                  )}
+                  <div>
+                    {showReplyList && (
+                      <button onClick={() => {
+                        setShowReplyList(selectedRId === r._id ? null : r._id);
+                        setSelectedRId(selectedRId === r._id ? null : r._id);
+                        fetchR_Reply(r._id);
+                      }}>대댓글 목록 닫기</button>
                     )}
-                    {!showReplyList && (
-                      <button
-                        onClick={() => {
-                          setShowReplyList(
-                            selectedRId === r._id ? null : r._id
-                          );
-                          setSelectedRId(selectedRId === r._id ? null : r._id);
-                          fetchR_Reply(r._id);
-                        }}
-                      >
-                        대댓글 목록 보기
-                      </button>
-                    )}
-                    <div>
-                      {showReplyList && (
-                        <button
-                          onClick={() => {
-                            setShowReplyList(
-                              selectedRId === r._id ? null : r._id
-                            );
-                            setSelectedRId(
-                              selectedRId === r._id ? null : r._id
-                            );
-                            fetchR_Reply(r._id);
-                          }}
-                        >
-                          대댓글 목록 닫기
-                        </button>
-                      )}
-                    </div>
-                    {showReplyList === r._id && (
-                      <div className={styles.rr_reply2}>
-                        {/* 대댓글 목록 보여주는 코드 */}
-
+                  
+                  </div>
+                  {showReplyList === r._id && (
+                    
+                    <div className={styles.rr_reply2}>
+                      {/* 대댓글 목록 보여주는 코드 */}
+<<<<<<<<< Temporary merge branch 1
+                      
+=========
+>>>>>>>>> Temporary merge branch 2
                         <table>
                           <thead>
                             <tr className={styles.ttrrr}>
@@ -813,106 +911,121 @@ function View() {
                             </tr>
                           </thead>
                           {r_reply.map((rr) => (
-                            <tbody>
-                              <tr>
-                                <td>{rr.r_rwriter}</td>
-                                <td>
-                                  {rr.isRSecret ? "비밀댓글" : "공개댓글"}
-                                </td>
-                                <td>{rr.r_reply}</td>
-                                <td>
-                                  {" "}
-                                  {rr.r_rwriteDate !== undefined &&
-                                    formatDate(new Date(rr.r_rwriteDate))}
-                                </td>
+                          <tbody>
+                            <tr>
+                              <td>{rr.r_rwriter}</td>
+<<<<<<<<< Temporary merge branch 1
+                              <td>{rr.isRSecret ? "비밀댓글" : "공개댓글"}</td>
+                              <td>{rr.r_reply}</td>
+                              <td>{" "}{rr.r_rwriteDate !== undefined && formatDate(new Date(rr.r_rwriteDate))}</td>
 
-                                {/* 대댓글수정 */}
-                                {!sameUsers && (
-                                  <td>
-                                    <input
-                                      type="button"
-                                      className={styles.rrdbtn}
-                                      value="삭제"
-                                      onClick={() => handleRDelete(rr._id)}
-                                    ></input>
-                                    <input
-                                      type="button"
-                                      className={styles.rrmbtn}
-                                      value="수정"
-                                      onClick={() => {
-                                        setShowRModifyReplyInput(
-                                          selectedRId === rr._id ? null : rr._id
-                                        );
-                                        setSelectedRId(
-                                          selectedRId === rr._id ? null : rr._id
-                                        );
-                                        modifyR_Reply(rr._id);
-                                      }}
-                                    ></input>
-                                    {showR_ReplyModifyInput === rr._id && (
-                                      <form
-                                        onSubmit={(e) =>
-                                          modifyRHandleSubmit(
-                                            e,
-                                            rr.selectedRId,
-                                            rr._id
-                                          )
-                                        }
-                                      >
+                             {/* 대댓글수정 */}
+                             {!sameUsers && (
+                                <td>
+                                  <input type="button" className={styles.rrdbtn} value="삭제" onClick={() => handleRDelete(rr._id)}></input>
+                                  <input 
+                                    type="button" 
+                                    className={styles.rrmbtn} 
+                                    value="수정" 
+                                    onClick={ () => {
+                                      setShowRModifyReplyInput(selectedRId === rr._id ? null : rr._id);
+                                      setSelectedRId(selectedRId === rr._id ? null : rr._id);
+                                      modifyR_Reply(rr._id);
+                                    }}
+                                  ></input>
+                                  { showR_ReplyModifyInput === rr._id && (
+                                    <form onSubmit={(e) => modifyRHandleSubmit(e, rr.selectedRId, rr._id)}> 
                                         <div className={styles.handle}>
+                                        
                                           <input
                                             type="text"
                                             className={styles.reply_input}
                                             value={replyRModifyInput}
-                                            onChange={
-                                              modifyR_ReplyInputChangeHandler
-                                            }
+                                            onChange={modifyR_ReplyInputChangeHandler}
                                           />
                                           <div className={styles.reply_choose}>
-                                            <input
-                                              type="checkbox"
-                                              checked={isRSecret}
-                                              className={styles.secret}
-                                              onChange={(e) =>
-                                                setIsRSecret(e.target.checked)
-                                              }
-                                            ></input>
-                                            <text className={styles.rc1}>
-                                              비밀 대댓글
-                                            </text>
-                                            <input
-                                              type="submit"
-                                              value="대댓글수정"
-                                            ></input>
-                                            <button
-                                              onClick={() => {
-                                                setShowRModifyReplyInput(null);
-                                                setSelectedRId(null);
-                                              }}
-                                            >
-                                              대댓글수정 취소
-                                            </button>
+                                            <input type="checkbox" checked={isRSecret} className={styles.secret} onChange={(e) => setIsRSecret(e.target.checked)}></input>
+                                            <text className={styles.rc1}>비밀 대댓글</text>
+                                            <input type="submit" value="대댓글수정"></input>
+                                            <button onClick={() => {setShowRModifyReplyInput(null); setSelectedRId(null);}}>대댓글수정 취소</button>
                                           </div>
                                         </div>
-                                      </form>
-                                    )}
-                                  </td>
-                                )}
-                              </tr>
-                            </tbody>
+                                    </form>
+                                  ) }
+                                </td>
+                              )}
+                            </tr>
+                          </tbody>
                           ))}
                         </table>
-                      </div>
-                    )}
-                  </td>
-                </tr>
+                      
+                    </div>
+                  )}
+                </td>
+
+=========
+                              <td>{rr.isRSecret ? "비밀대댓글" : "공개대댓글"}</td>
+                              <td>{rr.r_reply}</td>
+                              <td>{" "}{rr.r_rwriteDate !== undefined && formatDate(new Date(rr.r_rwriteDate))}</td>
+                           
+                              {/* 대댓글수정 */}
+                              {!sameUsers && (
+                                <td>
+                                  <input type="button" className={styles.rrdbtn} value="삭제" onClick={() => handleRDelete(rr._id)}></input>
+                                  <input 
+                                    type="button" 
+                                    className={styles.rrmbtn} 
+                                    value="수정" 
+                                    onClick={ () => {
+                                      setShowRModifyReplyInput(selectedRId === rr._id ? null : rr._id);
+                                      setSelectedRId(selectedRId === rr._id ? null : rr._id);
+                                      modifyR_Reply(rr._id);
+                                    }}
+                                  ></input>
+                                  { showR_ReplyModifyInput === rr._id && (
+                                    <form onSubmit={(e) => modifyRHandleSubmit(e, rr.selectedRId, rr._id)}> 
+                                        <div className={styles.handle}>
+                                        
+                                          <input
+                                            type="text"
+                                            className={styles.reply_input}
+                                            value={replyRModifyInput}
+                                            onChange={modifyR_ReplyInputChangeHandler}
+                                          />
+                                          <div className={styles.reply_choose}>
+                                            <input type="checkbox" checked={isRSecret} className={styles.secret} onChange={(e) => setIsRSecret(e.target.checked)}></input>
+                                            <text className={styles.rc1}>비밀 대댓글</text>
+                                            <input type="submit" value="대댓글수정"></input>
+                                            <button onClick={() => {setShowRModifyReplyInput(null); setSelectedRId(null);}}>대댓글수정 취소</button>
+                                          </div>
+                                        </div>
+                                    </form>
+                                  ) }
+                                </td>
+                              )}
+                            </tr>
+                          </tbody>
+                          ))}
+                        </table>
+                      
+                    </div>
+                  )}
+                </td>
+
+>>>>>>>>> Temporary merge branch 2
+              </tr>
               ))}
+      
+            
             </tbody>
           </table>
         </div>
-      </div>
     </>
   );
 }
+<<<<<<<<< Temporary merge branch 1
+export default View;
+=========
 
 export default View;
+>>>>>>>>> Temporary merge branch 2

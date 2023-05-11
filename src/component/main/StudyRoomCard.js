@@ -1,4 +1,10 @@
 import { useState, useEffect } from "react";
+<<<<<<< HEAD
+=======
+import PropTypes from "prop-types";
+import axios from "axios";
+
+>>>>>>> 2aa07b5b64b05b09c5365b0ad5433fafc314b247
 import emptyHeart from "../../images/emptyHeart.png";
 import fullHeart from "../../images/heart.png";
 import view from "../../images/view.png";

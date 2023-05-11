@@ -7,14 +7,12 @@ const Ask = require("./models/ask");
 const Reply = require("./models/reply");
 const R_Reply = require("./models/r_reply");
 const Counter = require("./models/counter");
-const ReplyCounter = require("./models/replycounter");
+const ReplyCounter = require("./models/replyCounter");
 const R_ReplyCounter = require("./models/r_replycounter");
-
 const AReply = require("./models/Areply");
 const AR_Reply = require("./models/Ar_reply");
 const AReplyCounter = require("./models/Areplycounter");
 const AR_ReplyCounter = require("./models/Ar_replycounter");
-
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -28,14 +26,14 @@ const GoalTime = require("./models/goalTime");
 const AskGood = require("./models/askGood");
 const PostGood = require("./models/postGood");
 const { dblClick } = require("@testing-library/user-event/dist/click");
-
 const OpenStudy = require("./models/openStudy");
 //const { default: StudyRoomCard } = require("../component/StudyRoomCard");
 const Schedule = require("./models/schedule");
 const boot = require("./lib/RTC/boot");
-
 const ObjectId = mongoose.Types.ObjectId;
 const auth = require("./auth");
+const StudyTime = require("./models/studyTime");
+const GoalTime = require("./models/goalTime");
 
 const storage = multer.diskStorage({
   // (2)
@@ -105,6 +103,87 @@ app.get("/user", async (req, res) => {
     //console.log(res.data);
   } catch (err) {
     res.status(401).send({ message: "Invalid token" });
+  }
+});
+
+//포트폴리오 작성 저장
+app.post("/portfolio", auth, async (req, res) => {
+  const { title, content, writer, writeDate } = req.body;
+
+  try {
+    const newPortfolio = new Portfolio({
+      title: title,
+      content: content,
+      writer: writer,
+      writeDate: writeDate,
+      userId: req.user.id,
+    });
+    await newPortfolio.save();
+    return res.status(201).json(newPortfolio);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: "Server Error" });
+  }
+});
+
+//포트폴리오 자신이 작성한 것 불러오기
+app.get("/portfolio", auth, async (req, res) => {
+  try {
+    const portfolios = await Portfolio.find({ userId: req.user.id });
+    console.log(portfolios);
+    return res.status(200).json(portfolios);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+});
+
+//클릭한 프로필에 해당하는 사용자의 포트폴리오를 불러오기
+app.get("/portfolio/:id", async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const userPortfolios = await Portfolio.find({ userId: userId });
+    console.log(userPortfolios);
+    return res.status(200).json(userPortfolios);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+});
+
+//포트폴리오 작성자 정보 가져오기
+app.get("/portfolioInfo/:id", async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const writerInfo = await User.find({ _id: userId });
+    console.log(writerInfo);
+    return res.status(200).json(writerInfo);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+//포트폴리오 수정
+app.post("/portfolioModify", auth, async (req, res) => {
+  const { title, content } = req.body;
+  const userId = req.user.id;
+  console.log(req.body);
+  try {
+    const updatedPortfolio = await Portfolio.findOneAndUpdate(
+      { userId: userId },
+      {
+        $set: { title, content },
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: `updated successfully`, updatedPortfolio });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
   }
 });
 
@@ -226,6 +305,11 @@ app.post("/schedules", auth, async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Server Error" });
   }
+});
+
+app.post("/userInfo", async (req, res) => {
+  console.log(req.body);
+  const { name, email, password } = req.body;
 });
 
 //저장된 일정 정보 가져오기(로그인된 유저가 자신의 일정만 보이도록)
@@ -2252,6 +2336,30 @@ app.get("/search", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+app.get("/view/:id/modify/:selectedARId/:rrid", async (req, res) => {
+  const postRId = req.params.id;
+  const selectedARId = req.params.selectedARId;
+  const rrid = req.params.rrid;
+
+  try {
+    const result = await AR_Reply.find({
+      postRId: Number(postRId),
+      selectedARId: Number(selectedARId),
+      _id: Number(rrid),
+    });
+    console.log(result);
+    if (result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
