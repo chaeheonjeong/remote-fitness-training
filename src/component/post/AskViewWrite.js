@@ -133,6 +133,7 @@ const AskViewWrite = () => {
                     {sameUser && (
                     <div className={styles.content_4_b}>
                         <input
+                        className={styles.dd}
                         type="button"
                         value="삭제"
                         onClick={() => {
@@ -140,6 +141,7 @@ const AskViewWrite = () => {
                         }}
                         />
                         <input
+                        className={styles.mm}
                         type="button"
                         value="수정"
                         onClick={() => {

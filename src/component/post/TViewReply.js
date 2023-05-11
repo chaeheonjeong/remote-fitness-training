@@ -347,6 +347,32 @@ const TViewReply = ({ write, setWrite }) => {
         return formattedDate;
     };
 
+        //댓글 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage] = useState(5);
+
+  // 현재 페이지에 보여질 댓글들 추출
+  const startIndex = (currentPage - 1) * perPage;
+  const endIndex = startIndex + perPage;
+  const currentReply = reply.slice(startIndex, endIndex);
+
+  // 페이지네이션 컴포넌트
+  const totalPages = Math.ceil(reply.length / perPage);
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  const renderPageNumbers = pageNumbers.map(number => {
+    return (
+      <li key={number}>
+        <button onClick={() => setCurrentPage(number)}>
+          {number}
+        </button>
+      </li>
+    );
+  });
+
     return(
         <>
         {/* 댓글 입력 폼 */}
@@ -359,7 +385,7 @@ const TViewReply = ({ write, setWrite }) => {
               value={replyInput}
               onChange={replyInputChangeHandler}
             />
-            <div className={styles.reply_choose}>        
+            <div className={styles.reply_choose}>
               <input type="submit" className={styles.sbtn} value="등록"></input>
             </div>
           </div>
@@ -377,7 +403,7 @@ const TViewReply = ({ write, setWrite }) => {
               </tr>
             </thead>
             <tbody>
-              {reply.map((r, index) => (
+              {currentReply.map((r, index) => (
               
               <tr className={styles.replyTitle} key={r._id}>
                 <td key={r._id} onClick={() => ReplyProfileClick(r._user)} >
@@ -395,8 +421,6 @@ const TViewReply = ({ write, setWrite }) => {
                       alt="프로필 이미지"
                     />
                   )}
-
-
                   {r.rwriter}
                   </div>
                 </td>
@@ -442,7 +466,7 @@ const TViewReply = ({ write, setWrite }) => {
 
                 <td>
                   {!showReplyInput && (
-                    <button onClick={() => {
+                    <button className={styles.asdf} onClick={() => {
                       setShowReplyInput(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
                     }}>대댓글 추가</button>
@@ -459,15 +483,15 @@ const TViewReply = ({ write, setWrite }) => {
                             onChange={replyInputRChangeHandler}
                           />
                           <div className={styles.reply_choose}>
-                            <input type="submit" value="대댓글 등록"></input>
-                            <button onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
+                            <input className={styles.asdf3} type="submit" value="대댓글 등록"></input>
+                            <button className={styles.reply_choose2} onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
                           </div>
                         </div>
                     </form>
                 
                   )}
                   {!showReplyList && (
-                    <button onClick={() => {
+                    <button className={styles.asdf1} onClick={() => {
                       setShowReplyList(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
                       fetchR_Reply(r._id);
@@ -475,7 +499,7 @@ const TViewReply = ({ write, setWrite }) => {
                   )}
                   <div>
                     {showReplyList && (
-                      <button onClick={() => {
+                      <button className={styles.asdf1} onClick={() => {
                         setShowReplyList(selectedRId === r._id ? null : r._id);
                         setSelectedRId(selectedRId === r._id ? null : r._id);
                         fetchR_Reply(r._id);
@@ -491,7 +515,7 @@ const TViewReply = ({ write, setWrite }) => {
                         <table>
                           <thead>
                             <tr className={styles.ttrrr}>
-                              <td>닉네임</td>
+                            <td>닉네임</td>
                               <td>대댓글 내용</td>
                               <td>작성 날짜</td>
                             </tr>
@@ -568,6 +592,11 @@ const TViewReply = ({ write, setWrite }) => {
             
             </tbody>
           </table>
+          <div className={styles.pagination}>
+            <ul className={styles.pageNumbers}>
+              {renderPageNumbers}
+            </ul>
+          </div>
         </div>
         </>
     );

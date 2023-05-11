@@ -349,6 +349,32 @@ const ViewReply = ({ write, setWrite }) => {
         return formattedDate;
     };
 
+     //댓글 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage] = useState(5);
+
+  // 현재 페이지에 보여질 댓글들 추출
+  const startIndex = (currentPage - 1) * perPage;
+  const endIndex = startIndex + perPage;
+  const currentReply = reply.slice(startIndex, endIndex);
+
+  // 페이지네이션 컴포넌트
+  const totalPages = Math.ceil(reply.length / perPage);
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  const renderPageNumbers = pageNumbers.map(number => {
+    return (
+      <li key={number}>
+        <button onClick={() => setCurrentPage(number)}>
+          {number}
+        </button>
+      </li>
+    );
+  });
+
 
     return(
         <>
@@ -380,7 +406,7 @@ const ViewReply = ({ write, setWrite }) => {
               </tr>
             </thead>
             <tbody>
-              {reply.map((r, index) => (
+              {currentReply.map((r, index) => (
               
               <tr className={styles.replyTitle} key={r._id}>
                 <td key={r._id} onClick={() => ReplyProfileClick(r._user)} >
@@ -432,8 +458,8 @@ const ViewReply = ({ write, setWrite }) => {
                               onChange={modifyReplyInputChangeHandler}
                             />
                             <div className={styles.reply_choose}>
-                              <input type="submit" value="댓글수정"></input>
-                              <button onClick={() => {setShowModifyReplyInput(null); setSelectedId(null);}}>댓글수정 취소</button>
+                              <input className={styles.rrrr} type="submit" value="댓글수정"></input>
+                              <button className={styles.rrrr2} onClick={() => {setShowModifyReplyInput(null); setSelectedId(null);}}>댓글수정 취소</button>
                             </div>
                           </div>
                       </form>
@@ -569,6 +595,11 @@ const ViewReply = ({ write, setWrite }) => {
             
             </tbody>
           </table>
+          <div className={styles.pagination}>
+            <ul className={styles.pageNumbers}>
+              {renderPageNumbers}
+            </ul>
+          </div>
         </div>
         </>
     );

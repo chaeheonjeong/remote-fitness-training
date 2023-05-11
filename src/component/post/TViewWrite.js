@@ -171,6 +171,7 @@ const ViewTWrite = () => {
                     <div className={styles.content_4_b}>
                     <input
                         type="button"
+                        className={styles.dd}
                         value="삭제"
                         onClick={() => {
                             deleteHandler();
@@ -179,8 +180,9 @@ const ViewTWrite = () => {
                     <input
                         type="button"
                         value="수정"
+                        className={styles.mm}
                         onClick={() => {
-                        navigate(`/modifyTPost/${id}`);
+                        navigate(`/modifyPost/${id}`);
                         }}
                     />
                     </div>
@@ -192,24 +194,22 @@ const ViewTWrite = () => {
                 </div>
                 <div className={styles.content_2}>
                     <div>작성자</div>
-                    <div 
-                        onClick={() => {passHandler(write._user)}}  
-                        style={{ marginRight: "12.5rem" }}
-                    >
-                    {profileImg === null ? (
-                        <HiUserCircle
-                        size="40"
-                        color="#5a5a5a"
-                        style={{ cursor: "pointer" }}
-                        />
-                    ) : (
-                        <img
-                        className={styles.profile}
-                        src={profileImg}
-                        alt="프로필 이미지"
-                        />
-                    )}
-                    {write.writer}
+                    <div className={styles.profile1} onClick={() => {passHandler(write._user)}} 
+                        style={{ marginRight: "12.5rem" }}>
+                        {profileImg === null ? (
+                            <HiUserCircle
+                            size="40"
+                            color="#5a5a5a"
+                            style={{ cursor: "pointer" }}
+                            />
+                        ) : (
+                            <img
+                            className={styles.profile}
+                            src={profileImg}
+                            alt="프로필 이미지"
+                            />
+                        )}
+                        {write.writer}
                     </div>
                     <div>
                         날짜{" "}
@@ -218,25 +218,26 @@ const ViewTWrite = () => {
                     </div>
                 </div>
                 </div>
+                <div className={styles.content5_all}>
                 <div className={styles.content_5}>
                 <div style={{ marginRight: "1rem" }}>모집인원</div>
-                <div style={{ marginRight: "15rem" }}>{write.number}</div>
+                <div className={styles.css1} style={{ marginRight: "15rem" }}>{write.number}</div>
 
                 <div style={{ marginRight: "1rem" }}> 시작 예정일</div>
-                <div style={{ marginRight: "15rem" }}>{write.date}</div>
+                <div className={styles.css2} style={{ marginRight: "15rem" }}>{write.date}</div>
                 
                 <div style={{ marginRight: "1rem" }}> 시작 시간</div>
-                <div>{write.startTime}</div>
+                <div className={styles.css3}>{write.startTime}</div>
                 </div>
                 <div className={styles.content_5a}>
                 <div style={{ marginRight: "1rem" }}>예상 진행시간</div>
-                <div style={{ marginRight: "14rem" }}>{write.runningTime} 분</div>
+                <div className={styles.css4} style={{ marginRight: "14rem" }}>{write.runningTime} 분</div>
 
                 <div style={{ marginRight: "1rem" }}>예상 금액</div>
-                <div style={{ marginRight: "14rem" }}>{write.estimateAmount} 원</div>
+                <div className={styles.css5} style={{ marginRight: "14rem" }}>{write.estimateAmount} 원</div>
 
                 <div>태그</div>
-                <div>
+                <div className={styles.css6}>
                         {write.tag !== undefined &&
                         write.tag.map((x, i) => {
                         return <span key={x + i}>{x}</span>;
@@ -246,16 +247,19 @@ const ViewTWrite = () => {
                 <div className={styles.content_3}>
                 <div>내용</div>
                 <div dangerouslySetInnerHTML={{ __html: htmlString }} />
+                <div className={styles.goodch}>
                 <span className={good ? styles.goodBtn : null}>
-                    스크랩{bookmarkCount}
+                스크랩{bookmarkCount}s
                 </span>
                 <span>조회수{write.views}</span>
+            </div>
             </div>
 
             <TViewReply
                 write = {write}
                 setWrite = {setWrite}
             />
+            </div>
         </>
     );
 }

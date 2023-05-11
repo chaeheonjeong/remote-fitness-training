@@ -417,6 +417,9 @@ const AskViewReply = ({ write, setWrite }) => {
     };
 
 
+    
+
+
     return(
         <>
            {/* 댓글 입력 폼 */}
@@ -447,7 +450,7 @@ const AskViewReply = ({ write, setWrite }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {Areply.map((r, index) => (
+                    {AcurrentReply.map((r, index) => (
                             
                     <tr className={styles.replyTitle} key={r._id}>
                         <td key={r._id} onClick={() => AReplyProfileClick(r._user)}>
@@ -648,6 +651,11 @@ const AskViewReply = ({ write, setWrite }) => {
                     ))}
                 </tbody>
                 </table>
+                <div className={styles.pagination}>
+            <ul className={styles.pageNumbers}>
+              {renderAPageNumbers}
+            </ul>
+          </div>
             </div>
         </>
     );
