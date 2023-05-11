@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
+
 import emptyHeart from "../../images/emptyHeart.png";
 import fullHeart from "../../images/heart.png";
 import view from "../../images/view.png";
 import comment from "../../images/comment.png";
-import styles from "./QuestionRoomCard.module.css";
-import "./InfiniteScroll.css";
-import { Fragment } from "react";
-import axios from "axios";
+import styles from "./StudyRoomCard.module.css";
 import userStore from "../../store/user.store";
 
-function QuestionRoomCard({ title, tags, id, onClick }) {
+function SRecruitmentCard({ title, tags, id, onClick }) {
   const user = userStore();
-  const commentCount = 3;
+  const commentCount = 7;
 
   const [heart, setHeart] = useState(false);
   const [viewCount, setViewCount] = useState(0);
@@ -24,12 +23,11 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
   const clickHeart = () => {
     if (user.token !== null) {
       axios
-        .post(`http://localhost:8080/setGood/${id}`, null, {
+        .post(`http://localhost:8080/setTGoodPost/${id}`, null, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
           if (response.status === 200 || response.status === 201) {
-            console.log(id);
             setHeart(!heart);
           }
         })
@@ -79,13 +77,17 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
           tags.map((tag, index) => {
             if (typeof tag === "object" && tag.id) {
               return (
-                <a className={styles.questionTag} key={tag.id} id={tag.id}>
+                <a
+                  className={styles.studyTag}
+                  key={tag.id + tag + index}
+                  id={tag.id}
+                >
                   {"#" + tag}
                 </a>
               );
             } else {
               return (
-                <a className={styles.questionTag} key={index}>
+                <a className={styles.studyTag} key={index + tag + "else"}>
                   {"#" + tag}
                 </a>
               );
@@ -98,7 +100,7 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`http://localhost:8080/getGood/${id}`, {
+        .get(`http://localhost:8080/getTGoodPost/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -118,7 +120,7 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
     axios
       .post(
         "http://localhost:8080/getViewCount",
-        { id: id, postName: "question" } // 서버로 전달할 id
+        { id: id, postName: "srecruitment" } // 서버로 전달할 id
       )
       .then((response) => {
         if (response.status === 200) {
@@ -134,8 +136,8 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
   return (
     <div key={id + title} className={styles.questionBoxWrapper}>
       <HeartBtn />
-      <div className={styles.questionBox} onClick={onClick && onClick}>
-        <h1 className={styles.questionTitle}>
+      <div className={styles.studyBox} onClick={onClick && onClick}>
+        <h1 className={styles.studyTitle}>
           {title.length > 5 ? title.slice(0, 5) + "..." : title}
         </h1>
         {<Hashtag />}
@@ -150,4 +152,4 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
   );
 }
 
-export default QuestionRoomCard;
+export default SRecruitmentCard;

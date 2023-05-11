@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import styles from "./MainStudy.module.css";
+import styles from "./Recruitment.module.css";
 import "./InfiniteScroll.css";
 import StudyRoomCard from "./StudyRoomCard";
 
@@ -155,54 +155,57 @@ function MainStudy() {
       </div>
       <div className={styles.body}>
         <div className={styles.menu}>
-          <div className={styles.select}>
-            <Link to="/">
-                <button className={styles.openStudy}>모집글</button>
-              </Link>
-              {/* <Link to="/study">
-                <button className={styles.study}>스터디</button>
-              </Link> */}
-              <Link to="/question">
-                <button className={styles.question}>질문</button>
-              </Link>
+            <div className={styles.topRow}>
+                <div className={styles.select}>
+                    <button className={styles.recruitment}>모집글</button>
+                    {/* <Link to="/study">
+                    <button className={styles.study}>스터디</button>
+                    </Link> */}
+                    <Link to="/question">
+                    <button className={styles.question}>질문</button>
+                    </Link>
+                </div>
+
+                <div className={styles.searchAndMake} onSubmit={searchHandler}>
+                    <form className={styles.search}>
+                    <select onChange={changeSelectHandler}>
+                        <option value="title">제목</option>
+                        <option value="tags">태그</option>
+                        <option value="writer">작성자</option>
+                    </select>
+                    <input
+                        id="searchInput"
+                        name="searchInput"
+                        value={searchInput} 
+                        onChange={(e) => setSearchInput(e.target.value)}
+                    />
+                    <button type="submit">검색</button>
+                    </form>
+                    <button
+                    className={styles.makeBtn}
+                    onClick={() => {
+                        navigate("/writePost");
+                    }}
+                    >
+                    글쓰기
+                    </button>
+                </div>
             </div>
 
-            <div>
-              <Link to="/">
-                  <button className={styles.tRecruitment}>강사모집</button>
-              </Link>
-              <Link to="/sRecruitment">
-                  <button className={styles.sRecruitment}>학생모집</button>
-              </Link>
+            <div className={styles.underline}>
+                <div className={styles.recruitments}>
+                    <Link to="/">
+                        <button className={styles.tRecruitment}>강사모집</button>
+                    </Link>
+                    <Link to="/sRecruitment">
+                        <button className={styles.sRecruitment}>학생모집</button>
+                    </Link>
+                </div>
             </div>
-
-          <div className={styles.searchAndMake} onSubmit={searchHandler}>
-            <form className={styles.search}>
-              <select onChange={changeSelectHandler}>
-                <option value="title">제목</option>
-                <option value="tags">태그</option>
-                <option value="writer">작성자</option>
-              </select>
-              <input
-                id="searchInput"
-                name="searchInput"
-                value={searchInput} 
-                onChange={(e) => setSearchInput(e.target.value)}
-              />
-              <button type="submit">검색</button>
-            </form>
-            <button
-              className={styles.makeBtn}
-              onClick={() => {
-                navigate("/writePost");
-              }}
-            >
-              만들기
-            </button>
-          </div>
         </div>
+        
 
-        <h1>Study</h1>
+        <h1>강사모집</h1>
 
         {/* 검색 */}
         {searching && !noResult && (

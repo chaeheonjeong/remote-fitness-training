@@ -1132,6 +1132,40 @@ app.get("/openStudies", async (req, res) => {
   }
 });
 
+app.get("/srecruitments", async (req, res) => {
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
+
+  const offset = (page - 1) * limit;
+
+  try {
+    const studies = await TWrite.find()
+      .sort({ writeDate: -1 })
+      .skip(offset)
+      .limit(limit);
+    const counter = await TWrite.count();
+    const hasMore = counter > page * limit;
+
+    if (studies.length > 0) {
+      return res.status(200).json({
+        studies: studies,
+        message: "학생 모집글 목록 가져오기",
+        success: true,
+        hasMore: hasMore,
+        studies,
+      });
+    } else {
+      return res.status(404).json({
+        message: "데이터가 존재하지 않습니다.",
+        success: false,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
 app.get("/studies", async (req, res) => {
   const page = parseInt(req.query.page);
   const limit = parseInt(req.query.limit);
@@ -2247,12 +2281,10 @@ app.post("/viewTReplyRModify", async (req, res) => {
       }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: `r_reply ${_id} updated successfully`,
-        updatedViewReplyRModify,
-      });
+    return res.status(200).json({
+      message: `r_reply ${_id} updated successfully`,
+      updatedViewReplyRModify,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server Error" });

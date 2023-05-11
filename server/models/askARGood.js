@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const askARGoodSchema = new Schema(
   {
     _id: { type: String, required: true },
-   
+
     _users: { type: [Object], required: false },
     ARgoodCount: { type: Number, required: true },
   },
@@ -18,4 +18,3 @@ askARGoodSchema.set("collection", "askARGood");
 const AskARGood = mongoose.model("askARGood", askARGoodSchema);
 
 module.exports = AskARGood;
-

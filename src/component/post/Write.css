@@ -36,7 +36,6 @@
   height: 40px;
 }
 
-
 .runningTime {
   margin-right: 36.8%;
   border-radius: 20px;
@@ -108,13 +107,13 @@
   color: blue;
 }
 /*
-.tag_Btn {
-  width: 15px;
-  height: 15px;
-  text-align: center;
-  align-items: center;
-}
-*/
+  .tag_Btn {
+    width: 15px;
+    height: 15px;
+    text-align: center;
+    align-items: center;
+  }
+  */
 
 .estimatedAmount_input {
   /* width: 100%; */
