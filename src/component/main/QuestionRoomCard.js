@@ -12,10 +12,10 @@ import userStore from "../../store/user.store";
 
 function QuestionRoomCard({ title, tags, id, onClick }) {
   const user = userStore();
-  const commentCount = 3;
 
   const [heart, setHeart] = useState(false);
   const [viewCount, setViewCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(0);
 
   const changeHeart = () => {
     setHeart(!heart);
@@ -114,7 +114,7 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
     }
   }, []);
 
-  useEffect(() => {
+  /* useEffect(() => {
     axios
       .post(
         "http://localhost:8080/getViewCount",
@@ -129,6 +129,32 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
       .catch((error) => {
         console.log(error);
       });
+  }, []); */
+
+  useEffect(() => {
+    Promise.all([
+      axios.post(
+        "http://localhost:8080/getViewCount",
+        { id: id, postName: "question" } // 서버로 전달할 id
+      ),
+      axios.post(
+        "http://localhost:8080/getCommentCount",
+        { id: id, postName: "question" } // 서버로 전달할 id
+      ),
+    ])
+    .then(([viewCountResponse, commentCountResponse]) => {
+      if (viewCountResponse.status === 200 && commentCountResponse.status === 200) {
+        setViewCount(viewCountResponse.data.count);
+
+        console.log("조회수: ", viewCountResponse.data.count);
+        console.log("댓글수: ", commentCountResponse.data.result);
+      
+        setCommentCount(commentCountResponse.data.result);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }, []);
 
   return (

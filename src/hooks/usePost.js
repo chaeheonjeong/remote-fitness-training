@@ -93,7 +93,7 @@ export default function useWrite() {
           }
         );
         console.log("success", response.data.message);
-        navigate("/study");
+        navigate("/");
       } catch (error) {
         console.log(error);
       }

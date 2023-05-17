@@ -4,16 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import StudyRoomCard from "../main/StudyRoomCard";
+import SRecruitmentCard from "../main/SRecruitmentCard";
 import "./MyLikedPost.css";
-import styles from "./MyLikedPost.module.css";
+import styles from "./MyLikedTPost.module.css";
 import SideBar from './SideBar';
 import Header from "../main/Header";
 
 import loadingImg from "../../images/loadingImg.gif";
 
-function MyLikedPost() {
+function MyLikedTPost() {
     const navigate = useNavigate();
+
     const [likedPosts, setLikedPosts] = useState([]);
     const [likedPostIds, setLikedPostIds] = useState([]);
 
@@ -30,17 +31,11 @@ function MyLikedPost() {
         );
     }
 
-    /* const morePosts = () => {
-        
-            
-        //fetchLikedPosts();
-    }; */
-
     const morePosts = async () => {
         const token = localStorage.getItem("token");
 
         axios
-            .get(`http://localhost:8080/myLikedPost?page=${page}&limit=6`,  {
+            .get(`http://localhost:8080/myLikedTPost?page=${page}&limit=6`,  {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -53,9 +48,6 @@ function MyLikedPost() {
                     if(isLastPage) {
                         setHasMore(false);
                     }
-        
-                    /* console.log("글: " +  getPosts.data.likedPosts);
-                    setLikedPosts(getPosts.data.likedPosts); */
         
                     const prevLikedPosts = [...likedPosts];
                     console.log('Page: ', page);
@@ -77,10 +69,10 @@ function MyLikedPost() {
         axios
           .post(
             `http://localhost:8080/View`,
-            { id: id, postName: "study" } // 서버로 전달할 id
+            { id: id, postName: "srecruitment" } // 서버로 전달할 id
           )
           .then((response) => {
-            navigate(`/view/${id}`);
+            navigate(`/tView/${id}`);
           })
           .catch((error) => {
             console.log(error);
@@ -104,7 +96,7 @@ function MyLikedPost() {
                 {
                 likedPosts.length > 0 ? ( likedPosts.map((post, index) => {
                         return (
-                            <StudyRoomCard 
+                            <SRecruitmentCard 
                                 title={post.title}
                                 tags={Array.isArray(post.tag) ? [...post.tag] : []} 
                                 id={post._id}
@@ -143,4 +135,4 @@ function MyLikedPost() {
             </div> */}
         </div>
     );
-} export default MyLikedPost;
+} export default MyLikedTPost;

@@ -54,12 +54,38 @@ function MainStudy() {
       setSearching(true);
       setNoResult(false);
 
-      
     if(searchInput === '') {
         
     }
 
-      axios
+    axios
+        .get(
+          `http://localhost:8080/searchStudy?selected=${selected}
+          &value=${encodeURIComponent(searchInput)}
+          &page=${
+            Math.floor(searchResults.length / limit) + 1
+          }&limit=${limit}`
+        )
+        .then((response) => {
+          console.log('검색결과를 가져오겠습니다.');
+          const newSearchStudies = response.data.studies;
+          const isLastPage = newSearchStudies.length < 4;
+
+          const { hasMore, studies } = response.data;
+          const page = Math.floor(searchResults.length / limit) + 1;
+
+          if (page === 1) setSearchResults([...studies]);
+          else setSearchResults((prev) => [...prev, ...newSearchStudies]);
+          setHasMore(hasMore);
+
+          
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
+      /* axios
           .get(`http://localhost:8080/searchStudy?selected=${selected}&value=${encodeURIComponent(searchInput)}&page=${page}&limit=4`)
           .then((response) => {
               console.log('검색결과를 가져오겠습니다.');
@@ -86,7 +112,7 @@ function MainStudy() {
                   setIsLoading(false);
               } finally {
               }
-          })
+          }) */
       
   };
 
@@ -207,23 +233,41 @@ function MainStudy() {
         {/* 검색 */}
         {searching && !noResult && (
                     <InfiniteScroll
-                        dataLength = {studies.length}
-                        next = { page !== 1 ? searchResult : null }
+                        dataLength = {searchResults.length}
+                        next = { searchResult }
                         hasMore = {hasMore}
                         loader = {<LoaderImg />}
                     >
-                    {
+                    {/* {
                             searchResults.map((data, index) => {
                             return (
-                                <StudyRoomCard 
-                                    title={data.title}
-                                    tags={Array.isArray(data.tag) ? [...data.tag] : []} 
-                                    id={data._id}
-                                    key={data._id}
-                                />
+                              <StudyRoomCard
+                                title={data.title}
+                                tags={Array.isArray(data.tag) ? [...data.tag] : []}
+                                id={data._id}
+                                key={Math.random()}
+                                onClick={() => {
+                                  clickHandler(data._id);
+                                }}
+                              />
                             );
                         })
-                    }
+                    } */}
+
+{
+            searchResults.map((data, index) => {
+              return (
+                <StudyRoomCard
+                  title={data.title}
+                  tags={Array.isArray(data.tag) ? [...data.tag] : []}
+                  id={data._id}
+                  key={Math.random()}
+                  onClick={() => {
+                    clickHandler(data._id);
+                  }}
+                />
+              );
+            })}
                     </InfiniteScroll>
                 )}
 

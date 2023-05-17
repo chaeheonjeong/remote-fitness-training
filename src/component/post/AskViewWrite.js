@@ -204,6 +204,7 @@ const AskViewWrite = () => {
             <AskViewReply
                 write = {write}
                 setWrite = {setWrite}
+                writer = {write.writer}
             />
         </>
     );

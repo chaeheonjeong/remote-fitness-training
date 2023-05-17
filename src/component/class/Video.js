@@ -38,6 +38,7 @@ const Video = ({
     if (ref.current) ref.current.srcObject = stream;
   }, [stream]);
 
+
   return (
     <Container
       className={`m-[10px] aspect-square w-full float-left ${

@@ -208,6 +208,9 @@ function MainQuestion() {
                                     tags={Array.isArray(data.tag) ? [...data.tag] : []} 
                                     id={data._id}
                                     key={data._id}
+                                    onClick={() => {
+                                      clickHandler(data._id);
+                                    }}
                                 />
                             );
                         })

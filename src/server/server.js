@@ -996,7 +996,7 @@ app.post("/postTreply/:id", async (req, res) => {
   }
 
   const replycounter = await TReplyCounter.findOneAndUpdate({ name: '댓글 수' }, { $inc: { totalReply: 1 } }, { new: true, upsert: true });
-  const 총댓글수 = (replycounter.totalReply +1);
+  const 총댓글수 = (replycounter.totalReply + 1);
 
   const rwriterId = await User.findOne({ name: rwriter });
 
@@ -1635,7 +1635,7 @@ app.get("/getTWrite/:id", async (req, res) => {
         profileImg = user.image;
       }
       //console.log(user);
-      console.log("작성자는 ", result[0].writer);
+      //console.log("작성자는 ", result[0].writer);
 
       return res.status(200).json({
         result: result,
@@ -1692,7 +1692,7 @@ app.get("/getWrite/:id", async (req, res) => {
         profileImg = user.image;
       }
       //console.log(user);
-      console.log("작성자는 ", result[0].writer);
+      //console.log("작성자는 ", result[0].writer);
 
       return res.status(200).json({
         result: result,
@@ -1779,8 +1779,8 @@ app.get("/getAsk/:id", async (req, res) => {
     const result = await Ask.find({ _id: Number(req.params.id) });
     if (result) {
       let sameUser = false;
-      console.log(result);
-      console.log("***: ", userId, result[0]._user);
+      //console.log(result);
+      //console.log("***: ", userId, result[0]._user);
       if (userId === result[0]._user) sameUser = true;
 
       let profileImg = null;
@@ -2105,7 +2105,7 @@ app.get("/questions", async (req, res) => {
 });
 
   // openStudy 검색
-  app.get("/searchOpenStudy", async (req, res) => {
+/*   app.get("/searchOpenStudy", async (req, res) => {
     const option = req.query.selected;
     const value = decodeURIComponent(req.query.value);
   
@@ -2149,9 +2149,9 @@ app.get("/questions", async (req, res) => {
       console.error(error);
       res.status(500).json({ success: false, message: "Server Error" });
     }
-  });
+  }); */
 
-    // Study게시판 검색
+    // 학생모집 게시판 검색
     app.get("/searchSRecruitment", async (req, res) => {
       const option = req.query.selected;
       const value = decodeURIComponent(req.query.value);
@@ -2176,6 +2176,13 @@ app.get("/questions", async (req, res) => {
             null, 
             { skip: offset, limit: limit }
           );
+        } else if(option === "writer") {
+          studiesSearch = await TWrite.find(
+            { writer: { $regex: value, $options: "i" } },
+            null,
+            { skip: offset, limit: limit }
+          )
+          console.log(studiesSearch);
         }
     
         if(studiesSearch.length > 0) {
@@ -2198,7 +2205,7 @@ app.get("/questions", async (req, res) => {
     });
 
 
-  // Study게시판 검색
+  // 강사모집 게시판 검색
   app.get("/searchStudy", async (req, res) => {
     const option = req.query.selected;
     const value = decodeURIComponent(req.query.value);
@@ -2220,6 +2227,13 @@ app.get("/questions", async (req, res) => {
       else if(option === "tags") {
         studiesSearch = await Write.find(
           { tag: { $regex: value, $options: "i" } }, 
+          null, 
+          { skip: offset, limit: limit }
+        );
+      }
+      else if(option === "writer") {
+        studiesSearch = await Write.find(
+          { writer: { $regex: value, $options: "i" } }, 
           null, 
           { skip: offset, limit: limit }
         );
@@ -2266,6 +2280,13 @@ app.get("/questions", async (req, res) => {
       else if(option === "tags") {
         questionsSearch = await Ask.find(
           { tag: { $regex: value, $options: "i" } }, 
+          null, 
+          { skip: offset, limit: limit }
+        );
+      }
+      else if(option === "writer") {
+        questionsSearch = await Ask.find(
+          { writer: { $regex: value, $options: "i" } }, 
           null, 
           { skip: offset, limit: limit }
         );
@@ -2599,6 +2620,72 @@ app.post("/view", async (req, res) => {
   }
 });
 
+app.post("/getCommentCount", async (req, res) => {
+  const { id, postName } = req.body;
+
+  if (postName === "question") {
+    try {
+      const write = await Ask.findOne({ _id: id });
+      if (write) {
+        const writeR = await AReply.find({ postId: id });
+        const writeRr = await AR_Reply.find({ postRId: id });
+
+        const rCount = writeR ? writeR.length : 0;
+        const rrCount = writeRr ? writeRr.length : 0;
+        const wCount = rCount + rrCount;
+
+        return res.status(200).json({
+          result: wCount,
+          message: `댓글수 가져오기 성공`,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server Error" });
+    }
+  } else if (postName === "srecruitment") {
+    try {
+      const write = await TWrite.findOne({ _id: id });
+      if (write) {
+        const writeR = await TReply.find({ postId: id });
+        const writeRr = await TR_Reply.find({ postRId: id });
+
+        const rCount = writeR ? writeR.length : 0;
+        const rrCount = writeRr ? writeRr.length : 0;
+        const wCount = rCount + rrCount;
+
+        return res.status(200).json({
+          result: wCount,
+          message: `댓글수 가져오기 성공`,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server Error" });
+    }
+  } else if (postName === "study") {
+    try {
+      const write = await Write.findOne({ _id: id });
+      if (write) {
+        const writeR = await Reply.find({ postId: id });
+        const writeRr = await R_Reply.find({ postRId: id });
+
+        const rCount = writeR ? writeR.length : 0;
+        const rrCount = writeRr ? writeRr.length : 0;
+        const wCount = rCount + rrCount;
+
+        return res.status(200).json({
+          result: wCount,
+          message: `댓글수 가져오기 성공`,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server Error" });
+    }
+  }
+});
+
 
 app.post("/getViewCount", async (req, res) => {
   const { id, postName } = req.body;
@@ -2669,14 +2756,83 @@ app.patch('/updateAlarm/:id', auth, async (req, res) => {
     console.error(err.message);
     res.status(500).send('서버 오류');
   }
-})
+});
+
+// 댓글 달리면 알림 (글 쓴 사람에게)
+app.post("/rAlarm", async (req, res) => {
+  try {
+    const { rwriter, message, to } = req.body;
+
+    const user = await User.findOne({ name: to });
+      const userId = user._id;
+
+      const alarm = await Alarm.findOneAndUpdate(
+        { userName: to },
+        { 
+          $push: {
+              content: {
+                $each: [{ 
+                  title: `${rwriter}님께서 댓글을 작성하였습니다.`,
+                  message: message, 
+                  createdAt: new Date(),
+                  _id: new mongoose.mongo.ObjectId(),
+                }],
+              },
+             },
+            $setOnInsert: {
+              userName: to,
+              _user: String(userId)
+            }
+          },
+        { upsert: true, new: true }
+      );
+      console.log(alarm);
+  } catch(error) {
+    console.error(error);
+  }
+});
+
+// 대댓글 달리면 알림 (글 쓴 사람, 댓글 작성자에게)
+app.post("/rrAlarm", async (req, res) => {
+  try {
+    const { rrwriter, message, to } = req.body;
+
+    const filteredTo = to.filter(person => person !== '');
+
+    for(const person of filteredTo) {
+      const user = await User.findOne({ name: person });
+      const userId = user._id;
+
+      const alarm = await Alarm.findOneAndUpdate(
+        { userName: person },
+        { 
+          $push: {
+              content: {
+                $each: [{ 
+                  title: `${rrwriter}님께서 대댓글을 작성하였습니다.`,
+                  message: message, 
+                  createdAt: new Date(),
+                  _id: new mongoose.mongo.ObjectId(),
+                }],
+              },
+             },
+            $setOnInsert: {
+              userName: person,
+              _user: String(userId)
+            }
+          },
+        { upsert: true, new: true }
+      );
+    }
+  } catch(error) {
+    console.error(error);
+  }
+});
 
 // 채택된 사람들에게 방 생성되었다는 알림
 app.post("/selectedTAlarm", async (req, res) => {
   try {
     const { selectedStudent,roomTitle } = req.body;
-
-    //const alarms = await Alarm.find({ userName: { $in: selectedStudent } });
     
     for(const student of selectedStudent) {
       const user = await User.findOne({ name: student });
@@ -2718,8 +2874,6 @@ app.post("/selectedTAlarm", async (req, res) => {
 app.post("/selectedAlarm", async (req, res) => {
   try {
     const { selectedStudent,roomTitle } = req.body;
-
-    //const alarms = await Alarm.find({ userName: { $in: selectedStudent } });
     
     for(const student of selectedStudent) {
       const user = await User.findOne({ name: student });
@@ -2736,6 +2890,7 @@ app.post("/selectedAlarm", async (req, res) => {
                   message: `${roomTitle} 방이 생성되었습니다.`, 
                   createdAt: new Date(),
                   _id: new mongoose.mongo.ObjectId(),
+                  role: "teacher",
                 }],
               },
              },
@@ -3061,10 +3216,9 @@ app.get("/getAReply/:id", async (req, res) => {
     const result = await AReply.find({ postId: req.params.id})
 
     if (result) {
-
       const sameAUsers = result.map((reply) => reply._user === userId);
 
-      console.log(req.params.postId);
+      //console.log(req.params.postId);
 
       const profileImgs = await Promise.all(
         result.map(async (reply) => {
@@ -3098,7 +3252,7 @@ app.get("/getAReply/:id", async (req, res) => {
 app.post("/askviewReplyARModify", async(req, res) => {
   const { postRId, selectedARId, _id, Ar_rWriteDate, Ar_reply/* , isRSecret */ } = req.body;
 
-  console.log(postRId + selectedARId+ _id + Ar_rWriteDate + Ar_reply);
+  //console.log(postRId + selectedARId+ _id + Ar_rWriteDate + Ar_reply);
   try {
     const updatedViewAReplyRModify = await AR_Reply.findOneAndUpdate(
       { postRId, selectedARId, _id },
@@ -3980,7 +4134,7 @@ app.get("/getAskBookmarkCount/:id", async(req, res) => {
     const result = await AskGood.findOne({ _id: Number(postId) });
 
     if(result) {
-      console.log('result: ', result);
+      //console.log('result: ', result);
       return res.status(200).json({
         result: result,
         message: `스크랩 수 가져오기 성공`,
@@ -4535,6 +4689,51 @@ app.post('/openStudy', async (req, res) => {
         
     
         if(studyLiked.length > 0) {
+          return res.status(200).json({ 
+            likePosts: likedPosts,
+            success: true,
+           });
+        } else {
+          return res.status(400).json({ 
+            message: "데이터가 존재하지 않습니다.",
+            success: false,
+           });
+        }
+    
+      } catch(error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+
+    app.get('/myLikedTPost', auth, async(req, res) => {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+    
+      const offset = (page - 1) * limit;
+    
+      const userId = req.user.id;
+    
+      console.log(userId);
+    
+      try {
+        const sRecruitmentLiked = await TPostGood.find(
+          { '_users.user': userId }
+        );
+        
+        console.log(sRecruitmentLiked);
+    
+        const studyLikedIds = sRecruitmentLiked.map(post => post._id);
+        console.log(studyLikedIds);
+    
+        const likedPosts = await TWrite.find({ _id: { $in: sRecruitmentLiked } })
+          .skip(offset)
+          .limit(limit);
+        console.log(likedPosts); 
+    
+        
+    
+        if(sRecruitmentLiked.length > 0) {
           return res.status(200).json({ 
             likePosts: likedPosts,
             success: true,
