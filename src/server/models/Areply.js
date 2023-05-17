@@ -9,7 +9,8 @@ const AreplySchema = new Schema(
     _user: { type: String, required: true },
     ArwriteDate: { type: String, required: true },
     Areply: { type: String, required: true },
-    /* isASecret: { type: Boolean, default: false }, */
+    likes: { type: [String], default: [], index: true }, // 좋아요 수 필드 추가
+    likesCount: { type: Number, default: 0 }, // 좋아요 수 필드 추가
   },
 );
 

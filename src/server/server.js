@@ -1291,7 +1291,7 @@ app.get("/getPortfolio/:name", async (req, res) => {
 
 /// 질문글 댓글 작성
 app.post("/postAreply/:id", auth, async (req, res) => {
-  const { Areply, isASecret, Arwriter, ArwriteDate } = req.body;
+  const { Areply, isASecret, Arwriter, ArwriteDate, likes } = req.body;
   const { id } = req.params;
   const userId = req.user.id;
   console.log(userId);
@@ -1315,10 +1315,11 @@ app.post("/postAreply/:id", auth, async (req, res) => {
       ArwriteDate : ArwriteDate,
       Areply : Areply,
       isASecret : isASecret,
-      _user : userId
+      _user : userId,
+      likes : likes,
     });
     await newAReply.save();
-    console.log(isASecret)
+ 
     return res.status(200).json({ message: `Reply created successfully` });
   } catch (error) {
     console.error(error);
@@ -1326,6 +1327,35 @@ app.post("/postAreply/:id", auth, async (req, res) => {
   }
 });
 
+app.put("/likeAreply/:id", auth, async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const reply = await AReply.findById(id);
+    if (!reply) {
+      return res.status(404).json({ message: "Reply not found" });
+    }
+
+    const likedByUser = reply.likes.includes(userId);
+    if (likedByUser) {0
+      // 이미 좋아요한 상태라면 좋아요 취소
+      reply.likes.pull(userId);
+      reply.likesCount -= 1;
+    } else {
+      // 좋아요 추가
+      reply.likes.push(userId);
+      reply.likesCount += 1;
+    }
+
+    await reply.save();
+
+    return res.status(200).json({ message: "Like updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
 
 /// 대댓글 작성
 app.post("/postr_reply/:id/:rid", auth, async (req, res) => {
@@ -3236,41 +3266,6 @@ app.get("/getAR_Reply/:id/:rid", async (req, res) => {
   }
 });
 
-app.post("/postAreply/:id", async (req, res) => {
-  const { Areply, /* isASecret, */ Arwriter, ArwriteDate } = req.body;
-  const { id } = req.params;
-
-  const post = await Ask.findOne({ _id: id });
-  if (!post) {
-    return res.status(404).json({ message: "Post not found" });
-  }
-
-  const Areplycounter = await AReplyCounter.findOneAndUpdate({ name: '댓글 수' }, { $inc: { totalReply: 1 } }, { new: true, upsert: true });
-  const 총댓글수 = (Areplycounter.totalReply +1);
-
-  const ArwriterId = await User.findOne({ name: Arwriter });
-
-  if (!Areplycounter) {
-    return res.status(500).json({ message: "Counter not found" });
-  }
-  try {
-    const newAReply = new AReply({
-      postId : id,
-      _id: 총댓글수 + 1, 
-      Arwriter: Arwriter,
-      _user: ArwriterId._id,
-      ArwriteDate : ArwriteDate,
-      Areply : Areply,
-      //isASecret : isASecret
-    });
-    await newAReply.save();
-    
-    return res.status(200).json({ message: `Reply created successfully` });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: `서버오류` });
-  }
-});
 
 // 대댓글 T
 app.get("/getTR_Reply/:id/:rid", async (req, res) => {
@@ -4079,7 +4074,7 @@ app.post("/setARGood/:clickedAReplyId", async (req, res) => {
       });
     }
     const index = result._users.findIndex((obj) => obj.user === userId);
-    console.log("index1: ", index);
+    //console.log("index1: ", index);
     if (index > -1) {
       console.log("index2: ", index);
       result._users.splice(index, 1);
@@ -4107,6 +4102,27 @@ app.post("/setARGood/:clickedAReplyId", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+///////////////////// 댓글 값 화면에 출력하기
+app.get('/getARGoodCount/:arid', async(req, res) => {
+  try {
+    const arid = req.params.arid;
+
+    const result = await AskARGood.findOne({ _id: arid });
+    if (!result) {
+      return res.status(404).json({ message: `좋아요가 없습니다` });
+    }
+
+    return res.status(200).json({
+      ARgoodCount: result.ARgoodCount,
+      message: `좋아요 수 가져오기 성공`,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 
 app.post("/upload", upload.single("file"), (req, res) => {
   // (7)
