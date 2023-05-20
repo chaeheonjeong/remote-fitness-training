@@ -5,7 +5,6 @@ import styles from "./SelectModal.module.css";
 import usePost from "../../hooks/useTPost";
 
 import userStore from "../../store/user.store";
-import { BASE_API_URI } from "../../util/common";
 
 const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
   const { id } = useParams();
@@ -17,6 +16,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
   const host = user.name;
   const [roomTitle, setRoomTitle] = useState("");
   const [startTime, setStartTime] = useState("");
+  const [date, setDate] = useState("");
 
   const hook = usePost();
 
@@ -32,14 +32,18 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
     }
   };
 
-  const createAlarm = async (selectedStudent, roomTitle) => {
+  const createAlarm = async (host, selectedStudent, roomTitle) => {
     try {
       const data = {
+        host: host,
         selectedStudent: selectedStudent,
         roomTitle: roomTitle,
       };
 
-      const response = await axios.post(`${BASE_API_URI}/selectedTAlarm`, data);
+      const response = await axios.post(
+        `http://localhost:8080/selectedTAlarm`,
+        data
+      );
 
       console.log(response.data);
     } catch (error) {
@@ -58,11 +62,12 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
     setModal(false);
 
     try {
-      const res = await axios.post(`${BASE_API_URI}/selectionTInfo`, {
+      const res = await axios.post(`http://localhost:8080/selectionTInfo`, {
         host: host,
         applicant: selectedStudent,
         roomTitle: roomTitle,
         startTime: startTime,
+        date: date,
       });
 
       console.log("before-", ok);
@@ -71,7 +76,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
       console.log(res.data.message);
 
       // 알림
-      createAlarm(selectedStudent, roomTitle);
+      createAlarm(host, selectedStudent, roomTitle);
       handleRecruitChange();
     } catch (error) {
       console.log(error);
@@ -82,7 +87,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
   const getRWriter = async () => {
     try {
       const res = await axios.get(
-        `${BASE_API_URI}/getTRWriter/${id}/${user.name}`
+        `http://localhost:8080/getTRWriter/${id}/${user.name}`
       );
 
       console.log(user.name);
@@ -151,6 +156,16 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
                 type="time"
                 name="startTime"
                 onChange={(e) => setStartTime(e.target.value)}
+              />
+            </div>
+            <div>
+              <a>시작예정일</a>
+              <input
+                type="date"
+                id="date"
+                onChange={(e) => {
+                  setDate(e.target.value);
+                }}
               />
             </div>
 

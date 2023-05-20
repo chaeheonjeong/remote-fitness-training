@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -8,12 +8,24 @@ import Header from "../main/Header";
 import userStore from "../../store/user.store";
 import "./Portfolio.css";
 import { FcOk } from "react-icons/fc";
-import { BASE_API_URI } from "../../util/common";
 
 function Portfolio() {
+  const defaultContent = `
+    <h2>포트폴리오 작성 예시</h2>
+    <br>
+    <p> 경력 : </p> 
+    <br>
+    <p> 운동 종목 : </p> 
+    <br>
+    <p> 가격대 : </p>
+    <br>
+    <p> 성별 : </p>
+    `;
+
   const today = new Date();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [htmlString, setHtmlString] = useState();
   const [flag, setFlag] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -24,6 +36,34 @@ function Portfolio() {
     setTitle(e.target.value);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8080/portfolio`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setTitle(res.data[0].title);
+        setContent(res.data[0].content);
+        console.log(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (content !== undefined) {
+      const contentString = JSON.stringify(content);
+      const cleanedString = contentString.replace(/undefined/g, "");
+      const parsedContent = JSON.parse(cleanedString);
+      const contents = parsedContent.content;
+      setHtmlString(contents);
+    }
+  }, [content]);
+
+  console.log(htmlString);
+
   if (isRegistered) {
     return (
       <div className="Registered">
@@ -31,8 +71,19 @@ function Portfolio() {
         <SideBar />
         <p className="registered">
           {" "}
-          <FcOk size={28} /> 등록이 완료되었습니다.{" "}
+          <FcOk size={18} /> 등록이 완료되었습니다.{" "}
         </p>
+        <div className="viewContent">
+          <div className="view_title">
+            <div className="viewTitle">제목 {title}</div>
+          </div>
+          <div className="view_contents">
+            <div
+              className="viewContents"
+              dangerouslySetInnerHTML={{ __html: htmlString }}
+            />
+          </div>
+        </div>
         <button
           type="submit"
           className="modifyBtn"
@@ -47,7 +98,7 @@ function Portfolio() {
   } else if (user.token !== null) {
     const checkRegistration = async () => {
       try {
-        const res = await axios.get(`${BASE_API_URI}/portfolio`, {
+        const res = await axios.get(`http://localhost:8080/portfolio`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const portfolio = res.data.find((p) => p.writer === user.name);
@@ -68,7 +119,7 @@ function Portfolio() {
     else if (token != null) {
       try {
         const res = await axios.post(
-          `${BASE_API_URI}/portfolio`,
+          `http://localhost:8080/portfolio`,
           {
             title: title,
             content: JSON.parse(JSON.stringify(content)),
@@ -88,7 +139,7 @@ function Portfolio() {
     }
   };
 
-  const imgLink = `${BASE_API_URI}/images`;
+  const imgLink = "http://localhost:8080/images";
 
   const customUploadAdapter = (loader) => {
     // (2)
@@ -103,7 +154,7 @@ function Portfolio() {
               data.append("file", compressedFile);
 
               axios
-                .post(`${BASE_API_URI}/upload`, data)
+                .post("http://localhost:8080/upload", data)
                 .then((res) => {
                   if (!flag) {
                     setFlag(true);
@@ -190,28 +241,17 @@ function Portfolio() {
         <div className="content">
           <CKEditor
             editor={ClassicEditor}
-            data=""
+            data={defaultContent}
             config={{
               placeholder: "내용을 입력하세요.",
               extraPlugins: [uploadPlugin],
             }}
-            /*             onReady={(editor) => {
-                        // You can store the "editor" and use when it is needed.
-                        console.log("Editor is ready to use!", editor);
-                        }} */
             onChange={(e, editor) => {
               const data = editor.getData();
-              console.log({ e, editor, data });
               setContent({
                 content: data,
               });
             }}
-            /*             onBlur={(e, editor) => {
-                        console.log("Blur.", editor);
-                        }}
-                        onFocus={(e, editor) => {
-                        console.log("Focus.", editor);
-                        }} */
           />
         </div>
         <div className="btn">

@@ -7,7 +7,6 @@ import userStore from "../../store/user.store";
 import "./PortfolioView.css";
 import ProfileSideBar from "./ProfileSideBar";
 import { FcCancel } from "react-icons/fc";
-import { BASE_API_URI } from "../../util/common";
 
 function PortfolioView() {
   const [portfolio, setPortfolio] = useState([]);
@@ -23,7 +22,9 @@ function PortfolioView() {
     const fetchPortfolio = async () => {
       if (writerId) {
         try {
-          const res = await axios.get(`${BASE_API_URI}/portfolio/${writerId}`);
+          const res = await axios.get(
+            `http://localhost:8080/portfolio/${writerId}`
+          );
           const portfolio = res.data;
           if (portfolio.length !== 0) {
             setPortfolio(res.data);
@@ -50,12 +51,14 @@ function PortfolioView() {
     }
   }, [portfolio]);
 
+  console.log(contents);
+
   if (isRegistered === false) {
     return (
       <div className="Registered">
         <Header />
         <ProfileSideBar />
-        <p className="registered">
+        <p className="_registered">
           {" "}
           <FcCancel size={28} />볼 수 있는 포트폴리오가 없습니다.
         </p>
