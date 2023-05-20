@@ -306,7 +306,7 @@ const AskViewReply = ({ write, setWrite }) => {
         pageNumbers.push(i);
     }
 
-    const renderAPageNumbers = pageNumbers.map(number => {
+    const renderPageNumbers = pageNumbers.map(number => {
         return (
           <li key={number}>
             <button onClick={() => setACurrentPage(number)}>
@@ -314,7 +314,8 @@ const AskViewReply = ({ write, setWrite }) => {
             </button>
           </li>
         );
-    });
+      });
+    
 
     const [ARgood, setARGood] = useState([]);
     const [ARgoodCount, setARGoodCount] = useState([]);
@@ -416,7 +417,6 @@ const AskViewReply = ({ write, setWrite }) => {
         navigate(`/PortfolioView/${userId}`);  
     };
 
-
     return(
         <>
            {/* 댓글 입력 폼 */}
@@ -447,7 +447,7 @@ const AskViewReply = ({ write, setWrite }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {Areply.map((r, index) => (
+                    {AcurrentReply.map((r, index) => (
                             
                     <tr className={styles.replyTitle} key={r._id}>
                         <td key={r._id} onClick={() => AReplyProfileClick(r._user)}>
@@ -648,6 +648,11 @@ const AskViewReply = ({ write, setWrite }) => {
                     ))}
                 </tbody>
                 </table>
+                <div className={styles.pagination}>
+                    <ul className={styles.pageNumbers}>
+                    {renderPageNumbers}
+                    </ul>
+                </div>
             </div>
         </>
     );

@@ -50,12 +50,14 @@ function PortfolioView() {
         }
     }, [portfolio]);
 
+    console.log(contents);
+
     if(isRegistered === false){
         return(
             <div className='Registered'>
                 <Header/>
                 <ProfileSideBar/>
-                <p className='registered'> <FcCancel size={28}/>볼 수 있는 포트폴리오가 없습니다.</p>
+                <p className='_registered'> <FcCancel size={28}/>볼 수 있는 포트폴리오가 없습니다.</p>
             </div>
         )
     }

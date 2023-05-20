@@ -60,7 +60,11 @@ const Notification = () => {
                 <div className={styles.time}>{x.createAt}</div>
                 {x.role === 'student' ? (
                   <div>
-                    <button>선금</button>
+                    <button  onClick={() => {
+                      x.prepaymentBtn === false && hook.handlePreBtn(x._id)/* hook.setReadComm(!hook.readComm) */;
+                      console.log(x._id);
+                      x.prepaymentBtn = true;
+                    }}>선금</button>
                   </div>
                 ) : (
                   <div></div>

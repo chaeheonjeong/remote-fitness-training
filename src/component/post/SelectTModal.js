@@ -16,6 +16,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
     const host = user.name;
     const [roomTitle, setRoomTitle] = useState("");
     const [startTime, setStartTime] = useState("");
+    const [date, setDate] = useState("");
 
     const hook = usePost();
 
@@ -31,9 +32,10 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
         }
     };
 
-    const createAlarm = async (selectedStudent, roomTitle) => {
+    const createAlarm = async (host, selectedStudent, roomTitle) => {
       try {
         const data = {
+          host: host,
           selectedStudent: selectedStudent,
           roomTitle: roomTitle
         }
@@ -46,8 +48,6 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
         console.error(error);
       }
     };
-
-    
 
     const handleRecruitChange = () => {
       onRecruitChange(!hook.recruit);
@@ -66,6 +66,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
                applicant: selectedStudent,
                roomTitle: roomTitle,
                startTime: startTime,
+               date: date
             });
 
             console.log("before-", ok);
@@ -74,9 +75,8 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
             console.log(res.data.message);
 
             // 알림
-            createAlarm(selectedStudent, roomTitle);
+            createAlarm(host, selectedStudent, roomTitle);
             handleRecruitChange();
-
         } catch(error) {
             console.log(error);
         }
@@ -158,6 +158,16 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
                         name="startTime"
                         onChange={ (e) => setStartTime(e.target.value) }
                     />
+                </div>
+                <div>
+                  <a>시작예정일</a>
+                  <input
+                    type="date"
+                    id="date"
+                    onChange={(e) => {
+                      setDate(e.target.value);
+                    }}
+                  />
                 </div>
 
                 {/* 이 부분은 수강생이 선생님 모집하는 경우에만 보이기 */}

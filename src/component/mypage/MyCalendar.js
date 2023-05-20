@@ -8,6 +8,7 @@ import SideBar from './SideBar'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "../main/Header";
+import useNoti from "../../hooks/useNoti";
 
 function MyCalendar() {
     const [addModalIsOpen, setAddModalIsOpen] = useState(false);
@@ -20,6 +21,24 @@ function MyCalendar() {
     const token = localStorage.getItem('token');
     const [scheduleList, setScheduleList] = useState([]);
     const [reviewModalIsOpen, setReviewModalIsOpen] = useState(false);
+    const [roomSchedules, setRoomSchedules] = useState([]);
+    const [notiData, setNotiData] = useState([]);
+    const hook = useNoti();
+
+    useEffect(() =>{
+        const fetchRoomSchedules = async () => {
+            try{
+                const res = await axios.get("http://localhost:8080/roomSchedules",{
+                    headers : {Authorization: `Bearer ${token}`}
+                });
+                setRoomSchedules(res.data);
+                console.log(res.data);
+            }catch(err){
+                console.error(err);
+            }
+        }
+        fetchRoomSchedules();
+    }, []);
 
     useEffect(() => {
         const fetchSchedules = async () => {
@@ -146,8 +165,6 @@ function MyCalendar() {
            
     };
 
-    console.log(selectedSchedule);
-
     const tileContent = ({date,view}) => {
         const filteredSchedules = schedules.filter((schedule) => {
             const scheduleDate = new Date(schedule.date);
@@ -159,15 +176,109 @@ function MyCalendar() {
             );
         });
 
+        const filteredRoomSchedules = roomSchedules.filter((roomSchedule) => {
+            const roomScheduleDate = new Date(roomSchedule.date);
+            return(
+                roomScheduleDate.getDate() === date.getDate() &&
+                roomScheduleDate.getMonth() === date.getMonth() &&
+                roomScheduleDate.getFullYear() === date.getFullYear() &&
+                (view === 'month' || (view === 'week' && roomScheduleDate.getDay() === date.getDay()))
+            );
+        })
+
         return(
             <div>
+                <div>
+                    {filteredSchedules.map((schedule) => (
+                        <div className='showSchedule' key={schedule.title} onClick={() => handleSelectSchedule(schedule)}> 
+                            {schedule.title}
+                        </div>
+                    ))}
+                </div>
+                <div>
+                    {filteredRoomSchedules.map((roomSchedule) => (
+                        hook.rendData !== null ? (
+                            hook.rendData.map((x, i) => {
+                                return x.prepaymentBtn === true && roomSchedule.userType === 'Student' ? (
+                                    <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
+                                        {roomSchedule.roomTitle}
+                                    </div>
+                                ) : null
+                            })
+                        ) : null
+                    ))}
+                </div>
+                <div>
+                    {filteredRoomSchedules.map((roomSchedule) => {
+                        return roomSchedule.userType === 'Teacher' ? (
+                            <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
+                                    {roomSchedule.roomTitle}
+                            </div>
+                        ):null
+                    })}
+                </div>
+            </div> 
+        );
+        /* if(roomSchedules.userType === 'Student' && notiData.prepaymentBtn === true){
+            return(
+                <div>
+                    <div>
+                        {filteredSchedules.map((schedule) => (
+                            <div className='showSchedule' key={schedule.title} onClick={() => handleSelectSchedule(schedule)}> 
+                                {schedule.title}
+                            </div>
+                        ))}
+                    </div>
+                    <div>
+                        {filteredRoomSchedules.map((roomSchedule) => (
+                            <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
+                                {roomSchedule.roomTitle}
+                            </div>
+                        ))}
+                    </div>
+                </div>  
+            );
+        }
+        else if(roomSchedules.userType === 'Teacher'){
+            return(
+                <div>
+                <div>
                 {filteredSchedules.map((schedule) => (
                     <div className='showSchedule' key={schedule.title} onClick={() => handleSelectSchedule(schedule)}> 
                         {schedule.title}
                     </div>
                 ))}
+                </div>
+                <div>
+                    {filteredRoomSchedules.map((roomSchedule) => (
+                        <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
+                            {roomSchedule.roomTitle}
+                        </div>
+                    ))}
+                </div>
+                </div>  
+            );
+        }
+        else{
+            return (
+                <div>
+                <div>
+                    {filteredSchedules.map((schedule) => (
+                        <div className='showSchedule' key={schedule.title} onClick={() => handleSelectSchedule(schedule)}> 
+                            {schedule.title}
+                        </div>
+                    ))}
+                </div>
+                <div>
+                {filteredRoomSchedules.map((roomSchedule) => (
+                    <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
+                        {roomSchedule.roomTitle}
+                    </div>
+                ))}
             </div>
-        );
+            </div>
+            );
+        } */
     };
 
 

@@ -56,6 +56,7 @@ const boot = require("./lib/RTC/boot");
 const ObjectId = mongoose.Types.ObjectId;
 const auth = require("./auth");
 const { profile } = require("console");
+const RoomSchedule = require("./models/roomSchedule");
 
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
@@ -2647,14 +2648,14 @@ app.post("/getViewCount", async (req, res) => {
 
 app.patch('/updateAlarm/:id', auth, async (req, res) => {
   const { id } = req.params;
-  const { read } = req.body;
+  const { read, prepaymentBtn } = req.body;
 
   try {
     // id로 알림을 찾아서 업데이트
     const alarm = await Alarm.findOneAndUpdate(
       { "content._id": id },
-      { $set: { 'content.$.read': read } },
-      { new: true }
+      { $set: { 'content.$.read': read, 'content.$.prepaymentBtn': prepaymentBtn } },
+      { new: true },
     );
     console.log("here");
 
@@ -2671,10 +2672,10 @@ app.patch('/updateAlarm/:id', auth, async (req, res) => {
   }
 })
 
-// 채택된 사람들에게 방 생성되었다는 알림
+// 채택된 사람들에게 방 생성되었다는 알림 //수강생 모집 글
 app.post("/selectedTAlarm", async (req, res) => {
   try {
-    const { selectedStudent,roomTitle } = req.body;
+    const { host,selectedStudent,roomTitle } = req.body;
 
     //const alarms = await Alarm.find({ userName: { $in: selectedStudent } });
     
@@ -2706,6 +2707,32 @@ app.post("/selectedTAlarm", async (req, res) => {
       );
       console.log(alarm);
     }
+
+    const hostUser = await User.findOne({name: host});
+    const hostUserId = hostUser._id;
+
+    const hostAlarm = await Alarm.findOneAndUpdate(
+      {userName: host},
+      {
+        $push: {
+          //userName: student,
+          content: {
+            $each: [{ 
+              title: "새로운 방이 생성되었습니다",
+              message: `${roomTitle} 방이 생성되었습니다.`, 
+              createdAt: new Date(),
+              _id: new mongoose.mongo.ObjectId(),
+            }],
+          },
+         },
+        $setOnInsert: {
+          userName: host,
+          _user: String(hostUserId)
+        }
+      },
+      { upsert: true, new: true }
+    )
+    console.log(hostAlarm);
     
     res.status(200).send('Alarm created successfully');
   } catch (error) {
@@ -2714,10 +2741,10 @@ app.post("/selectedTAlarm", async (req, res) => {
   }
 });
 
-// 채택된 사람들에게 방 생성되었다는 알림
+// 채택된 사람들에게 방 생성되었다는 알림 // 강사 모집 글
 app.post("/selectedAlarm", async (req, res) => {
   try {
-    const { selectedStudent,roomTitle } = req.body;
+    const { host,selectedStudent,roomTitle } = req.body;
 
     //const alarms = await Alarm.find({ userName: { $in: selectedStudent } });
     
@@ -2749,6 +2776,33 @@ app.post("/selectedAlarm", async (req, res) => {
       console.log(alarm);
     }
     
+    const hostUser = await User.findOne({name: host});
+    const hostUserId = hostUser._id;
+
+    const hostAlarm = await Alarm.findOneAndUpdate(
+      {userName: host},
+      {
+        $push: {
+          //userName: student,
+          content: {
+            $each: [{ 
+              title: "새로운 방이 생성되었습니다",
+              message: `${roomTitle} 방이 생성되었습니다.`, 
+              createdAt: new Date(),
+              _id: new mongoose.mongo.ObjectId(),
+              role: "student",
+            }],
+          },
+         },
+        $setOnInsert: {
+          userName: host,
+          _user: String(hostUserId)
+        }
+      },
+      { upsert: true, new: true }
+    )
+    console.log(hostAlarm);
+
     res.status(200).send('Alarm created successfully');
   } catch (error) {
     console.error(error);
@@ -3009,9 +3063,9 @@ app.get("/getRWriter/:id/:nickname", async (req, res) => {
   }
 })
 
-// 채택정보 (방장이름, 수강생, 방제목, 예상시작시간)
+// 채택정보 (방장이름, 수강생, 방제목, 예상시작시간, 시작 날짜)
 app.post("/selectionTInfo", async (req, res) => {
-  const { host, applicant, roomTitle, startTime } = req.body;
+  const { host, applicant, roomTitle, startTime, date } = req.body;
 
   try {
     const newSelectionTInfo = new SelectionTInfo({
@@ -3019,19 +3073,59 @@ app.post("/selectionTInfo", async (req, res) => {
       applicant: applicant,
       roomTitle: roomTitle,
       startTime: startTime,
+      date: date
     });
     await newSelectionTInfo.save();
 
+    const hostUser = await User.findOne({name : host}).exec();
+    const applicantUsers = await User.find({name : {$in : applicant}}).exec();
+
+    console.log(hostUser);
+    console.log(applicantUsers);
+
+    const newHostSchedule = new RoomSchedule({
+      userId: hostUser._id,
+      userType: "Teacher",
+      roomTitle: roomTitle,
+      startTime: startTime,
+      date: date
+    });
+    await newHostSchedule.validate();
+    await newHostSchedule.save();
+
+    for(const applicantUser of applicantUsers){
+      const newApplicantSchedule = new RoomSchedule({
+        userId: applicantUser._id,
+        userType: "Student",
+        roomTitle: roomTitle,
+        startTime: startTime,
+        date: date
+      });
+      await newApplicantSchedule.validate();
+      await newApplicantSchedule.save();
+    }
     return res.status(200).json({ message: `created successfully` });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: `서버오류` });
   }
 })
+//저장된 roomSchedule에서 해당하는 유저에게 해당하는 정보가 보이도록
+app.get("/roomSchedules", auth, async (req, res) => {
+
+  try{
+    const roomSchedule = await RoomSchedule.find({userId : req.user.id});
+    res.status(200).json(roomSchedule);
+    console.log(roomSchedule);
+  }catch(err){
+    console.error(err);
+    res.status(500).json({message: "Server Error"});
+  }
+})
 
 // 채택정보 (방장이름, 수강생, 방제목, 예상시작시간)
 app.post("/selectionInfo", async (req, res) => {
-  const { host, applicant, roomTitle, startTime } = req.body;
+  const { host, applicant, roomTitle, startTime, date } = req.body;
 
   try {
     const newSelectionInfo = new SelectionInfo({
@@ -3039,8 +3133,37 @@ app.post("/selectionInfo", async (req, res) => {
       applicant: applicant,
       roomTitle: roomTitle,
       startTime: startTime,
+      date: date
     });
     await newSelectionInfo.save();
+
+    const hostUser = await User.findOne({name : host}).exec();
+    const applicantUsers = await User.find({name : {$in : applicant}}).exec();
+
+    console.log(hostUser);
+    console.log(applicantUsers);
+
+    const newHostSchedule = new RoomSchedule({
+      userId: hostUser._id,
+      userType: "Student",
+      roomTitle: roomTitle,
+      startTime: startTime,
+      date: date
+    });
+    await newHostSchedule.validate();
+    await newHostSchedule.save();
+
+    for(const applicantUser of applicantUsers){
+      const newApplicantSchedule = new RoomSchedule({
+        userId: applicantUser._id,
+        userType: "Teacher",
+        roomTitle: roomTitle,
+        startTime: startTime,
+        date: date
+      });
+      await newApplicantSchedule.validate();
+      await newApplicantSchedule.save();
+    }
 
     return res.status(200).json({ message: `created successfully` });
   } catch (error) {

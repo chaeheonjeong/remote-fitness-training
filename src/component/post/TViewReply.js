@@ -347,6 +347,32 @@ const TViewReply = ({ write, setWrite }) => {
         return formattedDate;
     };
 
+        //댓글 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage] = useState(5);
+
+  // 현재 페이지에 보여질 댓글들 추출
+  const startIndex = (currentPage - 1) * perPage;
+  const endIndex = startIndex + perPage;
+  const currentReply = reply.slice(startIndex, endIndex);
+
+  // 페이지네이션 컴포넌트
+  const totalPages = Math.ceil(reply.length / perPage);
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  const renderPageNumbers = pageNumbers.map(number => {
+    return (
+      <li key={number}>
+        <button onClick={() => setCurrentPage(number)}>
+          {number}
+        </button>
+      </li>
+    );
+  });
+
     return(
         <>
         {/* 댓글 입력 폼 */}
@@ -377,7 +403,7 @@ const TViewReply = ({ write, setWrite }) => {
               </tr>
             </thead>
             <tbody>
-              {reply.map((r, index) => (
+              {currentReply.map((r, index) => (
               
               <tr className={styles.replyTitle} key={r._id}>
                 <td key={r._id} onClick={() => ReplyProfileClick(r._user)} >
@@ -568,6 +594,11 @@ const TViewReply = ({ write, setWrite }) => {
             
             </tbody>
           </table>
+          <div className={styles.pagination}>
+            <ul className={styles.pageNumbers}>
+              {renderPageNumbers}
+            </ul>
+          </div>
         </div>
         </>
     );

@@ -11,6 +11,9 @@ const alarmSchema = new Schema(
       createdAt: { type: Date, default: Date.now },
       read: { type: Boolean, default: false },
       role: { type: String }, // 학생일 경우에만 student라는 값 넣어주고 아니면 그냥 데이터 안 넣음.
+      prepaymentBtn: {type:Boolean, default: false, required: function () {
+        return this.role === 'student';
+      } } //클릭 시 채팅방 들어갈 수 있는 버튼 보이도록.
     }],
     _id : { type: Schema.Types.ObjectId, required: true, auto: true }, // 알림 번호
   },

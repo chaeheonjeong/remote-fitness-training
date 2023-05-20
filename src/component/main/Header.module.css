@@ -112,6 +112,7 @@
   width: 100%;
   gap: 0.5rem;
   align-items: center;
+  font-size: 13px;
   font-family: 'SUITE-Regular';
 }
 .profileDropItem:hover {
