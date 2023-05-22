@@ -44,6 +44,7 @@ const GoalTime = require("./models/goalTime");
 const AskGood = require("./models/askGood");
 const PostGood = require("./models/postGood");
 const TPostGood = require("./models/tPostGood");
+const Score = require("./models/score");
 //const { dblClick } = require("@testing-library/user-event/dist/click");
 
 //const { dblClick } = require("@testing-library/user-event/dist/cjs/event/behavior/click");
@@ -3078,6 +3079,54 @@ app.post("/selectionInfo", async (req, res) => {
     res.status(500).json({ message: `서버오류` });
   }
 })
+
+////////후기 별점 ////////////////////////////////
+/////////////////////////////////////
+// 후기 작성 요청 처리
+app.post("/reviews", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+  const { stars, swriter, swriteDate, roomName  } = req.body;
+  try {
+    
+
+    // 새로운 후기 생성
+    const score = new Score({
+      stars : stars,
+      userId : userId,
+      swriter : swriter,
+      swriteDate : swriteDate,
+      roomName: roomName, // 방 이름 저장
+    });
+
+    // 후기 저장
+    const savedScore = await score.save();
+
+    res.status(201).json(savedScore);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// 방 목록 가져오기
+app.get("/rooms", async (req, res) => {
+  try {
+    // DB에서 모든 SelectionInfo 정보를 가져옴
+    const selectionInfoList = await SelectionInfo.find();
+    // 방 제목만 추출하여 배열로 변환
+    const roomTitles = selectionInfoList.map((selectionInfo) => selectionInfo.roomTitle);
+    res.status(200).json(roomTitles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+});
+
+
+/////////////////////////////////////
 
 // 질문 댓글 
 app.get("/getAReply/:id", async (req, res) => {

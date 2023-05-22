@@ -1,15 +1,26 @@
 import React, {useState, useEffect} from 'react';
+import { useParams, useNavigate } from "react-router-dom";
 import Calendar from 'react-calendar';
 import './MyCalendar.css';
 import moment from 'moment';
+import axios from "axios";
+//import styles from "./SelectModal.module.css";
+import usePost from "../../hooks/usePost";
 import Modal from 'react-modal';
-import axios from 'axios';
+import userStore from "../../store/user.store";
 import SideBar from './SideBar'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "../main/Header";
+import useNoti from "../../hooks/useNoti";
+//import ReviewList from './ReviewList'; // 수정: 후기 목록 컴포넌트 추가
+//import ReviewModal from './ReviewModal'; // 수정: 후기 모달 컴포넌트 추가
 
 function MyCalendar() {
+    const { id } = useParams();
+    const user = userStore();
+    const navigate = useNavigate();
+
     const [addModalIsOpen, setAddModalIsOpen] = useState(false);
     const [detailModalIsOpen, setDetailModalIsOpen] = useState(false);
     const [date, setDate] = useState(new Date());
@@ -20,6 +31,29 @@ function MyCalendar() {
     const token = localStorage.getItem('token');
     const [scheduleList, setScheduleList] = useState([]);
     const [reviewModalIsOpen, setReviewModalIsOpen] = useState(false);
+    const [roomSchedules, setRoomSchedules] = useState([]);
+    const [notiData, setNotiData] = useState([]);
+    const hook = useNoti();
+
+
+    const [selectedRoom, setSelectedRoom] = useState(null); // 선택한 방
+    const [roomList, setRoomList] = useState([]); // 방 목록
+    const [selectedStars, setSelectedStars] = useState(0); // 추가: 선택한 별점
+
+    useEffect(() =>{
+        const fetchRoomSchedules = async () => {
+            try{
+                const res = await axios.get("http://localhost:8080/roomSchedules",{
+                    headers : {Authorization: `Bearer ${token}`}
+                });
+                setRoomSchedules(res.data);
+                console.log(res.data);
+            }catch(err){
+                console.error(err);
+            }
+        }
+        fetchRoomSchedules();
+    }, []);
 
     useEffect(() => {
         const fetchSchedules = async () => {
@@ -146,7 +180,18 @@ function MyCalendar() {
            
     };
 
-    console.log(selectedSchedule);
+    const formatDate = (today) => {
+        const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1;
+        const dateW = today.getDate();
+        const dayOfWeek = daysOfWeek[today.getDay()];
+        const formattedDate = `${year}.${month}.${dateW}(${dayOfWeek})`;
+        
+        return formattedDate;
+    };
+
+    const today = new Date();
 
     const tileContent = ({date,view}) => {
         const filteredSchedules = schedules.filter((schedule) => {
@@ -159,32 +204,200 @@ function MyCalendar() {
             );
         });
 
+        const filteredRoomSchedules = roomSchedules.filter((roomSchedule) => {
+            const roomScheduleDate = new Date(roomSchedule.date);
+            return(
+                roomScheduleDate.getDate() === date.getDate() &&
+                roomScheduleDate.getMonth() === date.getMonth() &&
+                roomScheduleDate.getFullYear() === date.getFullYear() &&
+                (view === 'month' || (view === 'week' && roomScheduleDate.getDay() === date.getDay()))
+            );
+        })
+
         return(
             <div>
-                {filteredSchedules.map((schedule) => (
-                    <div className='showSchedule' key={schedule.title} onClick={() => handleSelectSchedule(schedule)}> 
-                        {schedule.title}
-                    </div>
-                ))}
-            </div>
+                <div>
+                    {filteredSchedules.map((schedule) => (
+                        <div className='showSchedule' key={schedule.title} onClick={() => handleSelectSchedule(schedule)}> 
+                            {schedule.title}
+                        </div>
+                    ))}
+                </div>
+                <div>
+                    {filteredRoomSchedules.map((roomSchedule) => (
+                        hook.rendData !== null ? (
+                            hook.rendData.map((x, i) => {
+                                return x.prepaymentBtn === true && roomSchedule.userType === 'Student' ? (
+                                    <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
+                                        {roomSchedule.roomTitle}
+                                    </div>
+                                ) : null
+                            })
+                        ) : null
+                    ))}
+                </div>
+                <div>
+                    {filteredRoomSchedules.map((roomSchedule) => {
+                        return roomSchedule.userType === 'Teacher' ? (
+                            <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
+                                    {roomSchedule.roomTitle}
+                            </div>
+                        ):null
+                    })}
+                </div>
+            </div> 
         );
     };
+
+    //////후기 작성 구현
+
+    // 후기 작성 모달 내에서 방 목록을 관리할 상태 추가
+    const [roomListModal, setRoomListModal] = useState([]);
+
+
+    // 방 선택 시 후기 작성 모달 열기
+    const handleRoomSelect = (room) => {
+        setSelectedRoom(room);
+        setReviewModalIsOpen(true);
+    };
+
+    // 방 목록 가져오기
+    const fetchRoomList = async () => {
+        try {
+          const response = await axios.get('http://localhost:8080/rooms');
+          const rooms = response.data.map((room, index) => ({
+            id: index, // 간단하게 인덱스를 사용하여 id 설정
+            name: room,
+            description: "", // 빈 설명 추가
+          }));
+          setRoomListModal(rooms);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+    
+    useEffect(() => {
+        fetchRoomList();
+    }, []);
+    
+  
+    
+
+
+    //////// 별점 기능
+    const handleReviewModalClose = () => {
+        setSelectedRoom(null);
+        setReviewModalIsOpen(false);
+        setSelectedStars(0); // 추가: 별점 선택 초기화
+      };
+
+      const handleReviewModalOpen = () => {
+        setReviewModalIsOpen(true);
+        fetchRoomList(); // 방 목록 가져오기
+        
+      };
+      const handleStarClick = (stars) => {
+        setSelectedStars(stars);
+      };
+    
+      const handleReviewSubmit = async (e) => {
+        e.preventDefault();
+        try {
+          // 별점과 사용자 ID를 DB에 저장하는 요청을 보냄
+          const res = await axios.post("http://localhost:8080/reviews", {
+            stars: selectedStars,
+            swriter: user.name,
+            swriteDate: today,
+            roomName: selectedRoom.name, // 선택된 방의 이름 전달
+        },{
+            headers : {Authorization: `Bearer ${token}`}
+        });
+
+          console.log('Review submitted:', res.data);
+
+          setSelectedStars(0);
+          handleReviewModalClose();
+          navigate("/MyCalendar");
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      
 
 
 
     return(
         <div>
-        <Header />
-        <SideBar/>
-        <div className='reviewBtn'>
-            <button type="submit" onClick={() => setReviewModalIsOpen(true)}>후기 작성</button>
-            <Modal className='Modal' ariaHideApp={false} isOpen={reviewModalIsOpen} onRequestClose={() => setReviewModalIsOpen(false)} overlayClassName='Overlay'>
-            <button type="submit" onClick={() => setReviewModalIsOpen(false)} className='ModalButton'>X</button>
-            <h2>
-                후기 작성
-            </h2>
-            </Modal>
+    <Header />
+    <SideBar />
+    <div className="reviewBtn">
+      <button
+        className="starsub"
+        type="submit"
+        onClick={handleReviewModalOpen}
+      >
+        후기 작성
+      </button>
+      <Modal
+        className="Modal"
+        ariaHideApp={false}
+        isOpen={reviewModalIsOpen}
+        onRequestClose={handleReviewModalClose}
+        overlayClassName="Overlay"
+      >
+        <h2 className='starwrite'>후기 작성</h2>
+        <button
+          type="submit"
+          onClick={handleReviewModalClose}
+          className="ModalButton"
+        >
+          X
+        </button>
+        
+        {selectedRoom && (
+        <div>
+        <p>선택한 방: {selectedRoom.name}</p>
+        {selectedStars >= 0 && <p>선택한 별점: {selectedStars}</p>}
+        <div className="starContainer">
+            {[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
+            <span
+                key={star}
+                className={selectedStars >= star ? 'selected' : ''}
+                onClick={() => handleStarClick(star)}
+                style={{ cursor: 'pointer' }}
+            >
+                {star}{' '}
+            </span>
+            ))}
         </div>
+        <button type="submit" onClick={handleReviewSubmit}>
+            등록
+        </button>
+        </div>
+    )}
+    {!selectedRoom && (
+        <div className="roomListContainer">
+        {roomListModal.length > 0 ? (
+            <div>
+            {roomListModal.map((room) => (
+                <div
+                key={room.id}
+                className="roomItem"
+                onClick={() => handleRoomSelect(room)}
+                >
+                <h3>{room.name}</h3>
+                <p>{room.description}</p>
+                </div>
+            ))}
+            </div>
+        ) : (
+            <p>Loading...</p>
+        )}
+        </div>
+    )}
+    </Modal>
+      </div>
         <div className = "MyCalendar">
             <Calendar onClickDay={handleSelectDate} value={date}
                 formatDay={(locale, date) => moment(date).format("DD")}

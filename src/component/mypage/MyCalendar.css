@@ -276,3 +276,26 @@
   float: right;
   margin-top: 10px;
 }
+
+.starsub {
+  background-color: #f0ae16;
+  border-radius: 5px;
+  border: none;
+  font-family: 'Cafe24SsurroundAir';
+  margin-top: 35px;
+  margin-right: 50px;
+  padding : 10px;
+}
+  
+
+.roomListContainer {
+  /* 모달 내용 스타일 */
+  max-height: 200px; /* 모달 내용의 최대 높이를 지정 */
+  overflow-y: auto; /* 세로 스크롤바를 자동으로 생성 */
+}
+
+.starwrite {
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: bold;
+}

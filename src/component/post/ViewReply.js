@@ -62,37 +62,40 @@ const ViewReply = ({ write, setWrite }) => {
 
     const [reply, setReply] = useState([]);
     const [pImg, setPImg] = useState([]);
-    const [rPImg, setRPImg] = useState([]);
+    const [rPImg, setRPImg] = useState({});
     
     const [sameUsers, setSameUsers] = useState(false);
     const [postId, setPostId] = useState(); 
     const [replyInput, setReplyInput] = useState("");
 
     useEffect(() => {
-        const fetchReply = async () => {
+      const fetchReply = async () => {
         try {
-            const res = await axios
-            .get(`http://localhost:8080/getReply/${id}`, {
-                headers: { Authorization: `Bearer ${user.token}` },
-            });
-            if (res.data !== undefined) {
+          const res = await axios.get(`http://localhost:8080/getReply/${id}`, {
+            headers: { Authorization: `Bearer ${user.token}` },
+          });
+          if (res.data !== undefined) {
             setReply(res.data.data);
             setSameUsers(res.data.sameUsers);
-            setPImg(res.data.profileImgs);
 
-            /* console.log("sameUsers: ", res.data.sameUsers); */
-
-            console.log(pImg);
-
-            console.log(res.data.message);
-            }console.log(res.data);
-        } catch (err) {
-            console.error(err);
-        }
-        };
-        
-        fetchReply();
+            // 댓글별 프로필 이미지 객체 설정
+        const profileImgs = res.data.profileImgs.reduce((obj, img, index) => {
+          obj[res.data.data[index]._id] = img;
+          return obj;
+        }, {});
+            setRPImg(res.data.profileImgs); // 댓글마다의 프로필 이미지를 rPImg에 저장
     
+            console.log(rPImg);
+    
+            console.log(res.data.message);
+          }
+          console.log(res.data);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+    
+      fetchReply();
     }, []);
 
 
@@ -411,7 +414,7 @@ const ViewReply = ({ write, setWrite }) => {
               <tr className={styles.replyTitle} key={r._id}>
                 <td key={r._id} onClick={() => ReplyProfileClick(r._user)} >
                   <div>
-                  {!pImg || !pImg[index] ? (
+                  {!rPImg[index] ? (
                     <HiUserCircle
                       size="40"
                       color="#5a5a5a"
@@ -420,7 +423,7 @@ const ViewReply = ({ write, setWrite }) => {
                   ) : (
                     <img
                       className={styles.profile}
-                      src={pImg[index]}
+                      src={rPImg[index]}
                       alt="프로필 이미지"
                     />
                   )}

@@ -540,16 +540,14 @@ const AskViewReply = ({ write, setWrite }) => {
                         {r.ArwriteDate !== undefined &&
                         formatDate(new Date(r.ArwriteDate))}</td>
 
-
-<td>
-  {r.likesCount}{" "}
-  <span
-    className="like-button"
-    onClick={() => handleLike(r._id)} // 좋아요 버튼 클릭 시 핸들러 호출
-  >
-    👍
-  </span>
-                            
+                        <td>
+                          {r.likesCount}{" "}
+                          <span
+                            className="like-button"
+                            onClick={() => handleLike(r._id)} // 좋아요 버튼 클릭 시 핸들러 호출
+                          >
+                            👍
+                          </span>
                         </td>
 
                         
