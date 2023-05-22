@@ -299,3 +299,20 @@
   font-size: 20px;
   font-weight: bold;
 }
+
+.highlighted {
+  background-color: lightblue;
+}
+
+.roomItem {
+  /* 기본 스타일 */
+  background-color: white;
+  border: 1px solid black;
+  /* 기타 스타일 */
+}
+
+.roomItem:hover {
+  /* 마우스가 올라갔을 때의 스타일 */
+  background-color: lightblue;
+  border: 2px solid red;
+}
