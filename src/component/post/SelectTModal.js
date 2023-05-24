@@ -67,7 +67,6 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
                roomTitle: roomTitle,
                startTime: startTime,
             });
-
             console.log("before-", ok);
             setOk(true);
 

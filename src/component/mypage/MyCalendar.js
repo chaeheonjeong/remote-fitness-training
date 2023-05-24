@@ -253,11 +253,16 @@ function MyCalendar() {
 
     // 후기 작성 모달 내에서 방 목록을 관리할 상태 추가
     const [roomListModal, setRoomListModal] = useState([]);
+    const [participatedRooms, setParticipatedRooms] = useState([]);
+    const [selectedHost, setSelectedHost] = useState(null);
+    const [selectedHostId, setSelectedHostId] = useState(null);
 
 
     // 방 선택 시 후기 작성 모달 열기
     const handleRoomSelect = (room) => {
         setSelectedRoom(room);
+        setSelectedHost(room.host); // 호스트 정보 저장
+        setSelectedHostId(room.hostId);
         setReviewModalIsOpen(true);
     };
 
@@ -270,18 +275,65 @@ function MyCalendar() {
             name: room,
             description: "", // 빈 설명 추가
           }));
-          setRoomListModal(rooms);
+           // 후기가 작성된 방 필터링
+            const filteredRooms = rooms.filter(
+            (room) => !participatedRooms.some((participatedRoom) => participatedRoom.name === room.name)
+            ); 
+        //const filteredRooms = rooms.filter(room => !isRoomReviewed(room.name));
+
+        // 방 목록을 로컬 스토리지에 저장
+        //localStorage.setItem("roomList", JSON.stringify(filteredRooms));
+
+        setRoomListModal(filteredRooms);
+        } catch (error) {
+          console.error(error);
+        }
+    };
+
+    // 후기를 작성한 방인지 확인하는 함수
+    const isRoomReviewed = async (roomName) => {
+        try {
+        const response = await axios.get('http://localhost:8080/reviews');
+        const reviews = response.data;
+    
+        // 방 이름과 현재 사용자를 기준으로 후기 데이터를 필터링
+        const filteredReviews = reviews.filter(review => review.roomName === roomName && review.studentName === user.name);
+    
+        // 후기가 존재하면 true, 존재하지 않으면 false 반환
+        return filteredReviews.length > 0;
+        } catch (error) {
+        console.error(error);
+        return false;
+        }
+    };
+
+
+    useEffect(() => {
+        fetchRoomList();
+    }, []);
+
+
+    const fetchParticipatedRooms = async () => {
+        try {
+          const response = await axios.get('http://localhost:8080/selectionTInfo');
+          const participatedRooms = response.data
+            .filter(room => room.applicant.includes(user.name))
+            .map(room => ({
+              id: room._id,
+              hostId : room.hostId,
+              name: room.roomTitle,
+              description: `${room.host}의 방 - 시작시간: ${room.startTime}`,
+              host: room.host, // 호스트의 이름 추가
+            }));
+          setParticipatedRooms(participatedRooms);
         } catch (error) {
           console.error(error);
         }
       };
-    
-    useEffect(() => {
-        fetchRoomList();
-    }, []);
-    
-  
-    
+
+      useEffect(() => {
+        fetchParticipatedRooms();
+      }, []);
 
 
     //////// 별점 기능
@@ -291,10 +343,9 @@ function MyCalendar() {
         setSelectedStars(0); // 추가: 별점 선택 초기화
       };
 
-      const handleReviewModalOpen = () => {
+      const handleReviewModalOpen = async () => {
+        await fetchRoomList(); // Fetch room list before opening the modal
         setReviewModalIsOpen(true);
-        fetchRoomList(); // 방 목록 가져오기
-        
       };
       const handleStarClick = (stars) => {
         setSelectedStars(stars);
@@ -306,24 +357,34 @@ function MyCalendar() {
           // 별점과 사용자 ID를 DB에 저장하는 요청을 보냄
           const res = await axios.post("http://localhost:8080/reviews", {
             stars: selectedStars,
-            swriter: user.name,
-            swriteDate: today,
+            studentName: user.name,
+            writeDate: today,
             roomName: selectedRoom.name, // 선택된 방의 이름 전달
+            teacherId: selectedHostId, // 선택된 호스트의 이름 전달
+            teacherName: selectedHost, // 선택된 호스트의 이름 전달
         },{
             headers : {Authorization: `Bearer ${token}`}
         });
 
           console.log('Review submitted:', res.data);
+          console.log(selectedHostId );
 
           setSelectedStars(0);
           handleReviewModalClose();
           navigate("/MyCalendar");
+          
+          //후기 작성된 방 방목록에서 제거하기
+        // 작성된 방 제거하기
+        setParticipatedRooms((prevRooms) =>
+            prevRooms.filter((room) => room.name !== selectedRoom.name)
+        );
+        setRoomListModal((prevRooms) =>
+            prevRooms.filter((room) => room.id !== selectedRoom.id)
+        );
         } catch (err) {
-          console.error(err);
+            console.error(err);
         }
       };
-
-      
 
 
 
@@ -358,6 +419,8 @@ function MyCalendar() {
         {selectedRoom && (
         <div>
         <p>선택한 방: {selectedRoom.name}</p>
+        <p>강사 이름: {selectedHost}</p>
+        <p>강사 이름: {selectedHostId}</p>
         {selectedStars >= 0 && <p>선택한 별점: {selectedStars}</p>}
         <div className="starContainer">
             {[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
@@ -380,10 +443,10 @@ function MyCalendar() {
         <div className="roomListContainer">
         {roomListModal.length > 0 ? (
             <div>
-            {roomListModal.map((room) => (
+            {participatedRooms.map((room) => (
                 <div
                 key={room.id}
-                className="roomItem"
+                className={`roomItem ${selectedRoom === room ? 'selected' : ''}`}
                 onClick={() => handleRoomSelect(room)}
                 >
                 <h3>{room.name}</h3>

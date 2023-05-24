@@ -182,7 +182,7 @@ const ViewTWrite = () => {
                         value="수정"
                         className={styles.mm}
                         onClick={() => {
-                        navigate(`/modifyPost/${id}`);
+                        navigate(`/modifyTPost/${id}`);
                         }}
                     />
                     </div>

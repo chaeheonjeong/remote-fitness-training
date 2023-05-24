@@ -3045,7 +3045,10 @@ app.post("/selectionTInfo", async (req, res) => {
   const { host, applicant, roomTitle, startTime } = req.body;
 
   try {
+    const callHost = await User.findOne({name : host});
+    {console.log("**********************************************************************" + callHost)}
     const newSelectionTInfo = new SelectionTInfo({
+      hostId : callHost._id,
       host: host,
       applicant: applicant,
       roomTitle: roomTitle,
@@ -3053,7 +3056,8 @@ app.post("/selectionTInfo", async (req, res) => {
     });
     await newSelectionTInfo.save();
 
-    return res.status(200).json({ message: `created successfully` });
+    return res.status(200).json({ message: `${callHost}created successfully` });
+    console.log(callHost);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: `서버오류` });
@@ -3088,7 +3092,7 @@ app.post("/reviews", async (req, res) => {
   const token = authHeader.split(" ")[1];
   const decodedToken = jwt.verify(token, mysecretkey);
   const userId = decodedToken.id;
-  const { stars, swriter, swriteDate, roomName  } = req.body;
+  const { stars, studentName, writeDate, roomName, teacherName, teacherId } = req.body;
   try {
     
 
@@ -3096,9 +3100,11 @@ app.post("/reviews", async (req, res) => {
     const score = new Score({
       stars : stars,
       userId : userId,
-      swriter : swriter,
-      swriteDate : swriteDate,
+      studentName : studentName,
+      writeDate : writeDate,
       roomName: roomName, // 방 이름 저장
+      teacherName : teacherName,
+      teacherId : teacherId,
     });
 
     // 후기 저장
@@ -3115,15 +3121,26 @@ app.post("/reviews", async (req, res) => {
 app.get("/rooms", async (req, res) => {
   try {
     // DB에서 모든 SelectionInfo 정보를 가져옴
-    const selectionInfoList = await SelectionInfo.find();
+    const selectionTInfoList = await SelectionTInfo.find();
     // 방 제목만 추출하여 배열로 변환
-    const roomTitles = selectionInfoList.map((selectionInfo) => selectionInfo.roomTitle);
+    const roomTitles = selectionTInfoList.map((selectionTInfo) => selectionTInfo.roomTitle);
     res.status(200).json(roomTitles);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "서버 오류" });
   }
 });
+
+app.get("/selectionTInfo", async (req, res) => {
+  try {
+    const selectionTInfo = await SelectionTInfo.find();
+    res.status(200).json(selectionTInfo);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+});
+
 
 
 /////////////////////////////////////
