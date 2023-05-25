@@ -3046,6 +3046,7 @@ app.post("/selectionTInfo", async (req, res) => {
   const { host, applicant, roomTitle, startTime } = req.body;
 
   try {
+    const callHost = await User.findOne({name : host});
   
     const newSelectionTInfo = new SelectionTInfo({
       hostId : callHost._id,
@@ -3120,6 +3121,7 @@ app.post("/reviews", async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 // 방 목록 가져오기
 app.get("/rooms", async (req, res) => {

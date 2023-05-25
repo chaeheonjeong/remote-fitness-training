@@ -394,8 +394,8 @@ function MyCalendar() {
             .map(room => ({
               id: room._id,
               hostId : room.hostId,
-              name: room.roomTitle,
-              description: `${room.host}의 방 - 시작시간: ${room.startTime}`,
+              name: `방 이름 : ${room.roomTitle}`,
+              description: `강사: ${room.host} - 시작시간: ${room.startTime}`,
               host: room.host, // 호스트의 이름 추가
             }));
           setParticipatedRooms(participatedRooms);
@@ -413,8 +413,8 @@ function MyCalendar() {
             .map(room => ({
               id: room._id,
               applicantId : [...room.applicantId],
-              name: room.roomTitle,
-              description: `강사 :${[...room.applicant]}의 방 - 시작시간: ${room.startTime}`,
+              name: `방 이름 : ${room.roomTitle}`,
+              description: `강사: ${[...room.applicant]} - 시작시간: ${room.startTime}`,
               applicant: [...room.applicant], // 호스트의 이름 추가
             }));
           setTParticipatedRooms(TparticipatedRooms);
@@ -533,7 +533,7 @@ function MyCalendar() {
           console.log(TselectedApplicantId );
 
           setTSelectedStars([0, 0]); // 수정: 별점 선택 초기화
-          handleReviewModalClose();
+          ThandleReviewModalClose();
           navigate("/MyCalendar");
           
           //후기 작성된 방 방목록에서 제거하기
