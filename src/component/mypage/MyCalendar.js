@@ -582,7 +582,7 @@ function MyCalendar() {
         <div>
         <p>선택한 방: {selectedRoom.name}</p>
         <p>강사 이름: {selectedHost}</p>
-        <p>강사 이름: {selectedHostId}</p>
+        <p>강사 ID: {selectedHostId}</p>
         {selectedStars >= 0 && <p>선택한 별점: {selectedStars}</p>}
             <div className="starContainer">
                 {[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
