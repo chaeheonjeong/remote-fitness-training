@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 // selectionInfo 스키마 정의
 const selectionInfoSchema = new Schema(
   {
+    applicantId: { type: [String], required: true },
     host: { type: String, required: true },
     applicant: { type: Array, required: true },
     roomTitle: { type: String, required: true },
