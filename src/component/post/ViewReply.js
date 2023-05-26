@@ -12,7 +12,7 @@ import MyPAReviews from "../mypage/MyPAReviews";
 /* import response from "http-browserify/lib/response"; */
 import usePost from "../../hooks/usePost";
 
-const ViewReply = ({ write, setWrite }) => {
+const ViewReply = ({ write, setWrite, writer }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const user = userStore();
@@ -29,6 +29,8 @@ const ViewReply = ({ write, setWrite }) => {
 
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [showReplyList, setShowReplyList] = useState(false);
+
+  const postCategory = "view";
 
   const ReplyProfileClick = (userId) => {
     navigate(`/PortfolioView/${userId}`);
@@ -126,7 +128,7 @@ const ViewReply = ({ write, setWrite }) => {
     }
   };
 
-  const [getReplyId, setReplyId] = useState();
+  //const [getReplyId, setReplyId] = useState();
 
   const replyHandler = (e) => {
     setReply(e.target.value);
@@ -140,7 +142,7 @@ const ViewReply = ({ write, setWrite }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = { reply: replyInput /* isSecret: isSecret */ };
+    const data = { reply: replyInput };
 
     console.log("data: ", data);
 
@@ -149,7 +151,6 @@ const ViewReply = ({ write, setWrite }) => {
         `http://localhost:8080/postreply/${id}`,
         {
           reply: String(replyInput),
-          /* isSecret : Boolean(isSecret), */
           rwriter: user.name,
           rwriteDate: today,
         },
@@ -161,6 +162,8 @@ const ViewReply = ({ write, setWrite }) => {
       console.log(typeof data);
       console.log("success", response.data.message);
 
+      createRAlarm();
+
       // 새로운 댓글을 추가합니다.
       setReply([...reply, replyInput]);
       setReplyInput(""); // 댓글 입력창을 초기화합니다.
@@ -168,6 +171,25 @@ const ViewReply = ({ write, setWrite }) => {
       navigate("/");
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const createRAlarm = async () => {
+    try {
+      if (writer !== user.name) {
+        const data = {
+          rwriter: user.name,
+          message: String(replyInput),
+          to: writer,
+          postCategory: postCategory,
+          postId: id,
+        };
+
+        const response = await axios.post(`http://localhost:8080/rAlarm`, data);
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -185,7 +207,6 @@ const ViewReply = ({ write, setWrite }) => {
         `http://localhost:8080/postr_reply/${id}/${selectedRId}`,
         {
           r_reply: String(replyRInput),
-          /* isRSecret : Boolean(isRSecret), */
           r_rwriter: user.name,
           r_rwriteDate: today,
         },
@@ -198,6 +219,8 @@ const ViewReply = ({ write, setWrite }) => {
       console.log(typeof data);
       console.log("success", response.data.message);
 
+      createRrAlarm();
+
       // 새로운 대댓글을 추가합니다.
       setR_Reply([...r_reply, replyRInput]);
       setReplyRInput(""); // 대댓글 입력창을 초기화합니다.
@@ -205,6 +228,46 @@ const ViewReply = ({ write, setWrite }) => {
       navigate("/");
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const createRrAlarm = async () => {
+    let writers;
+
+    if (writer !== rWriter) {
+      if (writer !== user.name && rWriter !== user.name) {
+        writers = Array.isArray(rWriter)
+          ? [...rWriter, writer]
+          : [rWriter, writer];
+      } else if (writer !== user.name && rWriter === user.name) {
+        // 댓글만 나
+        writers = [writer];
+      } else if (writer === user.name && rWriter !== user.name) {
+        // 글쓴이만 나
+        writers = [rWriter];
+      }
+    } else {
+      if (writer !== user.name) {
+        writers = [rWriter];
+      }
+    }
+
+    try {
+      setRWriter(writers);
+
+      const data = {
+        rrwriter: user.name,
+        message: String(replyRInput),
+        to: writers,
+        postCategory: postCategory,
+        postId: id,
+      };
+
+      const response = await axios.post(`http://localhost:8080/rrAlarm`, data);
+
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -230,6 +293,8 @@ const ViewReply = ({ write, setWrite }) => {
 
   const [showR_ReplyModifyInput, setShowRModifyReplyInput] = useState(false);
   const [replyRModifyInput, setReplyRModifyInput] = useState("");
+  const [rWriter, setRWriter] = useState("");
+  const [rrTo, setRrTo] = useState([]);
 
   // 대댓글수정
   const modifyRHandleSubmit = async (e, selectedRId, rrid) => {
@@ -259,6 +324,7 @@ const ViewReply = ({ write, setWrite }) => {
       console.log(error);
     }
   };
+
   // 대댓글수정(가져오기)
   const modifyR_Reply = async (rrid) => {
     try {
@@ -357,30 +423,6 @@ const ViewReply = ({ write, setWrite }) => {
     return formattedDate;
   };
 
-  //댓글 페이지네이션
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(5);
-
-  // 현재 페이지에 보여질 댓글들 추출
-  const startIndex = (currentPage - 1) * perPage;
-  const endIndex = startIndex + perPage;
-  const currentReply = reply.slice(startIndex, endIndex);
-
-  // 페이지네이션 컴포넌트
-  const totalPages = Math.ceil(reply.length / perPage);
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
-
-  const renderPageNumbers = pageNumbers.map((number) => {
-    return (
-      <li key={number}>
-        <button onClick={() => setCurrentPage(number)}>{number}</button>
-      </li>
-    );
-  });
-
   return (
     <>
       {/* 댓글 입력 폼 */}
@@ -410,7 +452,7 @@ const ViewReply = ({ write, setWrite }) => {
             </tr>
           </thead>
           <tbody>
-            {currentReply.map((r, index) => (
+            {reply.map((r, index) => (
               <tr className={styles.replyTitle} key={r._id}>
                 <td key={r._id} onClick={() => ReplyProfileClick(r._user)}>
                   <div>
@@ -491,6 +533,9 @@ const ViewReply = ({ write, setWrite }) => {
                       onClick={() => {
                         setShowReplyInput(selectedRId === r._id ? null : r._id);
                         setSelectedRId(selectedRId === r._id ? null : r._id);
+                        setRWriter(
+                          selectedRId === r.rwriter ? null : r.rwriter
+                        );
                       }}
                     >
                       대댓글 추가
@@ -525,20 +570,22 @@ const ViewReply = ({ write, setWrite }) => {
                       </div>
                     </form>
                   )}
-                  {!showReplyList && (
-                    <button
-                      className={styles.asdf1}
-                      onClick={() => {
-                        setShowReplyList(selectedRId === r._id ? null : r._id);
-                        setSelectedRId(selectedRId === r._id ? null : r._id);
-                        fetchR_Reply(r._id);
-                      }}
-                    >
-                      대댓글 목록 보기
-                    </button>
-                  )}
+
                   <div>
-                    {showReplyList && (
+                    {!showReplyList ? (
+                      <button
+                        className={styles.asdf1}
+                        onClick={() => {
+                          setShowReplyList(
+                            selectedRId === r._id ? null : r._id
+                          );
+                          setSelectedRId(selectedRId === r._id ? null : r._id);
+                          fetchR_Reply(r._id);
+                        }}
+                      >
+                        대댓글 목록 보기
+                      </button>
+                    ) : selectedRId === r._id ? (
                       <button
                         className={styles.asdf1}
                         onClick={() => {
@@ -550,6 +597,19 @@ const ViewReply = ({ write, setWrite }) => {
                         }}
                       >
                         대댓글 목록 닫기
+                      </button>
+                    ) : (
+                      <button
+                        className={styles.asdf1}
+                        onClick={() => {
+                          setShowReplyList(
+                            selectedRId === r._id ? null : r._id
+                          );
+                          setSelectedRId(selectedRId === r._id ? null : r._id);
+                          fetchR_Reply(r._id);
+                        }}
+                      >
+                        대댓글 목록 보기
                       </button>
                     )}
                   </div>
@@ -668,9 +728,6 @@ const ViewReply = ({ write, setWrite }) => {
             ))}
           </tbody>
         </table>
-        <div className={styles.pagination}>
-          <ul className={styles.pageNumbers}>{renderPageNumbers}</ul>
-        </div>
       </div>
     </>
   );

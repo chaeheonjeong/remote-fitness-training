@@ -5,13 +5,12 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Header from "../main/Header";
 import axios from "axios";
 import { useState } from "react";
-import { BASE_API_URI } from "../../util/common";
 
 const Write = () => {
   const [flag, setFlag] = useState(false);
   const hook = usePost();
 
-  const imgLink = `${BASE_API_URI}:8080/images`;
+  const imgLink = "http://localhost:8080/images";
 
   const customUploadAdapter = (loader) => {
     // (2)
@@ -26,7 +25,7 @@ const Write = () => {
               data.append("file", compressedFile);
 
               axios
-                .post(`${BASE_API_URI}/upload`, data)
+                .post("http://localhost:8080/upload", data)
                 .then((res) => {
                   if (!flag) {
                     setFlag(true);
@@ -114,7 +113,7 @@ const Write = () => {
             <option value="default" disabled hidden>
               모집 인원 선택
             </option>
-            {[1, 2].map((number, index) => (
+            {[1].map((number, index) => (
               <option
                 key={number + index}
                 value={typeof number === "number" ? `${number}명` : "10명 이상"}
@@ -245,7 +244,7 @@ const Write = () => {
           value="취소"
           className={styles.cancel}
           onClick={() => {
-            hook.navigate("/study");
+            hook.navigate("/");
           }}
         />
         <input

@@ -10,7 +10,7 @@ import loadingImg from "../../images/loadingImg.gif";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TbCircleArrowUpFilled } from "react-icons/tb";
-import { BASE_API_URI, scrollToTop } from "../../util/common";
+import { scrollToTop } from "../../util/common";
 
 function MainStudy() {
   const [studies, setStudies] = useState([]);
@@ -58,38 +58,54 @@ function MainStudy() {
 
     axios
       .get(
-        `${BASE_API_URI}/searchStudy?selected=${selected}&value=${encodeURIComponent(
-          searchInput
-        )}&page=${page}&limit=4`
+        `http://localhost:8080/searchStudy?selected=${selected}
+          &value=${encodeURIComponent(searchInput)}
+          &page=${Math.floor(searchResults.length / limit) + 1}&limit=${limit}`
       )
       .then((response) => {
         console.log("검색결과를 가져오겠습니다.");
         const newSearchStudies = response.data.studies;
         const isLastPage = newSearchStudies.length < 4;
 
-        try {
-          if (isLastPage) {
-            setHasMore(false);
-          }
+        const { hasMore, studies } = response.data;
+        const page = Math.floor(searchResults.length / limit) + 1;
 
-          const prevSearchStudies = [...studies];
-          setSearchResults((prevSearchStudies) => [
-            ...prevSearchStudies,
-            ...newSearchStudies,
-          ]);
-          setPage((prevSearchPage) => prevSearchPage + 1);
-
-          console.log(response.data.studies.length);
-          if (response.data.studies.length === 0) {
-            setNoResult(true);
-          }
-        } catch (error) {
-          console.log("검색결과: ", error);
-          setHasMore(false);
-          setIsLoading(false);
-        } finally {
-        }
+        if (page === 1) setSearchResults([...studies]);
+        else setSearchResults((prev) => [...prev, ...newSearchStudies]);
+        setHasMore(hasMore);
+      })
+      .catch((error) => {
+        console.log(error);
       });
+
+    /* axios
+          .get(`http://localhost:8080/searchStudy?selected=${selected}&value=${encodeURIComponent(searchInput)}&page=${page}&limit=4`)
+          .then((response) => {
+              console.log('검색결과를 가져오겠습니다.');
+              const newSearchStudies = response.data.studies;
+              const isLastPage = newSearchStudies.length < 4;
+
+              try {
+                  if(isLastPage) {
+                      setHasMore(false);
+                  }
+
+                  const prevSearchStudies = [...studies];
+                  setSearchResults(prevSearchStudies => [...prevSearchStudies, ...newSearchStudies]);
+                  setPage(prevSearchPage => prevSearchPage + 1);
+
+                  console.log(response.data.studies.length);
+                  if(response.data.studies.length === 0) {
+                      setNoResult(true);
+                  }
+
+              } catch(error) {
+                  console.log('검색결과: ', error);
+                  setHasMore(false);
+                  setIsLoading(false);
+              } finally {
+              }
+          }) */
   };
 
   const searchHandler = (event) => {
@@ -108,7 +124,7 @@ function MainStudy() {
     if (hasMore) {
       axios
         .get(
-          `${BASE_API_URI}/studies?page=${
+          `http://localhost:8080/studies?page=${
             Math.floor(renderQ.length / limit) + 1
           }&limit=${limit}`
         )
@@ -132,7 +148,7 @@ function MainStudy() {
   const clickHandler = (id) => {
     axios
       .post(
-        `${BASE_API_URI}/view`,
+        `http://localhost:8080/view`,
         { id: id, postName: "study" } // 서버로 전달할 id
       )
       .then((response) => {
@@ -209,18 +225,37 @@ function MainStudy() {
         {/* 검색 */}
         {searching && !noResult && (
           <InfiniteScroll
-            dataLength={studies.length}
-            next={page !== 1 ? searchResult : null}
+            dataLength={searchResults.length}
+            next={searchResult}
             hasMore={hasMore}
             loader={<LoaderImg />}
           >
+            {/* {
+                            searchResults.map((data, index) => {
+                            return (
+                              <StudyRoomCard
+                                title={data.title}
+                                tags={Array.isArray(data.tag) ? [...data.tag] : []}
+                                id={data._id}
+                                key={Math.random()}
+                                onClick={() => {
+                                  clickHandler(data._id);
+                                }}
+                              />
+                            );
+                        })
+                    } */}
+
             {searchResults.map((data, index) => {
               return (
                 <StudyRoomCard
                   title={data.title}
                   tags={Array.isArray(data.tag) ? [...data.tag] : []}
                   id={data._id}
-                  key={data._id}
+                  key={Math.random()}
+                  onClick={() => {
+                    clickHandler(data._id);
+                  }}
                 />
               );
             })}

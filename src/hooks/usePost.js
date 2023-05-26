@@ -115,7 +115,7 @@ export default function useWrite() {
           tag: tags,
           title: title,
           content: JSON.parse(JSON.stringify(content)),
-          recruit: recruit,
+          /* recruit: recruit, */
         });
         alert("수정이 완료되었습니다.");
         navigate(`/view/${id}`);
