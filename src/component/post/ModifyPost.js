@@ -7,7 +7,6 @@ import axios from "axios";
 import Header from "../main/Header";
 
 import SelectModal from "./SelectModal";
-import { BASE_API_URI } from "../../util/common";
 
 const ModifyPost = () => {
   const hook = usePost();
@@ -17,7 +16,7 @@ const ModifyPost = () => {
 
   /* const hook2 = SelectModal({ modal, setModal }); */
 
-  const imgLink = `${BASE_API_URI}/images`;
+  const imgLink = "http://localhost:8080/images";
 
   const customUploadAdapter = (loader) => {
     // (2)
@@ -32,7 +31,7 @@ const ModifyPost = () => {
               data.append("file", compressedFile);
 
               axios
-                .post(`${BASE_API_URI}/upload`, data)
+                .post("http://localhost:8080/upload", data)
                 .then((res) => {
                   if (!flag) {
                     setFlag(true);
@@ -105,9 +104,12 @@ const ModifyPost = () => {
   useEffect(() => {
     const fetchWrite = async () => {
       try {
-        const res = await axios.get(`${BASE_API_URI}/getWrite/${hook.id}`, {
-          headers: { Authorization: `Bearer ${hook.user.token}` },
-        });
+        const res = await axios.get(
+          `http://localhost:8080/getWrite/${hook.id}`,
+          {
+            headers: { Authorization: `Bearer ${hook.user.token}` },
+          }
+        );
         if (res.data !== undefined) {
           hook.setPCondition(res.data.result[0].number);
           /* hook.setPeriodCondition(res.data.result[0].number.period); */
@@ -196,28 +198,6 @@ const ModifyPost = () => {
               </option>
             ))}
           </select>
-
-          {/* <text className="ww">진행기간</text>
-          <select
-            name="period"
-            className="period"
-            onChange={(e) => {
-              hook.setPeriodCondition(e.target.value);
-            }}
-          >
-            {[1, 2, 3, 4, 5, "6개월 이상"].map((month, index) => (
-              <option
-                key={index}
-                value={
-                  typeof month === "number" ? `${month}개월` : "6개월 이상"
-                }
-                selected={periodSelect(month)}
-              >
-                {typeof month === "number" ? `${month}개월` : month}
-              </option>
-            ))}
-          </select> */}
-
           <text className="ww">시작시간</text>
           <input
             type="time"
