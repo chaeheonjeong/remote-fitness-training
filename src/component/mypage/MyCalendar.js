@@ -305,11 +305,13 @@ function MyCalendar() {
            // 후기가 작성된 방 필터링
             const filteredRooms = rooms.filter(
             (room) => !participatedRooms.some((participatedRoom) => participatedRoom.name === room.name)
-            ); 
-        //const filteredRooms = rooms.filter(room => !isRoomReviewed(room.name));
-
-        // 방 목록을 로컬 스토리지에 저장
-        //localStorage.setItem("roomList", JSON.stringify(filteredRooms));
+            );  
+            /* const filteredRooms = rooms.filter((room) => {
+                // 후기 작성 여부 확인
+                const reviewed = isRoomReviewed(room.name);
+                // 후기가 작성되지 않은 방만 필터링
+                return !reviewed;
+              }); */
 
         setRoomListModal(filteredRooms);
         } catch (error) {
@@ -332,6 +334,12 @@ function MyCalendar() {
         const TfilteredRooms = Trooms.filter(
             (room) => !TparticipatedRooms.some((TparticipatedRoom) => TparticipatedRoom.name === room.name)
             ); 
+            /* const TfilteredRooms = Trooms.filter((room) => {
+                // 후기 작성 여부 확인
+                const Treviewed = TisRoomReviewed(room.name);
+                // 후기가 작성되지 않은 방만 필터링
+                return !Treviewed;
+              }); */
     
         setTRoomListModal(TfilteredRooms);
         } catch (error) {
@@ -358,16 +366,16 @@ function MyCalendar() {
     };
     //강사 모집의 경우
     // 호스트가 후기를 작성한 방인지 확인하는 함수
-    const TisRoomHostReviewed = async (roomName) => {
+    const TisRoomReviewed = async (roomName) => {
         try {
         const response = await axios.get('http://localhost:8080/Treviews');
         const Treviews = response.data;
     
         // 방 이름을 기준으로 후기 데이터를 필터링
-        const filteredReviews = Treviews.filter(review => review.roomName === roomName && review.teacherId === user.id);
+        const TfilteredReviews = Treviews.filter(review => review.roomName === roomName && review.studentName === user.id);
     
         // 후기가 존재하면 true, 존재하지 않으면 false 반환
-        return filteredReviews.length > 0;
+        return TfilteredReviews.length > 0;
         } catch (error) {
         console.error(error);
         return false;
@@ -377,13 +385,13 @@ function MyCalendar() {
 
     useEffect(() => {
         fetchRoomList();
-    }, []);
+    }, [participatedRooms]);
 
 
     //강사모집
     useEffect(() => {
         TfetchRoomList();
-    }, []);
+    }, [TparticipatedRooms]);
 
 
     const fetchParticipatedRooms = async () => {
@@ -648,10 +656,10 @@ function MyCalendar() {
           X
         </button>
         {TselectedRoom && (
-        <div>
+        <div className="teacherroom">
             <p>강사모집방 이름: {TselectedRoom.name}</p>
             {TselectedApplicant[0] && (
-            <div>
+            <div className='teacherroom1'>
                 <p>강사1 이름: {TselectedApplicant[0]}</p>
                 <p>강사1 ID: {TselectedApplicantId[0]}</p>
                 {TselectedStars[0] >= 0 && (
@@ -675,7 +683,7 @@ function MyCalendar() {
             )}
 
             {TselectedApplicant[1] && (
-            <div>
+            <div className='teacherroom2'>
                 <p>강사2 이름: {TselectedApplicant[1]}</p>
                 <p>강사2 ID: {TselectedApplicantId[1]}</p>
                 {TselectedStars[1] >= 0 && (
@@ -709,7 +717,7 @@ function MyCalendar() {
         {!TselectedRoom && (
         <div className="TroomListContainer">
             {TroomListModal.length > 0 ? (
-            <div>
+            <div >
                 {TparticipatedRooms.map((room) => (
                 <div
                     key={room.id}

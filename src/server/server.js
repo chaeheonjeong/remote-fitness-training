@@ -3056,9 +3056,10 @@ app.post("/selectionTInfo", async (req, res) => {
       startTime: startTime,
     });
     await newSelectionTInfo.save();
+    console.log(callHost);
 
     return res.status(200).json({ message: `${callHost}created successfully` });
-    console.log(callHost);
+    
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: `서버오류` });
@@ -3147,6 +3148,8 @@ app.get("/selectionTInfo", async (req, res) => {
   }
 });
 
+
+
 ///// 후기 강사모집의 경우
 // 후기 작성 요청 처리
 app.post("/Treviews", async (req, res) => {
@@ -3182,35 +3185,7 @@ app.post("/Treviews", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-/* app.post("/Treviews", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader.split(" ")[1];
-  const decodedToken = jwt.verify(token, mysecretkey);
-  const userId = decodedToken.id;
-  const { stars, studentName, writeDate, roomName, teacherName, teacherId } = req.body;
-  try {
-    
 
-    // 새로운 후기 생성
-    const Tscore = new TScore({
-      stars : stars,
-      studentId : userId,
-      studentName : studentName,
-      writeDate : writeDate,
-      roomName: roomName, // 방 이름 저장
-      teacherName : teacherName,
-      teacherId : teacherId,
-    });
-
-    // 후기 저장
-    const savedTScore = await Tscore.save();
-
-    res.status(201).json(savedTScore);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-}); */
 
 // 방 목록 가져오기
 app.get("/Trooms", async (req, res) => {
@@ -3230,6 +3205,29 @@ app.get("/selectionInfo", async (req, res) => {
   try {
     const selectionInfo = await SelectionInfo.find();
     res.status(200).json(selectionInfo);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+});
+
+///////////
+// 후기 목록 가져오기
+app.get("/reviews", async (req, res) => {
+  try {
+    const reviews = await Score.find();
+    res.status(200).json(reviews);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+});
+
+// 후기 강사모집 목록 가져오기
+app.get("/Treviews", async (req, res) => {
+  try {
+    const treviews = await TScore.find();
+    res.status(200).json(treviews);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "서버 오류" });

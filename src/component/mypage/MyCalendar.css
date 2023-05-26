@@ -305,6 +305,20 @@
   overflow-y: auto; /* 세로 스크롤바를 자동으로 생성 */
 }
 
+.teacherroom {
+  /* 모달 내용 스타일 */
+  max-height: 200px; /* 모달 내용의 최대 높이를 지정 */
+  overflow-y: auto; /* 세로 스크롤바를 자동으로 생성 */
+}
+
+.teacherroom1 {
+  border: 2px solid rgb(85, 0, 255);
+}
+
+.teacherroom2 {
+  border: 2px solid rgb(0, 255, 94);
+}
+
 .starwrite {
   margin-bottom: 20px;
   font-size: 20px;
@@ -313,7 +327,7 @@
 
 .highlighted {
   background-color: lightblue;
-}
+}S
 .Thighlighted {
   background-color: lightblue;
 }
