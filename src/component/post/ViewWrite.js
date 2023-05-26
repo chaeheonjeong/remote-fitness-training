@@ -12,6 +12,7 @@ import MyPAReviews from "../mypage/MyPAReviews";
 import response from "http-browserify/lib/response";
 import usePost from "../../hooks/usePost";
 import ViewReply from "./ViewReply";
+import { BASE_API_URI } from "../../util/common";
 
 const ViewWrite = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const ViewWrite = () => {
     const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(`http://localhost:8080/writeDelete/${id}`)
+        .delete(`${BASE_API_URI}/writeDelete/${id}`)
         .then((res) => {
           navigate("/study");
         })
@@ -47,7 +48,7 @@ const ViewWrite = () => {
   // 스크랩 수
   const getBookmarkCount = () => {
     axios
-      .get(`http://localhost:8080/getBookmarkCount/${id}`)
+      .get(`${BASE_API_URI}/getBookmarkCount/${id}`)
       .then((res) => {
         if (res.status === 200) {
           setBookmarkCount(res.data.result.goodCount);
@@ -60,7 +61,7 @@ const ViewWrite = () => {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`http://localhost:8080/getWrite/${id}`, {
+        .get(`${BASE_API_URI}/getWrite/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -76,7 +77,7 @@ const ViewWrite = () => {
         });
     } else {
       axios
-        .get(`http://localhost:8080/getWrite2/${id}`)
+        .get(`${BASE_API_URI}/getWrite2/${id}`)
         .then((response) => {
           if (response.status === 200) {
             setWrite(response.data.result[0]);
@@ -89,24 +90,6 @@ const ViewWrite = () => {
         });
     }
   }, []);
-
-  useEffect(() => {
-    const fetchWrite = async () => {
-      try {
-        const res = await axios.get(`http://localhost:8080/getWrite/${id}`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        if (res.data !== undefined) {
-          setWrite(res.data.data[0]);
-          setSameUser(res.data.sameUser);
-          console.log(res.data.message);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchWrite();
-  }, [id]);
 
   useEffect(() => {
     if (write.content !== undefined) {

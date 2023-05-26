@@ -5,6 +5,7 @@ import styles from "./SelectModal.module.css";
 import usePost from "../../hooks/usePost";
 
 import userStore from "../../store/user.store";
+import { BASE_API_URI } from "../../util/common";
 
 const SelectModal = ({ modal, setModal, onRecruitChange }) => {
   const { id } = useParams();
@@ -38,10 +39,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
         roomTitle: roomTitle,
       };
 
-      const response = await axios.post(
-        `http://localhost:8080/selectedAlarm`,
-        data
-      );
+      const response = await axios.post(`${BASE_API_URI}/selectedAlarm`, data);
 
       console.log(response.data);
     } catch (error) {
@@ -60,7 +58,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
     setModal(false);
 
     try {
-      const res = await axios.post(`http://localhost:8080/selectionInfo`, {
+      const res = await axios.post(`${BASE_API_URI}/selectionInfo`, {
         host: host,
         applicant: selectedStudent,
         roomTitle: roomTitle,
@@ -84,7 +82,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
   const getRWriter = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/getRWriter/${id}/${user.name}`
+        `${BASE_API_URI}/getRWriter/${id}/${user.name}`
       );
 
       console.log(user.name);
@@ -124,7 +122,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
         <div className={styles.inputWrapper}>
           <form>
             <div>
-              <a>수강생</a>
+              <a>선생님</a>
               <div className={styles.selectStudent}>
                 {rWriterList.map((rWriter) => (
                   <div key={rWriter}>
@@ -157,12 +155,10 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
             </div>
 
             {/* 이 부분은 수강생이 선생님 모집하는 경우에만 보이기 */}
-            {/* <div>
-                    <a className={styles.amount}>
-                        선금 결제 금액 : 
-                    </a>
-                    <button>선금 결제하러 가기</button>
-                </div> */}
+            <div>
+              <a className={styles.amount}>선금 결제 금액 :</a>
+              <button>선금 결제하러 가기</button>
+            </div>
           </form>
 
           <footer>

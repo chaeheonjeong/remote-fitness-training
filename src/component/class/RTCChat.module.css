@@ -95,3 +95,28 @@
   border-radius: 20px;
   padding: 10px 25px;
 }
+
+.timeButton {
+  background-color: #8ae52e;
+  height: 60%;
+  border-radius: 20px;
+  padding: 10px 25px;
+}
+
+.timeContainer {
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ModalClose {
+  transition: visibility 0.2s ease-out;
+  visibility: hidden;
+  animation: fadeOut 0.2s;
+}
+.ModalOpen {
+  visibility: visible;
+  animation: fadeIn 0.2s;
+}

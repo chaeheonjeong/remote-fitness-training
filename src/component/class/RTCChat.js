@@ -12,7 +12,15 @@ import { BsCameraVideoOff } from "react-icons/bs";
 import { BiMicrophone } from "react-icons/bi";
 import { BiMicrophoneOff } from "react-icons/bi";
 import { RxExit } from "react-icons/rx";
+import { AiOutlineClockCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import userStore from "../../store/user.store";
+import ChangeTime from "./ChangeTime";
+import { BASE_API_URI_CAM } from "../../util/common";
+import { BASE_API_URI } from "../../util/common";
+import axios from "axios";
+import socket from "socket.io-client/lib/socket";
+import TimeoutModal from "./TimeoutModal";
 
 const pc_config = {
   iceServers: [
@@ -26,7 +34,7 @@ const pc_config = {
     },
   ],
 };
-const SOCKET_SERVER_URL = "http://localhost:5050";
+const SOCKET_SERVER_URL = BASE_API_URI_CAM;
 
 const RTCChat = () => {
   const socketRef = useRef();
@@ -34,8 +42,8 @@ const RTCChat = () => {
   const localVideoRef = useRef(null);
   const localStreamRef = useRef();
   const [users, setUsers] = useState([]);
-  const [muted, setMuted] = useState(false);
-  const [visible, setVisible] = useState(true);
+  const [muted, setMuted] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [audioTrack, setAudioTrack] = useState(null);
   const [remoteMuted, setRemoteMuted] = useState(false);
   const [isActive, setIsActive] = useState({});
@@ -49,10 +57,87 @@ const RTCChat = () => {
     box: "300px",
     px: "290px",
   });
+  const userMe = userStore();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [hour, setHour] = useState(0);
+  const [minute, setMinute] = useState(0);
+  const setTime = (h, m) => {
+    setHour(h);
+    setMinute(m);
+  };
+  const postID = 85;
+  const DBName = "write";
+  const [showModal, setShowModal] = useState(false); // 모달 보이기/감추기 상태
+
+  const handleModalConfirm = () => {
+    // 모달 확인 버튼 클릭 시 수행되는 로직
+    navigate("/MyCalendar"); // navigate 호출 예시
+  };
 
   useEffect(() => {
-    console.log(select);
-  }, [select]);
+    const timeData = {
+      hour: hour,
+      minute: minute,
+      room: postID,
+    };
+
+    if (socketRef.current !== undefined) {
+      socketRef.current.emit("change_time", timeData);
+    }
+
+    axios
+      .post(`${BASE_API_URI}/get-time2`, { postID: postID, DBName: DBName })
+      .then((response) => {
+        if (response.status === 200) {
+          setHour(response.data.hour);
+          setMinute(response.data.minute);
+
+          const currentTime = new Date();
+          const finishTime = new Date(currentTime);
+          finishTime.setHours(currentTime.getHours() + response.data.hour);
+          finishTime.setMinutes(
+            currentTime.getMinutes() + response.data.minute
+          );
+
+          if (finishTime.getMinutes() >= 60) {
+            finishTime.setHours(finishTime.getHours() + 1);
+            finishTime.setMinutes(finishTime.getMinutes() - 60);
+          }
+
+          const timer = setInterval(() => {
+            const current = new Date();
+            if (
+              current.getHours() === finishTime.getHours() &&
+              current.getMinutes() === finishTime.getMinutes()
+            ) {
+              setShowModal(true);
+              clearInterval(timer);
+            }
+          }, 1000);
+
+          return () => {
+            clearInterval(timer); // 컴포넌트 언마운트 시 타이머 정리
+          };
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [hour, minute]);
+
+  const clickTime = () => {
+    axios
+      .post(`${BASE_API_URI}/get-time`, { postID: postID, DBName: DBName })
+      .then((response) => {
+        if (response.status === 200) {
+          setHour(response.data.hour);
+          setMinute(response.data.minute);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
     // 4명 wrapper-800px, box-300px, px-80px
@@ -69,6 +154,10 @@ const RTCChat = () => {
       setVideoStyle({ wrapper: "900px", box: "300px", px: "290px" });
   }, [users]);
 
+  useEffect(() => {
+    console.log("speaking");
+  }, [speaking]);
+
   const navigate = useNavigate();
 
   const selectClickHandler = (num) => {
@@ -77,7 +166,11 @@ const RTCChat = () => {
   };
 
   const msgClickHandler = () => {
-    socketRef.current.emit("chat_send", { room: "1234", msg: msg });
+    socketRef.current.emit("chat_send", {
+      room: postID,
+      msg: msg,
+      name: userMe.name,
+    });
     const arr = [...chatMsgs];
     arr.push({ from: "(나)", msg: msg });
     setChatMsgs(arr);
@@ -100,8 +193,8 @@ const RTCChat = () => {
       if (!socketRef.current) return;
       !bool &&
         socketRef.current.emit("join_room", {
-          room: "1234",
-          email: "참가자",
+          room: postID,
+          email: `${userMe.name}`,
         });
 
       // !bool && checkTalking(localStream);
@@ -115,30 +208,26 @@ const RTCChat = () => {
   const toggleCamera = useCallback(() => {
     if (!localStreamRef.current) return;
 
-    localStreamRef.current.getVideoTracks().forEach((track) => {
-      if (visible) {
-        track.enabled = false;
-      } else {
-        track.enabled = true;
-      }
-    });
+    setVisible((prevVisible) => !prevVisible);
 
-    setVisible(!visible);
+    setTimeout(() => {
+      localStreamRef.current.getVideoTracks().forEach((track) => {
+        track.enabled = visible;
+      });
+    }, 0);
   }, [visible]);
 
+  // useEffect(() => {
+  //   console.log(audioTrack);
+  // }, [audioTrack]);
+
   const toggleMic = useCallback(() => {
-    // localStream이 있을 때, 모든 audioTrack의 enabled를 muted와 반대 값으로 변경
+    if (!localStreamRef.current) return;
 
-    if (localStreamRef.current) {
-      const track = localStreamRef.current.getAudioTracks()[0]; //as MediaStreamTrack
-      track.enabled = !muted;
+    setMuted((prevMuted) => !prevMuted);
 
-      getLocalStream(true);
-
-      socketRef.current.emit("toggle_mic", { room: "1234", muted: !muted }); // 마이크 음소거 상태를 서버로 전달
-    }
-    setMuted(!muted); // 버튼 클릭 시 muted 값 toggle
-  }, [muted, socketRef, localStreamRef, pcsRef, setAudioTrack]);
+    socketRef.current.emit("toggle_mic", { room: postID, muted: !muted });
+  }, [muted, socketRef]);
 
   const createPeerConnection = useCallback((socketID, email) => {
     try {
@@ -181,16 +270,31 @@ const RTCChat = () => {
 
       pc.ontrack = (e) => {
         console.log("ontrack success");
-        setUsers((oldUsers) =>
-          oldUsers
-            .filter((user) => user.id !== socketID)
-            .concat({
+        setUsers((oldUsers) => {
+          const arr = [...oldUsers];
+          console.log(arr);
+          console.log(socketID);
+          const newArr = arr.map((x) => {
+            if (x.id === socketID) {
+              return {
+                id: x.id,
+                email: x.email,
+                stream: e.streams[0],
+                isMuted: x.isMuted ?? true,
+              };
+            } else return { ...x };
+          });
+          const findUser = newArr.find((x) => x.id === socketID);
+          if (!findUser)
+            newArr.push({
               id: socketID,
               email,
               stream: e.streams[0],
-              isMuted: remoteMuted,
-            })
-        );
+              isMuted: true,
+            });
+          console.log(newArr);
+          return newArr;
+        });
         setIsActive((isActive) => ({
           ...isActive,
           [socketID]: true,
@@ -234,7 +338,7 @@ const RTCChat = () => {
           socketRef.current.emit("offer", {
             sdp: localSdp,
             offerSendID: socketRef.current.id,
-            offerSendEmail: "참가자",
+            offerSendEmail: userMe.name,
             offerReceiveID: user.id,
           });
         } catch (e) {
@@ -307,7 +411,6 @@ const RTCChat = () => {
   useEffect(() => {
     // 마이크 음소거 상태를 서버로부터 전달받는 이벤트 처리
     socketRef.current.on("mute", ({ id, muted }) => {
-      console.log("mute");
       setRemoteMuted(muted);
       setUsers((oldUsers) => {
         return oldUsers.map((user) => {
@@ -318,10 +421,32 @@ const RTCChat = () => {
         });
       });
     });
-    socketRef.current.on("chat_receive", ({ id, msg }) => {
+
+    socketRef.current.on("users_muted_info", (mutedInfo) => {
+      // 서버의 참가자 목록이 넘어온다.
+      // video, audio XX
+      const arr = mutedInfo.map((x) => {
+        return { ...x, isMuted: x.isMuted ?? true };
+      });
+
+      // 기존 유저에 없고, 새로운 유저에 대한 정보가 온 경우 ????
+
+      // });
+      setUsers([...arr]);
+
+      // setUsers((oldUsers) =>
+      //   oldUsers.map((user) => {
+      //     const mutedUser = mutedInfo.find((info) => info.id === user.id);
+      //     const isMuted = mutedUser ? mutedUser.isMuted : false;
+      //     return { ...user, isMuted };
+      //   })
+      // );
+    });
+
+    socketRef.current.on("chat_receive", ({ id, msg, name }) => {
       // console.log(chat);
       setChatMsgs((chats) => {
-        return [...chats, { from: id, msg }];
+        return [...chats, { from: name, msg }];
       });
     });
 
@@ -330,6 +455,12 @@ const RTCChat = () => {
         ...prevUserSpeaking,
         [id]: speaking,
       }));
+    });
+
+    socketRef.current.on("time_changed", (timeData) => {
+      // 변경된 시간 정보를 사용하여 필요한 처리 수행
+      setHour(timeData.hour);
+      setMinute(timeData.minute);
     });
   }, [socketRef]);
 
@@ -345,7 +476,7 @@ const RTCChat = () => {
     const dataArray = new Float32Array(bufferLength);
 
     let timer;
-    // 오디오 입력 받기
+
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
@@ -362,13 +493,13 @@ const RTCChat = () => {
           if (rms > threshold && muted === false) {
             setSpeaking(true);
             socketRef.current.emit("speaking", {
-              room: "1234",
+              room: postID,
               speaking: true,
             });
           } else if (rms < threshold || muted === true) {
             setSpeaking(false);
             socketRef.current.emit("speaking", {
-              room: "1234",
+              room: postID,
               speaking: false,
             });
           }
@@ -379,32 +510,44 @@ const RTCChat = () => {
       });
 
     return () => clearInterval(timer);
-  }, [muted]);
+  }, [muted, socketRef, speaking]);
+
+  const exitHandler = async () => {
+    navigate("/MyCalendar"); // 경로 이동
+  };
+
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
   useEffect(() => {
-    console.log(chatMsgs);
-  }, [chatMsgs]);
+    if (localVideoRef.current) {
+      localVideoRef.current.volume = 0;
+    }
+  }, []);
 
   return (
-    <div className="h-screen">
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          position: "relative",
-        }}
-        className="h-full"
-      >
-        <div className="w-full flex flex-col h-full justify-center items-center">
-          <div
-            style={{
-              position: "relative",
-              zIndex: "0",
-            }}
-            className="w-full flex-1 overflow-hidden flex justify-center items-center gap-2 text-center"
-            // className="grid grid-cols-2 grid-flow-row w-full flex-1 overflow-hidden"
-          >
-            {/* <div
+    <>
+      <div className="h-screen">
+        {showModal ? <TimeoutModal onConfirm={handleModalConfirm} /> : null}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            position: "relative",
+          }}
+          className="h-full"
+        >
+          <div className="w-full flex flex-col h-full justify-center items-center">
+            <div
+              style={{
+                position: "relative",
+                zIndex: "0",
+              }}
+              className="w-full flex-1 overflow-hidden flex justify-center items-center gap-2 text-center"
+              // className="grid grid-cols-2 grid-flow-row w-full flex-1 overflow-hidden"
+            >
+              {/* <div
               className="w-[800px] text-center bg-red-200 px-[80px]"
               // 4명 wrapper-800px, box-300px, px-80px
               // 3명 wrapper-900px, box-250px, px-45px
@@ -419,156 +562,178 @@ const RTCChat = () => {
               ))}
             </div> */}
 
-            <div
-              className="text-center"
-              style={{
-                width: select === 0 ? videoStyle.wrapper : "640px",
-                height: select !== 0 ? "600px" : "auto",
-                paddingLeft: select === 0 ? videoStyle.px : "20px",
-                paddingRight: select === 0 ? videoStyle.px : "20px",
-              }}
-            >
-              <Container
-                className={`m-[10px] aspect-square w-full float-left ${
-                  select !== 0 && select !== 1 && "hidden"
-                }`}
+              <div
+                className="text-center"
                 style={{
-                  maxWidth: select === 1 ? `600px` : videoStyle.box,
+                  width: select === 0 ? videoStyle.wrapper : "640px",
+                  height: select !== 0 ? "600px" : "auto",
+                  paddingLeft: select === 0 ? videoStyle.px : "20px",
+                  paddingRight: select === 0 ? videoStyle.px : "20px",
                 }}
-                onClick={() => selectClickHandler(1)}
               >
-                <div className=" aspect-square w-full relative">
-                  <VideoContainer
-                    ref={localVideoRef}
-                    muted={muted}
-                    autoPlay
-                    style={{
-                      outline:
-                        speaking && !muted ? "solid #8ae52e 3px" : "none",
-                      borderRadius: "10px",
-                    }}
-                  />
-                  <div className="flex flex-row items-center justify-between px-3 bg-gray-200 rounded-b-[10px] bg-opacity-80 absolute bottom-0 w-full">
-                    <div
+                <Container
+                  className={`m-[10px] aspect-square w-full float-left ${
+                    select !== 0 && select !== 1 && "hidden"
+                  }`}
+                  style={{
+                    maxWidth: select === 1 ? `600px` : videoStyle.box,
+                  }}
+                  onClick={() => selectClickHandler(1)}
+                >
+                  <div className=" aspect-square w-full relative">
+                    <VideoContainer
+                      ref={localVideoRef}
+                      muted={muted}
+                      autoPlay
                       style={{
-                        display: "flex",
+                        outline:
+                          speaking && !muted ? "solid #8ae52e 3px" : "none",
+                        borderRadius: "10px",
                       }}
-                    >
-                      나
-                    </div>
-                    <div>
-                      {muted ? (
-                        <BiMicrophoneOff
-                          size="20"
-                          color="#5a5a5a"
-                          style={{ cursor: "pointer" }}
-                        />
-                      ) : (
-                        <BiMicrophone
-                          size="20"
-                          color="#5a5a5a"
-                          style={{ cursor: "pointer" }}
-                        />
-                      )}
+                    />
+                    <div className="flex flex-row items-center justify-between px-3 bg-gray-200 rounded-b-[10px] bg-opacity-80 absolute bottom-0 w-full">
+                      <div
+                        style={{
+                          display: "flex",
+                        }}
+                      >
+                        {userMe.name} (나)
+                      </div>
+                      <div>
+                        {muted ? (
+                          <BiMicrophoneOff
+                            size="20"
+                            color="#5a5a5a"
+                            style={{ cursor: "pointer" }}
+                          />
+                        ) : (
+                          <BiMicrophone
+                            size="20"
+                            color="#5a5a5a"
+                            style={{ cursor: "pointer" }}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Container>
-              {users.map((user, index) => {
-                if (index < 3)
-                  return (
-                    <Video
-                      key={index}
-                      email={user.email}
-                      stream={user.stream}
-                      isMuted={user.isMuted}
-                      selectClickHandler={selectClickHandler}
-                      num={index + 2}
-                      select={select}
-                      speaking={userSpeaking[user.id]}
-                      videoStyle={videoStyle}
-                    />
-                  );
-              })}
+                </Container>
+                {users.map((user, index) => {
+                  if (index < 3)
+                    return (
+                      <Video
+                        key={index}
+                        email={user.email}
+                        stream={user.stream}
+                        isMuted={user.isMuted}
+                        selectClickHandler={selectClickHandler}
+                        num={index + 2}
+                        select={select}
+                        speaking={userSpeaking[user.id]}
+                        videoStyle={videoStyle}
+                      />
+                    );
+                })}
+              </div>
+            </div>
+            <div
+              className="bg-white flex h-[90px]
+          w-full border border-[rgb(219,219,219)] gap-[30px] justify-center items-center"
+            >
+              <button onClick={toggleCamera} className={styles.camearButton}>
+                {visible ? (
+                  <BsCameraVideo
+                    size="25"
+                    color="#5a5a5a"
+                    style={{ cursor: "pointer" }}
+                  />
+                ) : (
+                  <BsCameraVideoOff
+                    size="25"
+                    color="#5a5a5a"
+                    style={{ cursor: "pointer" }}
+                  />
+                )}
+              </button>
+              <button onClick={toggleMic} className={styles.mikeButton}>
+                {muted ? (
+                  <BiMicrophone
+                    size="26"
+                    color="#5a5a5a"
+                    style={{ cursor: "pointer" }}
+                  />
+                ) : (
+                  <BiMicrophoneOff
+                    size="26"
+                    color="#5a5a5a"
+                    style={{ cursor: "pointer" }}
+                  />
+                )}
+              </button>
+              <button onClick={exitHandler} className={styles.mikeButton}>
+                <RxExit
+                  size="25"
+                  color="#5a5a5a"
+                  style={{ cursor: "pointer" }}
+                />
+              </button>
+              <div className={styles.timeContainer}>
+                {isDropdownOpen && (
+                  <ChangeTime
+                    originMinute={minute}
+                    originHour={hour}
+                    handleDropdownToggle={handleDropdownToggle}
+                    setOriginTime={setTime}
+                    DBName={DBName}
+                    postID={postID}
+                  />
+                )}
+                <button
+                  onClick={handleDropdownToggle}
+                  className={styles.timeButton}
+                >
+                  <AiOutlineClockCircle
+                    size="27"
+                    color="#5a5a5a"
+                    style={{ cursor: "pointer" }}
+                    onClick={clickTime}
+                  />
+                </button>
+              </div>
             </div>
           </div>
 
-          <div
-            className="bg-white flex h-[90px]
-          w-full border border-[rgb(219,219,219)] gap-[30px] justify-center items-center"
-          >
-            <button onClick={toggleCamera} className={styles.camearButton}>
-              {visible ? (
-                <BsCameraVideoOff
-                  size="25"
-                  color="#5a5a5a"
-                  style={{ cursor: "pointer" }}
+          <div className="w-[500px] bg-white flex flex-col h-screen top-0 z-1 right-0 border border-[rgb(219,219,219)]">
+            <div className={styles.chatDivContainer}>
+              <div className={styles.chatDiv}>Chat💬</div>
+            </div>
+            <div className={styles.chatText}>
+              {chatMsgs.map((x, i) => {
+                return (
+                  <div key={i}>
+                    <p
+                      style={{ whiteSpace: "pre-wrap", paddingBottom: "3px" }}
+                    >{`${x.from}님의 메세지 : \n${x.msg}`}</p>
+                  </div>
+                );
+              })}
+            </div>
+            <div className={styles.chatBox}>
+              <div className={styles.chatBox2}>
+                <textarea
+                  value={msg}
+                  onChange={(e) => setMsg(e.target.value)}
+                  className={styles.chatTextArea}
+                  placeholder="여기에 채팅을 입력해주세요..."
                 />
-              ) : (
-                <BsCameraVideo
-                  size="25"
-                  color="#5a5a5a"
-                  style={{ cursor: "pointer" }}
-                />
-              )}
-            </button>
-            <button onClick={toggleMic} className={styles.mikeButton}>
-              {muted ? (
-                <BiMicrophone
-                  size="26"
-                  color="#5a5a5a"
-                  style={{ cursor: "pointer" }}
-                />
-              ) : (
-                <BiMicrophoneOff
-                  size="26"
-                  color="#5a5a5a"
-                  style={{ cursor: "pointer" }}
-                />
-              )}
-            </button>
-            <button
-              onClick={() => {
-                navigate("/MyCalendar");
-              }}
-              className={styles.mikeButton}
-            >
-              <RxExit size="25" color="#5a5a5a" style={{ cursor: "pointer" }} />
-            </button>
-          </div>
-        </div>
-
-        <div className="w-[500px] bg-white flex flex-col h-screen top-0 z-10 right-0 border border-[rgb(219,219,219)]">
-          <div className={styles.chatDivContainer}>
-            <div className={styles.chatDiv}>Chat💬</div>
-          </div>
-          <div className={styles.chatText}>
-            {chatMsgs.map((x, i) => {
-              return (
-                <div key={i}>
-                  <p
-                    style={{ whiteSpace: "pre-wrap", paddingBottom: "3px" }}
-                  >{`${x.from}님의 메세지 : \n${x.msg}`}</p>
+                <div className={styles.buttonBox}>
+                  <button onClick={msgClickHandler}>보내기</button>
                 </div>
-              );
-            })}
-          </div>
-          <div className={styles.chatBox}>
-            <div className={styles.chatBox2}>
-              <textarea
-                value={msg}
-                onChange={(e) => setMsg(e.target.value)}
-                className={styles.chatTextArea}
-                placeholder="여기에 채팅을 입력해주세요..."
-              />
-              <div className={styles.buttonBox}>
-                <button onClick={msgClickHandler}>보내기</button>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

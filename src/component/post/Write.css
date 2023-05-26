@@ -1,112 +1,113 @@
 .choose {
-  margin-top: 10px;
-}
+    margin-top: 10px;
+  }
+  
+  .ch1 {
+    font-size: 20px;
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 3px;
+    padding: 5px;
+  }
+  
+  .ch2 {
+    font-size: 20px;
+    display: flex;
+  
+    margin-bottom: 50px;
+    border-bottom: 3px;
+    padding: 5px;
+  }
 
-.ch1 {
-  font-size: 20px;
-  display: flex;
-  margin-bottom: 20px;
-  border-bottom: 3px;
-  padding: 5px;
-}
+  .ch3 {
+    font-size: 20px;
+    display: flex;
+    margin-bottom: 50px;
+    border-bottom: 3px;
+    padding: 5px;
+  }
+  
+  .title_input {
+    display: flex;
+    font-size: 20px;
+    margin-bottom: 10px;
+    border-bottom: 3px;
+    padding: 5px;
+    height: 40px;
+  }
 
-.ch2 {
-  font-size: 20px;
-  display: flex;
+  
+  .runningTime {
+    margin-right: 36.8%;
+    border-radius: 20px;
+    padding: 5px;
+    border: solid 2px black;
+    height: 10%;
+  }
+  
+  .date {
+    margin-right: 35%;
+    border-radius: 20px;
+    padding: 5px;
+    border: solid 2px black;
+  }
+  
+  .number {
+    margin-right: 38.5%;
+    border-radius: 20px;
+    padding: 3px;
+    border: solid 2px black;
+  }
+  
+  .period {
+    border-radius: 20px;
+    padding: 3px;
+    border: solid 2px black;
+  }
+  
+  .nn {
+    margin-right: 30px;
+  }
+  
+  .ww {
+    margin-right: 30px;
+  }
+  
+  .ss {
+    margin-right: 30px;
+  }
+  
+  .cc {
+    margin-right: 30px;
+  }
+  
+  .tt {
+    margin-right: 30px;
+  }
+  
+  .btn {
+    text-align: end;
+  }
 
-  margin-bottom: 50px;
-  border-bottom: 3px;
-  padding: 5px;
-}
-
-.ch3 {
-  font-size: 20px;
-  display: flex;
-  margin-bottom: 50px;
-  border-bottom: 3px;
-  padding: 5px;
-}
-
-.title_input {
-  display: flex;
-  font-size: 20px;
-  margin-bottom: 10px;
-  border-bottom: 3px;
-  padding: 5px;
-  height: 40px;
-}
-
-.runningTime {
-  margin-right: 36.8%;
-  border-radius: 20px;
-  padding: 5px;
-  border: solid 2px black;
-  height: 10%;
-}
-
-.date {
-  margin-right: 35%;
-  border-radius: 20px;
-  padding: 5px;
-  border: solid 2px black;
-}
-
-.number {
-  margin-right: 38.5%;
-  border-radius: 20px;
-  padding: 3px;
-  border: solid 2px black;
-}
-
-.period {
-  border-radius: 20px;
-  padding: 3px;
-  border: solid 2px black;
-}
-
-.nn {
-  margin-right: 30px;
-}
-
-.ww {
-  margin-right: 30px;
-}
-
-.ss {
-  margin-right: 30px;
-}
-
-.cc {
-  margin-right: 30px;
-}
-
-.tt {
-  margin-right: 30px;
-}
-
-.btn {
-  text-align: end;
-}
-
-.startTime_input {
-  /* width: 100%; */
-  border-radius: 20px;
-  padding: 5px;
-  border: solid 2px black;
-}
-
-.tag_input {
-  width: 100%;
-  border-radius: 20px;
-  padding: 5px;
-  border: solid 2px black;
-}
-
-.tag_tagindex {
-  font-size: 15px;
-  color: blue;
-}
-/*
+  .startTime_input {
+    /* width: 100%; */
+    border-radius: 20px;
+    padding: 5px;
+    border: solid 2px black;
+  }
+  
+  .tag_input {
+    width: 100%;
+    border-radius: 20px;
+    padding: 5px;
+    border: solid 2px black;
+  }
+  
+  .tag_tagindex {
+    font-size: 15px;
+    color: blue;
+  }
+  /*
   .tag_Btn {
     width: 15px;
     height: 15px;
@@ -115,43 +116,43 @@
   }
   */
 
-.estimatedAmount_input {
-  /* width: 100%; */
-  border-radius: 20px;
-  padding: 5px;
-  border: solid 2px black;
-  height: 10%;
-}
+  .estimatedAmount_input {
+    /* width: 100%; */
+    border-radius: 20px;
+    padding: 5px;
+    border: solid 2px black;
+    height: 10%;
+  }
+  
+  .title_tinput {
+    width: 90%;
+    padding: 5px;
+    border: solid 2px black;
+  }
+  
+  .content {
+    margin-top: 20px;
+    width: 90%;
+    margin-left: 73px;
+    border: solid 1.6px black;
+  }
+  
+  .cbtn {
+    border: none;
+    padding: 5px;
+    border-radius: 200px;
+    background-color: green;
+    color: white;
+  }
+  
+  .falseBtn {
+    border: none;
+    padding: 5px;
+    border-radius: 200px;
+    background-color: red;
+    color: white;
+  }
 
-.title_tinput {
-  width: 90%;
-  padding: 5px;
-  border: solid 2px black;
-}
-
-.content {
-  margin-top: 20px;
-  width: 90%;
-  margin-left: 73px;
-  border: solid 1.6px black;
-}
-
-.cbtn {
-  border: none;
-  padding: 5px;
-  border-radius: 200px;
-  background-color: green;
-  color: white;
-}
-
-.falseBtn {
-  border: none;
-  padding: 5px;
-  border-radius: 200px;
-  background-color: red;
-  color: white;
-}
-
-.ck.ck-editor__editable {
-  z-index: 0; /* or other value lower than modal */
-}
+  .ck.ck-editor__editable {
+    z-index: 0; /* or other value lower than modal */
+  }

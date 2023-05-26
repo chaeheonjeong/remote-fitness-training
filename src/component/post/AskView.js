@@ -2,37 +2,31 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Header from "../main/Header";
-import { scrollToTop } from "../../util/common";
+import { BASE_API_URI, scrollToTop } from "../../util/common";
 import styles from "./AskView.module.css";
 import userStore from "../../store/user.store";
 import { useParams } from "react-router-dom";
-import Reply from "../../server/models/reply";
 import { HiUserCircle } from "react-icons/hi";
-import AskARGood from "../../server/models/askARGood";
-import AReply from "../../server/models/Areply";
-import AskViewWrite from "./AskViewWrite";
 
-function AskView() {
+function A_View() {
   const [sameUsers, setSameUsers] = useState(false);
   const { id } = useParams();
   const user = userStore();
   const [write, setWrite] = useState([]);
 
   const [htmlString, setHtmlString] = useState();
+  const [sameUser, setSameUser] = useState(false);
   const [good, setGood] = useState(false);
   const [goodCount, setGoodCount] = useState(0);
   const [selectedAId, setSelectedAId] = useState();
   const [profileImg, setProfileImg] = useState(null);
-  const navigate = useNavigate();
 
-  const passHandler = (userId) => {
-    navigate(`/PortfolioView/${userId}`);
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`http://localhost:8080/getAsk/${id}`, {
+        .get(`${BASE_API_URI}/getAsk/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -40,7 +34,6 @@ function AskView() {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
-            console.log(response.data);
           }
         })
         .catch((error) => {
@@ -48,13 +41,12 @@ function AskView() {
         });
     } else {
       axios
-        .get(`http://localhost:8080/getAsk2/${id}`)
+        .get(`${BASE_API_URI}/getAsk2/${id}`)
         .then((response) => {
           if (response.status === 200) {
             setWrite(response.data.result[0]);
             setSameUser(response.data.sameUser);
             setProfileImg(response.data.profileImg);
-            console.log(response.data);
           }
         })
         .catch((error) => {
@@ -76,7 +68,7 @@ function AskView() {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`http://localhost:8080/getGood/${id}`, {
+        .get(`${BASE_API_URI}/getGood/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -94,7 +86,7 @@ function AskView() {
         });
     } else {
       axios
-        .get(`http://localhost:8080/getGood2/${id}`)
+        .get(`${BASE_API_URI}/getGood2/${id}`)
         .then((response) => {
           if (response.status === 200) {
             setGoodCount(response.data.count);
@@ -116,7 +108,7 @@ function AskView() {
   const clickGood = () => {
     if (user.token !== null) {
       axios
-        .post(`http://localhost:8080/setGood/${id}`, null, {
+        .post(`${BASE_API_URI}/setGood/${id}`, null, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -144,7 +136,7 @@ function AskView() {
     const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(`http://localhost:8080/askDelete/${id}`)
+        .delete(`${BASE_API_URI}/askDelete/${id}`)
         .then((res) => {
           navigate("/question");
         })
@@ -168,19 +160,18 @@ function AskView() {
   const [showAReplyModifyInput, setShowModifyAReplyInput] = useState(false);
   const [Areply, setAReply] = useState([]);
 
+  const [NARgood, setNARgood] = useState([]);
+  const [NARgoodCount, setNARgoodCount] = useState([]);
+
   const [isASecret, setIsASecret] = useState(false); // 비밀댓글 여부
   const [sameAUsers, setSameAUsers] = useState(false);
   const [replyAInput, setReplyAInput] = useState("");
   const [replyModifyAInput, setReplyModifyAInput] = useState("");
 
-  const AReplyProfileClick = (userId) => {
-    navigate(`/PortfolioView/${userId}`);
-  };
-
   useEffect(() => {
     const fetchAReply = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/getAReply/${id}`, {
+        const res = await axios.get(`${BASE_API_URI}/getAReply/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         if (res.data !== undefined) {
@@ -199,21 +190,12 @@ function AskView() {
 
   const [Ar_reply, setAR_Reply] = useState([]);
   const [isARSecret, setIsARSecret] = useState(false); // 비밀댓글 여부
-  const [ARsameUsers, setARSameUsers] = useState(false);
-  const [postARId, setPostARId] = useState();
-
-  const AR_ReplyProfileClick = (userId) => {
-    navigate(`/PortfolioView/${userId}`);
-  };
 
   const fetchAR_Reply = async (rid) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/getAR_Reply/${id}/${rid}`,
-        {
-          headers: { Authorization: `Bearer ${user.token}` },
-        }
-      );
+      const res = await axios.get(`${BASE_API_URI}/getAR_Reply/${id}/${rid}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
 
       if (res.data.data.length) {
         setAR_Reply(res.data.data);
@@ -239,7 +221,7 @@ function AskView() {
     const data = { reply: replyAInput, isSecret: isASecret };
     try {
       const response = await axios.post(
-        `http://localhost:8080/postAreply/${id}`,
+        `${BASE_API_URI}/postAreply/${id}`,
         {
           Areply: String(replyAInput),
           isASecret: Boolean(isASecret),
@@ -276,7 +258,7 @@ function AskView() {
     console.log(data);
     try {
       const response = await axios.post(
-        `http://localhost:8080/postAr_reply/${id}/${selectedARId}`,
+        `${BASE_API_URI}/postAr_reply/${id}/${selectedARId}`,
         {
           Ar_reply: String(replyARInput),
           isARSecret: Boolean(isARSecret),
@@ -305,7 +287,7 @@ function AskView() {
     if (confirmARDelete) {
       try {
         const response = await axios.delete(
-          `http://localhost:8080/postAr_reply/${id}/${selectedARId}/${rrid}`,
+          `${BASE_API_URI}/postAr_reply/${id}/${selectedARId}/${rrid}`,
           {
             headers: { Authorization: `Bearer ${user.token}` },
           }
@@ -324,7 +306,7 @@ function AskView() {
     const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(`http://localhost:8080/askView/${id}/reply/${replyId}`)
+        .delete(`${BASE_API_URI}/askView/${id}/reply/${replyId}`)
         .then((res) => {
           setAReply(Areply.filter((Areply) => Areply._id !== replyId));
           console.log("data", res.data);
@@ -344,16 +326,13 @@ function AskView() {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/viewAReplyModify",
-        {
-          postId: id,
-          _id: replyId,
-          ArWriteDate: today,
-          Areply: String(replyModifyAInput),
-          isASecret: Boolean(isASecret),
-        }
-      );
+      const response = await axios.post("${BASE_API_URI}/viewAReplyModify", {
+        postId: id,
+        _id: replyId,
+        ArWriteDate: today,
+        Areply: String(replyModifyAInput),
+        isASecret: Boolean(isASecret),
+      });
 
       alert("수정이 완료되었습니다.");
       navigate(`/askView/${id}`);
@@ -368,7 +347,7 @@ function AskView() {
   const modifyAReply = async (replyId) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/askView/${id}/modify/${replyId}`
+        `${BASE_API_URI}/askView/${id}/modify/${replyId}`
       );
 
       if (res.data !== undefined) {
@@ -400,7 +379,7 @@ function AskView() {
     }
     try {
       const response = await axios.post(
-        "http://localhost:8080/askviewReplyARModify",
+        "${BASE_API_URI}/askviewReplyARModify",
         {
           postRId: id,
           selectedARId: selectedARId,
@@ -421,7 +400,7 @@ function AskView() {
   const modifyAR_Reply = async (rrid) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/askview/${id}/modify/${selectedARId}/${rrid}`
+        `${BASE_API_URI}/askview/${id}/modify/${selectedARId}/${rrid}`
       );
 
       if (res.data !== undefined) {
@@ -466,7 +445,6 @@ function AskView() {
   const [ARgoodCount, setARGoodCount] = useState([]);
   const [clickedAReplyId, setClickedAReplyId] = useState(null); // 초기값은 null로 설정
   const [clickedAReplyLiked, setClickedAReplyLiked] = useState(false);
-  const [AcurrentReplySorted, setAcurrentReplySorted] = useState([]); // 추가
 
   const handleAReplyClick = (clickedAReplyId) => {
     setClickedAReplyId(clickedAReplyId);
@@ -480,17 +458,14 @@ function AskView() {
   const fetchARGood = (clickedAReplyId) => {
     if (user.token !== null) {
       axios
-        .get(`http://localhost:8080/getARGood/${clickedAReplyId}`, {
+        .get(`${BASE_API_URI}/getARGood/${clickedAReplyId}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
           if (response.status === 200) {
-            console.log(response.data.ARgoodCount);
-            //console.log(response.data.ARgoodCount);
-            setARGood(true);
+            setARGood(response.data.ARgood);
             setARGoodCount(response.data.ARgoodCount);
             console.log(response.data.message);
-            //console.log(response.data.ARgood);
 
             console.log("");
           } else if (response.status === 204) {
@@ -503,7 +478,7 @@ function AskView() {
         });
     } else {
       axios
-        .get(`http://localhost:8080/getARGood2/${clickedAReplyId}`)
+        .get(`${BASE_API_URI}/getARGood2/${clickedAReplyId}`)
         .then((response) => {
           if (response.status === 200) {
             setARGoodCount(response.data.ARcount || 0);
@@ -518,53 +493,19 @@ function AskView() {
     }
   };
 
-  /* const fetchAReply = async () => {
-    try {
-      const res = await axios.get(`http://localhost:8080/getAReply/${id}`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-  
-      if (res.data !== undefined) {
-        const sortedReplies = sortReplies(res.data.data);
-        setAcurrentReplySorted(sortedReplies);
-        setSameAUsers(res.data.sameAUsers);
-        console.log(res.data.message);
-        console.log(res.data.data);
-      }
-      console.log(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const sortReplies = (replies) => {
-    return replies.sort((a, b) => b.ARgoodCount - a.ARgoodCount);
-  }; */
-
   const clickARGood = (clickedAReplyId) => {
     if (user.token !== null) {
       axios
-        .post(`http://localhost:8080/setARGood/${clickedAReplyId}`, null, {
+        .post(`${BASE_API_URI}/setARGood/${clickedAReplyId}`, null, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
           if (response.status === 200) {
-            console.log("@### ", response);
             setARGood(!ARgood);
-
-            /* if (!ARgood) {
+            if (!ARgood) {
               setARGoodCount((prevARCount) => prevARCount + 1);
             } else {
               setARGoodCount((prevARCount) => prevARCount - 1);
-            }  */
-            if (!ARgood) {
-              setARGoodCount((prevARCount) => {
-                return prevARCount + 1;
-              });
-            } else {
-              setARGoodCount((prevARCount) => {
-                return prevARCount - 1;
-              });
             }
           }
         })
@@ -575,48 +516,6 @@ function AskView() {
       alert("로그인 해주세요.");
     }
   };
-
-  /*const fetchARGood = () => {
-    if (user.token !== null) {
-      axios
-        .get(`http://localhost:8080/getARGood/${clickedAReplyId}`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setARGood(response.data.ARgood);
-            setARGoodCount(response.data.ARgoodCount);
-            console.log(response.data.message);
-  
-            
-                
-            console.log("");
-          } else if (response.status === 204) {
-            setARGood(false);
-            setARGoodCount(0);
-            // 좋아요가 가장 많은 댓글이 없을 경우 null 값을 상태로 업데이트
-            setTopAReply(null);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      axios
-        .get(`http://localhost:8080/getARGood2/${clickedAReplyId}`)
-        .then((response) => {
-          if (response.status === 200) {
-            setARGoodCount(response.data.ARcount || 0);
-          } else if (response.status === 204) {
-            setARGood(false);
-            setARGoodCount(0);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  };*/
 
   return (
     <>
@@ -637,6 +536,7 @@ function AskView() {
           {sameUser && (
             <div className={styles.content_4_b}>
               <input
+                className={styles.dd}
                 type="button"
                 value="삭제"
                 onClick={() => {
@@ -644,6 +544,7 @@ function AskView() {
                 }}
               />
               <input
+                className={styles.mm}
                 type="button"
                 value="수정"
                 onClick={() => {
@@ -659,12 +560,8 @@ function AskView() {
         </div>
         <div className={styles.content_2}>
           <div className={styles.content_2_a}>
-            <div
-              onClick={() => {
-                passHandler(write._user);
-              }}
-            >
-              작성자
+            <div>작성자</div>
+            <div className={styles.profile1} style={{ marginRight: "12.5rem" }}>
               {profileImg === null ? (
                 <HiUserCircle
                   size="40"
@@ -691,7 +588,7 @@ function AskView() {
         <div className={styles.content_5}>
           <div className={styles.content_5_a}>
             <div>
-              태그 :
+              태그
               {write.tag !== undefined &&
                 write.tag.map((x, i) => {
                   return <span key={x + i}>{x}</span>;
@@ -700,6 +597,7 @@ function AskView() {
           </div>
         </div>
         <div className={styles.content_3}>
+          <div>내용</div>
           <div dangerouslySetInnerHTML={{ __html: htmlString }} />
           <span onClick={clickGood} className={good ? styles.goodBtn : null}>
             좋아요{goodCount}
@@ -741,19 +639,32 @@ function AskView() {
             <thead>
               <tr className={styles.replyName}>
                 <th>닉네임</th>
-                <th>비밀댓글 여부</th>
+                <th>good</th>
                 <th>댓글 내용</th>
                 <th>날짜</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {Areply.map((r) => (
+              {AcurrentReply.map((r) => (
                 <tr className={styles.replyTitle} key={r._id}>
-                  <td key={r._id} onClick={() => AReplyProfileClick(r._user)}>
-                    {r.Arwriter}
+                  <td>{r.Arwriter}</td>
+
+                  <td>
+                    <span
+                      onClick={() => {
+                        handleAReplyClick(r._id);
+                      }}
+                      className={
+                        r._id === clickedAReplyId && ARgood
+                          ? styles.ARgoodBtn
+                          : null
+                      }
+                    >
+                      👍 {r._id !== clickedAReplyId ? "" : ARgoodCount}
+                    </span>
                   </td>
-                  <td>{r.isASecret ? "비밀댓글" : "공개댓글"}</td>
+
                   <td>{r.Areply}</td>
                   <td>
                     {" "}
@@ -761,7 +672,8 @@ function AskView() {
                       formatDate(new Date(r.ArwriteDate))}
                   </td>
 
-                  {/* 댓글수정 */}
+                  {/* 댓글수정 */
+                  /* *************************************** */}
                   {!sameAUsers && (
                     <td>
                       <input
@@ -875,7 +787,6 @@ function AskView() {
                         대댓글 목록 보기
                       </button>
                     )}
-
                     <div>
                       {showAReplyList && (
                         <button
@@ -896,7 +807,6 @@ function AskView() {
                     {showAReplyList === r._id && (
                       <div className={styles.rr_reply2}>
                         {/* 대댓글 목록 보여주는 코드 */}
-
                         <table>
                           <thead>
                             <tr className={styles.ttrrr}>
@@ -909,12 +819,7 @@ function AskView() {
                           {Ar_reply.map((rr) => (
                             <tbody>
                               <tr>
-                                <td
-                                  key={rr._id}
-                                  onClick={() => AR_ReplyProfileClick(rr._user)}
-                                >
-                                  {rr.Ar_rwriter}
-                                </td>
+                                <td>{rr.Ar_rwriter}</td>
                                 <td>
                                   {rr.isARSecret ? "비밀대댓글" : "공개대댓글"}
                                 </td>
@@ -1012,10 +917,13 @@ function AskView() {
               ))}
             </tbody>
           </table>
+          <div className={styles.pagination}>
+            <ul className={styles.pageNumbers}>{renderAPageNumbers}</ul>
+          </div>
         </div>
       </div>
     </>
   );
 }
 
-export default AskView;
+export default A_View;

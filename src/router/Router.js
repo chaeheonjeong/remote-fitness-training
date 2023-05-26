@@ -33,8 +33,6 @@ import ModifyAsk from "../component/post/ModifyAsk";
 import MyPost from "../component/mypage/MyPost";
 import MyAsk from "../component/mypage/MyAsk";
 import MyPAReviews from "../component/mypage/MyPAReviews";
-import MyPAReviews from "../component/mypage/MyPAReviews";
-
 import RTCChat from "../component/class/RTCChat";
 const Router = () => {
   return (

@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import MyPAReviews from "../mypage/MyPAReviews";
 import response from "http-browserify/lib/response";
 import usePost from "../../hooks/usePost";
+import { BASE_API_URI } from "../../util/common";
 
 const ViewReply = ({ write, setWrite }) => {
   const navigate = useNavigate();
@@ -69,7 +70,7 @@ const ViewReply = ({ write, setWrite }) => {
   useEffect(() => {
     const fetchReply = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/getReply/${id}`, {
+        const res = await axios.get(`${BASE_API_URI}/getReply/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         if (res.data !== undefined) {
@@ -100,12 +101,9 @@ const ViewReply = ({ write, setWrite }) => {
 
   const fetchR_Reply = async (rid) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/getR_Reply/${id}/${rid}`,
-        {
-          headers: { Authorization: `Bearer ${user.token}` },
-        }
-      );
+      const res = await axios.get(`${BASE_API_URI}/getR_Reply/${id}/${rid}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
 
       if (res.data.data.length) {
         setR_Reply(res.data.data);
@@ -146,7 +144,7 @@ const ViewReply = ({ write, setWrite }) => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/postreply/${id}`,
+        `${BASE_API_URI}/postreply/${id}`,
         {
           reply: String(replyInput),
           /* isSecret : Boolean(isSecret), */
@@ -182,7 +180,7 @@ const ViewReply = ({ write, setWrite }) => {
     console.log(data);
     try {
       const response = await axios.post(
-        `http://localhost:8080/postr_reply/${id}/${selectedRId}`,
+        `${BASE_API_URI}/postr_reply/${id}/${selectedRId}`,
         {
           r_reply: String(replyRInput),
           /* isRSecret : Boolean(isRSecret), */
@@ -214,7 +212,7 @@ const ViewReply = ({ write, setWrite }) => {
     if (confirmRDelete) {
       try {
         const response = await axios.delete(
-          `http://localhost:8080/postr_reply/${id}/${selectedRId}/${rrid}`,
+          `${BASE_API_URI}/postr_reply/${id}/${selectedRId}/${rrid}`,
           {
             headers: { Authorization: `Bearer ${user.token}` },
           }
@@ -241,17 +239,14 @@ const ViewReply = ({ write, setWrite }) => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/viewReplyRModify",
-        {
-          postRId: id,
-          selectedRId: selectedRId,
-          _id: rrid,
-          r_rWriteDate: today,
-          r_reply: String(replyRModifyInput),
-          /* isRSecret: Boolean(isRSecret),  */
-        }
-      );
+      const response = await axios.post(`${BASE_API_URI}/viewReplyRModify`, {
+        postRId: id,
+        selectedRId: selectedRId,
+        _id: rrid,
+        r_rWriteDate: today,
+        r_reply: String(replyRModifyInput),
+        /* isRSecret: Boolean(isRSecret),  */
+      });
 
       alert("대댓글 수정이 완료되었습니다.");
       navigate(`/view/${id}`);
@@ -263,7 +258,7 @@ const ViewReply = ({ write, setWrite }) => {
   const modifyR_Reply = async (rrid) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/view/${id}/modify/${selectedRId}/${rrid}`
+        `${BASE_API_URI}/view/${id}/modify/${selectedRId}/${rrid}`
       );
 
       if (res.data !== undefined) {
@@ -284,7 +279,7 @@ const ViewReply = ({ write, setWrite }) => {
     const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(`http://localhost:8080/view/${id}/reply/${replyId}`)
+        .delete(`${BASE_API_URI}/view/${id}/reply/${replyId}`)
         .then((res) => {
           setReply(reply.filter((reply) => reply._id !== replyId));
           console.log("data", res.data);
@@ -307,16 +302,13 @@ const ViewReply = ({ write, setWrite }) => {
       return;
     }
     try {
-      const response = await axios.post(
-        "http://localhost:8080/viewReplyModify",
-        {
-          postId: id,
-          _id: replyId,
-          rWriteDate: today,
-          reply: String(replyModifyInput),
-          /* isSecret: Boolean(isSecret),  */
-        }
-      );
+      const response = await axios.post(`${BASE_API_URI}/viewReplyModify`, {
+        postId: id,
+        _id: replyId,
+        rWriteDate: today,
+        reply: String(replyModifyInput),
+        /* isSecret: Boolean(isSecret),  */
+      });
 
       alert("수정이 완료되었습니다.");
       navigate(`/view/${id}`);
@@ -329,7 +321,7 @@ const ViewReply = ({ write, setWrite }) => {
   const modifyReply = async (replyId) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/view/${id}/modify/${replyId}`
+        `${BASE_API_URI}/view/${id}/modify/${replyId}`
       );
 
       if (res.data !== undefined) {

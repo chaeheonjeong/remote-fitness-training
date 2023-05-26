@@ -28,3 +28,5 @@ askSchema.pre("save", function (next) {
 });
 
 const Ask = mongoose.model("ask", askSchema);
+
+module.exports = Ask;

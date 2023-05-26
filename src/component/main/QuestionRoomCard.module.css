@@ -1,19 +1,10 @@
 .questionBox {
   display: inline-block;
-<<<<<<< HEAD
-<<<<<<< HEAD
-  width: 90%; /*w: 300(19.3rem), h: 230(15rem)*/
-  height: 20rem;
-=======
-  border: 1.5px solid rgb(189, 188, 188);
-  border-radius: 7px;
-=======
   /* border: 1.5px solid rgb(189, 188, 188);
   border-radius: 7px; */
->>>>>>> 7d81a0645258fcc1dee7c0944e74780748de6f61
   width: 90%; /*w: 300(19.3rem), h: 230(15rem)*/
-  height: 18rem;
->>>>>>> 2aa07b5b64b05b09c5365b0ad5433fafc314b247
+
+  height: 20rem;
   padding: 0.7rem;
   margin: 0 auto 0 auto;
 }
@@ -28,15 +19,8 @@ position: absolute;
 }
 
 .questionTitle {
-<<<<<<< HEAD
   margin-bottom: 50px;
   margin-top: 50px;
-=======
-  /* margin-bottom: 50px;
-  margin-top: 50px; */
-  margin-top: 50px;
-  /* margin-bottom: 50px; */
->>>>>>> 2aa07b5b64b05b09c5365b0ad5433fafc314b247
 }
 
 .tagPackage {

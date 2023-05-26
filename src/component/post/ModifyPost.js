@@ -7,6 +7,7 @@ import axios from "axios";
 import Header from "../main/Header";
 
 import SelectModal from "./SelectModal";
+import { BASE_API_URI } from "../../util/common";
 
 const ModifyPost = () => {
   const hook = usePost();
@@ -16,7 +17,7 @@ const ModifyPost = () => {
 
   /* const hook2 = SelectModal({ modal, setModal }); */
 
-  const imgLink = "http://localhost:8080/images";
+  const imgLink = `${BASE_API_URI}/images`;
 
   const customUploadAdapter = (loader) => {
     // (2)
@@ -31,7 +32,7 @@ const ModifyPost = () => {
               data.append("file", compressedFile);
 
               axios
-                .post("http://localhost:8080/upload", data)
+                .post(`${BASE_API_URI}/upload`, data)
                 .then((res) => {
                   if (!flag) {
                     setFlag(true);
@@ -104,12 +105,9 @@ const ModifyPost = () => {
   useEffect(() => {
     const fetchWrite = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8080/getWrite/${hook.id}`,
-          {
-            headers: { Authorization: `Bearer ${hook.user.token}` },
-          }
-        );
+        const res = await axios.get(`${BASE_API_URI}/getWrite/${hook.id}`, {
+          headers: { Authorization: `Bearer ${hook.user.token}` },
+        });
         if (res.data !== undefined) {
           hook.setPCondition(res.data.result[0].number);
           /* hook.setPeriodCondition(res.data.result[0].number.period); */
@@ -149,7 +147,7 @@ const ModifyPost = () => {
 
   const selection = () => {
     setModal(!modal);
-  }
+  };
 
   const [recruitChange, setRecruitChange] = useState();
 
@@ -160,14 +158,13 @@ const ModifyPost = () => {
 
   return (
     <>
-    { modal && (
+      {modal && (
         <SelectModal
-          modal = {modal}
-          setModal = {setModal}
+          modal={modal}
+          setModal={setModal}
           onRecruitChange={handleRecruitChange}
         />
-      )
-    }
+      )}
 
       <Header />
       <div className="choose">
@@ -222,15 +219,15 @@ const ModifyPost = () => {
           </select> */}
 
           <text className="ww">시작시간</text>
-            <input
-              type="time"
-              id="startTime"
-              className="startTime_input"
-              onChange={(event) => {
-                hook.setStartTime(event.target.value);
-              }}
-              defaultValue={hook.startTime}
-            ></input>
+          <input
+            type="time"
+            id="startTime"
+            className="startTime_input"
+            onChange={(event) => {
+              hook.setStartTime(event.target.value);
+            }}
+            defaultValue={hook.startTime}
+          ></input>
         </div>
 
         <div className="ch2">
@@ -244,37 +241,36 @@ const ModifyPost = () => {
             }}
             defaultValue={hook.date}
           ></input> */}
-
-            <text className="ww">예상진행시간</text>
-              <input
-                className="runningTime"
-                onChange={(event) => {
-                  hook.setRunningTime(event.target.value);
-                }}
-                defaultValue={hook.runningTime}
-                placeholder="분 단위로 입력" 
-                type="number" 
-                id="runningTime" 
-                name="runningTime" 
-                min="0" 
-                max="1440" 
-                step="1"
-              />
-
-              <text className="ww">예상금액</text> 
-              <input
-                className="estimatedAmount_input"
-                onChange={(event) => {
-                  hook.setEstimateAmount(event.target.value);
-                }}
-                defaultValue={hook.estimateAmount}
-                type="currency"
-                pattern="[0-9]+"
-                id="estimatedAmount" 
-                name="estimatedAmount" 
-                min="0"
-                step="100"
-              ></input> 원
+          <text className="ww">예상진행시간</text>
+          <input
+            className="runningTime"
+            onChange={(event) => {
+              hook.setRunningTime(event.target.value);
+            }}
+            defaultValue={hook.runningTime}
+            placeholder="분 단위로 입력"
+            type="number"
+            id="runningTime"
+            name="runningTime"
+            min="0"
+            max="1440"
+            step="1"
+          />
+          <text className="ww">예상금액</text>
+          <input
+            className="estimatedAmount_input"
+            onChange={(event) => {
+              hook.setEstimateAmount(event.target.value);
+            }}
+            defaultValue={hook.estimateAmount}
+            type="currency"
+            pattern="[0-9]+"
+            id="estimatedAmount"
+            name="estimatedAmount"
+            min="0"
+            step="100"
+          ></input>{" "}
+          원
         </div>
 
         <div className="ch3">

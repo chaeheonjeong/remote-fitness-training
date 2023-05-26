@@ -22,3 +22,5 @@ AreplySchema.pre("save", function (next) {
 });
 
 const AReply = mongoose.model("Areply", AreplySchema);
+
+module.exports = AReply;

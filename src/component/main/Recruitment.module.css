@@ -32,7 +32,7 @@
 }
 
 .underline {
-  width: 11rem;
+  width: 12.2rem;
   position: relative;
   padding: 10px;
   background-color: #d2e2c3;
@@ -45,7 +45,7 @@
 }
 
 .underline:before {
-  content: '';
+  content: "";
   position: absolute;
   top: -5px;
   left: 30px;
@@ -63,7 +63,7 @@
 
 .recruitment,
 .tRecruitment {
-  border-color: #8AE52E;
+  border-color: #8ae52e;
   border-style: solid;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -73,10 +73,9 @@
   margin-right: 7%;
 } */
 
-
 .sRecruitment,
 .question {
-  border: 1.5px solid #8AE52E;
+  border: 1.5px solid #8ae52e;
 }
 
 .search {
@@ -87,15 +86,15 @@
   border-radius: 7px;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  border: 1.5px solid #8AE52E;
+  border: 1.5px solid #8ae52e;
 }
 
 .search input {
-  border: 1.5px solid #8AE52E;
+  border: 1.5px solid #8ae52e;
 }
 
 .search button {
-  border: 1.5px solid #8AE52E;
+  border: 1.5px solid #8ae52e;
   width: 3rem;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
@@ -107,7 +106,7 @@
 }
 
 .makeBtn {
-  border: 1.5px solid #8AE52E;
+  border: 1.5px solid #8ae52e;
   width: 5rem;
   margin-left: 3rem;
 }

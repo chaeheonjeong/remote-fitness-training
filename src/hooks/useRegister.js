@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { emailRegEx } from "../util/common";
+import { BASE_API_URI, emailRegEx } from "../util/common";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -21,7 +21,7 @@ export default function useRegister() {
   const checkEmailHandler = async (event) => {
     try {
       event.preventDefault();
-      const response = await axios.post("http://localhost:8080/email-check", {
+      const response = await axios.post(`${BASE_API_URI}/email-check`, {
         email: emailText,
       });
       if (response.status === 200 && emailRegEx.test(emailText)) {
@@ -35,7 +35,7 @@ export default function useRegister() {
   const checkNickHandler = async (event) => {
     try {
       event.preventDefault();
-      const response = await axios.post("http://localhost:8080/nick-check", {
+      const response = await axios.post(`${BASE_API_URI}/nick-check`, {
         nick: nick,
       });
       if (response.status === 200) {
@@ -60,7 +60,7 @@ export default function useRegister() {
       } else if (nick === "") {
         setWarn("닉네임을 확인해주세요.");
       } else {
-        const response = await axios.post("http://localhost:8080/signup", {
+        const response = await axios.post(`${BASE_API_URI}/signup`, {
           name: nick,
           email: emailText,
           password: pass,
