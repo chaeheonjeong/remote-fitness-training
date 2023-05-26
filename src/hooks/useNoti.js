@@ -64,7 +64,7 @@ export default function useNoti() {
     console.log('id: ', id);
     try{
       const res = await axios.patch(
-        `http://localhost:8080/updateAlarm/${id}`,
+        `http://localhost:8080/updateRoomSchedule/${id}`,
         {
           prepaymentBtn: true
         },

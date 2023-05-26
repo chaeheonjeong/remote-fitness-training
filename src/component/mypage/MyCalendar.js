@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { useNavigate } from "react-router-dom";
 import Calendar from 'react-calendar';
 import './MyCalendar.css';
 import moment from 'moment';
@@ -8,7 +9,6 @@ import SideBar from './SideBar'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "../main/Header";
-import useNoti from "../../hooks/useNoti";
 
 function MyCalendar() {
     const [addModalIsOpen, setAddModalIsOpen] = useState(false);
@@ -22,8 +22,7 @@ function MyCalendar() {
     const [scheduleList, setScheduleList] = useState([]);
     const [reviewModalIsOpen, setReviewModalIsOpen] = useState(false);
     const [roomSchedules, setRoomSchedules] = useState([]);
-    const [notiData, setNotiData] = useState([]);
-    const hook = useNoti();
+    const navigate = useNavigate();
 
     useEffect(() =>{
         const fetchRoomSchedules = async () => {
@@ -165,6 +164,29 @@ function MyCalendar() {
            
     };
 
+    const handleScheduleClick = (roomSchedule) => {
+
+        const {startTime, runningTime, date} = roomSchedule;
+        const scheduleStartTime = new Date(`${date} ${startTime}`);
+        const scheduleEndTime = new Date(scheduleStartTime.getTime() + runningTime * 60000);
+
+        console.log(scheduleStartTime);
+        console.log(scheduleEndTime);
+        
+        const currentDateTime = new Date();
+        const currentDate = new Date(currentDateTime.getFullYear(), currentDateTime.getMonth(), currentDateTime.getDate());
+
+        if(currentDateTime < scheduleStartTime){
+            window.alert('입장 시간이 아직 되지 않았습니다.');
+        }else if(currentDateTime > scheduleEndTime){
+            window.alert('입장 시간이 초과되었습니다.');
+        }else if(currentDate.getTime() > scheduleStartTime.getTime()){
+            window.alert('이미 지난 방 일정입니다.');
+        }else{
+            navigate('/');
+        }
+    }
+
     const tileContent = ({date,view}) => {
         const filteredSchedules = schedules.filter((schedule) => {
             const scheduleDate = new Date(schedule.date);
@@ -196,22 +218,22 @@ function MyCalendar() {
                     ))}
                 </div>
                 <div>
-                    {filteredRoomSchedules.map((roomSchedule) => (
-                        hook.rendData !== null ? (
-                            hook.rendData.map((x, i) => {
-                                return x.prepaymentBtn === true && roomSchedule.userType === 'Student' ? (
-                                    <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
-                                        {roomSchedule.roomTitle}
-                                    </div>
-                                ) : null
-                            })
-                        ) : null
-                    ))}
+                    {filteredRoomSchedules.map((roomSchedule) => {
+                        return roomSchedule.userType === 'Student' && roomSchedule.prepaymentBtn === true ? (
+                            <div className='showRoomSchedule' 
+                                key={roomSchedule.roomTitle}
+                                onClick={() => {handleScheduleClick(roomSchedule); setAddModalIsOpen(false);}}>
+                                    {roomSchedule.roomTitle}
+                            </div>
+                        ):null
+                    })}
                 </div>
                 <div>
                     {filteredRoomSchedules.map((roomSchedule) => {
                         return roomSchedule.userType === 'Teacher' ? (
-                            <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
+                            <div className='showRoomSchedule' 
+                                key={roomSchedule.roomTitle} 
+                                onClick={() => {handleScheduleClick(roomSchedule); setAddModalIsOpen(false)}}>
                                     {roomSchedule.roomTitle}
                             </div>
                         ):null
@@ -219,66 +241,6 @@ function MyCalendar() {
                 </div>
             </div> 
         );
-        /* if(roomSchedules.userType === 'Student' && notiData.prepaymentBtn === true){
-            return(
-                <div>
-                    <div>
-                        {filteredSchedules.map((schedule) => (
-                            <div className='showSchedule' key={schedule.title} onClick={() => handleSelectSchedule(schedule)}> 
-                                {schedule.title}
-                            </div>
-                        ))}
-                    </div>
-                    <div>
-                        {filteredRoomSchedules.map((roomSchedule) => (
-                            <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
-                                {roomSchedule.roomTitle}
-                            </div>
-                        ))}
-                    </div>
-                </div>  
-            );
-        }
-        else if(roomSchedules.userType === 'Teacher'){
-            return(
-                <div>
-                <div>
-                {filteredSchedules.map((schedule) => (
-                    <div className='showSchedule' key={schedule.title} onClick={() => handleSelectSchedule(schedule)}> 
-                        {schedule.title}
-                    </div>
-                ))}
-                </div>
-                <div>
-                    {filteredRoomSchedules.map((roomSchedule) => (
-                        <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
-                            {roomSchedule.roomTitle}
-                        </div>
-                    ))}
-                </div>
-                </div>  
-            );
-        }
-        else{
-            return (
-                <div>
-                <div>
-                    {filteredSchedules.map((schedule) => (
-                        <div className='showSchedule' key={schedule.title} onClick={() => handleSelectSchedule(schedule)}> 
-                            {schedule.title}
-                        </div>
-                    ))}
-                </div>
-                <div>
-                {filteredRoomSchedules.map((roomSchedule) => (
-                    <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
-                        {roomSchedule.roomTitle}
-                    </div>
-                ))}
-            </div>
-            </div>
-            );
-        } */
     };
 
 

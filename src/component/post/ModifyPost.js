@@ -199,28 +199,6 @@ const ModifyPost = () => {
               </option>
             ))}
           </select>
-
-          {/* <text className="ww">진행기간</text>
-          <select
-            name="period"
-            className="period"
-            onChange={(e) => {
-              hook.setPeriodCondition(e.target.value);
-            }}
-          >
-            {[1, 2, 3, 4, 5, "6개월 이상"].map((month, index) => (
-              <option
-                key={index}
-                value={
-                  typeof month === "number" ? `${month}개월` : "6개월 이상"
-                }
-                selected={periodSelect(month)}
-              >
-                {typeof month === "number" ? `${month}개월` : month}
-              </option>
-            ))}
-          </select> */}
-
           <text className="ww">시작시간</text>
             <input
               type="time"

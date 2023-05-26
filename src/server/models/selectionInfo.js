@@ -7,6 +7,7 @@ const selectionInfoSchema = new Schema(
     host: { type: String, required: true },
     applicant: { type: Array, required: true },
     roomTitle: { type: String, required: true },
+    runningTime: {type: String, required: true},
     startTime: { type: String, required: true },
     date: {type:String, required: true}
   },

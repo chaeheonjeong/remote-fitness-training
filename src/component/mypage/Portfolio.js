@@ -10,6 +10,18 @@ import './Portfolio.css';
 import {FcOk} from 'react-icons/fc';
 
 function Portfolio() {
+
+    const defaultContent = `
+    <h2>포트폴리오 작성 예시</h2>
+    <br>
+    <p> 경력 : </p> 
+    <br>
+    <p> 운동 종목 : </p> 
+    <br>
+    <p> 가격대 : </p>
+    <br>
+    <p> 성별 : </p>
+    `;
     
     const today = new Date();
     const [title, setTitle] = useState("");
@@ -220,28 +232,17 @@ function Portfolio() {
                 <div className='content'>
                     <CKEditor
                         editor={ClassicEditor}
-                        data=""
+                        data={defaultContent}
                         config={{
                         placeholder: "내용을 입력하세요.",
                         extraPlugins: [uploadPlugin],
                         }}
-                        /*             onReady={(editor) => {
-                        // You can store the "editor" and use when it is needed.
-                        console.log("Editor is ready to use!", editor);
-                        }} */
                         onChange={(e, editor) => {
                         const data = editor.getData();
-                        console.log({ e, editor, data });
                         setContent({
                             content: data,
                         });
                         }}
-                        /*             onBlur={(e, editor) => {
-                        console.log("Blur.", editor);
-                        }}
-                        onFocus={(e, editor) => {
-                        console.log("Focus.", editor);
-                        }} */
                     />
                 </div>
                 <div className='btn'>

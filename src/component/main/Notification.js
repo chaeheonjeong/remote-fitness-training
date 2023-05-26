@@ -1,7 +1,7 @@
 import { noti } from "../../util/dummy";
 import styles from "./Notification.module.css";
 import { VscCommentDiscussion } from "react-icons/vsc";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useNoti from "../../hooks/useNoti";
 import Paginator from "../common/Paginator";
 
@@ -61,9 +61,7 @@ const Notification = () => {
                 {x.role === 'student' ? (
                   <div>
                     <button  onClick={() => {
-                      x.prepaymentBtn === false && hook.handlePreBtn(x._id)/* hook.setReadComm(!hook.readComm) */;
-                      console.log(x._id);
-                      x.prepaymentBtn = true;
+                      hook.handlePreBtn(x._id)/* hook.setReadComm(!hook.readComm) */;
                     }}>선금</button>
                   </div>
                 ) : (
