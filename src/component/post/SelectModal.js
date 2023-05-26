@@ -17,7 +17,10 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
     const [roomTitle, setRoomTitle] = useState("");
     const [startTime, setStartTime] = useState("");
 
-    
+    const [preBtn, setPreBtn] = useState(false);
+    const [postId, setPostId] = useState();
+
+    const [pCount, setPCount] = useState(1);
 
     const hook = usePost();
 
@@ -25,7 +28,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
     const handleChechboxChange = (e) => {
         const applicant = e.target.name;
         const isChecked = e.target.checked;
-        
+
         if(isChecked) {
             setSelectedStudent([...selectedStudent, applicant]);
         } else {
@@ -59,26 +62,38 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
     // 저장 버튼 클릭 시 서버로 데이터 전송
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setModal(false);
 
         try {
-            const res = await axios
-            .post(`http://localhost:8080/selectionInfo`,  {
-               host: host,
-               applicant: selectedStudent,
-               roomTitle: roomTitle,
-               startTime: startTime,
-            });
+          if(selectedStudent.length === 1) {
+            if(preBtn === true && roomTitle !== "" && startTime !== "") {
+              const res = await axios
+              .post(`http://localhost:8080/selectionInfo`,  {
+                host: host,
+                applicant: selectedStudent,
+                roomTitle: roomTitle,
+                startTime: startTime,
+              });
 
-            console.log("before-", ok);
-            setOk(true);
+              const res2 = await axios
+              .post(`http://localhost:8080/recruitSave`, {
+                _id: postId,
+                recruit: !hook.recruit,
+              });
 
-            console.log(res.data.message);
+              console.log("before-", ok);
+              setOk(true);
 
-            // 알림
-            createAlarm(selectedStudent, roomTitle);
-            handleRecruitChange();
+              console.log(res.data.message);
 
+              // 알림
+              createAlarm(selectedStudent, roomTitle);
+              handleRecruitChange();
+              
+              setModal(false);
+            }
+          } else {
+            setPCount(selectedStudent.length);
+          }
         } catch(error) {
             console.log(error);
         }
@@ -93,8 +108,9 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
             console.log(user.name);
 
             if(res.data !== undefined) {
-                console.log(res.data.data);
+                console.log("hi ", res.data.data);
                 setRWriterList(res.data.data);
+                setPostId(res.data.postId);
             } else {
                 console.log("아직 댓글작성자가 없습니다");
             }
@@ -130,7 +146,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
             <div className={styles.inputWrapper}>
               <form>
                 <div>
-                    <a>선생님</a>
+                    <a>강사</a>
                     <div className={styles.selectStudent}>
                         {rWriterList.map((rWriter) => (
                             <div key={rWriter}>
@@ -141,7 +157,16 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
                                 />
                                 <label>{rWriter}</label>
                             </div>
-                        ))}
+                        ))} 
+                        <div>
+                          {pCount === 0 ? (
+                            <div>강사를 채택하세요.</div>
+                          ) : (
+                            pCount > 1 ? (
+                              <div>강사는 1명만 채택 가능합니다.</div>
+                            ) : null
+                          )}
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -152,6 +177,11 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
                         onChange={ (e) => setRoomTitle(e.target.value) }
                         autoFocus
                     />
+                    { 
+                      roomTitle === "" ? (
+                        <div>방 제목을 입력하세요</div>
+                      ) : null 
+                    }
                 </div>
                 <div>
                     <a>예상시작시간</a>
@@ -160,6 +190,11 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
                         name="startTime"
                         onChange={ (e) => setStartTime(e.target.value) }
                     />
+                    { 
+                      startTime === "" ? (
+                        <div>예상시작시간을 설정하세요</div>
+                      ) : null 
+                    }
                 </div>
 
                 {/* 이 부분은 수강생이 선생님 모집하는 경우에만 보이기 */}
@@ -167,7 +202,12 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
                     <a className={styles.amount}>
                         선금 결제 금액 : 
                     </a>
-                    <button>선금 결제하러 가기</button>
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      setPreBtn(true);
+                    }}>
+                      선금 결제하러 가기
+                    </button>
                 </div>
 
               </form>
@@ -177,6 +217,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
                   className={styles.makeOpenStudy}
                   type="submit"
                   onClick={handleSubmit}
+                  disabled={!preBtn} // 선금 버튼 눌렀을 때만 버튼 활성화
                 >
                   만들기
                 </button>

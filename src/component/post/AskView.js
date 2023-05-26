@@ -1,5 +1,6 @@
 import AskViewWrite from "./AskViewWrite";
 
+
 function A_View() {    
   return (
     <>

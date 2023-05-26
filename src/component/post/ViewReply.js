@@ -30,6 +30,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
     const [showReplyInput, setShowReplyInput] = useState(false);
     const [showReplyList, setShowReplyList] = useState(false);
 
+    const postCategory = 'view';
     
     const ReplyProfileClick = (userId) => {
       navigate(`/PortfolioView/${userId}`);
@@ -129,7 +130,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
     };
 
 
-    const [getReplyId, setReplyId] = useState();
+    //const [getReplyId, setReplyId] = useState();
 
     const replyHandler = (e) => {
         setReply(e.target.value);
@@ -177,12 +178,13 @@ const ViewReply = ({ write, setWrite, writer }) => {
           const data = {
             rwriter: user.name,
             message: String(replyInput),
-            to: writer
+            to: writer,
+            postCategory: postCategory,
+            postId: id,
           }
 
           const response = await axios
             .post(`http://localhost:8080/rAlarm`, data);
-            
             console.log(response.data);
         }
       } catch(error) {
@@ -250,6 +252,8 @@ const ViewReply = ({ write, setWrite, writer }) => {
           rrwriter: user.name,
           message: String(replyRInput),
           to: writers,
+          postCategory: postCategory,
+          postId: id
         }
 
         const response = await axios

@@ -176,6 +176,7 @@ const ModifyPost = () => {
           onClick={() => {
             selection();
           }}
+          disabled={!hook.recruit}
         >
           {hook.recruit ? "모집중" : "모집완료"}
         </button>

@@ -83,7 +83,6 @@ function MainStudy() {
         .catch((error) => {
           console.log(error);
         });
-    }
 
       /* axios
           .get(`http://localhost:8080/searchStudy?selected=${selected}&value=${encodeURIComponent(searchInput)}&page=${page}&limit=4`)

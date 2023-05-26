@@ -29,6 +29,8 @@ const TViewReply = ({ write, setWrite, writer }) => {
 
     const [showReplyInput, setShowReplyInput] = useState(false);
     const [showReplyList, setShowReplyList] = useState(false);
+    
+    const postCategory = 'tView';
 
     const ReplyProfileClick = (userId) => {
       navigate(`/PortfolioView/${userId}`);
@@ -178,7 +180,9 @@ const TViewReply = ({ write, setWrite, writer }) => {
           const data = {
             rwriter: user.name,
             message: String(replyInput),
-            to: writer
+            to: writer,
+            postCategory: postCategory,
+            postId: id
           }
 
           const response = await axios
@@ -252,6 +256,8 @@ const TViewReply = ({ write, setWrite, writer }) => {
           rrwriter: user.name,
           message: String(replyRInput),
           to: writers,
+          postCategory: postCategory,
+          postId: id
         }
 
         const response = await axios

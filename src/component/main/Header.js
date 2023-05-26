@@ -56,7 +56,9 @@ const Header = ({ ...props }) => {
                   window.open(hook.popUrl, hook.popTarget, hook.popFeat)
                 }
               />
-              <div className={styles.notiCircle}>1</div>
+              {
+                <div className={styles.notiCircle}>{hook.notiCount}</div>
+              }
             </div>
           )}
           {user.token !== null && (

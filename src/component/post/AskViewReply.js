@@ -27,6 +27,8 @@ const AskViewReply = ({ write, setWrite, writer }) => {
 
     const navigate = useNavigate();
 
+    const postCategory = 'AskView';
+
     const formatDate = (today) => {
         const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
         const year = today.getFullYear();
@@ -139,7 +141,9 @@ const AskViewReply = ({ write, setWrite, writer }) => {
             const data = {
               rwriter: user.name,
               message: String(replyAInput),
-              to: writer
+              to: writer,
+              postCategory: postCategory,
+              postId: id
             }
   
             const response = await axios
@@ -209,6 +213,8 @@ const AskViewReply = ({ write, setWrite, writer }) => {
             rrwriter: user.name,
             message: String(replyARInput),
             to: writers,
+            postCategory: postCategory,
+            postId: id
           }
   
           const response = await axios

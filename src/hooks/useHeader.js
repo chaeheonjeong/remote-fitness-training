@@ -6,11 +6,13 @@ import { BsPostcardHeart } from "react-icons/bs";
 import { BsPostcard } from "react-icons/bs";
 import { BsCalendarCheck } from "react-icons/bs";
 import userStore from "../store/user.store";
+import axios from "axios";
 
 export default function useHeader() {
   const user = userStore();
   const navigate = useNavigate();
   const [dropVisible, setDropVisible] = useState(false);
+  const [notiCount, setNotiCount] = useState(0);
   const popupWidth = 500;
   const popupHeight = 580;
   const popupX = window.screen.width / 1.5 - popupWidth / 2;
@@ -68,6 +70,23 @@ export default function useHeader() {
     };
   }, [el]);
 
+  useEffect(() => {
+    if(user.token !== null) {
+      axios
+        .get("http://localhost:8080/getNotiCount", {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setNotiCount(response.data.data);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  })
+
   return {
     popUrl,
     popTarget,
@@ -77,5 +96,6 @@ export default function useHeader() {
     el,
     dropVisible,
     setDropVisible,
+    notiCount
   };
 }
