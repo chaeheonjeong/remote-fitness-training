@@ -113,7 +113,7 @@ const Write = () => {
             <option value="default" disabled hidden>
               모집 인원 선택
             </option>
-            {[1, 2].map((number, index) => (
+            {[1].map((number, index) => (
               <option
                 key={number + index}
                 value={typeof number === "number" ? `${number}명` : "10명 이상"}
@@ -246,7 +246,7 @@ const Write = () => {
           value="취소"
           className={styles.cancel}
           onClick={() => {
-            hook.navigate("/study");
+            hook.navigate("/");
           }}
         />
         <input

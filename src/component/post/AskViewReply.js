@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import Reply from '../../server/models/reply';
 import { HiUserCircle } from "react-icons/hi";
 
-const AskViewReply = ({ write, setWrite }) => {
+const AskViewReply = ({ write, setWrite, writer }) => {
     const [sameUsers, setSameUsers] = useState(false);
     const { id } = useParams();
     const user = userStore();
@@ -26,6 +26,8 @@ const AskViewReply = ({ write, setWrite }) => {
     const [aBookmarkCount, setABookmarkCount] = useState(0);
 
     const navigate = useNavigate();
+
+    const postCategory = 'AskView';
 
     const formatDate = (today) => {
         const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
@@ -50,25 +52,29 @@ const AskViewReply = ({ write, setWrite }) => {
     const [replyAInput, setReplyAInput] = useState("");
     const [replyModifyAInput, setReplyModifyAInput] = useState("");
 
-    useEffect(() => {
-        const fetchAReply = async () => {
-        try {
-            const res = await axios.get(`http://localhost:8080/getAReply/${id}`, {
-            headers: { Authorization: `Bearer ${user.token}` },
-            });
-            if (res.data !== undefined) {
-            setAReply(res.data.data);
-            setSameAUsers(res.data.sameAUsers);
-            setPImg(res.data.profileImgs);
+    const [rWriter, setRWriter] = useState("");
 
-            console.log(res.data.message);
-            console.log(res.data.data);
-            }console.log(res.data);
-        } catch (err) {
-            console.error(err);
+    const fetchAReply = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8080/getAReply/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        if (res.data !== undefined) {
+          setAReply(res.data.data);
+          setSameAUsers(res.data.sameAUsers);
+          setPImg(res.data.profileImgs);
+    
+          console.log(res.data.message);
+          console.log(res.data.data);
         }
-        };    
-        fetchAReply();
+        console.log(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    
+    useEffect(() => {
+      fetchAReply();
     }, []);
 
     const [Ar_reply, setAR_Reply] = useState([]);
@@ -118,6 +124,8 @@ const AskViewReply = ({ write, setWrite }) => {
         const data = { Ar_reply : replyARInput};
     
         console.log("success", response.data.message);
+
+        createRAlarm();
         
         // 새로운 댓글을 추가합니다.
         setAReply([...Areply, replyAInput]);
@@ -128,6 +136,27 @@ const AskViewReply = ({ write, setWrite }) => {
         console.log(error);
         }
     };
+
+    const createRAlarm = async () => {
+        try {
+          if(writer !== user.name) {
+            const data = {
+              rwriter: user.name,
+              message: String(replyAInput),
+              to: writer,
+              postCategory: postCategory,
+              postId: id
+            }
+  
+            const response = await axios
+              .post(`http://localhost:8080/rAlarm`, data);
+              
+              console.log(response.data);
+          }
+        } catch(error) {
+          console.error(error);
+        }
+      }
 
     const replyInputARChangeHandler = (e) => {
         setReplyARInput(e.target.value);
@@ -148,6 +177,8 @@ const AskViewReply = ({ write, setWrite }) => {
             headers: { Authorization: `Bearer ${user.token}` },
         });
         console.log("success", response.data.message);
+
+        createRrAlarm();
         
         // 새로운 댓글을 추가합니다.
         setAR_Reply([...Ar_reply, replyARInput]);
@@ -159,6 +190,43 @@ const AskViewReply = ({ write, setWrite }) => {
         console.log(error);
         }
     };
+
+    const createRrAlarm = async () => {
+        let writers;
+  
+        if(writer !== rWriter) {
+          if(writer !== user.name && rWriter !== user.name) {
+            writers = Array.isArray(rWriter) ? [...rWriter, writer] : [rWriter, writer];
+          } else if(writer !== user.name && rWriter === user.name) { // 댓글만 나
+            writers = [writer];
+          } else if(writer === user.name && rWriter !== user.name) { // 글쓴이만 나
+            writers = [rWriter];
+          }
+        } else {
+          if(writer !== user.name) {
+            writers = [rWriter];
+          }
+        }
+  
+        try {
+          setRWriter(writers);
+  
+          const data = {
+            rrwriter: user.name,
+            message: String(replyARInput),
+            to: writers,
+            postCategory: postCategory,
+            postId: id
+          }
+  
+          const response = await axios
+            .post(`http://localhost:8080/rrAlarm`, data);
+            
+            console.log(response.data);
+        } catch(error) {
+          console.error(error);
+        }
+      }
 
     //질문글 대댓글 삭제
     const handleARDelete = async (rrid) => {
@@ -451,23 +519,23 @@ const AskViewReply = ({ write, setWrite }) => {
 
     // 좋아요 핸들러
     const handleLike = async (id) => {
-        try {
-          await axios.put(
-            `http://localhost:8080/likeAreply/${id}`,
-            {},
-            {
-              headers: { Authorization: `Bearer ${user.token}` },
-            }
-          );
-      
-          // 댓글을 다시 불러와서 업데이트된 좋아요 수를 확인합니다
-          fetchAReply();
-      
-          // 좋아요 요청에 대한 처리를 추가해주세요
-        } catch (error) {
-          console.log(error);
-        }
-      };
+      try {
+        await axios.put(
+          `http://localhost:8080/likeAreply/${id}`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${user.token}` },
+          }
+        );
+    
+        // 댓글을 다시 불러와서 업데이트된 좋아요 수를 확인합니다
+        fetchAReply();
+    
+        // 좋아요 요청에 대한 처리를 추가해주세요
+      } catch (error) {
+        console.log(error);
+      }
+    };
     
 
 
@@ -582,6 +650,7 @@ const AskViewReply = ({ write, setWrite }) => {
                             <button onClick={() => {
                                 setShowAReplyInput(selectedARId === r._id ? null : r._id);
                                 setSelectedARId(selectedARId === r._id ? null : r._id);
+                                setRWriter(selectedARId === r.Arwriter ? null : r.Arwriter);
                                 }}>대댓글 추가</button>
                             )}
                             {showAReplyInput === r._id && (
@@ -603,23 +672,28 @@ const AskViewReply = ({ write, setWrite }) => {
                             </form>
                                 
                             )}
-                            {!showAReplyList && (
-                            <button onClick={() => {
+                            <div>
+                            {!showAReplyList ? (
+                            <button className={styles.asdf1} onClick={() => {
                                 setShowAReplyList(selectedARId === r._id ? null : r._id);
                                 setSelectedARId(selectedARId === r._id ? null : r._id);
                                 fetchAR_Reply(r._id);
                             }}>대댓글 목록 보기</button>
-                            )}
-                            
-                            <div>
-                            {showAReplyList && (
-                                <button onClick={() => {
-                                setShowAReplyList(selectedARId === r._id ? null : r._id);
-                                setSelectedARId(selectedARId === r._id ? null : r._id);
-                                fetchAR_Reply(r._id);
+                            ) : (
+                                selectedARId === r._id ? (
+                                <button className={styles.asdf1} onClick={() => {
+                                    setShowAReplyList(selectedARId === r._id ? null : r._id);
+                                    setSelectedARId(selectedARId === r._id ? null : r._id);
+                                    fetchAR_Reply(r._id);
                                 }}>대댓글 목록 닫기</button>
+                                ) : (
+                                    <button className={styles.asdf1} onClick={() => {
+                                    setShowAReplyList(selectedARId === r._id ? null : r._id);
+                                    setSelectedARId(selectedARId === r._id ? null : r._id);
+                                    fetchAR_Reply(r._id);
+                                    }}>대댓글 목록 보기</button>
+                                )
                             )}
-                                
                             </div>
                             {showAReplyList === r._id && (
                                     

@@ -175,7 +175,7 @@ const ViewWrite = () => {
                 </div>
                 <div className={styles.content_2}>
                     <div>작성자</div>
-                    <div className={styles.profile1} onClick={() => {passHandler(write._user)}} 
+                    <div onClick={() => {passHandler(write._user)}} 
                         style={{ marginRight: "12.5rem" }}>
                         {profileImg === null ? (
                             <HiUserCircle

@@ -12,7 +12,7 @@ import MyPAReviews from "../mypage/MyPAReviews";
 /* import response from "http-browserify/lib/response"; */
 import usePost from "../../hooks/useTPost";
 
-const TViewReply = ({ write, setWrite }) => {
+const TViewReply = ({ write, setWrite, writer }) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const user = userStore();
@@ -29,6 +29,8 @@ const TViewReply = ({ write, setWrite }) => {
 
     const [showReplyInput, setShowReplyInput] = useState(false);
     const [showReplyList, setShowReplyList] = useState(false);
+    
+    const postCategory = 'tView';
 
     const ReplyProfileClick = (userId) => {
       navigate(`/PortfolioView/${userId}`);
@@ -100,6 +102,7 @@ const TViewReply = ({ write, setWrite }) => {
     const { rrid } = useParams();
     const [RsameUsers, setRSameUsers] = useState(false);
     const [postRId, setPostRId] = useState(); 
+    const [rWriter, setRWriter] = useState("");
 
     const fetchR_Reply = async (rid) => {
         try {
@@ -159,6 +162,8 @@ const TViewReply = ({ write, setWrite }) => {
         console.log(typeof data);
         console.log("success", response.data.message);
 
+        createRAlarm();
+
         // 새로운 댓글을 추가합니다.
         setReply([...reply, replyInput]);
         setReplyInput(""); // 댓글 입력창을 초기화합니다.
@@ -168,6 +173,27 @@ const TViewReply = ({ write, setWrite }) => {
         console.log(error);
         }
     };
+
+    const createRAlarm = async () => {
+      try {
+        if(writer !== user.name) {
+          const data = {
+            rwriter: user.name,
+            message: String(replyInput),
+            to: writer,
+            postCategory: postCategory,
+            postId: id
+          }
+
+          const response = await axios
+            .post(`http://localhost:8080/rAlarm`, data);
+            
+            console.log(response.data);
+        }
+      } catch(error) {
+        console.error(error);
+      }
+    }
 
     const replyInputRChangeHandler = (e) => {
         setReplyRInput(e.target.value);
@@ -194,6 +220,8 @@ const TViewReply = ({ write, setWrite }) => {
         console.log(typeof data);
         console.log("success", response.data.message);
 
+        createRrAlarm();
+
         // 새로운 대댓글을 추가합니다.
         setR_Reply([...r_reply, replyRInput]);
         setReplyRInput(""); // 대댓글 입력창을 초기화합니다.
@@ -202,6 +230,43 @@ const TViewReply = ({ write, setWrite }) => {
         } catch (error) {
         console.log(error);
         }
+    };
+
+    const createRrAlarm = async () => {
+      let writers;
+
+      if(writer !== rWriter) {
+        if(writer !== user.name && rWriter !== user.name) {
+          writers = Array.isArray(rWriter) ? [...rWriter, writer] : [rWriter, writer];
+        } else if(writer !== user.name && rWriter === user.name) { // 댓글만 나
+          writers = [writer];
+        } else if(writer === user.name && rWriter !== user.name) { // 글쓴이만 나
+          writers = [rWriter];
+        }
+      } else {
+        if(writer !== user.name) {
+          writers = [rWriter];
+        }
+      }
+
+      try {
+        setRWriter(writers);
+
+        const data = {
+          rrwriter: user.name,
+          message: String(replyRInput),
+          to: writers,
+          postCategory: postCategory,
+          postId: id
+        }
+
+        const response = await axios
+          .post(`http://localhost:8080/rrAlarm`, data);
+          
+          console.log(response.data);
+      } catch(error) {
+        console.error(error);
+      }
     };
 
      //대댓글 삭제
@@ -471,6 +536,7 @@ const TViewReply = ({ write, setWrite }) => {
                     <button onClick={() => {
                       setShowReplyInput(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
+                      setRWriter(selectedRId === r.rwriter ? null : r.rwriter);
                     }}>대댓글 추가</button>
                   )}
                   {showReplyInput === r._id && (
@@ -492,22 +558,28 @@ const TViewReply = ({ write, setWrite }) => {
                     </form>
                 
                   )}
-                  {!showReplyList && (
-                    <button onClick={() => {
+                  <div>
+                  {!showReplyList ? (
+                    <button className={styles.asdf1} onClick={() => {
                       setShowReplyList(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
                       fetchR_Reply(r._id);
                     }}>대댓글 목록 보기</button>
-                  )}
-                  <div>
-                    {showReplyList && (
-                      <button onClick={() => {
+                  ) : (
+                    selectedRId === r._id ? (
+                      <button className={styles.asdf1} onClick={() => {
                         setShowReplyList(selectedRId === r._id ? null : r._id);
                         setSelectedRId(selectedRId === r._id ? null : r._id);
                         fetchR_Reply(r._id);
                       }}>대댓글 목록 닫기</button>
-                    )}
-                  
+                      ) : (
+                        <button className={styles.asdf1} onClick={() => {
+                          setShowReplyList(selectedRId === r._id ? null : r._id);
+                          setSelectedRId(selectedRId === r._id ? null : r._id);
+                          fetchR_Reply(r._id);
+                        }}>대댓글 목록 보기</button>
+                      )
+                  )}
                   </div>
                   {showReplyList === r._id && (
                     

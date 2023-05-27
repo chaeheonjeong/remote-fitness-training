@@ -5,8 +5,8 @@ import styles from "./SelectModal.module.css";
 import usePost from "../../hooks/useTPost";
 
 import userStore from "../../store/user.store";
-
-const SelectTModal = ({ modal, setModal, onRecruitChange }) => { 
+// 학생모집
+const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => { 
     const { id } = useParams();
     const user = userStore();
     const [rWriterList, setRWriterList] = useState([]);
@@ -19,6 +19,12 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
     const [startTime, setStartTime] = useState("");
     const [runningTime, setRunningTime] = useState("");
     const [date, setDate] = useState("");
+    
+    const [pCount, setPCount] = useState(1);
+
+    const [postId, setPostId] = useState();
+    const [hostId, setHostId] = useState();
+    const [click, setClick] = useState(0);
 
    
 
@@ -81,30 +87,42 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
     // 저장 버튼 클릭 시 서버로 데이터 전송
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setModal(false);
+        setClick((click) => click + 1);
 
         try {
-            //채택 정보
-            const res = await axios
-            .post(`http://localhost:8080/selectionTInfo`,  {
-               host: host,
-               applicant: selectedStudent,
-               roomTitle: roomTitle,
-               runningTime: runningTime,
-               startTime: startTime,
-               date: date
-            });
+          if(selectedStudent.length === Number(participate.charAt())) {
+            if(roomTitle !== "" && startTime !== "") {
+              const res = await axios
+              .post(`http://localhost:8080/selectionTInfo`,  {
+                hostId: hostId,
+                host: host,
+                applicant: selectedStudent,
+                roomTitle: roomTitle,
+                runningTime: runningTime,
+                startTime: startTime,
+                date: date
+              });
 
-            console.log("before-", ok);
-            setOk(true);
+              const res2 = await axios
+              .post(`http://localhost:8080/recruitTSave`, {
+                _id: postId,
+                recruit: !hook.recruit,
+              });
 
-            console.log(res.data.message);
+              console.log("before-", ok);
+              setOk(true);
 
-            // 알림
-            createAlarm(host, selectedStudent, roomTitle);
-            handleRecruitChange();
-            scheduleAdd();
+              console.log(res.data.message);
 
+              // 알림
+              createAlarm(selectedStudent, roomTitle);
+              handleRecruitChange();
+
+              setModal(false);
+            }
+          } else {
+            setPCount(selectedStudent.length);
+          }
         } catch(error) {
             console.log(error);
         }
@@ -138,6 +156,8 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
             if(res.data !== undefined) {
                 console.log(res.data.data);
                 setRWriterList(res.data.data);
+                setPostId(res.data.postId);
+                setHostId(res.data.hostId);
             } else {
                 console.log("아직 댓글작성자가 없습니다");
             }
@@ -185,6 +205,15 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
                                 <label>{rWriter}</label>
                             </div>
                         ))}
+                        <div>
+                          {click !== 0 && pCount === 0 ? (
+                            <div>수강생을 채택하세요.</div>
+                          ) : (
+                            selectedStudent.length !== Number(participate.charAt()) ? (
+                              <div>{`${participate}`} 채택 가능합니다.</div>
+                            ) : null
+                          )}
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -195,6 +224,11 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
                         onChange={ (e) => setRoomTitle(e.target.value) }
                         autoFocus
                     />
+                    { 
+                      click !== 0 && roomTitle === "" ? (
+                        <div>방 제목을 입력하세요</div>
+                      ) : null 
+                    }
                 </div>
                 <div>
                     <a>예상시작시간</a>
@@ -204,6 +238,11 @@ const SelectTModal = ({ modal, setModal, onRecruitChange }) => {
                         onChange={ (e) => setStartTime(e.target.value) }
                         value={startTime}
                     />
+                    { 
+                      click !== 0 && startTime === "" ? (
+                        <div>예상시작시간을 설정하세요</div>
+                      ) : null 
+                    }
                 </div>
                 <div>
                     <a>예상진행시간</a>

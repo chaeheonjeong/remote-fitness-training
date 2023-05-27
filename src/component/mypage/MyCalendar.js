@@ -263,12 +263,36 @@ function MyCalendar() {
 
         return(
             <div>
-                {filteredSchedules.map((schedule) => (
-                    <div className='showSchedule' key={schedule.title} onClick={() => handleSelectSchedule(schedule)}> 
-                        {schedule.title}
-                    </div>
-                ))}
-            </div>
+                <div>
+                    {filteredSchedules.map((schedule) => (
+                        <div className='showSchedule' key={schedule.title} onClick={() => handleSelectSchedule(schedule)}> 
+                            {schedule.title}
+                        </div>
+                    ))}
+                </div>
+                <div>
+                    {filteredRoomSchedules.map((roomSchedule) => (
+                        hook.rendData !== null ? (
+                            hook.rendData.map((x, i) => {
+                                return x.prepaymentBtn === true && roomSchedule.userType === 'Student' ? (
+                                    <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
+                                        {roomSchedule.roomTitle}
+                                    </div>
+                                ) : null
+                            })
+                        ) : null
+                    ))}
+                </div>
+                <div>
+                    {filteredRoomSchedules.map((roomSchedule) => {
+                        return roomSchedule.userType === 'Teacher' ? (
+                            <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
+                                    {roomSchedule.roomTitle}
+                            </div>
+                        ):null
+                    })}
+                </div>
+            </div> 
         );
     };
 

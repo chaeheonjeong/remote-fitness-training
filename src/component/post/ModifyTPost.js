@@ -163,6 +163,7 @@ const ModifyTPost = () => {
           modal = {modal}
           setModal = {setModal}
           onRecruitChange={handleRecruitChange}
+          participate={hook.pCondition}
         />
       )
     }
@@ -174,6 +175,7 @@ const ModifyTPost = () => {
           onClick={() => {
             selection();
           }}
+          disabled={!hook.recruit}
         >
           {hook.recruit ? "모집중" : "모집완료"}
         </button>

@@ -7,14 +7,12 @@ import Paginator from "../common/Paginator";
 
 const Notification = () => {
   const hook = useNoti();
-
   return (
     <div>
       {hook.rendData === null ? (
         <div>알림이 없습니다.</div>
       ) : (
         hook.rendData.map((x, i) => {
-          console.log("%%%%: ", x);
           return (
               <div
                 key={x._id/*.id  + i */}
@@ -25,6 +23,11 @@ const Notification = () => {
                   x.read === false && hook.handleReadComm(x._id)/* hook.setReadComm(!hook.readComm) */;
                   console.log(x._id);
                   x.read = true;
+                  if(x.location === undefined) {
+                    window.open(`/${x.postCategory}`);
+                  } else {
+                    window.open(`/${x.postCategory}/${x.location}`);
+                  }
                 }}
               >
 
@@ -52,7 +55,7 @@ const Notification = () => {
                   )}
                 </div> */}
                 <div>
-                  {console.log(x.message)}
+                  {console.log("+ ", x.message)}
                   {x.message.length >= 70
                     ? x.message.substring(0, 70) + "..."
                     : x.message}
