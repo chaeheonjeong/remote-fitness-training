@@ -70,7 +70,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
     const [replyInput, setReplyInput] = useState("");
 
     useEffect(() => {
-        const fetchReply = async () => {
+        /* const fetchReply = async () => {
         try {
             const res = await axios
             .get(`http://localhost:8080/getReply/${id}`, {
@@ -81,7 +81,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
             setSameUsers(res.data.sameUsers);
             setPImg(res.data.profileImgs);
 
-            /* console.log("sameUsers: ", res.data.sameUsers); */
+            //console.log("sameUsers: ", res.data.sameUsers);
 
             console.log(pImg);
 
@@ -92,8 +92,35 @@ const ViewReply = ({ write, setWrite, writer }) => {
         }
         };
         
-        fetchReply();
+        fetchReply(); */
     
+      const fetchReply = async () => {
+        try {
+          const res = await axios.get(`http://localhost:8080/getReply/${id}`, {
+            headers: { Authorization: `Bearer ${user.token}` },
+          });
+          if (res.data !== undefined) {
+            setReply(res.data.data);
+            setSameUsers(res.data.sameUsers);
+
+            // 댓글별 프로필 이미지 객체 설정
+        const profileImgs = res.data.profileImgs.reduce((obj, img, index) => {
+          obj[res.data.data[index]._id] = img;
+          return obj;
+        }, {});
+            setRPImg(res.data.profileImgs); // 댓글마다의 프로필 이미지를 rPImg에 저장
+    
+            console.log(rPImg);
+    
+            console.log(res.data.message);
+          }
+          console.log(res.data);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+    
+      fetchReply();
     }, []);
 
 
@@ -130,7 +157,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
     };
 
 
-    //const [getReplyId, setReplyId] = useState();
+    const [getReplyId, setReplyId] = useState();
 
     const replyHandler = (e) => {
         setReply(e.target.value);
@@ -314,7 +341,6 @@ const ViewReply = ({ write, setWrite, writer }) => {
         console.log(error);
         }
     };
-
     // 대댓글수정(가져오기)
     const modifyR_Reply = async (rrid) => {
         try {
@@ -410,6 +436,32 @@ const ViewReply = ({ write, setWrite, writer }) => {
         return formattedDate;
     };
 
+     //댓글 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage] = useState(5);
+
+  // 현재 페이지에 보여질 댓글들 추출
+  const startIndex = (currentPage - 1) * perPage;
+  const endIndex = startIndex + perPage;
+  const currentReply = reply.slice(startIndex, endIndex);
+
+  // 페이지네이션 컴포넌트
+  const totalPages = Math.ceil(reply.length / perPage);
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  const renderPageNumbers = pageNumbers.map(number => {
+    return (
+      <li key={number}>
+        <button onClick={() => setCurrentPage(number)}>
+          {number}
+        </button>
+      </li>
+    );
+  });
+
 
     return(
         <>
@@ -446,7 +498,8 @@ const ViewReply = ({ write, setWrite, writer }) => {
               <tr className={styles.replyTitle} key={r._id}>
                 <td key={r._id} onClick={() => ReplyProfileClick(r._user)} >
                   <div>
-                  {!pImg || !pImg[index] ? (
+                  {/* {!pImg || !pImg[index] ? ( */}
+                  {!rPImg[index] ? (
                     <HiUserCircle
                       size="40"
                       color="#5a5a5a"
@@ -455,7 +508,8 @@ const ViewReply = ({ write, setWrite, writer }) => {
                   ) : (
                     <img
                       className={styles.profile}
-                      src={pImg[index]}
+                      /* src={pImg[index]} */
+                      src={rPImg[index]}
                       alt="프로필 이미지"
                     />
                   )}
@@ -493,8 +547,8 @@ const ViewReply = ({ write, setWrite, writer }) => {
                               onChange={modifyReplyInputChangeHandler}
                             />
                             <div className={styles.reply_choose}>
-                              <input type="submit" value="댓글수정"></input>
-                              <button onClick={() => {setShowModifyReplyInput(null); setSelectedId(null);}}>댓글수정 취소</button>
+                              <input className={styles.rrrr} type="submit" value="댓글수정"></input>
+                              <button className={styles.rrrr2} onClick={() => {setShowModifyReplyInput(null); setSelectedId(null);}}>댓글수정 취소</button>
                             </div>
                           </div>
                       </form>
@@ -638,6 +692,11 @@ const ViewReply = ({ write, setWrite, writer }) => {
             
             </tbody>
           </table>
+          <div className={styles.pagination}>
+            <ul className={styles.pageNumbers}>
+              {renderPageNumbers}
+            </ul>
+          </div>
         </div>
         </>
     );

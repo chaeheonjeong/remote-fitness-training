@@ -388,10 +388,19 @@ const AskViewReply = ({ write, setWrite, writer }) => {
     const [clickedAReplyLiked, setClickedAReplyLiked] = useState(false);
     const [AcurrentReplySorted, setAcurrentReplySorted] = useState([]); // 추가
 
-    const handleAReplyClick = (clickedAReplyId) => {
+    /* const handleAReplyClick = (clickedAReplyId) => {
         setClickedAReplyId(clickedAReplyId);
         fetchARGood(clickedAReplyId);
         clickARGood(clickedAReplyId);
+  
+    useEffect(() => {
+        fetchARGoodCount(clickedAReplyId);
+      }, [clickedAReplyId]);
+ */
+    const handleAReplyClick = (clickedAReplyId) => {
+        setClickedAReplyId(clickedAReplyId);
+        //fetchARGood(clickedAReplyId);
+        //clickARGood(clickedAReplyId);
 
         console.log("글 번호는 : " , id);
         console.log("댓글 번호는 : " , clickedAReplyId);
@@ -426,6 +435,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
             .get(`http://localhost:8080/getARGood2/${clickedAReplyId}`)
             .then((response) => {
               if (response.status === 200) {
+                setARGood(true);
                 setARGoodCount(response.data.ARcount || 0);
               } else if (response.status === 204) {
                 setARGood(false);
@@ -438,8 +448,6 @@ const AskViewReply = ({ write, setWrite, writer }) => {
         }
     };
 
-
-
     const clickARGood = (clickedAReplyId) => {
         if (user.token !== null) {
           axios
@@ -447,27 +455,20 @@ const AskViewReply = ({ write, setWrite, writer }) => {
               headers: { Authorization: `Bearer ${user.token}` },
             })
             .then((response) => {
-              if (response.status === 200) {
+              if (response.status === 200) 
+              {
                 console.log("@### ", response);
                 setARGood(!ARgood);
-               
-                /* if (!ARgood) {
-                  setARGoodCount((prevARCount) => prevARCount + 1);
-                } else {
-                  setARGoodCount((prevARCount) => prevARCount - 1);
-                }  */
-
-                /* if (!ARgood) {
-                  setARGoodCount((prevARCount) => {
-                    return prevARCount + 1;
-                  });
-                } else {
-                  setARGoodCount((prevARCount) => {
-                    return prevARCount - 1;
-                  });
-                } */
+                if (!ARgood) {
+                    setARGoodCount((prevARCount) => prevARCount + 1);
+                }
+                if(ARgood){
+                    setARGoodCount((prevARCount) => prevARCount - 1);
+                }
+              
               } 
             })
+            
             .catch((error) => {
               console.log(error);
             });
@@ -546,13 +547,14 @@ const AskViewReply = ({ write, setWrite, writer }) => {
                         {r.ArwriteDate !== undefined &&
                         formatDate(new Date(r.ArwriteDate))}</td>
 
-
                         <td>
-                            <span onClick={() => {handleAReplyClick(r._id)}}
-                                className={r._id === clickedAReplyId && ARgood ? styles.ARgoodBtn : null}
-                            >
-                                👍 {r._id !== clickedAReplyId ? '' : ARgoodCount}
-                            </span>
+                          {r.likesCount}{" "}
+                          <span
+                            className="like-button"
+                            onClick={() => handleLike(r._id)} // 좋아요 버튼 클릭 시 핸들러 호출
+                          >
+                            👍
+                          </span>
                         </td>
 
                         

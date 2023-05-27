@@ -82,6 +82,8 @@ const MyAsk = () => {
         <button
           onClick={() => {
             navigate("/myPost");
+
+            
           }}
         >
           스터디

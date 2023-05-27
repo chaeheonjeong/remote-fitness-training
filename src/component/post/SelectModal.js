@@ -28,7 +28,6 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
     const handleChechboxChange = (e) => {
         const applicant = e.target.name;
         const isChecked = e.target.checked;
-
         if(isChecked) {
             setSelectedStudent([...selectedStudent, applicant]);
         } else {

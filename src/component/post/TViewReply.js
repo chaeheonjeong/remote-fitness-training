@@ -412,6 +412,32 @@ const TViewReply = ({ write, setWrite, writer }) => {
         return formattedDate;
     };
 
+        //댓글 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage] = useState(5);
+
+  // 현재 페이지에 보여질 댓글들 추출
+  const startIndex = (currentPage - 1) * perPage;
+  const endIndex = startIndex + perPage;
+  const currentReply = reply.slice(startIndex, endIndex);
+
+  // 페이지네이션 컴포넌트
+  const totalPages = Math.ceil(reply.length / perPage);
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  const renderPageNumbers = pageNumbers.map(number => {
+    return (
+      <li key={number}>
+        <button onClick={() => setCurrentPage(number)}>
+          {number}
+        </button>
+      </li>
+    );
+  });
+
     return(
         <>
         {/* 댓글 입력 폼 */}
@@ -525,8 +551,8 @@ const TViewReply = ({ write, setWrite, writer }) => {
                             onChange={replyInputRChangeHandler}
                           />
                           <div className={styles.reply_choose}>
-                            <input type="submit" value="대댓글 등록"></input>
-                            <button onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
+                            <input className={styles.asdf3} type="submit" value="대댓글 등록"></input>
+                            <button className={styles.reply_choose2} onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
                           </div>
                         </div>
                     </form>
@@ -640,6 +666,11 @@ const TViewReply = ({ write, setWrite, writer }) => {
             
             </tbody>
           </table>
+          <div className={styles.pagination}>
+            <ul className={styles.pageNumbers}>
+              {renderPageNumbers}
+            </ul>
+          </div>
         </div>
         </>
     );

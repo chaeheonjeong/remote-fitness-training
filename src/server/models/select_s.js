@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const select_sSchema = new Schema({
     /* 댓글 단 사람 이름 */
     applicant : { type: String, required:true },
+    teacherId: { type: String, required: true },
 });
 
 /* select_sSchema.set("collection", "select_s");

@@ -318,7 +318,8 @@ const ModifyTPost = () => {
             value="취소"
             className="cancel"
             onClick={() => {
-              hook.navigate(`/view/${hook.id}`);
+              //hook.navigate(`/view/${hook.id}`);
+              hook.navigate(`/Tview/${hook.id}`);
             }}
           />
           <input
