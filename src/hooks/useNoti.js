@@ -12,7 +12,6 @@ export default function useNoti() {
   const [notiData, setNotiData] = useState([]);
   //const notiData = noti;
   const [readComm, setReadComm] = useState(false);
-  const [preBtnClick, setPreBtnClick] = useState(false);
 
   const user = userStore();
 
@@ -61,26 +60,6 @@ export default function useNoti() {
     }
   }, [currentPage, notiData]);
 
-  const handlePreBtn = async (id) => {
-    console.log("id: ", id);
-    try {
-      const res = await axios.patch(
-        `http://localhost:8080/updateRoomSchedule/${id}`,
-        {
-          prepaymentBtn: true,
-        },
-        {
-          headers: { Authorization: `Bearer ${user.token}` },
-        }
-      );
-      if (res.data.success) {
-        setPreBtnClick(!preBtnClick);
-        console.log("성공", id);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
   const handleReadComm = async (id) => {
     console.log("id: ", id);
     try {
@@ -113,6 +92,5 @@ export default function useNoti() {
     readComm,
     setReadComm,
     handleReadComm,
-    handlePreBtn,
   };
 }

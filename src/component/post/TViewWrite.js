@@ -12,6 +12,7 @@ import MyPAReviews from "../mypage/MyPAReviews";
 /* import response from "http-browserify/lib/response"; */
 import usePost from "../../hooks/useTPost";
 import TViewReply from "./TViewReply";
+import { BASE_API_URI } from "../../util/common";
 
 const ViewTWrite = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const ViewTWrite = () => {
     const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(`http://localhost:8080/writeTDelete/${id}`)
+        .delete(`${BASE_API_URI}/writeTDelete/${id}`)
         .then((res) => {
           navigate("/study");
         })
@@ -47,7 +48,7 @@ const ViewTWrite = () => {
   // 스크랩 수
   const getBookmarkCount = () => {
     axios
-      .get(`http://localhost:8080/getTBookmarkCount/${id}`)
+      .get(`${BASE_API_URI}/getTBookmarkCount/${id}`)
       .then((res) => {
         if (res.status === 200) {
           setBookmarkCount(res.data.result.goodCount);
@@ -60,7 +61,7 @@ const ViewTWrite = () => {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`http://localhost:8080/getTWrite/${id}`, {
+        .get(`${BASE_API_URI}/getTWrite/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -76,7 +77,7 @@ const ViewTWrite = () => {
         });
     } else {
       axios
-        .get(`http://localhost:8080/getTWrite2/${id}`)
+        .get(`${BASE_API_URI}/getTWrite2/${id}`)
         .then((response) => {
           if (response.status === 200) {
             setWrite(response.data.result[0]);
@@ -93,7 +94,7 @@ const ViewTWrite = () => {
   useEffect(() => {
     const fetchWrite = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/getTWrite/${id}`, {
+        const res = await axios.get(`${BASE_API_URI}/getTWrite/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         if (res.data !== undefined) {
@@ -136,7 +137,7 @@ const ViewTWrite = () => {
   // 글 쓴 사람의 프로필 이미지 클릭시
   const writerProfileClick = (writer, id) => {
     axios
-      .post(`http://localhost:8080/tView/${id}/${writer}`, {
+      .post(`${BASE_API_URI}/tView/${id}/${writer}`, {
         id: id,
         writer: writer,
         postName: "view",

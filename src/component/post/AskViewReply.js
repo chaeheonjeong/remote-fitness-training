@@ -8,6 +8,7 @@ import userStore from "../../store/user.store";
 import { useParams } from "react-router-dom";
 import Reply from "../../server/models/reply";
 import { HiUserCircle } from "react-icons/hi";
+import { BASE_API_URI } from "../../util/common";
 
 const AskViewReply = ({ write, setWrite }) => {
   const [sameUsers, setSameUsers] = useState(false);
@@ -53,7 +54,7 @@ const AskViewReply = ({ write, setWrite }) => {
   useEffect(() => {
     const fetchAReply = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/getAReply/${id}`, {
+        const res = await axios.get(`${BASE_API_URI}/getAReply/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         if (res.data !== undefined) {
@@ -79,12 +80,9 @@ const AskViewReply = ({ write, setWrite }) => {
 
   const fetchAR_Reply = async (rid) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/getAR_Reply/${id}/${rid}`,
-        {
-          headers: { Authorization: `Bearer ${user.token}` },
-        }
-      );
+      const res = await axios.get(`${BASE_API_URI}/getAR_Reply/${id}/${rid}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
 
       if (res.data.data.length) {
         setAR_Reply(res.data.data);
@@ -113,7 +111,7 @@ const AskViewReply = ({ write, setWrite }) => {
     const data = { reply: replyAInput };
     try {
       const response = await axios.post(
-        `http://localhost:8080/postAreply/${id}`,
+        `${BASE_API_URI}/postAreply/${id}`,
         {
           Areply: String(replyAInput),
           Arwriter: user.name,
@@ -149,7 +147,7 @@ const AskViewReply = ({ write, setWrite }) => {
     console.log(data);
     try {
       const response = await axios.post(
-        `http://localhost:8080/postAr_reply/${id}/${selectedARId}`,
+        `${BASE_API_URI}/postAr_reply/${id}/${selectedARId}`,
         {
           Ar_reply: String(replyARInput),
           Ar_rwriter: user.name,
@@ -178,7 +176,7 @@ const AskViewReply = ({ write, setWrite }) => {
     if (confirmARDelete) {
       try {
         const response = await axios.delete(
-          `http://localhost:8080/postAr_reply/${id}/${selectedARId}/${rrid}`,
+          `${BASE_API_URI}/postAr_reply/${id}/${selectedARId}/${rrid}`,
           {
             headers: { Authorization: `Bearer ${user.token}` },
           }
@@ -197,7 +195,7 @@ const AskViewReply = ({ write, setWrite }) => {
     const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(`http://localhost:8080/askView/${id}/reply/${replyId}`)
+        .delete(`${BASE_API_URI}/askView/${id}/reply/${replyId}`)
         .then((res) => {
           setAReply(Areply.filter((Areply) => Areply._id !== replyId));
           console.log("data", res.data);
@@ -217,15 +215,12 @@ const AskViewReply = ({ write, setWrite }) => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/viewAReplyModify",
-        {
-          postId: id,
-          _id: replyId,
-          ArWriteDate: today,
-          Areply: String(replyModifyAInput),
-        }
-      );
+      const response = await axios.post(`${BASE_API_URI}/viewAReplyModify`, {
+        postId: id,
+        _id: replyId,
+        ArWriteDate: today,
+        Areply: String(replyModifyAInput),
+      });
 
       alert("수정이 완료되었습니다.");
       navigate(`/askView/${id}`);
@@ -238,7 +233,7 @@ const AskViewReply = ({ write, setWrite }) => {
   const modifyAReply = async (replyId) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/askView/${id}/modify/${replyId}`
+        `${BASE_API_URI}/askView/${id}/modify/${replyId}`
       );
 
       if (res.data !== undefined) {
@@ -269,7 +264,7 @@ const AskViewReply = ({ write, setWrite }) => {
     }
     try {
       const response = await axios.post(
-        "http://localhost:8080/askviewReplyARModify",
+        `${BASE_API_URI}/askviewReplyARModify`,
         {
           postRId: id,
           selectedARId: selectedARId,
@@ -290,7 +285,7 @@ const AskViewReply = ({ write, setWrite }) => {
   const modifyAR_Reply = async (rrid) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/askview/${id}/modify/${selectedARId}/${rrid}`
+        `${BASE_API_URI}/askview/${id}/modify/${selectedARId}/${rrid}`
       );
 
       if (res.data !== undefined) {
@@ -324,7 +319,7 @@ const AskViewReply = ({ write, setWrite }) => {
     pageNumbers.push(i);
   }
 
-  const renderPageNumbers = pageNumbers.map((number) => {
+  const renderAPageNumbers = pageNumbers.map((number) => {
     return (
       <li key={number}>
         <button onClick={() => setACurrentPage(number)}>{number}</button>
@@ -350,7 +345,7 @@ const AskViewReply = ({ write, setWrite }) => {
   const fetchARGood = (clickedAReplyId) => {
     if (user.token !== null) {
       axios
-        .get(`http://localhost:8080/getARGood/${clickedAReplyId}`, {
+        .get(`${BASE_API_URI}/getARGood/${clickedAReplyId}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -373,7 +368,7 @@ const AskViewReply = ({ write, setWrite }) => {
         });
     } else {
       axios
-        .get(`http://localhost:8080/getARGood2/${clickedAReplyId}`)
+        .get(`${BASE_API_URI}/getARGood2/${clickedAReplyId}`)
         .then((response) => {
           if (response.status === 200) {
             setARGoodCount(response.data.ARcount || 0);
@@ -391,7 +386,7 @@ const AskViewReply = ({ write, setWrite }) => {
   const clickARGood = (clickedAReplyId) => {
     if (user.token !== null) {
       axios
-        .post(`http://localhost:8080/setARGood/${clickedAReplyId}`, null, {
+        .post(`${BASE_API_URI}/setARGood/${clickedAReplyId}`, null, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -462,7 +457,7 @@ const AskViewReply = ({ write, setWrite }) => {
             </tr>
           </thead>
           <tbody>
-            {AcurrentReply.map((r, index) => (
+            {Areply.map((r, index) => (
               <tr className={styles.replyTitle} key={r._id}>
                 <td key={r._id} onClick={() => AReplyProfileClick(r._user)}>
                   <div>
@@ -739,9 +734,6 @@ const AskViewReply = ({ write, setWrite }) => {
             ))}
           </tbody>
         </table>
-        <div className={styles.pagination}>
-          <ul className={styles.pageNumbers}>{renderPageNumbers}</ul>
-        </div>
       </div>
     </>
   );

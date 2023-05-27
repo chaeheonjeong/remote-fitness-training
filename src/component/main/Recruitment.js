@@ -10,7 +10,7 @@ import loadingImg from "../../images/loadingImg.gif";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TbCircleArrowUpFilled } from "react-icons/tb";
-import { scrollToTop } from "../../util/common";
+import { BASE_API_URI, scrollToTop } from "../../util/common";
 
 function MainStudy() {
   const [studies, setStudies] = useState([]);
@@ -58,7 +58,7 @@ function MainStudy() {
 
     axios
       .get(
-        `http://localhost:8080/searchStudy?selected=${selected}&value=${encodeURIComponent(
+        `${BASE_API_URI}/searchStudy?selected=${selected}&value=${encodeURIComponent(
           searchInput
         )}&page=${page}&limit=4`
       )
@@ -108,7 +108,7 @@ function MainStudy() {
     if (hasMore) {
       axios
         .get(
-          `http://localhost:8080/studies?page=${
+          `${BASE_API_URI}/studies?page=${
             Math.floor(renderQ.length / limit) + 1
           }&limit=${limit}`
         )
@@ -132,7 +132,7 @@ function MainStudy() {
   const clickHandler = (id) => {
     axios
       .post(
-        `http://localhost:8080/view`,
+        `${BASE_API_URI}/view`,
         { id: id, postName: "study" } // 서버로 전달할 id
       )
       .then((response) => {
@@ -231,7 +231,7 @@ function MainStudy() {
 
         {noResult ? (
           <div className={styles.noResult}>
-            <div>⚠️ 검색결과가 없습니다 ⚠️{noResult}</div>
+            <a>⚠️ 검색결과가 없습니다 ⚠️{noResult}</a>
           </div>
         ) : null}
 

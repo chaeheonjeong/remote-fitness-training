@@ -1,9 +1,9 @@
 @font-face {
-    font-family: 'SUITE-Regular';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
-    font-weight: 400;
+    font-family: 'Cafe24SsurroundAir';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24SsurroundAir.woff') format('woff');
+    font-weight: normal;
     font-style: normal;
-  }
+}
 
 .SideBar{
     width: 20%;
@@ -27,7 +27,7 @@
 
 .SideBarTitle{
     font-size: 1.9rem;
-    font-family: 'SUITE-Regular';
+    font-family: 'Cafe24SsurroundAir';
 }
 
 .sidBarList{
@@ -41,7 +41,7 @@
     display: flex;
     align-items: center;
     border-radius: 10px;
-    font-family: 'SUITE-Regular';
+    font-family: 'Cafe24SsurroundAir';
     font-size: 20px;
 }
 

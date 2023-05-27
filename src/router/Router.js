@@ -51,6 +51,7 @@ const Router = () => {
           path="/sRecruitment"
           element={[<Main key="main" />, <SRecruitment key="srecruitment" />]}
         />
+
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/findPassword" element={<FindPw />} />
@@ -63,6 +64,8 @@ const Router = () => {
         <Route path="/Ask" element={<Ask />} />
         <Route path="/modifyAsk/:id" element={<ModifyAsk />} />
         <Route path="/tView/:id" element={<TView />} />
+        {/*<Route path="/View2" element={<View2 />} />
+        <Route path="/View3" element={<View3 />} />*/}
 
         <Route path="/AskView/:id" element={<AskView />} />
         <Route path="/MyInfo" element={<MyInfo />} />
