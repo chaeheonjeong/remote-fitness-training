@@ -9,9 +9,8 @@ import { scrollToTop } from "../../util/common";
 import { HiUserCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import MyPAReviews from "../mypage/MyPAReviews";
-import response from "http-browserify/lib/response";
+/* import response from "http-browserify/lib/response"; */
 import usePost from "../../hooks/useTPost";
-import { BASE_API_URI } from "../../util/common";
 
 const TViewReply = ({ write, setWrite }) => {
   const navigate = useNavigate();
@@ -70,7 +69,7 @@ const TViewReply = ({ write, setWrite }) => {
   useEffect(() => {
     const fetchReply = async () => {
       try {
-        const res = await axios.get(`${BASE_API_URI}/getTReply/${id}`, {
+        const res = await axios.get(`http://localhost:8080/getTReply/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         if (res.data !== undefined) {
@@ -101,9 +100,12 @@ const TViewReply = ({ write, setWrite }) => {
 
   const fetchR_Reply = async (rid) => {
     try {
-      const res = await axios.get(`${BASE_API_URI}/getTR_Reply/${id}/${rid}`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
+      const res = await axios.get(
+        `http://localhost:8080/getTR_Reply/${id}/${rid}`,
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
 
       if (res.data.data.length) {
         setR_Reply(res.data.data);
@@ -144,7 +146,7 @@ const TViewReply = ({ write, setWrite }) => {
 
     try {
       const response = await axios.post(
-        `${BASE_API_URI}/postTreply/${id}`,
+        `http://localhost:8080/postTreply/${id}`,
         {
           reply: String(replyInput),
           /* isSecret : Boolean(isSecret), */
@@ -180,7 +182,7 @@ const TViewReply = ({ write, setWrite }) => {
     console.log(data);
     try {
       const response = await axios.post(
-        `${BASE_API_URI}/postTr_reply/${id}/${selectedRId}`,
+        `http://localhost:8080/postTr_reply/${id}/${selectedRId}`,
         {
           r_reply: String(replyRInput),
           /* isRSecret : Boolean(isRSecret), */
@@ -212,7 +214,7 @@ const TViewReply = ({ write, setWrite }) => {
     if (confirmRDelete) {
       try {
         const response = await axios.delete(
-          `${BASE_API_URI}/postTr_reply/${id}/${selectedRId}/${rrid}`,
+          `http://localhost:8080/postTr_reply/${id}/${selectedRId}/${rrid}`,
           {
             headers: { Authorization: `Bearer ${user.token}` },
           }
@@ -239,14 +241,17 @@ const TViewReply = ({ write, setWrite }) => {
     }
 
     try {
-      const response = await axios.post(`${BASE_API_URI}/viewTReplyRModify`, {
-        postRId: id,
-        selectedRId: selectedRId,
-        _id: rrid,
-        r_rWriteDate: today,
-        r_reply: String(replyRModifyInput),
-        /* isRSecret: Boolean(isRSecret),  */
-      });
+      const response = await axios.post(
+        "http://localhost:8080/viewTReplyRModify",
+        {
+          postRId: id,
+          selectedRId: selectedRId,
+          _id: rrid,
+          r_rWriteDate: today,
+          r_reply: String(replyRModifyInput),
+          /* isRSecret: Boolean(isRSecret),  */
+        }
+      );
 
       alert("대댓글 수정이 완료되었습니다.");
       navigate(`/view/${id}`);
@@ -258,7 +263,7 @@ const TViewReply = ({ write, setWrite }) => {
   const modifyR_Reply = async (rrid) => {
     try {
       const res = await axios.get(
-        `${BASE_API_URI}/tView/${id}/modify/${selectedRId}/${rrid}`
+        `http://localhost:8080/tView/${id}/modify/${selectedRId}/${rrid}`
       );
 
       if (res.data !== undefined) {
@@ -279,7 +284,7 @@ const TViewReply = ({ write, setWrite }) => {
     const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(`${BASE_API_URI}/tView/${id}/reply/${replyId}`)
+        .delete(`http://localhost:8080/tView/${id}/reply/${replyId}`)
         .then((res) => {
           setReply(reply.filter((reply) => reply._id !== replyId));
           console.log("data", res.data);
@@ -302,13 +307,16 @@ const TViewReply = ({ write, setWrite }) => {
       return;
     }
     try {
-      const response = await axios.post(`${BASE_API_URI}/viewTReplyModify`, {
-        postId: id,
-        _id: replyId,
-        rWriteDate: today,
-        reply: String(replyModifyInput),
-        /* isSecret: Boolean(isSecret),  */
-      });
+      const response = await axios.post(
+        "http://localhost:8080/viewTReplyModify",
+        {
+          postId: id,
+          _id: replyId,
+          rWriteDate: today,
+          reply: String(replyModifyInput),
+          /* isSecret: Boolean(isSecret),  */
+        }
+      );
 
       alert("수정이 완료되었습니다.");
       navigate(`/view/${id}`);
@@ -321,7 +329,7 @@ const TViewReply = ({ write, setWrite }) => {
   const modifyReply = async (replyId) => {
     try {
       const res = await axios.get(
-        `${BASE_API_URI}/tView/${id}/modify/${replyId}`
+        `http://localhost:8080/tView/${id}/modify/${replyId}`
       );
 
       if (res.data !== undefined) {
@@ -348,6 +356,30 @@ const TViewReply = ({ write, setWrite }) => {
 
     return formattedDate;
   };
+
+  //댓글 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage] = useState(5);
+
+  // 현재 페이지에 보여질 댓글들 추출
+  const startIndex = (currentPage - 1) * perPage;
+  const endIndex = startIndex + perPage;
+  const currentReply = reply.slice(startIndex, endIndex);
+
+  // 페이지네이션 컴포넌트
+  const totalPages = Math.ceil(reply.length / perPage);
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  const renderPageNumbers = pageNumbers.map((number) => {
+    return (
+      <li key={number}>
+        <button onClick={() => setCurrentPage(number)}>{number}</button>
+      </li>
+    );
+  });
 
   return (
     <>
@@ -378,7 +410,7 @@ const TViewReply = ({ write, setWrite }) => {
             </tr>
           </thead>
           <tbody>
-            {reply.map((r, index) => (
+            {currentReply.map((r, index) => (
               <tr className={styles.replyTitle} key={r._id}>
                 <td key={r._id} onClick={() => ReplyProfileClick(r._user)}>
                   <div>
@@ -629,6 +661,9 @@ const TViewReply = ({ write, setWrite }) => {
             ))}
           </tbody>
         </table>
+        <div className={styles.pagination}>
+          <ul className={styles.pageNumbers}>{renderPageNumbers}</ul>
+        </div>
       </div>
     </>
   );

@@ -63,7 +63,7 @@
 
 .recruitment,
 .tRecruitment {
-  border-color: #8ae52e;
+  border: 1.5px solid #8ae52e;
   border-style: solid;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }

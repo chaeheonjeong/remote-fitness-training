@@ -9,7 +9,6 @@ import { useParams } from "react-router-dom";
 import Reply from "../../server/models/reply";
 import { HiUserCircle } from "react-icons/hi";
 import AskViewReply from "./AskViewReply";
-import { BASE_API_URI } from "../../util/common";
 
 const AskViewWrite = () => {
   const [sameUsers, setSameUsers] = useState(false);
@@ -37,7 +36,7 @@ const AskViewWrite = () => {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`${BASE_API_URI}/getAsk/${id}`, {
+        .get(`http://localhost:8080/getAsk/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -52,7 +51,7 @@ const AskViewWrite = () => {
         });
     } else {
       axios
-        .get(`${BASE_API_URI}/getAsk2/${id}`)
+        .get(`http://localhost:8080/getAsk2/${id}`)
         .then((response) => {
           if (response.status === 200) {
             setWrite(response.data.result[0]);
@@ -83,7 +82,7 @@ const AskViewWrite = () => {
   // 스크랩 수
   const getABookmarkCount = () => {
     axios
-      .get(`${BASE_API_URI}/getAskBookmarkCount/${id}`)
+      .get(`http://localhost:8080/getAskBookmarkCount/${id}`)
       .then((res) => {
         console.log(res.data.result);
 
@@ -99,7 +98,7 @@ const AskViewWrite = () => {
     const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(`${BASE_API_URI}/askDelete/${id}`)
+        .delete(`http://localhost:8080/askDelete/${id}`)
         .then((res) => {
           navigate("/question");
         })
@@ -159,12 +158,14 @@ const AskViewWrite = () => {
         </div>
         <div className={styles.content_2}>
           <div className={styles.content_2_a}>
+            <div>작성자</div>
             <div
+              className={styles.profile1}
               onClick={() => {
                 passHandler(write._user);
               }}
+              style={{ marginRight: "12.5rem" }}
             >
-              작성자
               {profileImg === null ? (
                 <HiUserCircle
                   size="40"

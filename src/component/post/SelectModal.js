@@ -5,7 +5,6 @@ import styles from "./SelectModal.module.css";
 import usePost from "../../hooks/usePost";
 
 import userStore from "../../store/user.store";
-import { BASE_API_URI } from "../../util/common";
 
 const SelectModal = ({ modal, setModal, onRecruitChange }) => {
   const { id } = useParams();
@@ -13,12 +12,35 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
   const [rWriterList, setRWriterList] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState([]);
   const [ok, setOk] = useState(false);
+  const hook = usePost();
 
   const host = user.name;
   const [roomTitle, setRoomTitle] = useState("");
   const [startTime, setStartTime] = useState("");
+  const [runningTime, setRunningTime] = useState("");
+  const [date, setDate] = useState("");
 
-  const hook = usePost();
+  useEffect(() => {
+    const fetchWrite = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/getWrite/${hook.id}`,
+          {
+            headers: { Authorization: `Bearer ${hook.user.token}` },
+          }
+        );
+        if (res.data !== undefined) {
+          hook.setEstimateAmount(res.data.result[0].estimateAmount);
+          setStartTime(res.data.result[0].startTime);
+          setRunningTime(res.data.result[0].runningTime);
+          setDate(res.data.result[0].date);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchWrite();
+  }, []);
 
   // checkbox 변경 시 상태 업데이트
   const handleChechboxChange = (e) => {
@@ -32,14 +54,18 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
     }
   };
 
-  const createAlarm = async (selectedStudent, roomTitle) => {
+  const createAlarm = async (host, selectedStudent, roomTitle) => {
     try {
       const data = {
+        host: host,
         selectedStudent: selectedStudent,
         roomTitle: roomTitle,
       };
 
-      const response = await axios.post(`${BASE_API_URI}/selectedAlarm`, data);
+      const response = await axios.post(
+        `http://localhost:8080/selectedAlarm`,
+        data
+      );
 
       console.log(response.data);
     } catch (error) {
@@ -58,11 +84,14 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
     setModal(false);
 
     try {
-      const res = await axios.post(`${BASE_API_URI}/selectionInfo`, {
+      //채택 정보
+      const res = await axios.post(`http://localhost:8080/selectionInfo`, {
         host: host,
         applicant: selectedStudent,
         roomTitle: roomTitle,
+        runningTime: runningTime,
         startTime: startTime,
+        date: date,
       });
 
       console.log("before-", ok);
@@ -71,10 +100,27 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
       console.log(res.data.message);
 
       // 알림
-      createAlarm(selectedStudent, roomTitle);
+      createAlarm(host, selectedStudent, roomTitle);
       handleRecruitChange();
+      scheduleAdd();
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const scheduleAdd = async () => {
+    try {
+      const res = await axios.post(`http://localhost:8080/roomSchedule`, {
+        host: host,
+        applicant: selectedStudent,
+        roomTitle: roomTitle,
+        runningTime: runningTime,
+        startTime: startTime,
+        date: date,
+      });
+      console.log(res.data.message);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -82,7 +128,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
   const getRWriter = async () => {
     try {
       const res = await axios.get(
-        `${BASE_API_URI}/getRWriter/${id}/${user.name}`
+        `http://localhost:8080/getRWriter/${id}/${user.name}`
       );
 
       console.log(user.name);
@@ -151,12 +197,39 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
                 type="time"
                 name="startTime"
                 onChange={(e) => setStartTime(e.target.value)}
+                value={startTime}
+              />
+            </div>
+            <div>
+              <a>예상진행시간</a>
+              <input
+                type="number"
+                name="runningTime"
+                min="0"
+                max="1440"
+                step="1"
+                onChange={(e) => setRunningTime(e.target.value)}
+                value={runningTime}
+              />{" "}
+              분
+            </div>
+            <div>
+              <a>시작예정일</a>
+              <input
+                type="date"
+                id="date"
+                onChange={(e) => {
+                  setDate(e.target.value);
+                }}
+                value={date}
               />
             </div>
 
             {/* 이 부분은 수강생이 선생님 모집하는 경우에만 보이기 */}
             <div>
-              <a className={styles.amount}>선금 결제 금액 :</a>
+              <a className={styles.amount}>
+                선금 결제 금액 : {hook.estimateAmount}
+              </a>
               <button>선금 결제하러 가기</button>
             </div>
           </form>

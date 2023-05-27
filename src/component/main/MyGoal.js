@@ -6,7 +6,6 @@ import axios from "axios";
 import userStore from "../../store/user.store";
 import { useNavigate } from "react-router-dom";
 import { TbClover2 } from "react-icons/tb";
-import { BASE_API_URI } from "../../util/common";
 
 const MyGoal = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -26,7 +25,7 @@ const MyGoal = () => {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`${BASE_API_URI}/study-time`, {
+        .get("http://localhost:8080/study-time", {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -45,7 +44,7 @@ const MyGoal = () => {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`${BASE_API_URI}/ggoal-time`, {
+        .get("http://localhost:8080/ggoal-time", {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -98,7 +97,7 @@ const MyGoal = () => {
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              marginTop: "1rem",
+              marginTop: "0.8rem",
             }}
           >
             <label style={{ fontWeight: "500", fontSize: "1.2rem" }}>

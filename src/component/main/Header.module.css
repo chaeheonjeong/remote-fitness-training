@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @font-face {
   font-family: 'SUITE-Regular';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
@@ -151,4 +152,160 @@
   height: 33px;
   border-radius: 100%;
   border: 1px solid #555555;
+=======
+@font-face {
+  font-family: 'SUITE-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+.container {
+  display: flex;
+  border-bottom: 2px solid;
+  border-color: #FAFAFA;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 5rem;
+  background-color: #FAFAFA;
+}
+
+.smallContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #FAFAFA;
+}
+
+.smallContainer2 {
+  display: flex;
+  align-items: center;
+  margin-right: 2rem;
+  gap: 0.5rem;
+  background-color: #FAFAFA;
+}
+
+.linkLabel {
+  font-size: 1.5rem;
+  font-weight: bolder;
+  color: #8AE52E;
+  font-family: 'SUITE-Regular';
+}
+
+.welcomeLabel {
+  font-size: 0.9rem;
+  font-family: 'SUITE-Regular';
+}
+
+.logButton {
+  height: 2.5rem;
+  font-size: 0.8rem;
+  border-radius: 0.8rem;
+  border: 2px solid transparent;
+  background-color: #8AE52E;
+  color: black;
+  cursor: pointer;
+  padding: 0 0.75rem;
+  font-family: 'SUITE-Regular';
+}
+.logButton:hover {
+  filter: brightness(0.95);
+  background-color: #CFFF8D;
+}
+
+.regiButton {
+  height: 2.5rem;
+  font-size: 0.8rem;
+  border-radius: 0.8rem;
+  border: 0.5px solid #CFFF8D;
+  background-color: #CFFF8D;
+  color: black;
+  cursor: pointer;
+  padding: 0 0.75rem;
+}
+.regiButton:hover {
+  filter: brightness(0.95);
+  background-color: #8AE52E;
+}
+
+.notiCircle {
+  position: absolute;
+  font-size: 0.8rem;
+  color: white;
+  background-color: #FA7070;
+  border-radius: 50%;
+  width: 0.9rem;
+  height: 0.9rem;
+  text-align: center;
+  line-height: 0.9rem;
+  top: -0.25rem;
+  right: 0;
+}
+
+.profileContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.profileDropdown {
+  z-index: 10;
+  position: absolute;
+  top: 50px;
+  width: 100px;
+  background-color: #f8f8f8;
+  padding: 0.3rem 0;
+  border-radius: 5px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+.profileDropItem {
+  padding: 0.4rem 0.5rem;
+  border: 1px solid transparent;
+  background-color: transparent;
+  display: flex;
+  width: 100%;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 13px;
+  font-family: 'SUITE-Regular';
+}
+.profileDropItem:hover {
+  opacity: 0.6;
+}
+
+.dropClose {
+  transition: all 0.2s linear 0s;
+  visibility: hidden;
+  animation: fadeOut 0.2s;
+}
+.dropOpen {
+  visibility: visible;
+  animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.profile {
+  width: 33px;
+  height: 33px;
+  border-radius: 100%;
+  border: 1px solid #555555;
+>>>>>>> f8beb599b40717f22bc5af89015a5695fd39db2c
 }
