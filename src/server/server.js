@@ -3125,11 +3125,22 @@ app.post("/reviews", async (req, res) => {
 
 
 // 방 목록 가져오기
-app.get("/rooms", async (req, res) => {
+/* app.get("/rooms", async (req, res) => {
   try {
     // DB에서 모든 SelectionInfo 정보를 가져옴
     const selectionTInfoList = await SelectionTInfo.find();
     // 방 제목만 추출하여 배열로 변환
+    const roomTitles = selectionTInfoList.map((selectionTInfo) => selectionTInfo.roomTitle);
+    res.status(200).json(roomTitles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+}); */
+// 방 목록 가져오기
+app.get("/rooms", async (req, res) => {
+  try {
+    const selectionTInfoList = await SelectionTInfo.find();
     const roomTitles = selectionTInfoList.map((selectionTInfo) => selectionTInfo.roomTitle);
     res.status(200).json(roomTitles);
   } catch (error) {
