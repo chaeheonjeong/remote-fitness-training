@@ -50,8 +50,6 @@ function PortfolioView() {
         }
     }, [portfolio]);
 
-    console.log(contents);
-
     if(isRegistered === false){
         return(
             <div className='Registered'>

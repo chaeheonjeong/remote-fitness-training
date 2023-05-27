@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const scoreSchema = new Schema(
+const TscoreSchema = new Schema(
   {
     stars: { type: Number, required: true },
     studentName: { type: String, required: true },
@@ -14,10 +14,7 @@ const scoreSchema = new Schema(
   }
 );
 
-scoreSchema.set("collection", "score");
+TscoreSchema.set("collection", "Tscore");
 
-const Score = mongoose.model("Score", scoreSchema);
-module.exports = Score;
-
-const Score = mongoose.model("Score", scoreSchema);
-module.exports = Score;
+const TScore = mongoose.model("TScore", TscoreSchema);
+module.exports = TScore;

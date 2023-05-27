@@ -156,13 +156,13 @@
 }
 
 .asdf {
-  background-color: #1abb17;
+  background-color: #1abb17;;
   margin-right: 5px;
   border-radius: 20px;
 }
 
 .asdf1 {
-  background-color: #1abb17;
+  background-color: #1abb17;;
   margin-right: 5px;
   border-radius: 20px;
 }
@@ -280,6 +280,8 @@ td, th {
 .rdbtn {
   background-color: #24B422;
   margin-right: 5px;
+  padding: 4px;
+  border-radius: 20px;
 }
 
 .rrdbtn {
@@ -290,6 +292,13 @@ td, th {
 .rrmbtn {
   background-color: #24B422;
   margin-right: 5px;
+}
+
+.rmbtn{
+  background-color: #24B422;
+  margin-right: 5px;
+  padding: 4px;
+  border-radius: 20px;
 }
 
 
@@ -401,4 +410,20 @@ td, th {
     border-radius: 10px;
     width: 150px;
     height: 30px;
+    margin-left: 10px;
+  }
+
+  .rrrr {
+    background-color: #24B422;
+  margin-right: 5px;
+  padding: 4px;
+  border-radius: 20px;
+
+  }
+
+  .rrrr2 {
+    background-color: #24B422;
+  margin-right: 5px;
+  padding: 4px;
+  border-radius: 20px;
   }
