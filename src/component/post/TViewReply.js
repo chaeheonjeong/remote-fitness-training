@@ -385,7 +385,7 @@ const TViewReply = ({ write, setWrite }) => {
               value={replyInput}
               onChange={replyInputChangeHandler}
             />
-            <div className={styles.reply_choose}>
+            <div className={styles.reply_choose}>        
               <input type="submit" className={styles.sbtn} value="등록"></input>
             </div>
           </div>
@@ -421,6 +421,8 @@ const TViewReply = ({ write, setWrite }) => {
                       alt="프로필 이미지"
                     />
                   )}
+
+
                   {r.rwriter}
                   </div>
                 </td>
@@ -466,7 +468,7 @@ const TViewReply = ({ write, setWrite }) => {
 
                 <td>
                   {!showReplyInput && (
-                    <button className={styles.asdf} onClick={() => {
+                    <button onClick={() => {
                       setShowReplyInput(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
                     }}>대댓글 추가</button>
@@ -483,15 +485,15 @@ const TViewReply = ({ write, setWrite }) => {
                             onChange={replyInputRChangeHandler}
                           />
                           <div className={styles.reply_choose}>
-                            <input className={styles.asdf3} type="submit" value="대댓글 등록"></input>
-                            <button className={styles.reply_choose2} onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
+                            <input type="submit" value="대댓글 등록"></input>
+                            <button onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
                           </div>
                         </div>
                     </form>
                 
                   )}
                   {!showReplyList && (
-                    <button className={styles.asdf1} onClick={() => {
+                    <button onClick={() => {
                       setShowReplyList(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
                       fetchR_Reply(r._id);
@@ -499,7 +501,7 @@ const TViewReply = ({ write, setWrite }) => {
                   )}
                   <div>
                     {showReplyList && (
-                      <button className={styles.asdf1} onClick={() => {
+                      <button onClick={() => {
                         setShowReplyList(selectedRId === r._id ? null : r._id);
                         setSelectedRId(selectedRId === r._id ? null : r._id);
                         fetchR_Reply(r._id);
@@ -515,7 +517,7 @@ const TViewReply = ({ write, setWrite }) => {
                         <table>
                           <thead>
                             <tr className={styles.ttrrr}>
-                            <td>닉네임</td>
+                              <td>닉네임</td>
                               <td>대댓글 내용</td>
                               <td>작성 날짜</td>
                             </tr>

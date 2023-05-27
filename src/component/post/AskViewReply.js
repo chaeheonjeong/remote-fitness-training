@@ -14,8 +14,6 @@ const AskViewReply = ({ write, setWrite }) => {
     const { id } = useParams();
     const user = userStore();
 
-    
-
     const [htmlString, setHtmlString] = useState();
     const [sameUser, setSameUser] = useState(false);
     const [good, setGood] = useState(false);
@@ -47,34 +45,31 @@ const AskViewReply = ({ write, setWrite }) => {
     const [showAReplyList, setShowAReplyList] = useState(false);
     const [showAReplyModifyInput, setShowModifyAReplyInput] = useState(false);
     const [Areply, setAReply] = useState([]);
-    
 
     const [sameAUsers, setSameAUsers] = useState(false);
     const [replyAInput, setReplyAInput] = useState("");
     const [replyModifyAInput, setReplyModifyAInput] = useState("");
 
-    const fetchAReply = async () => {
+    useEffect(() => {
+        const fetchAReply = async () => {
         try {
-          const res = await axios.get(`http://localhost:8080/getAReply/${id}`, {
+            const res = await axios.get(`http://localhost:8080/getAReply/${id}`, {
             headers: { Authorization: `Bearer ${user.token}` },
-          });
-          if (res.data !== undefined) {
+            });
+            if (res.data !== undefined) {
             setAReply(res.data.data);
             setSameAUsers(res.data.sameAUsers);
             setPImg(res.data.profileImgs);
-      
+
             console.log(res.data.message);
             console.log(res.data.data);
-          }
-          console.log(res.data);
+            }console.log(res.data);
         } catch (err) {
-          console.error(err);
+            console.error(err);
         }
-      };
-      
-      useEffect(() => {
+        };    
         fetchAReply();
-      }, []);
+    }, []);
 
     const [Ar_reply, setAR_Reply] = useState([]);
     const { Arid } = useParams();
@@ -311,7 +306,7 @@ const AskViewReply = ({ write, setWrite }) => {
         pageNumbers.push(i);
     }
 
-    const renderAPageNumbers = pageNumbers.map(number => {
+    const renderPageNumbers = pageNumbers.map(number => {
         return (
           <li key={number}>
             <button onClick={() => setACurrentPage(number)}>
@@ -324,15 +319,13 @@ const AskViewReply = ({ write, setWrite }) => {
     const [ARgood, setARGood] = useState([]);
     const [ARgoodCount, setARGoodCount] = useState([]);
     const [clickedAReplyId, setClickedAReplyId] = useState(null); // 초기값은 null로 설정
-  
-    useEffect(() => {
-        fetchARGoodCount(clickedAReplyId);
-      }, [clickedAReplyId]);
+    const [clickedAReplyLiked, setClickedAReplyLiked] = useState(false);
+    const [AcurrentReplySorted, setAcurrentReplySorted] = useState([]); // 추가
 
     const handleAReplyClick = (clickedAReplyId) => {
         setClickedAReplyId(clickedAReplyId);
-        //fetchARGood(clickedAReplyId);
-        //clickARGood(clickedAReplyId);
+        fetchARGood(clickedAReplyId);
+        clickARGood(clickedAReplyId);
 
         console.log("글 번호는 : " , id);
         console.log("댓글 번호는 : " , clickedAReplyId);
@@ -711,21 +704,12 @@ const AskViewReply = ({ write, setWrite }) => {
                 </tbody>
                 </table>
                 <div className={styles.pagination}>
-            <ul className={styles.pageNumbers}>
-              {renderAPageNumbers}
-            </ul>
-          </div>
+                    <ul className={styles.pageNumbers}>
+                    {renderPageNumbers}
+                    </ul>
+                </div>
             </div>
         </>
     );
 }
 export default AskViewReply;
-
-
-{/* <span onClick={() => {handleAReplyClick(r._id);
-                                fetchARGoodCount(r._id);
-                                clickARGood();}}
-                                className={r._id === clickedAReplyId && ARgood ? styles.ARgoodBtn : null}
-                            >
-                                👍  {r._id !== clickedAReplyId ? '' : ARgoodCount}
-                            </span> */}

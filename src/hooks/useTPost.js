@@ -92,7 +92,7 @@ export default function useTWrite() {
           }
         );
         console.log("success", response.data.message);
-        navigate("/study");
+        navigate("/sRecruitment");
       } catch (error) {
         console.log(error);
       }

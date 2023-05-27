@@ -234,7 +234,6 @@ const ViewWrite = () => {
                 <span>조회수{write.views}</span>
             </div>
             </div>
-
             <ViewReply
                 write = {write}
                 setWrite = {setWrite}

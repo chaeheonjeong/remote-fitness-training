@@ -97,7 +97,7 @@ const MyGoal = () => {
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              marginTop: "1rem",
+              marginTop: "0.8rem",
             }}
           >
             <label style={{ fontWeight: "500", fontSize: "1.2rem" }}>

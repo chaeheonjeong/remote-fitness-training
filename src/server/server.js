@@ -57,7 +57,6 @@ const boot = require("./lib/RTC/boot");
 
 const ObjectId = mongoose.Types.ObjectId;
 const auth = require("./auth");
-const { profile } = require("console");
 
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
@@ -82,6 +81,11 @@ const storage = multer.diskStorage({
     cb(null, `${uuid()}.${mime.extension(file.mimetype)}`); // (5)
   },
 });
+
+const { profile } = require("console");
+const RoomSchedule = require("./models/roomSchedule");
+
+
 
 const upload = multer({
   // (6)
@@ -3141,7 +3145,15 @@ app.post("/reviews", async (req, res) => {
 app.get("/rooms", async (req, res) => {
   try {
     const selectionTInfoList = await SelectionTInfo.find();
-    const roomTitles = selectionTInfoList.map((selectionTInfo) => selectionTInfo.roomTitle);
+
+    // 후기가 작성된 방 목록 가져오기
+    const reviewedRooms = await Score.distinct("roomName");
+
+    // 방 목록에서 후기가 작성된 방을 필터링하여 제외
+    const roomTitles = selectionTInfoList
+      .map((selectionTInfo) => selectionTInfo.roomTitle)
+      .filter((roomTitle) => !reviewedRooms.includes(roomTitle));
+
     res.status(200).json(roomTitles);
   } catch (error) {
     console.error(error);

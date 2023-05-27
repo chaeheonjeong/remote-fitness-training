@@ -17,6 +17,7 @@ const tWriteSchema = new Schema(
     writeDate: { type: String, required: true },
     recruit: { type: Boolean, required: true },
     views: { type: Number, required: true },
+    startTime: { type: String, required: true },
   },
   {
     versionKey: false,
