@@ -144,8 +144,8 @@
 
   .Modal{
     position: absolute;
-    width: 300px;
-    height: 300px;
+    width: 350px;
+    height: 350px;
     padding: 40px;
     text-align: center;
     background-color: #ffff;
@@ -166,6 +166,7 @@
   }
 
   .ModalButton{
+    display: inline-block;
     background: none;
     border: none;
     top: 15px;
@@ -201,6 +202,7 @@
   }
 
 .input{
+  display: inline-block;
   background-color: transparent;
   border: none;
   border-bottom: 1px solid #CCC;
@@ -235,9 +237,11 @@
   width: 202px;
 }
 .addSchedule{
+  display: inline-block;
   font-family: 'Cafe24SsurroundAir';
 }
 .addBtn{
+  display: inline-block;
   top:15px;
   left: 15px;
   position: absolute;
@@ -247,6 +251,7 @@
 }
 
 .add{
+  display: inline-block;
   border-radius: 5px;
   border: none;
   font-family: 'Cafe24SsurroundAir';
@@ -254,6 +259,7 @@
 }
 
 .modify{
+  display: inline-block;
   border-radius: 5px;
   border: none;
   font-family: 'Cafe24SsurroundAir';
@@ -262,6 +268,7 @@
 }
 
 .delete{
+  display: inline-block;
   border-radius: 5px;
   border: none;
   font-family: 'Cafe24SsurroundAir';
@@ -270,10 +277,12 @@
 }
 
 .scheduleContents{
+  display: inline-block;
   font-family: 'Cafe24SsurroundAir';
 }
 
 .Contents{
+  display: inline-block;
   width: 200px;
   height: 150px;
   border:1px solid #CCC;
@@ -283,4 +292,17 @@
 .reviewBtn{
   float: right;
   margin-top: 10px;
+}
+
+.datePicker{
+  width: 199px;
+  text-align: center;
+  margin-left: 37px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid #CCC;
+}
+
+.Date{
+  display: flex;
+  flex-wrap: wrap;
 }

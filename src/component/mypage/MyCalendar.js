@@ -170,9 +170,6 @@ function MyCalendar() {
         const scheduleStartTime = new Date(`${date} ${startTime}`);
         const scheduleEndTime = new Date(scheduleStartTime.getTime() + runningTime * 60000);
 
-        console.log(scheduleStartTime);
-        console.log(scheduleEndTime);
-        
         const currentDateTime = new Date();
         const currentDate = new Date(currentDateTime.getFullYear(), currentDateTime.getMonth(), currentDateTime.getDate());
 
@@ -265,8 +262,8 @@ function MyCalendar() {
             />
             <Modal className='Modal' ariaHideApp={false} isOpen={addModalIsOpen} onRequestClose={handleAddModalClose} overlayClassName='Overlay'>
                 <button type="submit" onClick={() => setAddModalIsOpen(false)} className='ModalButton'>X</button>
-                <h2>
-                    <DatePicker selected={date} onChange={handleDateChange} />
+                <h2 className='Date'>
+                    날짜 : <DatePicker className='datePicker' selected={date} onChange={handleDateChange} />
                 </h2>
                 <form onSubmit={handleFormSubmit}>
                     <label className='scheduleName'>
@@ -274,7 +271,7 @@ function MyCalendar() {
                         <input className='input' type="text" placeholder='제목을 입력해주세요' value={title} onChange={handleTitleChange} />
                     </label>
                     <br/>
-                    <label className='schedlueContents'>
+                    <label className='scheduleContents'>
                         내용 : 
                         <input className='Contents' type="text" placeholder='내용을 입력해주세요' value={contents} onChange={handleContentsChange} />
                     </label>
