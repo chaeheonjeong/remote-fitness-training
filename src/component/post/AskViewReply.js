@@ -54,26 +54,28 @@ const AskViewReply = ({ write, setWrite, writer }) => {
 
     const [rWriter, setRWriter] = useState("");
 
-    useEffect(() => {
-        const fetchAReply = async () => {
+    const fetchAReply = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/getAReply/${id}`, {
+          const res = await axios.get(`http://localhost:8080/getAReply/${id}`, {
             headers: { Authorization: `Bearer ${user.token}` },
-            });
-            if (res.data !== undefined) {
+          });
+          if (res.data !== undefined) {
             setAReply(res.data.data);
             setSameAUsers(res.data.sameAUsers);
             setPImg(res.data.profileImgs);
-
+      
             console.log(res.data.message);
             console.log(res.data.data);
-            }console.log(res.data);
+          }
+          console.log(res.data);
         } catch (err) {
-            console.error(err);
+          console.error(err);
         }
-        };    
+      };
+      
+      useEffect(() => {
         fetchAReply();
-    }, []);
+      }, []);
 
     const [Ar_reply, setAR_Reply] = useState([]);
     const { Arid } = useParams();
@@ -381,6 +383,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
           </li>
         );
     });
+    
 
     const [ARgood, setARGood] = useState([]);
     const [ARgoodCount, setARGoodCount] = useState([]);
@@ -485,6 +488,26 @@ const AskViewReply = ({ write, setWrite, writer }) => {
         navigate(`/PortfolioView/${userId}`);  
     };
 
+        // 좋아요 핸들러
+        const handleLike = async (id) => {
+            try {
+              await axios.put(
+                `http://localhost:8080/likeAreply/${id}`,
+                {},
+                {
+                  headers: { Authorization: `Bearer ${user.token}` },
+                }
+              );
+          
+              // 댓글을 다시 불러와서 업데이트된 좋아요 수를 확인합니다
+              fetchAReply();
+          
+              // 좋아요 요청에 대한 처리를 추가해주세요
+            } catch (error) {
+              console.log(error);
+            }
+          };
+    
 
     return(
         <>
@@ -516,7 +539,9 @@ const AskViewReply = ({ write, setWrite, writer }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {Areply.map((r, index) => (
+                    {/* {Areply.map((r, index) => ( */}
+                    {AcurrentReply.map((r, index) => (
+                            
                     <tr className={styles.replyTitle} key={r._id}>
                         <td key={r._id} onClick={() => AReplyProfileClick(r._user)}>
                             <div>

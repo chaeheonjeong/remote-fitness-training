@@ -468,7 +468,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
               </tr>
             </thead>
             <tbody>
-              {reply.map((r, index) => (
+              {currentReply.map((r, index) => (
               
               <tr className={styles.replyTitle} key={r._id}>
                 <td key={r._id} onClick={() => ReplyProfileClick(r._user)} >

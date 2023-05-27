@@ -26,7 +26,7 @@
 
 .content_2_a {
   display: flex;
-
+  gap: 1rem;
   justify-content: space-between;
 }
 
@@ -70,6 +70,12 @@
 .content_6 {
   /*border-bottom:3px solid black;*/
   text-align: right;
+}
+
+.profile1 {
+  height: 20px;
+  font-size: 18px;
+  text-align: center;
 }
 
 .reply_input {

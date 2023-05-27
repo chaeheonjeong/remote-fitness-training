@@ -200,6 +200,28 @@ function MyCalendar() {
     };
 
     const today = new Date();
+    const handleScheduleClick = (roomSchedule) => {
+
+        const {startTime, runningTime, date} = roomSchedule;
+        const scheduleStartTime = new Date(`${date} ${startTime}`);
+        const scheduleEndTime = new Date(scheduleStartTime.getTime() + runningTime * 60000);
+
+        console.log(scheduleStartTime);
+        console.log(scheduleEndTime);
+        
+        const currentDateTime = new Date();
+        const currentDate = new Date(currentDateTime.getFullYear(), currentDateTime.getMonth(), currentDateTime.getDate());
+
+        if(currentDateTime < scheduleStartTime){
+            window.alert('입장 시간이 아직 되지 않았습니다.');
+        }else if(currentDateTime > scheduleEndTime){
+            window.alert('입장 시간이 초과되었습니다.');
+        }else if(currentDate.getTime() > scheduleStartTime.getTime()){
+            window.alert('이미 지난 방 일정입니다.');
+        }else{
+            navigate('/');
+        }
+    }
 
     const tileContent = ({date,view}) => {
         const filteredSchedules = schedules.filter((schedule) => {
@@ -232,22 +254,22 @@ function MyCalendar() {
                     ))}
                 </div>
                 <div>
-                    {filteredRoomSchedules.map((roomSchedule) => (
-                        hook.rendData !== null ? (
-                            hook.rendData.map((x, i) => {
-                                return x.prepaymentBtn === true && roomSchedule.userType === 'Student' ? (
-                                    <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
-                                        {roomSchedule.roomTitle}
-                                    </div>
-                                ) : null
-                            })
-                        ) : null
-                    ))}
+                    {filteredRoomSchedules.map((roomSchedule) => {
+                        return roomSchedule.userType === 'Student' && roomSchedule.prepaymentBtn === true ? (
+                            <div className='showRoomSchedule' 
+                                key={roomSchedule.roomTitle}
+                                onClick={() => {handleScheduleClick(roomSchedule); setAddModalIsOpen(false);}}>
+                                    {roomSchedule.roomTitle}
+                            </div>
+                        ):null
+                    })}
                 </div>
                 <div>
                     {filteredRoomSchedules.map((roomSchedule) => {
                         return roomSchedule.userType === 'Teacher' ? (
-                            <div className='showRoomSchedule' key={roomSchedule.roomTitle}>
+                            <div className='showRoomSchedule' 
+                                key={roomSchedule.roomTitle} 
+                                onClick={() => {handleScheduleClick(roomSchedule); setAddModalIsOpen(false)}}>
                                     {roomSchedule.roomTitle}
                             </div>
                         ):null

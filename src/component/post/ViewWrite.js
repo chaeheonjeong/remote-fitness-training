@@ -151,17 +151,17 @@ const ViewWrite = () => {
                 {sameUser && (
                     <div className={styles.content_4_b}>
                     <input
-                        type="button"
                         className={styles.dd}
+                        type="button"
                         value="삭제"
                         onClick={() => {
                             deleteHandler();
                         }}
                         />
                     <input
+                        className={styles.mm}
                         type="button"
                         value="수정"
-                        className={styles.mm}
                         onClick={() => {
                         navigate(`/modifyPost/${id}`);
                         }}
@@ -234,7 +234,6 @@ const ViewWrite = () => {
                 <span>조회수{write.views}</span>
             </div>
             </div>
-
             <ViewReply
                 write = {write}
                 setWrite = {setWrite}

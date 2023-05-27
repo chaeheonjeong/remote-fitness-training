@@ -249,7 +249,7 @@ const ViewTWrite = () => {
                 <div dangerouslySetInnerHTML={{ __html: htmlString }} />
                 <div className={styles.goodch}>
                 <span className={good ? styles.goodBtn : null}>
-                스크랩{bookmarkCount}s
+                    스크랩{bookmarkCount}
                 </span>
                 <span>조회수{write.views}</span>
             </div>

@@ -1,7 +1,7 @@
 import { noti } from "../../util/dummy";
 import styles from "./Notification.module.css";
 import { VscCommentDiscussion } from "react-icons/vsc";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useNoti from "../../hooks/useNoti";
 import Paginator from "../common/Paginator";
 
@@ -30,15 +30,30 @@ const Notification = () => {
                   }
                 }}
               >
-                {" "}
-                {/* onClick={()=>window.open(x.url)} 나중에 URL 추가하고 활성화 */}
+
+
                 <div className={styles.title}>
-                  {/* {x.type === "comment" && ( */}
+                  {x.type === "comment" && (
                     <div>
                       <VscCommentDiscussion /> {x.title}
                     </div>
-                  {/* )} */}
+                  )}
+                  {x.type === "write" && (
+                    <div>
+                      작성자: {x.writer}
+                    </div>
+                  )}
                 </div>
+
+                {/* {" "}
+                onClick={()=>window.open(x.url)} 나중에 URL 추가하고 활성화
+                <div className={styles.title}>
+                  {x.type === "comment" && (
+                    <div>
+                      <VscCommentDiscussion /> {x.title}
+                    </div>
+                  )}
+                </div> */}
                 <div>
                   {console.log("+ ", x.message)}
                   {x.message.length >= 70
@@ -48,7 +63,9 @@ const Notification = () => {
                 <div className={styles.time}>{x.createAt}</div>
                 {x.role === 'student' ? (
                   <div>
-                    <button>선금</button>
+                    <button  onClick={() => {
+                      hook.handlePreBtn(x._id)/* hook.setReadComm(!hook.readComm) */;
+                    }}>선금</button>
                   </div>
                 ) : (
                   <div></div>

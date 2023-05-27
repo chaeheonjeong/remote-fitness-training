@@ -157,8 +157,8 @@ const AskViewWrite = () => {
                 </div>
                 <div className={styles.content_2}>
                     <div className={styles.content_2_a}>
-                    <div onClick={() => {passHandler(write._user)}}>
-                        작성자
+                        <div>작성자</div>
+                        <div className={styles.profile1} onClick={() => {passHandler(write._user)}} style={{ marginRight: "12.5rem" }}>
                         {profileImg === null ? (
                             <HiUserCircle
                             size="40"
