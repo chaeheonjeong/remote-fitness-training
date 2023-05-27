@@ -37,7 +37,7 @@ function boot() {
         (user) => user.id !== socket.id
       );
 
-      console.log(usersInThisRoom);
+      socket.emit("users_muted_info", usersInThisRoom);
 
       io.sockets.to(socket.id).emit("all_users", usersInThisRoom);
     });
@@ -68,6 +68,18 @@ function boot() {
 
     socket.on("toggle_mic", (data) => {
       socket.to(data.room).emit("mute", { id: socket.id, muted: data.muted });
+      const roomID = socketToRoom[socket.id];
+      const room = users[roomID];
+      if (room) {
+        room.forEach((user) => {
+          if (user.id === socket.id) {
+            user.isMuted = data.muted;
+          }
+        });
+        // const usersInThisRoom = room.filter((user) => user.id !== socket.id);
+        // socket.to(roomID).emit("mute", { id: socket.id, muted: data.muted });
+        // socket.emit("users_muted_info", usersInThisRoom);
+      }
     });
 
     socket.on("speaking", (data) => {
@@ -77,9 +89,11 @@ function boot() {
     });
 
     socket.on("chat_send", (data) => {
-      socket
-        .to(data.room)
-        .emit("chat_receive", { id: socket.id, msg: data.msg });
+      socket.to(data.room).emit("chat_receive", {
+        id: socket.id,
+        msg: data.msg,
+        name: data.name,
+      });
     });
 
     socket.on("disconnect", () => {
@@ -95,7 +109,10 @@ function boot() {
         }
       }
       socket.to(roomID).emit("user_exit", { id: socket.id });
-      console.log(users);
+    });
+
+    socket.on("change_time", (timeData) => {
+      socket.to(timeData.room).emit("time_changed", timeData);
     });
   });
 

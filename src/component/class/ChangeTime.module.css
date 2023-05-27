@@ -1,0 +1,114 @@
+@font-face {
+  font-family: "SUITE-Regular";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.contentWrapper {
+  gap: 1.5rem;
+  padding: 1rem 0rem 1rem 0rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "SUITE-Regular";
+  position: absolute;
+  bottom: 80px;
+  background-color: white;
+  width: 200px;
+  border: 1px solid rgb(219, 219, 219);
+  border-radius: 20px;
+}
+
+.btnCancle {
+  height: 1.8rem;
+  font-size: 0.8rem;
+  border-radius: 0.5rem;
+  border: 0.5px solid rgb(203, 203, 203);
+  background-color: #ffffff;
+  color: rgb(49, 49, 49);
+  cursor: pointer;
+  padding: 0 0.5rem;
+  font-family: "SUITE-Regular";
+}
+
+.btnCancle:hover {
+  filter: brightness(0.85);
+}
+
+.btnOk {
+  height: 1.8rem;
+  font-size: 0.8rem;
+  border-radius: 0.5rem;
+  border: 0.5px solid #8ae52e;
+  background-color: #8ae52e;
+  color: rgb(49, 49, 49);
+  cursor: pointer;
+  padding: 0 0.5rem;
+  font-family: "SUITE-Regular";
+}
+.btnOk:hover {
+  filter: brightness(0.85);
+  background-color: #cfff8d;
+  border-color: #cfff8d;
+}
+.buttonWrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  gap: 0.3rem;
+}
+.inputStyle {
+  width: 2.5rem;
+  height: 1.5rem;
+  margin: 0 0 0 0.5rem;
+  background-color: rgb(228, 228, 228);
+  border: none;
+  border-radius: 0.2rem;
+  padding-left: 0.3rem;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: "SUITE-Regular";
+}
+
+.ModalClose {
+  transition: visibility 0.2s ease-out;
+  visibility: hidden;
+  animation: fadeOut 0.2s;
+}
+.ModalOpen {
+  visibility: visible;
+  animation: fadeIn 0.2s;
+}
+
+.clock {
+  border-radius: 10rem;
+  padding: 0.6rem;
+  background-color: #8ae52e;
+  margin-top: 2rem;
+  color: #409969;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

@@ -9,6 +9,7 @@ import StudyRoomCard from "../main/StudyRoomCard";
 import loadingImg from "../../images/loadingImg.gif";
 import userStore from "../../store/user.store";
 import QuestionRoomCard from "../main/QuestionRoomCard";
+import { BASE_API_URI } from "../../util/common";
 
 const MyAsk = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const MyAsk = () => {
     if (hasMore) {
       axios
         .get(
-          `http://localhost:8080/myAsks?page=${
+          `${BASE_API_URI}/myAsks?page=${
             Math.floor(renderQ.length / limit) + 1
           }&limit=${limit}`,
           {
@@ -63,7 +64,7 @@ const MyAsk = () => {
   const clickHandler = (id) => {
     axios
       .post(
-        `http://localhost:8080/view`,
+        `${BASE_API_URI}/view`,
         { id: id, postName: "question" } // 서버로 전달할 id
       )
       .then((response) => {

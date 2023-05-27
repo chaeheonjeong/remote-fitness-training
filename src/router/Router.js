@@ -11,8 +11,7 @@ import View from "../component/post//View";
 import TView from "../component/post/TView";
 import Ask from "../component/post//Ask";
 import AskView from "../component/post//AskView";
-//import View2 from "../component/post//View2";
-//import View3 from "../component/post/View3";
+import MyInfo from "../component/mypage/MyInfo";
 import Jitsi from "../component/videochat/jitsi";
 
 /* import TRecruitment from "../component/main/TRecruitment"; */
@@ -23,7 +22,6 @@ import Recruitment from "../component/main/Recruitment";
 import Portfolio from "../component/mypage/Portfolio";
 import PortfolioView from "../component/mypage/PortfolioView";
 import PortfolioModify from "../component/mypage/PortfolioModify";
-import MyInfo from "../component/mypage/MyInfo";
 import MainOpenStudy from "../component/main/MainOpenStudy";
 import MainQuestion from "../component/main/MainQuestion";
 import MyCalendar from "../component/mypage/MyCalendar";
@@ -37,7 +35,6 @@ import ModifyAsk from "../component/post/ModifyAsk";
 import MyPost from "../component/mypage/MyPost";
 import MyAsk from "../component/mypage/MyAsk";
 import MyPAReviews from "../component/mypage/MyPAReviews";
-
 import RTCChat from "../component/class/RTCChat";
 const Router = () => {
   return (
@@ -56,7 +53,6 @@ const Router = () => {
           path="/sRecruitment"
           element={[<Main key="main" />, <SRecruitment key="srecruitment" />]}
         />
-        
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/findPassword" element={<FindPw />} />
@@ -76,18 +72,14 @@ const Router = () => {
         <Route path="/MyLikedPost" element={<MyLikedPost />} />
         <Route path="/MyLikedTPost" element={<MyLikedTPost />} />
         <Route path="/MyLikedQuestion" element={<MyLikedQuestion />} />
-        <Route path="/MyPAReviews/:name" element={<MyPAReviews />} />
-
-        <Route path="myAsk" element={<MyAsk />} />
-        <Route path="myPost" element={<MyPost />} />
-        <Route path="Jitsi" element={<Jitsi/>}/>
-        <Route path="Portfolio" element={<Portfolio/>}/>
-        <Route path="PortfolioView/:writerId" element={<PortfolioView/>}/>
-        <Route path="PortfolioModify" element={<PortfolioModify/>}/>
         <Route path="/View/:id" element={<View />} />
         <Route path="myAsk" element={<MyAsk />} />
         <Route path="myPost" element={<MyPost />} />
+        <Route path="/Jitsi" element={<Jitsi />} />
         <Route path="/class/chat" element={<RTCChat />} />
+        <Route path="Portfolio" element={<Portfolio />} />
+        <Route path="PortfolioView/:writerId" element={<PortfolioView />} />
+        <Route path="PortfolioModify" element={<PortfolioModify />} />
       </Routes>
     </BrowserRouter>
   );

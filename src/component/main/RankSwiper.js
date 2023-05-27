@@ -1,71 +1,78 @@
 import { useEffect } from "react";
-import SwiperCore, { Pagination, Autoplay, FreeMode } from "swiper";
+import SwiperCore, { Pagination, Autoplay, FreeMode, Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/scrollbar";
+import "swiper/swiper-bundle.css";
 import styles from "./RankSwiper.module.css";
 import { BiMedal } from "react-icons/bi";
+import { HiUserCircle } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
+
 const medalColor = [
   "rgba(247, 247, 35, 0.99)",
   "rgb(190, 190, 182)",
   "rgb(177, 148, 31)",
-  "rgb(65, 61, 33)",
 ];
 
-const rankRender = (data, index) => {
+const RankRender = ({ ranker, index }) => {
   return (
     <div className={styles.swiperContent}>
       <div className={styles.medalWrapper}>
-        <BiMedal
-          size="30"
-          color={index < 3 ? medalColor[index] : medalColor[3]}
-        />
-        <span>{index + 1}위</span>
+        {console.log(ranker, index)}
+        <BiMedal size="30" color={index < 3 && medalColor[index]} />
       </div>
       <span>
-        {data.userName.length >= 8
-          ? data.userName.substring(0, 8) + "..."
-          : data.userName}
+        {ranker.profileImage === null ? (
+          <HiUserCircle
+            size="40"
+            color="#5a5a5a"
+            style={{ cursor: "pointer" }}
+          />
+        ) : (
+          <img
+            className={styles.profile}
+            src={ranker.profileImage}
+            alt="프로필 이미지"
+          />
+        )}
       </span>
       <span>
-        {data.timeH.toString().padStart(2, "0")} :{" "}
-        {data.timeM.toString().padStart(2, "0")} :{" "}
-        {data.timeS.toString().padStart(2, "0")}
+        {ranker.name.length > 8
+          ? ranker.name.substring(0, 8) + "..."
+          : ranker.name}
       </span>
+      <span>{ranker.happiness}</span>
     </div>
   );
 };
 
 function RankSwiper({ rankers }) {
+  const navigate = useNavigate();
   useEffect(() => {
-    SwiperCore.use([Pagination, FreeMode, Autoplay]);
+    SwiperCore.use([Pagination, FreeMode, Autoplay, Navigation]);
   }, []);
 
   return (
     <>
       {rankers.length > 0 && (
         <Swiper
-          className={styles.swiper}
-          direction="vertical"
-          freeMode={true}
+          className={styles.swiper} // 수정된 부분
+          spaceBetween={10}
           slidesPerView={1}
-          spaceBetween={8}
+          navigation
+          pagination={{ clickable: true }}
+          autoplay={{ delay: 2000, disableOnInteraction: false }}
           loop={true}
-          autoplay={{
-            delay: 1000,
-            disableOnInteraction: false,
-          }}
-          preventInteractionOnTransition={true}
-          speed={950}
-          touchRatio={0}
         >
-          {rankers.map((data, index) => {
-            if (index < 10) {
+          {rankers.map((ranker, index) => {
+            if (index < 3) {
               return (
-                <SwiperSlide key={index + data}>
-                  {rankRender(data, index)}
+                <SwiperSlide
+                  key={index + "&&"}
+                  onClick={() => {
+                    navigate(`/PortfolioView/${ranker.userId}`);
+                  }}
+                >
+                  <RankRender ranker={ranker} index={index} />
                 </SwiperSlide>
               );
             }
