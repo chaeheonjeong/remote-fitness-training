@@ -5,20 +5,20 @@ import tagStyles from "./Tag.module.css";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 import imageCompression from "browser-image-compression";
+import { BASE_API_URI } from "../../util/common";
 
 export default function OpenStudyModal({
-    studyModal,
-    setStudyModal,
-    //setImage,
-    addModalHandler
-}) 
-{
-    const [image, setImg] = useState("");
-    const [title, setTitle] = useState("");
-    const [pw, setPW] = useState(0);
-    const [inputTag, setInputTag] = useState("");
-    const [personNum, setpersonNum] = useState("1");
-    const [tags, setTags] = useState([]);
+  studyModal,
+  setStudyModal,
+  //setImage,
+  addModalHandler,
+}) {
+  const [image, setImg] = useState("");
+  const [title, setTitle] = useState("");
+  const [pw, setPW] = useState(0);
+  const [inputTag, setInputTag] = useState("");
+  const [personNum, setpersonNum] = useState("1");
+  const [tags, setTags] = useState([]);
 
   const numOfPeopleOption = () => {
     const numArray = [];
@@ -36,7 +36,7 @@ export default function OpenStudyModal({
     event.preventDefault();
     setStudyModal(false);
     try {
-      const response = await axios.post("http://localhost:8080/openStudy", {
+      const response = await axios.post(`${BASE_API_URI}/openStudy`, {
         img: image,
         title: title,
         pw: pw,
@@ -159,10 +159,10 @@ export default function OpenStudyModal({
             </div>
             <div>
               <a>비밀번호</a>
-              <input 
+              <input
                 type="password"
                 name="pw"
-                onChange={(e) => setPW(e.target.value) }
+                onChange={(e) => setPW(e.target.value)}
               />
             </div>
             <div>

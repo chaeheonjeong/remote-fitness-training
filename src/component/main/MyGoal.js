@@ -6,7 +6,6 @@ import axios from "axios";
 import userStore from "../../store/user.store";
 import { useNavigate } from "react-router-dom";
 import { TbClover2 } from "react-icons/tb";
-import HappinessIndex from "../../server/models/happinessIndex";
 
 const MyGoal = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -108,7 +107,7 @@ const MyGoal = () => {
 /*   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get("http://localhost:8080/study-time", {
+        .get(`${BASE_API_URI}/study-time`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -127,7 +126,7 @@ const MyGoal = () => {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get("http://localhost:8080/ggoal-time", {
+        .get(`${BASE_API_URI}/ggoal-time`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -209,11 +208,11 @@ const MyGoal = () => {
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              marginTop: "0.8rem",
+              marginTop: "1rem",
             }}
           >
             <label style={{ fontWeight: "500", fontSize: "1.2rem" }}>
-              행복지수
+              행복지수 달성도
                 <TbClover2
                 size="20"
                 className={styles.clover}

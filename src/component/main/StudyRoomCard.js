@@ -8,6 +8,7 @@ import view from "../../images/view.png";
 import comment from "../../images/comment.png";
 import styles from "./StudyRoomCard.module.css";
 import userStore from "../../store/user.store";
+import { BASE_API_URI } from "../../util/common";
 
 function StudyRoomCard({ title, tags, id, onClick }) {
   const user = userStore();
@@ -23,7 +24,7 @@ function StudyRoomCard({ title, tags, id, onClick }) {
   const clickHeart = () => {
     if (user.token !== null) {
       axios
-        .post(`http://localhost:8080/setGoodPost/${id}`, null, {
+        .post(`${BASE_API_URI}/setGoodPost/${id}`, null, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -100,7 +101,7 @@ function StudyRoomCard({ title, tags, id, onClick }) {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`http://localhost:8080/getGoodPost/${id}`, {
+        .get(`${BASE_API_URI}/getGoodPost/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -119,7 +120,7 @@ function StudyRoomCard({ title, tags, id, onClick }) {
   /* useEffect(() => {
     axios
       .post(
-        "http://localhost:8080/getViewCount",
+        `${BASE_API_URI}/getViewCount`,
         { id: id, postName: "study" } // 서버로 전달할 id
       )
       .then((response) => {

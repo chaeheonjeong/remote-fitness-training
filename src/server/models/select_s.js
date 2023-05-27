@@ -1,10 +1,15 @@
-const mogoose = require("mongoose");
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const select_sSchema = new Schema({
+<<<<<<< HEAD:src/server/models/select_s.js
     /* 댓글 단 사람 이름 */
     applicant : { type: String, required:true },
     teacherId: { type: String, required: true },
+=======
+  /* 댓글 단 사람 이름 */
+  applicant: { type: String, required: true },
+>>>>>>> e7b2c98a88d1d244ce132775337775fece1c43d2:server/models/select_s.js
 });
 
 /* select_sSchema.set("collection", "select_s");

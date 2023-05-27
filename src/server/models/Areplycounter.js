@@ -15,4 +15,4 @@ AreplycounterSchema.set("collection", "Areplycounter");
 // counters 모델 생성
 const AReplyCounter = mongoose.model("Areplycounter", AreplycounterSchema);
 
-module.exports = AReplyCounter;
+module.exports = AReplyCounter

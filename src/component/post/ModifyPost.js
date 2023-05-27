@@ -149,7 +149,7 @@ const ModifyPost = () => {
 
   const selection = () => {
     setModal(!modal);
-  }
+  };
 
   const [recruitChange, setRecruitChange] = useState();
 
@@ -160,14 +160,13 @@ const ModifyPost = () => {
 
   return (
     <>
-    { modal && (
+      {modal && (
         <SelectModal
-          modal = {modal}
-          setModal = {setModal}
+          modal={modal}
+          setModal={setModal}
           onRecruitChange={handleRecruitChange}
         />
-      )
-    }
+      )}
 
       <Header />
       <div className="choose">
@@ -201,15 +200,15 @@ const ModifyPost = () => {
             ))}
           </select>
           <text className="ww">시작시간</text>
-            <input
-              type="time"
-              id="startTime"
-              className="startTime_input"
-              onChange={(event) => {
-                hook.setStartTime(event.target.value);
-              }}
-              defaultValue={hook.startTime}
-            ></input>
+          <input
+            type="time"
+            id="startTime"
+            className="startTime_input"
+            onChange={(event) => {
+              hook.setStartTime(event.target.value);
+            }}
+            defaultValue={hook.startTime}
+          ></input>
         </div>
 
         <div className="ch2">
@@ -223,37 +222,36 @@ const ModifyPost = () => {
             }}
             defaultValue={hook.date}
           ></input> */}
-
-            <text className="ww">예상진행시간</text>
-              <input
-                className="runningTime"
-                onChange={(event) => {
-                  hook.setRunningTime(event.target.value);
-                }}
-                defaultValue={hook.runningTime}
-                placeholder="분 단위로 입력" 
-                type="number" 
-                id="runningTime" 
-                name="runningTime" 
-                min="0" 
-                max="1440" 
-                step="1"
-              />
-
-              <text className="ww">예상금액</text> 
-              <input
-                className="estimatedAmount_input"
-                onChange={(event) => {
-                  hook.setEstimateAmount(event.target.value);
-                }}
-                defaultValue={hook.estimateAmount}
-                type="currency"
-                pattern="[0-9]+"
-                id="estimatedAmount" 
-                name="estimatedAmount" 
-                min="0"
-                step="100"
-              ></input> 원
+          <text className="ww">예상진행시간</text>
+          <input
+            className="runningTime"
+            onChange={(event) => {
+              hook.setRunningTime(event.target.value);
+            }}
+            defaultValue={hook.runningTime}
+            placeholder="분 단위로 입력"
+            type="number"
+            id="runningTime"
+            name="runningTime"
+            min="0"
+            max="1440"
+            step="1"
+          />
+          <text className="ww">예상금액</text>
+          <input
+            className="estimatedAmount_input"
+            onChange={(event) => {
+              hook.setEstimateAmount(event.target.value);
+            }}
+            defaultValue={hook.estimateAmount}
+            type="currency"
+            pattern="[0-9]+"
+            id="estimatedAmount"
+            name="estimatedAmount"
+            min="0"
+            step="100"
+          ></input>{" "}
+          원
         </div>
 
         <div className="ch3">

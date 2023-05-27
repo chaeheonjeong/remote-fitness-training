@@ -14,9 +14,9 @@ h1 {
 }
 
 .heart {
-width: 25px;
-height: 25px;
-position: absolute;
+  width: 25px;
+  height: 25px;
+  position: absolute;
 }
 
 .studyTitle {
@@ -26,13 +26,13 @@ position: absolute;
 }
 
 .tagPackage {
-height: 35%;
+  height: 35%;
 }
 
 .studyTag {
   border: none;
   display: inline-block;
-  background-color: #8AE52E;
+  background-color: #8ae52e;
   border-radius: 7px;
   text-align: center;
   padding: 0 0.5rem 0 0.5rem;
@@ -40,26 +40,26 @@ height: 35%;
 }
 
 .reaction {
-display: flex;
-float: right;
+  display: flex;
+  float: right;
 }
 
 .view {
-width: 25px;
-height: 25px;
+  width: 25px;
+  height: 25px;
 }
 
 .comment {
-margin-left: 5px;
-width: 25px;
-height: 25px;
+  margin-left: 5px;
+  width: 25px;
+  height: 25px;
 }
 
 .questionBoxWrapper {
   padding: 2px;
   position: relative;
   display: flex;
-  border: 1.5px solid #8AE52E;
+  border: 1.5px solid #8ae52e;
   border-radius: 7px;
-  background-color: #F4F9F4;
+  background-color: #f4f9f4;
 }

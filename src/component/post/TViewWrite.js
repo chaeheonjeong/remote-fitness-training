@@ -12,145 +12,146 @@ import MyPAReviews from "../mypage/MyPAReviews";
 /* import response from "http-browserify/lib/response"; */
 import usePost from "../../hooks/useTPost";
 import TViewReply from "./TViewReply";
+import { BASE_API_URI } from "../../util/common";
 
 const ViewTWrite = () => {
-    const navigate = useNavigate();
-    const { id } = useParams();
-    const user = userStore();
-    const [write, setWrite] = useState([]);
-    const [htmlString, setHtmlString] = useState();
-    const [sameUser, setSameUser] = useState(false);
-    /* const [selectedId, setSelectedId] = useState();
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const user = userStore();
+  const [write, setWrite] = useState([]);
+  const [htmlString, setHtmlString] = useState();
+  const [sameUser, setSameUser] = useState(false);
+  /* const [selectedId, setSelectedId] = useState();
     const [selectedRId, setSelectedRId] = useState(); */
-    const [good, setGood] = useState(false);
-    const [bookmarkCount, setBookmarkCount] = useState(0);
-    const [profileImg, setProfileImg] = useState(null);
-    
-    const hook = usePost();
+  const [good, setGood] = useState(false);
+  const [bookmarkCount, setBookmarkCount] = useState(0);
+  const [profileImg, setProfileImg] = useState(null);
 
-    const passHandler = (userId) => {
-        navigate(`/PortfolioView/${userId}`);
-    };
+  const hook = usePost();
 
-    const deleteHandler = () => {
-      const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
-      if (confirmDelete) {
-        axios
-          .delete(`http://localhost:8080/writeTDelete/${id}`)
-          .then((res) => {
-            navigate("/study");
-          })
-          .catch((err) => console.log(err));
-      }
-    };
+  const passHandler = (userId) => {
+    navigate(`/PortfolioView/${userId}`);
+  };
 
-    // 스크랩 수
-    const getBookmarkCount = () => {
-        axios
-        .get(`http://localhost:8080/getTBookmarkCount/${id}`)
+  const deleteHandler = () => {
+    const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
+    if (confirmDelete) {
+      axios
+        .delete(`${BASE_API_URI}/writeTDelete/${id}`)
         .then((res) => {
-            if(res.status === 200) {
-            setBookmarkCount(res.data.result.goodCount);
-            }
+          navigate("/study");
         })
         .catch((err) => console.log(err));
     }
-    useEffect(getBookmarkCount, []);
+  };
 
-    useEffect(() => {
-        if (user.token !== null) {
-        axios
-            .get(`http://localhost:8080/getTWrite/${id}`, {
-            headers: { Authorization: `Bearer ${user.token}` },
-            })
-            .then((response) => {
-            if (response.status === 200) {
-                setWrite(response.data.result[0]);
-                setSameUser(response.data.sameUser);
-                setProfileImg(response.data.profileImg);
-            }
-            console.log("getWrite: ", response.data);
-            })
-            .catch((error) => {
-            console.log(error);
-            });
-        } else {
-        axios
-            .get(`http://localhost:8080/getTWrite2/${id}`)
-            .then((response) => {
-            if (response.status === 200) {
-                setWrite(response.data.result[0]);
-                setSameUser(response.data.sameUser);
-                setProfileImg(response.data.profileImg);
-            }
-            })
-            .catch((error) => {
-            console.log(error);
-            });
+  // 스크랩 수
+  const getBookmarkCount = () => {
+    axios
+      .get(`${BASE_API_URI}/getTBookmarkCount/${id}`)
+      .then((res) => {
+        if (res.status === 200) {
+          setBookmarkCount(res.data.result.goodCount);
         }
-    }, []);
+      })
+      .catch((err) => console.log(err));
+  };
+  useEffect(getBookmarkCount, []);
 
-    useEffect(() => {
-        const fetchWrite = async () => {
-        try {
-            const res = await axios.get(`http://localhost:8080/getTWrite/${id}`, {
-            headers: { Authorization: `Bearer ${user.token}` },
-            });
-            if (res.data !== undefined) {
-            setWrite(res.data.data[0]);
-            setSameUser(res.data.sameUser);
-            console.log(res.data.message);
-            }
-        } catch (err) {
-            console.error(err);
-        }
-        };
-        fetchWrite();
-    }, [id]);
-
-    useEffect(() => {
-        if (write.content !== undefined) {
-        const contentString = JSON.stringify(write.content); // 객체를 문자열로 변환합니다.
-        const cleanedString = contentString.replace(/undefined/g, "");
-        const parsedContent = JSON.parse(cleanedString); // 문자열을 JSON 객체로 변환합니다.
-        const htmlString = parsedContent.content;
-        setHtmlString(htmlString);
-        }
-    }, [write]);
-
-    
-    useEffect(() => {
-        scrollToTop();
-    }, []);
-
-    const formatDate = (today) => {
-        const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
-        const year = today.getFullYear();
-        const month = today.getMonth() + 1;
-        const dateW = today.getDate();
-        const dayOfWeek = daysOfWeek[today.getDay()];
-        const formattedDate = `${year}.${month}.${dateW}(${dayOfWeek})`;
-    
-        return formattedDate;
-    };
-
-    // 글 쓴 사람의 프로필 이미지 클릭시
-    const writerProfileClick = (writer, id) => {
-        axios
-        .post(
-            `http://localhost:8080/tView/${id}/${writer}`,
-            { id: id, writer: writer, postName: "view" }
-        )
+  useEffect(() => {
+    if (user.token !== null) {
+      axios
+        .get(`${BASE_API_URI}/getTWrite/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
         .then((response) => {
-            console.log(response.data.message);
-            console.log("길이: ", response.data.length);
-            navigate(`/MyPAReviews/${writer}`);
-            console.log('writer: ', writer);
+          if (response.status === 200) {
+            setWrite(response.data.result[0]);
+            setSameUser(response.data.sameUser);
+            setProfileImg(response.data.profileImg);
+          }
+          console.log("getWrite: ", response.data);
         })
         .catch((error) => {
-            console.log(error);
+          console.log(error);
+        });
+    } else {
+      axios
+        .get(`${BASE_API_URI}/getTWrite2/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            setWrite(response.data.result[0]);
+            setSameUser(response.data.sameUser);
+            setProfileImg(response.data.profileImg);
+          }
         })
+        .catch((error) => {
+          console.log(error);
+        });
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchWrite = async () => {
+      try {
+        const res = await axios.get(`${BASE_API_URI}/getTWrite/${id}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        if (res.data !== undefined) {
+          setWrite(res.data.data[0]);
+          setSameUser(res.data.sameUser);
+          console.log(res.data.message);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchWrite();
+  }, [id]);
+
+  useEffect(() => {
+    if (write.content !== undefined) {
+      const contentString = JSON.stringify(write.content); // 객체를 문자열로 변환합니다.
+      const cleanedString = contentString.replace(/undefined/g, "");
+      const parsedContent = JSON.parse(cleanedString); // 문자열을 JSON 객체로 변환합니다.
+      const htmlString = parsedContent.content;
+      setHtmlString(htmlString);
+    }
+  }, [write]);
+
+  useEffect(() => {
+    scrollToTop();
+  }, []);
+
+  const formatDate = (today) => {
+    const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const dateW = today.getDate();
+    const dayOfWeek = daysOfWeek[today.getDay()];
+    const formattedDate = `${year}.${month}.${dateW}(${dayOfWeek})`;
+
+    return formattedDate;
+  };
+
+  // 글 쓴 사람의 프로필 이미지 클릭시
+  const writerProfileClick = (writer, id) => {
+    axios
+      .post(`${BASE_API_URI}/tView/${id}/${writer}`, {
+        id: id,
+        writer: writer,
+        postName: "view",
+      })
+      .then((response) => {
+        console.log(response.data.message);
+        console.log("길이: ", response.data.length);
+        navigate(`/MyPAReviews/${writer}`);
+        console.log("writer: ", writer);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
 
     return(

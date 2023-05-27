@@ -10,7 +10,7 @@ const Notification = () => {
   return (
     <div>
       {hook.rendData === null ? (
-        <div>알림이 없습니다.</div>
+        <div>알림이없습니다.</div>
       ) : (
         hook.rendData.map((x, i) => {
           return (

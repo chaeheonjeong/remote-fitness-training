@@ -8,6 +8,7 @@ import axios from "axios";
 import StudyRoomCard from "../main/StudyRoomCard";
 import loadingImg from "../../images/loadingImg.gif";
 import userStore from "../../store/user.store";
+import { BASE_API_URI } from "../../util/common";
 
 const MyPost = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const MyPost = () => {
     if (hasMore) {
       axios
         .get(
-          `http://localhost:8080/myStudies?page=${
+          `${BASE_API_URI}/myStudies?page=${
             Math.floor(renderQ.length / limit) + 1
           }&limit=${limit}`,
           {
@@ -62,7 +63,7 @@ const MyPost = () => {
   const clickHandler = (id) => {
     axios
       .post(
-        `http://localhost:8080/view`,
+        `${BASE_API_URI}/view`,
         { id: id, postName: "study" } // 서버로 전달할 id
       )
       .then((response) => {

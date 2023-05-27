@@ -7,6 +7,7 @@ import axios from "axios";
 import Header from "../main/Header";
 import userStore from "../../store/user.store";
 import { useNavigate } from "react-router-dom";
+import { BASE_API_URI } from "../../util/common";
 
 const ModifyAsk = () => {
   const { id } = useParams();
@@ -18,7 +19,7 @@ const ModifyAsk = () => {
   const user = userStore();
   const [flag, setFlag] = useState(false);
 
-  const imgLink = "http://localhost:8080/images";
+  const imgLink = `${BASE_API_URI}/images`;
 
   const customUploadAdapter = (loader) => {
     // (2)
@@ -33,7 +34,7 @@ const ModifyAsk = () => {
               data.append("file", compressedFile);
 
               axios
-                .post("http://localhost:8080/upload", data)
+                .post(`${BASE_API_URI}/upload`, data)
                 .then((res) => {
                   if (!flag) {
                     setFlag(true);
@@ -125,7 +126,7 @@ const ModifyAsk = () => {
       alert("내용을 작성해주세요.");
     else if (user.token !== null) {
       try {
-        const response = await axios.post("http://localhost:8080/askModify", {
+        const response = await axios.post(`${BASE_API_URI}/askModify`, {
           _id: id,
           tag: tags,
           title: title,
@@ -142,7 +143,7 @@ const ModifyAsk = () => {
   useEffect(() => {
     const fetchWrite = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/getAsk/${id}`, {
+        const res = await axios.get(`${BASE_API_URI}/getAsk/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         if (res.data !== undefined) {

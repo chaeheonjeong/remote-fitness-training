@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { emailRegEx } from "../util/common";
+import { BASE_API_URI, emailRegEx } from "../util/common";
 import { users } from "../util/dummy";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -30,7 +30,7 @@ export default function useFindPw() {
 
     if (emailRegEx.test(emailText)) {
       try {
-        const response = await axios.post("http://localhost:8080/email-send", {
+        const response = await axios.post(`${BASE_API_URI}/email-send`, {
           email: emailText,
         });
         if (response.status === 200) setEmailInputColor("pass");
@@ -43,7 +43,7 @@ export default function useFindPw() {
   const numBtnHandler = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/email-verify", {
+      const response = await axios.post(`${BASE_API_URI}/email-verify`, {
         email: emailText,
         verify: num,
       });
@@ -62,7 +62,7 @@ export default function useFindPw() {
     } else if (!passColor || !rePassColor || pass === "" || rePass === "") {
       setWarn("비밀번호를 확인해주세요.");
     } else {
-      const response = await axios.post("http://localhost:8080/email-newpass", {
+      const response = await axios.post(`${BASE_API_URI}/email-newpass`, {
         email: emailText,
         verify: num,
         newPassword: pass,

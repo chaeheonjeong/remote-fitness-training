@@ -6,41 +6,41 @@ import usePost from "../../hooks/usePost";
 
 import userStore from "../../store/user.store";
 
-const SelectModal = ({ modal, setModal, onRecruitChange }) => { 
-    const { id } = useParams();
-    const user = userStore();
-    const [rWriterList, setRWriterList] = useState([]);
-    const [selectedStudent, setSelectedStudent] = useState([]);
-    const [ok, setOk] = useState(false);
-    const hook = usePost();
+const SelectModal = ({ modal, setModal, onRecruitChange }) => {
+  const { id } = useParams();
+  const user = userStore();
+  const [rWriterList, setRWriterList] = useState([]);
+  const [selectedStudent, setSelectedStudent] = useState([]);
+  const [ok, setOk] = useState(false);
+  const hook = usePost();
 
-    const host = user.name;
-    const [roomTitle, setRoomTitle] = useState("");
-    const [startTime, setStartTime] = useState("");
-    const [runningTime, setRunningTime] = useState("");
-    const [date, setDate] = useState("");
+  const host = user.name;
+  const [roomTitle, setRoomTitle] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [runningTime, setRunningTime] = useState("");
+  const [date, setDate] = useState("");
 
-    useEffect(() => {
-      const fetchWrite = async () => {
-        try {
-          const res = await axios.get(
-            `http://localhost:8080/getWrite/${hook.id}`,
-            {
-              headers: { Authorization: `Bearer ${hook.user.token}` },
-            }
-          );
-          if (res.data !== undefined) {
-            hook.setEstimateAmount(res.data.result[0].estimateAmount);
-            setStartTime(res.data.result[0].startTime);
-            setRunningTime(res.data.result[0].runningTime);
-            setDate(res.data.result[0].date);
+  useEffect(() => {
+    const fetchWrite = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/getWrite/${hook.id}`,
+          {
+            headers: { Authorization: `Bearer ${hook.user.token}` },
           }
-        } catch (err) {
-          console.error(err);
+        );
+        if (res.data !== undefined) {
+          hook.setEstimateAmount(res.data.result[0].estimateAmount);
+          setStartTime(res.data.result[0].startTime);
+          setRunningTime(res.data.result[0].runningTime);
+          setDate(res.data.result[0].date);
         }
-      };
-      fetchWrite();
-    }, []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchWrite();
+  }, []);
 
     const [preBtn, setPreBtn] = useState(false);
     const [postId, setPostId] = useState();
@@ -61,29 +61,29 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
         }
     };
 
-    const createAlarm = async (host, selectedStudent, roomTitle) => {
-      try {
-        const data = {
-          host: host,
-          selectedStudent: selectedStudent,
-          roomTitle: roomTitle
-        }
+  const createAlarm = async (host, selectedStudent, roomTitle) => {
+    try {
+      const data = {
+        host: host,
+        selectedStudent: selectedStudent,
+        roomTitle: roomTitle,
+      };
 
-        const response = await axios
-          .post(`http://localhost:8080/selectedAlarm`, data);
+      const response = await axios.post(
+        `http://localhost:8080/selectedAlarm`,
+        data
+      );
 
-          console.log(response.data);
-      } catch(error) {
-        console.error(error);
-      }
-    };
-
-    
-
-    const handleRecruitChange = () => {
-      onRecruitChange(!hook.recruit);
-      hook.setRecruit(!hook.recruit);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
     }
+  };
+
+  const handleRecruitChange = () => {
+    onRecruitChange(!hook.recruit);
+    hook.setRecruit(!hook.recruit);
+  };
 
     // 저장 버튼 클릭 시 서버로 데이터 전송
     const handleSubmit = async (e) => {
@@ -129,30 +129,30 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
         }
     }
 
-    const scheduleAdd = async () => {
-
-      try{
-        const res = await axios.post(`http://localhost:8080/roomSchedule`,{
-          host: host,
-          applicant: selectedStudent,
-          roomTitle: roomTitle,
-          runningTime: runningTime,
-          startTime: startTime,
-          date: date
-        });
-        console.log(res.data.message);
-      }catch(err){
-        console.error(err);
-      }
+  const scheduleAdd = async () => {
+    try {
+      const res = await axios.post(`http://localhost:8080/roomSchedule`, {
+        host: host,
+        applicant: selectedStudent,
+        roomTitle: roomTitle,
+        runningTime: runningTime,
+        startTime: startTime,
+        date: date,
+      });
+      console.log(res.data.message);
+    } catch (err) {
+      console.error(err);
     }
+  };
 
-    // 댓글작성자 불러오기
-    const getRWriter = async () => {
-        try {
-            const res = await axios
-            .get(`http://localhost:8080/getRWriter/${id}/${user.name}`)
+  // 댓글작성자 불러오기
+  const getRWriter = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/getRWriter/${id}/${user.name}`
+      );
 
-            console.log(user.name);
+      console.log(user.name);
 
             if(res.data !== undefined) {
                 console.log("hi ", res.data.data);
@@ -166,12 +166,12 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
         }
     }
 
-    useEffect(() => {
-        getRWriter();
-    }, [])
+  useEffect(() => {
+    getRWriter();
+  }, []);
 
-    return (
-        /* 
+  return (
+    /* 
           원하는 유저 고르기
           화상캠 방 제목 예상 시간 적을 수 있도록
           수강생이면 선금 내는
