@@ -29,6 +29,7 @@ import MainQuestion from "../component/main/MainQuestion";
 import MyCalendar from "../component/mypage/MyCalendar";
 
 import MyLikedPost from "../component/mypage/MyLikedPost";
+import MyLikedTPost from "../component/mypage/MyLikedTPost";
 import MyLikedQuestion from "../component/mypage/MyLikedQuestion";
 import ModifyTPost from "../component/post/ModifyTPost";
 import ModifyPost from "../component/post/ModifyPost";
@@ -73,6 +74,7 @@ const Router = () => {
         <Route path="/MyInfo" element={<MyInfo />} />
         <Route path="/MyCalendar" element={<MyCalendar />} />
         <Route path="/MyLikedPost" element={<MyLikedPost />} />
+        <Route path="/MyLikedTPost" element={<MyLikedTPost />} />
         <Route path="/MyLikedQuestion" element={<MyLikedQuestion />} />
         <Route path="/MyPAReviews/:name" element={<MyPAReviews />} />
 

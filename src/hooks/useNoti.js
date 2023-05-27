@@ -32,8 +32,6 @@ export default function useNoti() {
     getNotiData();
   }, []);
 
-
-
   const nextPage = () => {
     if (currentPage < totalPage) setCurrentPage(currentPage + 1);
   };
@@ -45,7 +43,9 @@ export default function useNoti() {
     if(notiData && notiData.content) {
       console.log("@@: ", notiData);
       setTotalPage(Math.ceil(notiData.content.length / perPage));
-      setCurrentPage(1);
+      if(currentPage <= totalPage) {
+        setCurrentPage(1);
+      }
     }
   }, [notiData]);
 

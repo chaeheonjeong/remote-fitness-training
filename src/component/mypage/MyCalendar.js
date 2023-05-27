@@ -1,16 +1,26 @@
 import React, {useState, useEffect} from 'react';
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Calendar from 'react-calendar';
 import './MyCalendar.css';
 import moment from 'moment';
+import axios from "axios";
+//import styles from "./SelectModal.module.css";
+import usePost from "../../hooks/usePost";
 import Modal from 'react-modal';
-import axios from 'axios';
+import userStore from "../../store/user.store";
 import SideBar from './SideBar'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "../main/Header";
+import useNoti from "../../hooks/useNoti";
+//import ReviewList from './ReviewList'; // 수정: 후기 목록 컴포넌트 추가
+//import ReviewModal from './ReviewModal'; // 수정: 후기 모달 컴포넌트 추가
 
 function MyCalendar() {
+    const { id } = useParams();
+    const user = userStore();
+    const navigate = useNavigate();
+
     const [addModalIsOpen, setAddModalIsOpen] = useState(false);
     const [detailModalIsOpen, setDetailModalIsOpen] = useState(false);
     const [date, setDate] = useState(new Date());
@@ -22,7 +32,10 @@ function MyCalendar() {
     const [scheduleList, setScheduleList] = useState([]);
     const [reviewModalIsOpen, setReviewModalIsOpen] = useState(false);
     const [roomSchedules, setRoomSchedules] = useState([]);
-    const navigate = useNavigate();
+
+    const [selectedRoom, setSelectedRoom] = useState(null); // 선택한 방
+    const [roomList, setRoomList] = useState([]); // 방 목록
+    const [selectedStars, setSelectedStars] = useState(0); // 추가: 선택한 별점
 
     useEffect(() =>{
         const fetchRoomSchedules = async () => {
@@ -183,6 +196,18 @@ function MyCalendar() {
             navigate('/');
         }
     }
+    const formatDate = (today) => {
+        const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1;
+        const dateW = today.getDate();
+        const dayOfWeek = daysOfWeek[today.getDay()];
+        const formattedDate = `${year}.${month}.${dateW}(${dayOfWeek})`;
+        
+        return formattedDate;
+    };
+
+    const today = new Date();
 
     const tileContent = ({date,view}) => {
         const filteredSchedules = schedules.filter((schedule) => {
@@ -240,21 +265,218 @@ function MyCalendar() {
         );
     };
 
+    //////후기 작성 구현
+
+    // 후기 작성 모달 내에서 방 목록을 관리할 상태 추가
+    const [roomListModal, setRoomListModal] = useState([]);
+    const [participatedRooms, setParticipatedRooms] = useState([]);
+    const [selectedHost, setSelectedHost] = useState(null);
+    const [selectedHostId, setSelectedHostId] = useState(null);
+
+
+    // 방 선택 시 후기 작성 모달 열기
+    const handleRoomSelect = (room) => {
+        setSelectedRoom(room);
+        setSelectedHost(room.host); // 호스트 정보 저장
+        setSelectedHostId(room.hostId);
+        setReviewModalIsOpen(true);
+    };
+
+    // 방 목록 가져오기
+    const fetchRoomList = async () => {
+        try {
+          const response = await axios.get('http://localhost:8080/rooms');
+          const rooms = response.data.map((room, index) => ({
+            id: index, // 간단하게 인덱스를 사용하여 id 설정
+            name: room,
+            description: "", // 빈 설명 추가
+          }));
+           // 후기가 작성된 방 필터링
+            const filteredRooms = rooms.filter(
+            (room) => !participatedRooms.some((participatedRoom) => participatedRoom.name === room.name)
+            ); 
+        //const filteredRooms = rooms.filter(room => !isRoomReviewed(room.name));
+
+        // 방 목록을 로컬 스토리지에 저장
+        //localStorage.setItem("roomList", JSON.stringify(filteredRooms));
+
+        setRoomListModal(filteredRooms);
+        } catch (error) {
+          console.error(error);
+        }
+    };
+
+    // 후기를 작성한 방인지 확인하는 함수
+    const isRoomReviewed = async (roomName) => {
+        try {
+        const response = await axios.get('http://localhost:8080/reviews');
+        const reviews = response.data;
+    
+        // 방 이름과 현재 사용자를 기준으로 후기 데이터를 필터링
+        const filteredReviews = reviews.filter(review => review.roomName === roomName && review.studentName === user.name);
+    
+        // 후기가 존재하면 true, 존재하지 않으면 false 반환
+        return filteredReviews.length > 0;
+        } catch (error) {
+        console.error(error);
+        return false;
+        }
+    };
+
+
+    useEffect(() => {
+        fetchRoomList();
+    }, []);
+
+
+    const fetchParticipatedRooms = async () => {
+        try {
+          const response = await axios.get('http://localhost:8080/selectionTInfo');
+          const participatedRooms = response.data
+            .filter(room => room.applicant.includes(user.name))
+            .map(room => ({
+              id: room._id,
+              hostId : room.hostId,
+              name: room.roomTitle,
+              description: `${room.host}의 방 - 시작시간: ${room.startTime}`,
+              host: room.host, // 호스트의 이름 추가
+            }));
+          setParticipatedRooms(participatedRooms);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      useEffect(() => {
+        fetchParticipatedRooms();
+      }, []);
+
+
+    //////// 별점 기능
+    const handleReviewModalClose = () => {
+        setSelectedRoom(null);
+        setReviewModalIsOpen(false);
+        setSelectedStars(0); // 추가: 별점 선택 초기화
+      };
+
+      const handleReviewModalOpen = async () => {
+        await fetchRoomList(); // Fetch room list before opening the modal
+        setReviewModalIsOpen(true);
+      };
+      const handleStarClick = (stars) => {
+        setSelectedStars(stars);
+      };
+    
+      const handleReviewSubmit = async (e) => {
+        e.preventDefault();
+        try {
+          // 별점과 사용자 ID를 DB에 저장하는 요청을 보냄
+          const res = await axios.post("http://localhost:8080/reviews", {
+            stars: selectedStars,
+            studentName: user.name,
+            writeDate: today,
+            roomName: selectedRoom.name, // 선택된 방의 이름 전달
+            teacherId: selectedHostId, // 선택된 호스트의 이름 전달
+            teacherName: selectedHost, // 선택된 호스트의 이름 전달
+        },{
+            headers : {Authorization: `Bearer ${token}`}
+        });
+
+          console.log('Review submitted:', res.data);
+          console.log(selectedHostId );
+
+          setSelectedStars(0);
+          handleReviewModalClose();
+          navigate("/MyCalendar");
+          
+          //후기 작성된 방 방목록에서 제거하기
+        // 작성된 방 제거하기
+        setParticipatedRooms((prevRooms) =>
+            prevRooms.filter((room) => room.name !== selectedRoom.name)
+        );
+        setRoomListModal((prevRooms) =>
+            prevRooms.filter((room) => room.id !== selectedRoom.id)
+        );
+        } catch (err) {
+            console.error(err);
+        }
+      };
+
 
 
     return(
         <div>
-        <Header />
-        <SideBar/>
-        <div className='reviewBtn'>
-            <button type="submit" onClick={() => setReviewModalIsOpen(true)}>후기 작성</button>
-            <Modal className='Modal' ariaHideApp={false} isOpen={reviewModalIsOpen} onRequestClose={() => setReviewModalIsOpen(false)} overlayClassName='Overlay'>
-            <button type="submit" onClick={() => setReviewModalIsOpen(false)} className='ModalButton'>X</button>
-            <h2>
-                후기 작성
-            </h2>
-            </Modal>
+    <Header />
+    <SideBar />
+    <div className="reviewBtn">
+      <button
+        className="starsub"
+        type="submit"
+        onClick={handleReviewModalOpen}
+      >
+        후기 작성
+      </button>
+      <Modal
+        className="Modal"
+        ariaHideApp={false}
+        isOpen={reviewModalIsOpen}
+        onRequestClose={handleReviewModalClose}
+        overlayClassName="Overlay"
+      >
+        <h2 className='starwrite'>후기 작성</h2>
+        <button
+          type="submit"
+          onClick={handleReviewModalClose}
+          className="ModalButton"
+        >
+          X
+        </button>
+        
+        {selectedRoom && (
+        <div>
+        <p>선택한 방: {selectedRoom.name}</p>
+        <p>강사 이름: {selectedHost}</p>
+        {/* <p>강사 이름: {selectedHostId}</p> */}
+        {selectedStars >= 0 && <p>선택한 별점: {selectedStars}</p>}
+        <div className="starContainer">
+            {[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
+            <span
+                key={star}
+                className={selectedStars >= star ? 'selected' : ''}
+                onClick={() => handleStarClick(star)}
+                style={{ cursor: 'pointer' }}
+            >
+                {star}{' '}
+            </span>
+            ))}
         </div>
+        <button type="submit" onClick={handleReviewSubmit}>
+            등록
+        </button>
+        </div>
+    )}
+    {!selectedRoom && (
+        <div className="roomListContainer">
+        {roomListModal.length > 0 ? (
+            <div>
+            {participatedRooms.map((room) => (
+                <div
+                key={room.id}
+                className={`roomItem ${selectedRoom === room ? 'selected' : ''}`}
+                onClick={() => handleRoomSelect(room)}
+                >
+                <h3>{room.name}</h3>
+                <p>{room.description}</p>
+                </div>
+            ))}
+            </div>
+        ) : (
+            <p>Loading...</p>
+        )}
+        </div>
+    )}
+    </Modal>
+      </div>
         <div className = "MyCalendar">
             <Calendar onClickDay={handleSelectDate} value={date}
                 formatDay={(locale, date) => moment(date).format("DD")}

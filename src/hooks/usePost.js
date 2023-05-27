@@ -93,7 +93,7 @@ export default function useWrite() {
           }
         );
         console.log("success", response.data.message);
-        navigate("/study");
+        navigate("/");
       } catch (error) {
         console.log(error);
       }
@@ -118,7 +118,7 @@ export default function useWrite() {
           tag: tags,
           title: title,
           content: JSON.parse(JSON.stringify(content)),
-          recruit: recruit,
+          /* recruit: recruit, */
         });
         alert("수정이 완료되었습니다.");
         navigate(`/view/${id}`);

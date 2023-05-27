@@ -20,19 +20,21 @@
 
   .likedStudy {
     background-color: white;
-    border: 1.5px solid rgb(255, 187, 0);
+    border: 1.5px solid #8AE52E;
     border-radius: 7px;
     padding: 3px 5px 3px 5px;
     height: 2rem;
     width: 5rem;
     margin-right: 0.5rem;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   }
 
-  .likedQuestion {
+  .likedQuestion, .likedSRecruitment {
     background-color: white;
-    border: 1.5px solid rgb(189, 188, 188);
+    border: 1.5px solid #8AE52E;
     border-radius: 7px;
     padding: 3px 5px 3px 5px;
     height: 2rem;
     width: 5rem;
+    margin-right: 0.5rem;
   }

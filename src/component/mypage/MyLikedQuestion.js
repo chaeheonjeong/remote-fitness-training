@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import StudyRoomCard from "../main/StudyRoomCard";
+import QuestionRoomCard from "../main/QuestionRoomCard";
 import "./MyLikedQuestion.css";
 import styles from "./MyLikedQuestion.module.css";
 import SideBar from './SideBar';
@@ -12,6 +13,8 @@ import Header from "../main/Header";
 import loadingImg from "../../images/loadingImg.gif";
 
 function MyLikedQuestion() {
+    const navigate = useNavigate();
+
     const [likedQuestions, setLikedQuestions] = useState([]);
     const [likedQuestionIds, setLikedQuestionIds] = useState([]);
 
@@ -87,13 +90,28 @@ function MyLikedQuestion() {
         moreQuestions();
     }, []);
 
+    const clickHandler = (id) => {
+        axios
+          .post(
+            `http://localhost:8080/View`,
+            { id: id, postName: "question" } // 서버로 전달할 id
+          )
+          .then((response) => {
+            navigate(`/AskView/${id}`);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+    };
+
     return(
         <div>
             <Header />
             <SideBar/>
             <div className="likedQuestion">
-                <Link to="/myLikedPost"><button className={styles.likedStudy}>Study</button></Link>
-                <Link to="/myLikedQuestion"><button className={styles.likedQuestion}>Question</button></Link>
+                <Link to="/myLikedPost"><button className={styles.likedStudy}>강사모집</button></Link>
+                <Link to="/myLikedTPost"><button className={styles.likedSRecruitment}>학생모집</button></Link>
+                <Link to="/myLikedQuestion"><button className={styles.likedQuestion}>질문글</button></Link>
                 <InfiniteScroll
                     dataLength = {likedQuestions.length}
                     next = { moreQuestions }
@@ -103,11 +121,14 @@ function MyLikedQuestion() {
                 {
                 likedQuestions.length > 0 ? ( likedQuestions.map((Question, index) => {
                         return (
-                            <StudyRoomCard 
+                            <QuestionRoomCard 
                                 title={Question.title}
                                 tags={Array.isArray(Question.tag) ? [...Question.tag] : []} 
                                 id={Question._id}
                                 key={Question._id}
+                                onClick={() => {
+                                    clickHandler(Question._id);
+                                }}
                             />
                         );
                     })) : (<p>관심글이 아직 없습니다.</p>)
