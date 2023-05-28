@@ -5,13 +5,12 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Header from "../main/Header";
 import axios from "axios";
 import { useState } from "react";
-import { BASE_API_URI } from "../../util/common";
 
 const Write = () => {
   const [flag, setFlag] = useState(false);
   const hook = usePost();
 
-  const imgLink = "/images";
+  const imgLink = "http://localhost:8080/images";
 
   const customUploadAdapter = (loader) => {
     // (2)
@@ -26,7 +25,7 @@ const Write = () => {
               data.append("file", compressedFile);
 
               axios
-                .post(`${BASE_API_URI}/upload`, data)
+                .post("http://localhost:8080/upload", data)
                 .then((res) => {
                   if (!flag) {
                     setFlag(true);
@@ -123,50 +122,52 @@ const Write = () => {
               </option>
             ))}
           </select>
-
-          <text className={styles.ww}>시작시간</text>
-          <input
-            type="time"
-            id="startTime"
-            className={styles.startTime_input}
-            onChange={(event) => {
-              hook.setStartTime(event.target.value);
-            }}
-          ></input>
+          
+            <text className={styles.ww}>시작시간</text>
+            <input
+              type="time"
+              id="startTime"
+              className={styles.startTime_input}
+              onChange={(event) => {
+                hook.setStartTime(event.target.value);
+              }}
+            ></input>
 
           {/* </select> */}
         </div>
 
         <div className={styles.ch2}>
-          <text className={styles.ww}>예상진행시간</text>
-          <input
-            className={styles.runningTime}
-            onChange={(event) => {
-              hook.setRunningTime(event.target.value);
-            }}
-            placeholder="분 단위로 입력"
-            type="number"
-            id="runningTime"
-            name="runningTime"
-            min="0"
-            max="1440"
-            step="1"
-          />
-          <text className={styles.ww}>예상금액</text>
-          <input
-            className={styles.estimatedAmount_input}
-            onChange={(event) => {
-              hook.setEstimateAmount(event.target.value);
-            }}
-            type="currency"
-            pattern="[0-9]+"
-            id="estimatedAmount"
-            name="estimatedAmount"
-            min="0"
-            step="100"
-          ></input>{" "}
-          원
+            <text className={styles.ww}>예상진행시간</text>
+              <input
+                className={styles.runningTime}
+                onChange={(event) => {
+                  hook.setRunningTime(event.target.value);
+                }}
+                placeholder="분 단위로 입력" 
+                type="number" 
+                id="runningTime" 
+                name="runningTime" 
+                min="0" 
+                max="1440" 
+                step="1"
+              />
+
+            <text className={styles.ww}>예상금액</text> 
+              <input
+                className={styles.estimatedAmount_input}
+                onChange={(event) => {
+                  hook.setEstimateAmount(event.target.value);
+                }}
+                type="currency"
+                pattern="[0-9]+"
+                id="estimatedAmount" 
+                name="estimatedAmount" 
+                min="0"
+                step="100"
+              ></input> 원
         </div>
+
+        
 
         <div className={styles.ch3}>
           <text className={styles.ss}>시작예정일</text>
@@ -206,7 +207,7 @@ const Write = () => {
         </div>
 
         <div className={styles.title_input}>
-          <text className={styles.cc}>제목</text>
+         <text className={styles.cc}>제목</text>
           <input
             onChange={(e) => {
               hook.setTitle(e.target.value);

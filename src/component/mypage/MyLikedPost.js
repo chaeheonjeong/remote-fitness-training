@@ -77,7 +77,7 @@ function MyLikedPost() {
     const clickHandler = (id) => {
         axios
           .post(
-            `/View`,
+            `http://localhost:8080/View`,
             { id: id, postName: "study" } // 서버로 전달할 id
           )
           .then((response) => {

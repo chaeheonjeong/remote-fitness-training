@@ -6,5 +6,5 @@ const View = () => {
       <ViewWrite />
     </>
   );
-};
+}
 export default View;

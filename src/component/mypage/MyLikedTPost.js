@@ -9,7 +9,6 @@ import "./MyLikedPost.css";
 import styles from "./MyLikedTPost.module.css";
 import SideBar from './SideBar';
 import Header from "../main/Header";
-import { BASE_API_URI } from "../../util/common";
 
 import loadingImg from "../../images/loadingImg.gif";
 
@@ -36,7 +35,7 @@ function MyLikedTPost() {
         const token = localStorage.getItem("token");
 
         axios
-            .get(`${BASE_API_URI}/myLikedTPost?page=${page}&limit=6`,  {
+            .get(`http://localhost:8080/myLikedTPost?page=${page}&limit=6`,  {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -69,7 +68,7 @@ function MyLikedTPost() {
     const clickHandler = (id) => {
         axios
           .post(
-            `${BASE_API_URI}/View`,
+            `http://localhost:8080/View`,
             { id: id, postName: "srecruitment" } // 서버로 전달할 id
           )
           .then((response) => {

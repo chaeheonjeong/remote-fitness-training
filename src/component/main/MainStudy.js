@@ -11,7 +11,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TbCircleArrowUpFilled } from "react-icons/tb";
 import { scrollToTop } from "../../util/common";
-import { BASE_API_URI } from "../../util/common";
 
 function MainStudy() {
   const [studies, setStudies] = useState([]);
@@ -20,6 +19,7 @@ function MainStudy() {
   const [hasMore, setHasMore] = useState(true);
   const navigate = useNavigate();
   const limit = 12;
+
 
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,12 +48,11 @@ function MainStudy() {
   };
 
   const searchResult = () => {
-    console.log("btn click!!!!!!!!");
-    console.log(selected);
+      console.log('btn click!!!!!!!!');
+      console.log(selected);
 
-    setSearching(true);
-    setNoResult(false);
-
+      setSearching(true);
+      setNoResult(false);
 
     if(searchInput === '') {
         
@@ -61,7 +60,7 @@ function MainStudy() {
 
     axios
         .get(
-          `${BASE_API_URI}/searchStudy?selected=${selected}
+          `http://localhost:8080/searchStudy?selected=${selected}
           &value=${encodeURIComponent(searchInput)}
           &page=${
             Math.floor(searchResults.length / limit) + 1
@@ -86,7 +85,7 @@ function MainStudy() {
         });
 
       /* axios
-          .get(`${BASE_API_URI}/searchStudy?selected=${selected}&value=${encodeURIComponent(searchInput)}&page=${page}&limit=4`)
+          .get(`http://localhost:8080/searchStudy?selected=${selected}&value=${encodeURIComponent(searchInput)}&page=${page}&limit=4`)
           .then((response) => {
               console.log('검색결과를 가져오겠습니다.');
               const newSearchStudies = response.data.studies;
@@ -117,22 +116,22 @@ function MainStudy() {
   };
 
   const searchHandler = (event) => {
-    event.preventDefault();
-    searchResult();
-    setSearchResults([]);
+      event.preventDefault();
+      searchResult();
+      setSearchResults([]);
   };
 
   useEffect(() => {
-    setStudies([]);
-    setPage(1);
-    setHasMore(true);
+      setStudies([]);
+      setPage(1);
+      setHasMore(true);
   }, [searchInput]);
 
   const moreStudies = () => {
     if (hasMore) {
       axios
         .get(
-          `${BASE_API_URI}/studies?page=${
+          `http://localhost:8080/studies?page=${
             Math.floor(renderQ.length / limit) + 1
           }&limit=${limit}`
         )
@@ -156,7 +155,7 @@ function MainStudy() {
   const clickHandler = (id) => {
     axios
       .post(
-        `${BASE_API_URI}/view`,
+        `http://localhost:8080/view`,
         { id: id, postName: "study" } // 서버로 전달할 id
       )
       .then((response) => {
@@ -183,24 +182,24 @@ function MainStudy() {
         <div className={styles.menu}>
           <div className={styles.select}>
             <Link to="/">
-              <button className={styles.openStudy}>모집글</button>
-            </Link>
-            {/* <Link to="/study">
+                <button className={styles.openStudy}>모집글</button>
+              </Link>
+              {/* <Link to="/study">
                 <button className={styles.study}>스터디</button>
               </Link> */}
-            <Link to="/question">
-              <button className={styles.question}>질문</button>
-            </Link>
-          </div>
+              <Link to="/question">
+                <button className={styles.question}>질문</button>
+              </Link>
+            </div>
 
-          <div>
-            <Link to="/">
-              <button className={styles.tRecruitment}>강사모집</button>
-            </Link>
-            <Link to="/sRecruitment">
-              <button className={styles.sRecruitment}>학생모집</button>
-            </Link>
-          </div>
+            <div>
+              <Link to="/">
+                  <button className={styles.tRecruitment}>강사모집</button>
+              </Link>
+              <Link to="/sRecruitment">
+                  <button className={styles.sRecruitment}>학생모집</button>
+              </Link>
+            </div>
 
           <div className={styles.searchAndMake} onSubmit={searchHandler}>
             <form className={styles.search}>
@@ -212,7 +211,7 @@ function MainStudy() {
               <input
                 id="searchInput"
                 name="searchInput"
-                value={searchInput}
+                value={searchInput} 
                 onChange={(e) => setSearchInput(e.target.value)}
               />
               <button type="submit">검색</button>
@@ -271,36 +270,38 @@ function MainStudy() {
                     </InfiniteScroll>
                 )}
 
-        {noResult ? (
-          <div className={styles.noResult}>
-            <a>⚠️ 검색결과가 없습니다 ⚠️{noResult}</a>
-          </div>
-        ) : null}
+                {
+                    noResult ? (
+                        <div className={styles.noResult}>
+                            <a>⚠️ 검색결과가 없습니다 ⚠️{noResult}</a>
+                        </div>
+                    ) : null
+                }
 
-        {!searching && (
-          <InfiniteScroll
-            dataLength={renderQ.length}
-            next={moreStudies}
-            hasMore={hasMore}
-            loader={<LoaderImg />}
-            key={Math.random() + "&&"}
-          >
-            {renderQ &&
-              renderQ.map((data, index) => {
-                return (
-                  <StudyRoomCard
-                    title={data.title}
-                    tags={Array.isArray(data.tag) ? [...data.tag] : []}
-                    id={data._id}
-                    key={Math.random()}
-                    onClick={() => {
-                      clickHandler(data._id);
-                    }}
-                  />
-                );
-              })}
-          </InfiniteScroll>
-        )}
+      {!searching && (
+        <InfiniteScroll
+          dataLength={renderQ.length}
+          next={moreStudies}
+          hasMore={hasMore}
+          loader={<LoaderImg />}
+          key={Math.random() + "&&"}
+        >
+          {renderQ &&
+            renderQ.map((data, index) => {
+              return (
+                <StudyRoomCard
+                  title={data.title}
+                  tags={Array.isArray(data.tag) ? [...data.tag] : []}
+                  id={data._id}
+                  key={Math.random()}
+                  onClick={() => {
+                    clickHandler(data._id);
+                  }}
+                />
+              );
+            })}
+        </InfiniteScroll>
+      )}
       </div>
     </>
   );

@@ -6,7 +6,7 @@ import axios from "axios";
 import userStore from "../../store/user.store";
 import { useNavigate } from "react-router-dom";
 import { TbClover2 } from "react-icons/tb";
-import { BASE_API_URI } from "../../util/common";
+import HappinessIndex from "../../server/models/happinessIndex";
 
 const MyGoal = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -19,6 +19,7 @@ const MyGoal = () => {
   const navigate = useNavigate();
 
   const [score, setScore] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const setTime = (h, m) => {
     setHour(h);
@@ -27,7 +28,7 @@ const MyGoal = () => {
 
   const saveHappinessIndex = async () => {
     try {
-      const response = await axios.post(`${BASE_API_URI}/saveHappinessIndex`, {
+      const response = await axios.post(`http://localhost:8080/saveHappinessIndex`, {
         happinessIndex : dealt,
       }, {
         headers: { Authorization: `Bearer ${user.token}` },
@@ -39,8 +40,9 @@ const MyGoal = () => {
 
   useEffect(() => {
     if(user.token !== null) {
+      setIsLoading(true);
       axios
-        .get(`${BASE_API_URI}/getHappinessIndex`, {
+        .get("http://localhost:8080/getHappinessIndex", {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -50,6 +52,7 @@ const MyGoal = () => {
               console.log(response.data.message);
               setDealt(response.data.data);
               //saveHappinessIndex();
+              setIsLoading(false);
             } else {
               setDealt(50);
             }
@@ -58,6 +61,7 @@ const MyGoal = () => {
         .catch((error) => {
           console.log(error);
           setDealt(50);
+          setIsLoading(false);
         });
     }
   }, []);
@@ -65,7 +69,7 @@ const MyGoal = () => {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`${BASE_API_URI}/updateOrNot`, { // 업데이트 여부
+        .get("http://localhost:8080/updateOrNot", { // 업데이트 여부
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -97,7 +101,7 @@ const MyGoal = () => {
 
   /* const changeCalculated = async () => {
     try {
-      const response = await axios.post("${BASE_API_URI}/changeCalculated", {
+      const response = await axios.post("http://localhost:8080/changeCalculated", {
         calculated: true,
       });
     } catch(error) {
@@ -108,7 +112,7 @@ const MyGoal = () => {
 /*   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`${BASE_API_URI}/study-time`, {
+        .get("http://localhost:8080/study-time", {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -127,7 +131,7 @@ const MyGoal = () => {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`${BASE_API_URI}/ggoal-time`, {
+        .get("http://localhost:8080/ggoal-time", {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -205,15 +209,14 @@ const MyGoal = () => {
           </div>
           <div
             style={{
-              
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              marginTop: "1rem",
+              marginTop: "0.8rem",
             }}
           >
             <label style={{ fontWeight: "500", fontSize: "1.2rem" }}>
-              행복지수 달성도
+              행복지수
                 <TbClover2
                 size="20"
                 className={styles.clover}

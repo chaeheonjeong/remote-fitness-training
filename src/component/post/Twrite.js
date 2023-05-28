@@ -5,13 +5,12 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Header from "../main/Header";
 import axios from "axios";
 import { useState } from "react";
-import { BASE_API_URI } from "../../util/common";
 
 const TWrite = () => {
   const [flag, setFlag] = useState(false);
   const hook = useTPost();
 
-  const imgLink = "/images";
+  const imgLink = "http://localhost:8080/images";
 
   const customUploadAdapter = (loader) => {
     // (2)
@@ -26,7 +25,7 @@ const TWrite = () => {
               data.append("file", compressedFile);
 
               axios
-                .post(`${BASE_API_URI}/upload`, data)
+                .post("http://localhost:8080/upload", data)
                 .then((res) => {
                   if (!flag) {
                     setFlag(true);

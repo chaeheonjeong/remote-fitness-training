@@ -10,7 +10,7 @@ const Notification = () => {
   return (
     <div>
       {hook.rendData === null ? (
-        <div>알림이없습니다.</div>
+        <div>알림이 없습니다.</div>
       ) : (
         hook.rendData.map((x, i) => {
           return (
@@ -48,9 +48,7 @@ const Notification = () => {
                 <div className={styles.time}>{x.createAt}</div>
                 {x.role === 'student' ? (
                   <div>
-                    <button  onClick={() => {
-                      hook.handlePreBtn(x._id)/* hook.setReadComm(!hook.readComm) */;
-                    }}>선금</button>
+                    <button>선금</button>
                   </div>
                 ) : (
                   <div></div>

@@ -8,7 +8,6 @@ import view from "../../images/view.png";
 import comment from "../../images/comment.png";
 import styles from "./StudyRoomCard.module.css";
 import userStore from "../../store/user.store";
-import { BASE_API_URI } from "../../util/common";
 
 function SRecruitmentCard({ title, tags, id, onClick }) {
   const user = userStore();
@@ -24,7 +23,7 @@ function SRecruitmentCard({ title, tags, id, onClick }) {
   const clickHeart = () => {
     if (user.token !== null) {
       axios
-        .post(`${BASE_API_URI}/setTGoodPost/${id}`, null, {
+        .post(`http://localhost:8080/setTGoodPost/${id}`, null, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -101,7 +100,7 @@ function SRecruitmentCard({ title, tags, id, onClick }) {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`${BASE_API_URI}/getTGoodPost/${id}`, {
+        .get(`http://localhost:8080/getTGoodPost/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -120,11 +119,11 @@ function SRecruitmentCard({ title, tags, id, onClick }) {
   useEffect(() => {
     Promise.all([
       axios.post(
-        `${BASE_API_URI}/getViewCount`,
+        "http://localhost:8080/getViewCount",
         { id: id, postName: "srecruitment" } // 서버로 전달할 id
       ),
       axios.post(
-        `${BASE_API_URI}/getCommentCount`,
+        "http://localhost:8080/getCommentCount",
         { id: id, postName: "srecruitment" } // 서버로 전달할 id
       ),
     ])
@@ -146,7 +145,7 @@ function SRecruitmentCard({ title, tags, id, onClick }) {
   /* useEffect(() => {
     axios
       .post(
-        "/getCommentCount",
+        "http://localhost:8080/getCommentCount",
         { id: id, postName: "srecruitment" } // 서버로 전달할 id
       )
       .then((response) => {
@@ -167,40 +166,15 @@ function SRecruitmentCard({ title, tags, id, onClick }) {
   }, []);
 
   useEffect(() => {
-    Promise.all([
-      axios.post(
-        "/getViewCount",
-        { id: id, postName: "srecruitment" } // 서버로 전달할 id
-      ),
-      axios.post(
-        "/getCommentCount",
-        { id: id, postName: "srecruitment" } // 서버로 전달할 id
-      ),
-    ])
-    .then(([viewCountResponse, commentCountResponse]) => {
-      if (viewCountResponse.status === 200 && commentCountResponse.status === 200) {
-        setViewCount(viewCountResponse.data.count);
-
-        console.log("조회수: ", viewCountResponse.data.count);
-        console.log("댓글수: ", commentCountResponse.data.result);
-      
-        setCommentCount(commentCountResponse.data.result);
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }, []);
-
-  /* useEffect(() => {
     axios
       .post(
-        "/getViewCount",
+        "http://localhost:8080/getViewCount",
         { id: id, postName: "srecruitment" } // 서버로 전달할 id
       )
       .then((response) => {
         if (response.status === 200) {
           setViewCount(response.data.count);
+          setCommentCount(response.data.ccount);
           console.log(response.data.message);
         }
       })

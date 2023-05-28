@@ -9,7 +9,6 @@ import "./InfiniteScroll.css";
 import { Fragment } from "react";
 import axios from "axios";
 import userStore from "../../store/user.store";
-import { BASE_API_URI } from "../../util/common";
 
 function QuestionRoomCard({ title, tags, id, onClick }) {
   const user = userStore();
@@ -25,7 +24,7 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
   const clickHeart = () => {
     if (user.token !== null) {
       axios
-        .post(`${BASE_API_URI}/setGood/${id}`, null, {
+        .post(`http://localhost:8080/setGood/${id}`, null, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -99,7 +98,7 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`${BASE_API_URI}/getGood/${id}`, {
+        .get(`http://localhost:8080/getGood/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -118,7 +117,7 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
   /* useEffect(() => {
     axios
       .post(
-        "${BASE_API_URI}/getViewCount",
+        "http://localhost:8080/getViewCount",
         { id: id, postName: "question" } // 서버로 전달할 id
       )
       .then((response) => {
@@ -135,11 +134,11 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
   useEffect(() => {
     Promise.all([
       axios.post(
-        `${BASE_API_URI}/getViewCount`,
+        "http://localhost:8080/getViewCount",
         { id: id, postName: "question" } // 서버로 전달할 id
       ),
       axios.post(
-        `${BASE_API_URI}/getCommentCount`,
+        "http://localhost:8080/getCommentCount",
         { id: id, postName: "question" } // 서버로 전달할 id
       ),
     ])

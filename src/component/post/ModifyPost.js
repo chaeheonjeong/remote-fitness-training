@@ -5,7 +5,6 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../main/Header";
-import { BASE_API_URI } from "../../util/common";
 
 import SelectModal from "./SelectModal";
 
@@ -17,7 +16,7 @@ const ModifyPost = () => {
 
   /* const hook2 = SelectModal({ modal, setModal }); */
 
-  const imgLink = `${BASE_API_URI}/images`;
+  const imgLink = "http://localhost:8080/images";
 
   const customUploadAdapter = (loader) => {
     // (2)
@@ -32,7 +31,7 @@ const ModifyPost = () => {
               data.append("file", compressedFile);
 
               axios
-                .post(`${BASE_API_URI}/upload`, data)
+                .post("http://localhost:8080/upload", data)
                 .then((res) => {
                   if (!flag) {
                     setFlag(true);
@@ -106,7 +105,7 @@ const ModifyPost = () => {
     const fetchWrite = async () => {
       try {
         const res = await axios.get(
-          `${BASE_API_URI}/getWrite/${hook.id}`,
+          `http://localhost:8080/getWrite/${hook.id}`,
           {
             headers: { Authorization: `Bearer ${hook.user.token}` },
           }
@@ -191,7 +190,7 @@ const ModifyPost = () => {
               hook.setPCondition(e.target.value);
             }}
           >
-            {[1, 2].map((number, index) => (
+            {[1].map((number, index) => (
               <option
                 key={number + index}
                 value={typeof number === "number" ? `${number}명` : "10명 이상"}

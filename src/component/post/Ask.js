@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import styles from "./Ask.module.css";
+import styles from './Ask.module.css';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "../main/Header";
 import userStore from "../../store/user.store";
-import { BASE_API_URI } from "../../util/common";
+import { useState } from 'react';
 
 function Ask() {
   const today = new Date();
@@ -17,7 +16,7 @@ function Ask() {
   const navigate = useNavigate();
   const user = userStore();
 
-  const imgLink = `${BASE_API_URI}/images`;
+  const imgLink = "http://localhost:8080/images";
 
   const customUploadAdapter = (loader) => {
     // (2)
@@ -32,7 +31,7 @@ function Ask() {
               data.append("file", compressedFile);
 
               axios
-                .post(`${BASE_API_URI}/upload`, data)
+                .post("http://localhost:8080/upload", data)
                 .then((res) => {
                   if (!flag) {
                     setFlag(true);
@@ -114,7 +113,7 @@ function Ask() {
     else if (user.token !== null) {
       try {
         const response = await axios.post(
-          `${BASE_API_URI}/postAsk`,
+          "http://localhost:8080/postAsk",
           {
             title: title,
             content: JSON.parse(JSON.stringify(content)),
@@ -166,7 +165,7 @@ function Ask() {
           <input
             className={styles.tag_input}
             onKeyPress={handleKeyPress}
-            type="text"
+            type='text'
             placeholder="해시태그 입력(최대 5개)"
           />
           <div className={styles.tag_tagPackage}>

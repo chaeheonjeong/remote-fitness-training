@@ -17,7 +17,7 @@ const RankRender = ({ ranker, index }) => {
   return (
     <div className={styles.swiperContent}>
       <div className={styles.medalWrapper}>
-  
+        {console.log(ranker, index)}
         <BiMedal size="30" color={index < 3 && medalColor[index]} />
       </div>
       <span>

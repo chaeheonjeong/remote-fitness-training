@@ -3,10 +3,6 @@
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24SsurroundAir.woff') format('woff');
   font-weight: normal;
   font-style: normal;
-  font-family: 'Cafe24SsurroundAir';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24SsurroundAir.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
 }
 .MyCalendar{
 margin-left: 20%;
@@ -146,16 +142,16 @@ margin-left: 20%;
   background-color: #E6BA95;
 }
 
-  .Modal{
-    position: absolute;
-    width: 350px;
-    height: 350px;
-    padding: 40px;
-    text-align: center;
-    background-color: #ffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
-  }
+.Modal{
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  padding: 40px;
+  text-align: center;
+  background-color: #ffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+}
 
 .Overlay{
   position: fixed;
@@ -169,15 +165,14 @@ margin-left: 20%;
   align-items: center;
 }
 
-  .ModalButton{
-    display: inline-block;
-    background: none;
-    border: none;
-    top: 15px;
-    right: 15px;
-    position: absolute;
-    font-size: 20px;
-    font-weight: bold;
+.ModalButton{
+  background: none;
+  border: none;
+  top: 15px;
+  right: 15px;
+  position: absolute;
+  font-size: 20px;
+  font-weight: bold;
 
 }
 
@@ -206,21 +201,20 @@ margin-left: 20%;
   }
 
 .input{
-  display: inline-block;
-  background-color: transparent;
-  border: none;
-  border-bottom: 1px solid #CCC;
-  color: #555;
-  box-sizing: border-box;
-  font-family: 'Cafe24SsurroundAir';
-  font-size: 18px;
-  height: 30px;
-  padding: 10px 0px;
-  position: relative;
-  top: 50%;
-  width: 200px;
-  margin-bottom: 10px;
-  text-align: center;
+background-color: transparent;
+border: none;
+border-bottom: 1px solid #CCC;
+color: #555;
+box-sizing: border-box;
+font-family: 'Cafe24SsurroundAir';
+font-size: 18px;
+height: 30px;
+padding: 10px 0px;
+position: relative;
+top: 50%;
+width: 200px;
+margin-bottom: 10px;
+text-align: center;
 }
 
 .input:focus{
@@ -241,52 +235,45 @@ transition: all 0.5s linear;
 width: 202px;
 }
 .addSchedule{
-  display: inline-block;
-  font-family: 'Cafe24SsurroundAir';
+font-family: 'Cafe24SsurroundAir';
 }
 .addBtn{
-  display: inline-block;
-  top:15px;
-  left: 15px;
-  position: absolute;
-  border-radius: 5px;
-  border: none;
-  font-family: 'Cafe24SsurroundAir';
+top:15px;
+left: 15px;
+position: absolute;
+border-radius: 5px;
+border: none;
+font-family: 'Cafe24SsurroundAir';
 }
 
 .add{
-  display: inline-block;
-  border-radius: 5px;
-  border: none;
-  font-family: 'Cafe24SsurroundAir';
-  margin-top: 35px;
+border-radius: 5px;
+border: none;
+font-family: 'Cafe24SsurroundAir';
+margin-top: 35px;
 }
 
 .modify{
-  display: inline-block;
-  border-radius: 5px;
-  border: none;
-  font-family: 'Cafe24SsurroundAir';
-  margin-top: 35px;
-  margin-left: 5px;
+border-radius: 5px;
+border: none;
+font-family: 'Cafe24SsurroundAir';
+margin-top: 35px;
+margin-left: 5px;
 }
 
 .delete{
-  display: inline-block;
-  border-radius: 5px;
-  border: none;
-  font-family: 'Cafe24SsurroundAir';
-  margin-top: 35px;
-  margin-left: 5px;
+border-radius: 5px;
+border: none;
+font-family: 'Cafe24SsurroundAir';
+margin-top: 35px;
+margin-left: 5px;
 }
 
 .scheduleContents{
-  display: inline-block;
-  font-family: 'Cafe24SsurroundAir';
+font-family: 'Cafe24SsurroundAir';
 }
 
 .Contents{
-  display: inline-block;
   width: 200px;
   height: 150px;
   border:1px solid #CCC;
@@ -294,8 +281,8 @@ width: 202px;
 }
 
 .reviewBtn{
-float: right;
-margin-top: 10px;
+  float: right;
+  margin-top: 10px;
 }
 
 .TreviewBtn{
