@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import styles from "./View.module.css";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -9,6 +8,7 @@ import { scrollToTop } from "../../util/common";
 import { HiUserCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import MyPAReviews from "../mypage/MyPAReviews";
+import { useEffect, useState } from "react";
 /* import response from "http-browserify/lib/response"; */
 import usePost from "../../hooks/useTPost";
 

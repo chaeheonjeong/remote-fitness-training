@@ -19,6 +19,7 @@ const MyGoal = () => {
   const navigate = useNavigate();
 
   const [score, setScore] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const setTime = (h, m) => {
     setHour(h);
@@ -39,6 +40,7 @@ const MyGoal = () => {
 
   useEffect(() => {
     if(user.token !== null) {
+      setIsLoading(true);
       axios
         .get("http://localhost:8080/getHappinessIndex", {
           headers: { Authorization: `Bearer ${user.token}` },
@@ -50,6 +52,7 @@ const MyGoal = () => {
               console.log(response.data.message);
               setDealt(response.data.data);
               //saveHappinessIndex();
+              setIsLoading(false);
             } else {
               setDealt(50);
             }
@@ -58,6 +61,7 @@ const MyGoal = () => {
         .catch((error) => {
           console.log(error);
           setDealt(50);
+          setIsLoading(false);
         });
     }
   }, []);
@@ -205,7 +209,6 @@ const MyGoal = () => {
           </div>
           <div
             style={{
-              
               display: "flex",
               flexDirection: "row",
               alignItems: "center",

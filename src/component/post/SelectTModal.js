@@ -82,6 +82,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
     const handleRecruitChange = () => {
       onRecruitChange(!hook.recruit);
       hook.setRecruit(!hook.recruit);
+      console.log("modal- ", !hook.recruit);
     }
 
     // 저장 버튼 클릭 시 서버로 데이터 전송
@@ -157,6 +158,8 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
                 setRWriterList(res.data.data);
                 setPostId(res.data.postId);
                 setHostId(res.data.hostId);
+
+                console.log("$$$$$$$$$$$$$$$$$$ ", res.data);
             } else {
                 console.log("아직 댓글작성자가 없습니다");
             }

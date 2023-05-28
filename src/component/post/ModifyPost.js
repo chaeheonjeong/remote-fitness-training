@@ -190,7 +190,7 @@ const ModifyPost = () => {
               hook.setPCondition(e.target.value);
             }}
           >
-            {[1, 2].map((number, index) => (
+            {[1].map((number, index) => (
               <option
                 key={number + index}
                 value={typeof number === "number" ? `${number}명` : "10명 이상"}

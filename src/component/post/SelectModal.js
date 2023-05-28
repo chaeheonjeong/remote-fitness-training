@@ -75,11 +75,10 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
       }
     };
 
-    
-
     const handleRecruitChange = () => {
       onRecruitChange(!hook.recruit);
       hook.setRecruit(!hook.recruit);
+      console.log("modal- ", !hook.recruit);
     }
 
     // 저장 버튼 클릭 시 서버로 데이터 전송
@@ -88,7 +87,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
 
         try {
           if(selectedStudent.length === 1) {
-            if(preBtn === true && roomTitle !== "" && startTime !== "") {
+            if(preBtn === true && roomTitle !== "") {
               const res = await axios
               .post(`http://localhost:8080/selectionInfo`,  {
                 host: host,
@@ -104,6 +103,8 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
                 _id: postId,
                 recruit: !hook.recruit,
               });
+
+              console.log("here!!!!!~~~~~: ", !hook.recruit);
 
               console.log("before-", ok);
               setOk(true);
@@ -150,8 +151,10 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
             console.log(user.name);
 
             if(res.data !== undefined) {
+              console.log(res.data);
                 console.log("hi ", res.data.data);
                 setRWriterList(res.data.data);
+                console.log("+++", res.data.postId);
                 setPostId(res.data.postId);
             } else {
                 console.log("아직 댓글작성자가 없습니다");
@@ -233,11 +236,6 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
                         onChange={ (e) => setStartTime(e.target.value) }
                         value={startTime}
                     />
-                    { 
-                      startTime === "" ? (
-                        <div>예상시작시간을 설정하세요</div>
-                      ) : null 
-                    }
                 </div>
                 <div>
                     <a>예상진행시간</a>

@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import SideBar from './SideBar';
+import SideBar from "./SideBar";
 import Header from "../main/Header";
 import userStore from "../../store/user.store";
-import './Portfolio.css';
-import {FcOk} from 'react-icons/fc';
+import "./Portfolio.css";
+import { FcOk } from "react-icons/fc";
+import { BASE_API_URI } from "../../util/common";
 
 function Portfolio() {
 
@@ -33,9 +34,9 @@ function Portfolio() {
     const user = userStore();
     const [isRegistered, setIsRegistered] = useState(false);
 
-    const handleTitle = (e) => {
-        setTitle(e.target.value);
-    }
+  const handleTitle = (e) => {
+    setTitle(e.target.value);
+  };
 
     useEffect(() => {
         const fetchData = async() => {
@@ -212,50 +213,86 @@ function Portfolio() {
         };
 
         image.src = URL.createObjectURL(file);
+      }
+    )};
+  if (isRegistered) {
+    return (
+      <div className="Registered">
+        <Header />
+        <SideBar />
+        <p className="registered">
+          {" "}
+          <FcOk size={28} /> 등록이 완료되었습니다.{" "}
+        </p>
+        <button
+          type="submit"
+          className="modifyBtn"
+          onClick={() => {
+            navigate(`/PortfolioModify`);
+          }}
+        >
+          수정하기
+        </button>
+      </div>
+    );
+  } else if (user.token !== null) {
+    const checkRegistration = async () => {
+      try {
+        const res = await axios.get(`${BASE_API_URI}/portfolio`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
+        const portfolio = res.data.find((p) => p.writer === user.name);
+        if (portfolio !== undefined) {
+          setIsRegistered(true);
+        }
+      } catch (err) {
+        console.error(err);
+      }
     };
+    checkRegistration();
+  }
 
     return(
-        <div>
-            <Header />
-            <SideBar />
-                <div>
-                <div className='title'>
-                    <text className='titleText'>제목</text>
-                    <input
-                        onChange={handleTitle}
-                        className='titleInput'
-                        value={title}
-                        placeholder="제목을 입력하세요."
-                    />
-                </div>
-                <div className='content'>
-                    <CKEditor
-                        editor={ClassicEditor}
-                        data={defaultContent}
-                        config={{
-                        placeholder: "내용을 입력하세요.",
-                        extraPlugins: [uploadPlugin],
-                        }}
-                        onChange={(e, editor) => {
-                        const data = editor.getData();
-                        setContent({
-                            content: data,
-                        });
-                        }}
-                    />
-                </div>
-                <div className='btn'>
-                    <input
-                        type="submit"
-                        value="등록"
-                        className='submitBtn'
-                        onClick={handleSubmit}
-                    />
-                </div>
-            </div>
-        </div>
-    );
+      <div>
+      <Header />
+      <SideBar />
+          <div>
+          <div className='title'>
+              <text className='titleText'>제목</text>
+              <input
+                  onChange={handleTitle}
+                  className='titleInput'
+                  value={title}
+                  placeholder="제목을 입력하세요."
+              />
+          </div>
+          <div className='content'>
+              <CKEditor
+                  editor={ClassicEditor}
+                  data={defaultContent}
+                  config={{
+                  placeholder: "내용을 입력하세요.",
+                  extraPlugins: [uploadPlugin],
+                  }}
+                  onChange={(e, editor) => {
+                  const data = editor.getData();
+                  setContent({
+                      content: data,
+                  });
+                  }}
+              />
+          </div>
+          <div className='btn'>
+              <input
+                  type="submit"
+                  value="등록"
+                  className='submitBtn'
+                  onClick={handleSubmit}
+              />
+          </div>
+      </div>
+  </div>
+  );
 };
 
 export default Portfolio;

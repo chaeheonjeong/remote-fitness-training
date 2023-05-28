@@ -8,6 +8,7 @@ import Modal from "react-modal";
 import Header from "../main/Header";
 import { HiUserCircle } from "react-icons/hi";
 import userStore from "../../store/user.store";
+import { BASE_API_URI } from "../../util/common";
 
 function MyInfo() {
   const [imgFile, setImgFile] = useState(null);
@@ -28,7 +29,7 @@ function MyInfo() {
   useEffect(() => {
     if (token) {
       axios
-        .get("http://localhost:8080/users", {
+        .get(`${BASE_API_URI}/users`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {
@@ -44,7 +45,7 @@ function MyInfo() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/img-change`, {
+        const res = await axios.get(`${BASE_API_URI}/img-change`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setImgFile(res.data.image);
@@ -60,7 +61,7 @@ function MyInfo() {
     e.preventDefault();
     axios
       .put(
-        `http://localhost:8080/users/change-password/${user._id}`,
+        `${BASE_API_URI}/users/change-password/${user._id}`,
         {
           password: password,
           newPassword: newPassword,
@@ -105,7 +106,7 @@ function MyInfo() {
 
     if (confirmed) {
       axios
-        .delete(`http://localhost:8080/users/withdraw/${user._id}`, {
+        .delete(`${BASE_API_URI}/users/withdraw/${user._id}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {
@@ -127,7 +128,7 @@ function MyInfo() {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/nick-change`,
+        `${BASE_API_URI}/nick-change`,
         {
           nick: user.name,
         },
@@ -144,7 +145,7 @@ function MyInfo() {
       setNameError(false);
 
       const res = await axios.put(
-        `http://localhost:8080/img-change/${user._id}`,
+        `${BASE_API_URI}/img-change/${user._id}`,
         { image: imgFile },
         {
           headers: { Authorization: `Bearer ${token}` },

@@ -1,15 +1,20 @@
 import axios from "axios";
 import { create } from "zustand";
+import { BASE_API_URI } from "../util/common";
 
 const userStore = create((set, get) => ({
   token: localStorage.getItem("token") || null,
   name: localStorage.getItem("name") || null,
   login: async (email, password, setWarnLabel) => {
     await axios
-      .post("http://localhost:8080/login", {
-        email: email,
-        password: password,
-      })
+      .post(
+        `${BASE_API_URI}/login`,
+        {
+          email: email,
+          password: password,
+        },
+        {}
+      )
       .then((response) => {
         set({ token: response.data.token, name: response.data.name });
         localStorage.setItem("token", response.data.token);

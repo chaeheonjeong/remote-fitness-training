@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import userStore from "../store/user.store";
+import { BASE_API_URI } from "../util/common";
 
 export default function useWrite() {
   const today = new Date();
@@ -27,18 +28,14 @@ export default function useWrite() {
     const formData = new FormData();
     formData.append("image", file);
 
-    const res = await axios.post("http://localhost:8080/upload", formData);
+    const res = await axios.post(`${BASE_API_URI}/upload`, formData);
     const imageUrl = res.data.url;
     console.log(imageUrl);
     return imageUrl;
   };
 
   function handleKeyPress(e) {
-    if (
-      e.code === "Enter" || 
-      e.code === "Comma" || 
-      e.code === "Space"
-    ) {
+    if (e.code === "Enter" || e.code === "Comma" || e.code === "Space") {
       const newTag = e.target.value.trim();
 
       if (tags.includes(newTag)) {
@@ -74,7 +71,7 @@ export default function useWrite() {
     else if (user.token !== null) {
       try {
         const response = await axios.post(
-          "http://localhost:8080/postWrite",
+          `${BASE_API_URI}/postWrite`,
           {
             number: pCondition,
             /* period: periodCondition, */
@@ -107,7 +104,7 @@ export default function useWrite() {
       alert("내용을 작성해주세요.");
     else if (user.token !== null) {
       try {
-        const response = await axios.post("http://localhost:8080/postModify", {
+        const response = await axios.post(`${BASE_API_URI}/postModify`, {
           _id: id,
           number: pCondition,
           /* period: periodCondition, */

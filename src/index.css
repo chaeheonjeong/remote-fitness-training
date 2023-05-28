@@ -20,7 +20,7 @@ code {
   z-index: 0;
 }
 
-textarea:focus {
+/* textarea:focus {
   border: none;
   outline: none;
-}
+} */

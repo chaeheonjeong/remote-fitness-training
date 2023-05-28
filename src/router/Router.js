@@ -11,8 +11,7 @@ import View from "../component/post//View";
 import TView from "../component/post/TView";
 import Ask from "../component/post//Ask";
 import AskView from "../component/post//AskView";
-//import View2 from "../component/post//View2";
-//import View3 from "../component/post/View3";
+import MyInfo from "../component/mypage/MyInfo";
 import Jitsi from "../component/videochat/jitsi";
 
 /* import TRecruitment from "../component/main/TRecruitment"; */
@@ -23,7 +22,6 @@ import Recruitment from "../component/main/Recruitment";
 import Portfolio from "../component/mypage/Portfolio";
 import PortfolioView from "../component/mypage/PortfolioView";
 import PortfolioModify from "../component/mypage/PortfolioModify";
-import MyInfo from "../component/mypage/MyInfo";
 import MainOpenStudy from "../component/main/MainOpenStudy";
 import MainQuestion from "../component/main/MainQuestion";
 import MyCalendar from "../component/mypage/MyCalendar";
@@ -57,6 +55,7 @@ const Router = () => {
           element={[<Main key="main" />, <SRecruitment key="srecruitment" />]}
         />
         
+
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/findPassword" element={<FindPw />} />
