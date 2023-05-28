@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import MyPAReviews from "../mypage/MyPAReviews";
 /* import response from "http-browserify/lib/response"; */
 import usePost from "../../hooks/useTPost";
+import { BASE_API_URI } from "../../util/common";
 
 const TViewReply = ({ write, setWrite, writer }) => {
     const navigate = useNavigate();
@@ -71,7 +72,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
   useEffect(() => {
     const fetchReply = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/getTReply/${id}`, {
+        const res = await axios.get(`${BASE_API_URI}/getTReply/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         if (res.data !== undefined) {
@@ -105,7 +106,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
   const fetchR_Reply = async (rid) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/getTR_Reply/${id}/${rid}`,
+        `${BASE_API_URI}/getTR_Reply/${id}/${rid}`,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         }
@@ -150,7 +151,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/postTreply/${id}`,
+        `${BASE_API_URI}/postTreply/${id}`,
         {
           reply: String(replyInput),
           /* isSecret : Boolean(isSecret), */
@@ -189,7 +190,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
           }
 
           const response = await axios
-            .post(`http://localhost:8080/rAlarm`, data);
+            .post(`${BASE_API_URI}/rAlarm`, data);
             
             console.log(response.data);
         }
@@ -209,7 +210,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
     console.log(data);
     try {
       const response = await axios.post(
-        `http://localhost:8080/postTr_reply/${id}/${selectedRId}`,
+        `${BASE_API_URI}/postTr_reply/${id}/${selectedRId}`,
         {
           r_reply: String(replyRInput),
           /* isRSecret : Boolean(isRSecret), */
@@ -266,7 +267,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
         }
 
         const response = await axios
-          .post(`http://localhost:8080/rrAlarm`, data);
+          .post(`${BASE_API_URI}/rrAlarm`, data);
           
           console.log(response.data);
       } catch(error) {
@@ -279,7 +280,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
         const confirmRDelete = window.confirm("대댓글을 삭제하시겠습니까?");
         if(confirmRDelete) {
         try {
-            const response = await axios.delete(`http://localhost:8080/postTr_reply/${id}/${selectedRId}/${rrid}`, {
+            const response = await axios.delete(`${BASE_API_URI}/postTr_reply/${id}/${selectedRId}/${rrid}`, {
             headers: { Authorization: `Bearer ${user.token}` },
           }
         );
@@ -306,7 +307,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/viewTReplyRModify",
+        `${BASE_API_URI}/viewTReplyRModify`,
         {
           postRId: id,
           selectedRId: selectedRId,
@@ -327,7 +328,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
   const modifyR_Reply = async (rrid) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/tView/${id}/modify/${selectedRId}/${rrid}`
+        `${BASE_API_URI}/tView/${id}/modify/${selectedRId}/${rrid}`
       );
 
       if (res.data !== undefined) {
@@ -348,7 +349,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
     const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(`http://localhost:8080/tView/${id}/reply/${replyId}`)
+        .delete(`${BASE_API_URI}/tView/${id}/reply/${replyId}`)
         .then((res) => {
           setReply(reply.filter((reply) => reply._id !== replyId));
           console.log("data", res.data);
@@ -372,7 +373,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
     }
     try {
       const response = await axios.post(
-        "http://localhost:8080/viewTReplyModify",
+        `${BASE_API_URI}/viewTReplyModify`,
         {
           postId: id,
           _id: replyId,
@@ -393,7 +394,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
   const modifyReply = async (replyId) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/tView/${id}/modify/${replyId}`
+        `${BASE_API_URI}/tView/${id}/modify/${replyId}`
       );
 
       if (res.data !== undefined) {

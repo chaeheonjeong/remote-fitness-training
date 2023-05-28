@@ -41,6 +41,7 @@ const TScore = require("./models/Tscore");
 const OpenStudy = require("./models/openStudy");
 //const { default: StudyRoomCard } = require("../component/StudyRoomCard");
 const Schedule = require("./models/schedule");
+const RoomSchedule = require("./models/roomSchedule");
 const boot = require("./lib/RTC/boot");
 const ObjectId = mongoose.Types.ObjectId;
 const auth = require("./auth");
@@ -51,7 +52,6 @@ const TR_ReplyCounter = require("./models/Tr_replycounter");
 const ALikes = require("./models/ALikes");
 const Alarm = require("./models/alarm");
 const Portfolio = require("./models/portfolio");
-const TPostGood = require("./models/tPostGood");
 
 const storage = multer.diskStorage({
   // (2)
@@ -83,7 +83,7 @@ app.use(cors());
 // app.use(cors({ origin: "http://192.168.10.106:6060" }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/images", express.static("./server/images"));
+app.use("/images", express.static("./src/server/images"));
 // app.use("/images", express.static("./server/uploads"));
 const mysecretkey = "capstone";
 
@@ -3701,6 +3701,127 @@ app.post("/selectionInfo", async (req, res) => {
   }
 });
 
+////////후기 별점 ////////////////////////////////
+/////////////////////////////////////
+// 후기 작성 요청 처리
+app.post("/reviews", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+  const { stars, studentName, writeDate, roomName, teacherName, teacherId } = req.body;
+  try {
+    
+
+    // 새로운 후기 생성
+    const score = new Score({
+      stars : stars,
+      studentId : userId,
+      studentName : studentName,
+      writeDate : writeDate,
+      roomName: roomName, // 방 이름 저장
+      teacherName : teacherName,
+      teacherId : teacherId,
+    });
+
+    // 후기 저장
+    const savedScore = await score.save();
+
+    res.status(201).json(savedScore);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+// 방 목록 가져오기
+app.get("/rooms", async (req, res) => {
+  try {
+    // DB에서 모든 SelectionInfo 정보를 가져옴
+    const selectionTInfoList = await SelectionTInfo.find();
+    // 방 제목만 추출하여 배열로 변환
+    const roomTitles = selectionTInfoList.map((selectionTInfo) => selectionTInfo.roomTitle);
+    res.status(200).json(roomTitles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+});
+
+app.get("/selectionTInfo", async (req, res) => {
+  try {
+    const selectionTInfo = await SelectionTInfo.find();
+    res.status(200).json(selectionTInfo);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+});
+
+
+
+///// 후기 강사모집의 경우
+// 후기 작성 요청 처리
+app.post("/Treviews", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+  const { stars, studentName, writeDate, roomName, teacherName, teacherId } =
+    req.body;
+  try {
+    const savedTScores = [];
+
+    for (let i = 0; i < teacherName.length; i++) {
+      // 새로운 후기 생성
+      const Tscore = new TScore({
+        stars: stars[i],
+        studentId: userId,
+        studentName: studentName,
+        writeDate: writeDate,
+        roomName: roomName,
+        teacherName: teacherName[i],
+        teacherId: teacherId[i],
+      });
+
+      // 후기 저장
+      const savedTScore = await Tscore.save();
+      savedTScores.push(savedTScore);
+    }
+
+    res.status(201).json(savedTScores);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+// 방 목록 가져오기
+app.get("/Trooms", async (req, res) => {
+  try {
+    // DB에서 모든 SelectionInfo 정보를 가져옴
+    const selectionInfoList = await SelectionInfo.find();
+    // 방 제목만 추출하여 배열로 변환
+    const TroomTitles = selectionInfoList.map((selectionInfo) => selectionInfo.roomTitle);
+    res.status(200).json(TroomTitles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+});
+
+app.get("/selectionInfo", async (req, res) => {
+  try {
+    const selectionInfo = await SelectionInfo.find();
+    res.status(200).json(selectionInfo);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+});
+
 ///////////
 // 후기 목록 가져오기
 app.get("/reviews", async (req, res) => {
@@ -3725,6 +3846,7 @@ app.get("/Treviews", async (req, res) => {
 });
 
 /////////////////////////////////////
+
 // 질문 댓글 
 app.get("/getAReply/:id", async (req, res) => {
   const authHeader = req.headers.authorization;
@@ -4256,7 +4378,7 @@ app.use(express.json());
     }
   });
 
-  // 질문게시판 검색
+   // 질문게시판 검색
   app.get("/searchQuestion", async (req, res) => {
     const option = req.query.selected;
     const value = decodeURIComponent(req.query.value);
@@ -4278,6 +4400,13 @@ app.use(express.json());
       else if(option === "tags") {
         questionsSearch = await Ask.find(
           { tag: { $regex: value, $options: "i" } }, 
+          null, 
+          { skip: offset, limit: limit }
+        );
+      }
+      else if(option === "writer") {
+        questionsSearch = await Ask.find(
+          { writer: { $regex: value, $options: "i" } }, 
           null, 
           { skip: offset, limit: limit }
         );

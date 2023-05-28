@@ -5,6 +5,7 @@ import styles from "./SelectModal.module.css";
 import usePost from "../../hooks/usePost";
 
 import userStore from "../../store/user.store";
+import { BASE_API_URI } from "../../util/common";
 
 const SelectModal = ({ modal, setModal, onRecruitChange }) => {
   const { id } = useParams();
@@ -24,7 +25,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
     const fetchWrite = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/getWrite/${hook.id}`,
+          `${BASE_API_URI}/getWrite/${hook.id}`,
           {
             headers: { Authorization: `Bearer ${hook.user.token}` },
           }
@@ -70,7 +71,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
       };
 
       const response = await axios.post(
-        `http://localhost:8080/selectedAlarm`,
+        `${BASE_API_URI}/selectedAlarm`,
         data
       );
 
@@ -93,7 +94,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
           if(selectedStudent.length === 1) {
             if(preBtn === true && roomTitle !== "" && startTime !== "") {
               const res = await axios
-              .post(`http://localhost:8080/selectionInfo`,  {
+              .post(`${BASE_API_URI}/selectionInfo`,  {
                 host: host,
                 applicant: selectedStudent,
                 roomTitle: roomTitle,
@@ -103,7 +104,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
               });
 
               const res2 = await axios
-              .post(`http://localhost:8080/recruitSave`, {
+              .post(`${BASE_API_URI}/recruitSave`, {
                 _id: postId,
                 recruit: !hook.recruit,
               });
@@ -131,7 +132,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
 
   const scheduleAdd = async () => {
     try {
-      const res = await axios.post(`http://localhost:8080/roomSchedule`, {
+      const res = await axios.post(`${BASE_API_URI}/roomSchedule`, {
         host: host,
         applicant: selectedStudent,
         roomTitle: roomTitle,
@@ -149,7 +150,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
   const getRWriter = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/getRWriter/${id}/${user.name}`
+        `${BASE_API_URI}/getRWriter/${id}/${user.name}`
       );
 
       console.log(user.name);

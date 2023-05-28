@@ -48,7 +48,7 @@ function MyCalendar() {
     useEffect(() =>{
         const fetchRoomSchedules = async () => {
             try{
-                const res = await axios.get("http://localhost:8080/roomSchedules",{
+                const res = await axios.get(`${BASE_API_URI}/roomSchedules`,{
                     headers : {Authorization: `Bearer ${token}`}
                 });
                 setRoomSchedules(res.data);
@@ -238,18 +238,48 @@ function MyCalendar() {
             );
         });
 
-    return (
-      <div>
-        {filteredSchedules.map((schedule) => (
-          <div
-            className="showSchedule"
-            key={schedule.title}
-            onClick={() => handleSelectSchedule(schedule)}
-          >
-            {schedule.title}
-          </div>
-        ))}
-      </div>
+        const filteredRoomSchedules = roomSchedules.filter((roomSchedule) => {
+          const roomScheduleDate = new Date(roomSchedule.date);
+          return(
+              roomScheduleDate.getDate() === date.getDate() &&
+              roomScheduleDate.getMonth() === date.getMonth() &&
+              roomScheduleDate.getFullYear() === date.getFullYear() &&
+              (view === 'month' || (view === 'week' && roomScheduleDate.getDay() === date.getDay()))
+          );
+      })
+
+      return(
+        <div>
+            <div>
+                {filteredSchedules.map((schedule) => (
+                    <div className='showSchedule' key={schedule.title} onClick={() => handleSelectSchedule(schedule)}> 
+                        {schedule.title}
+                    </div>
+                ))}
+            </div>
+            <div>
+                {filteredRoomSchedules.map((roomSchedule) => {
+                    return roomSchedule.userType === 'Student' && roomSchedule.prepaymentBtn === true ? (
+                        <div className='showRoomSchedule' 
+                            key={roomSchedule.roomTitle}
+                            onClick={() => {handleScheduleClick(roomSchedule); setAddModalIsOpen(false);}}>
+                                {roomSchedule.roomTitle}
+                        </div>
+                    ):null
+                })}
+            </div>
+            <div>
+                {filteredRoomSchedules.map((roomSchedule) => {
+                    return roomSchedule.userType === 'Teacher' ? (
+                        <div className='showRoomSchedule' 
+                            key={roomSchedule.roomTitle} 
+                            onClick={() => {handleScheduleClick(roomSchedule); setAddModalIsOpen(false)}}>
+                                {roomSchedule.roomTitle}
+                        </div>
+                    ):null
+                })}
+            </div>
+        </div> 
     );
   };
 
@@ -292,7 +322,7 @@ function MyCalendar() {
     // 방 목록 가져오기
     const fetchRoomList = async () => {
         try {
-          const response = await axios.get('http://localhost:8080/rooms');
+          const response = await axios.get(`${BASE_API_URI}/rooms`);
           const rooms = response.data.map((room, index) => ({
             id: index, // 간단하게 인덱스를 사용하여 id 설정
             name: room,
@@ -319,7 +349,7 @@ function MyCalendar() {
     // 방 목록 가져오기
     const TfetchRoomList = async () => {
         try {
-        const response = await axios.get('http://localhost:8080/Trooms');
+        const response = await axios.get(`${BASE_API_URI}/Trooms`);
         const Trooms = response.data.map((room, index) => ({
             id: index, // 간단하게 인덱스를 사용하여 id 설정
             name: room,
@@ -347,7 +377,7 @@ function MyCalendar() {
     // 후기를 작성한 방인지 확인하는 함수
     const isRoomReviewed = async (roomName) => {
         try {
-        const response = await axios.get('http://localhost:8080/reviews');
+        const response = await axios.get(`${BASE_API_URI}/reviews`);
         const reviews = response.data;
     
         // 방 이름과 현재 사용자를 기준으로 후기 데이터를 필터링
@@ -364,7 +394,7 @@ function MyCalendar() {
     // 호스트가 후기를 작성한 방인지 확인하는 함수
     const TisRoomReviewed = async (roomName) => {
         try {
-        const response = await axios.get('http://localhost:8080/Treviews');
+        const response = await axios.get(`${BASE_API_URI}/Treviews`);
         const Treviews = response.data;
     
         // 방 이름을 기준으로 후기 데이터를 필터링
@@ -392,7 +422,7 @@ function MyCalendar() {
 
     const fetchParticipatedRooms = async () => {
         try {
-          const response = await axios.get('http://localhost:8080/selectionTInfo');
+          const response = await axios.get(`${BASE_API_URI}/selectionTInfo`);
           const participatedRooms = response.data
             .filter(room => room.applicant.includes(user.name))
             .map(room => ({
@@ -411,7 +441,7 @@ function MyCalendar() {
       //강사 모집의 경우
       const TfetchParticipatedRooms = async () => {
         try {
-          const response = await axios.get('http://localhost:8080/selectionInfo');
+          const response = await axios.get(`${BASE_API_URI}/selectionInfo`);
           const TparticipatedRooms = response.data
             .filter(room => room.host.includes(user.name))
             .map(room => ({
@@ -485,7 +515,7 @@ function MyCalendar() {
         e.preventDefault();
         try {
           // 별점과 사용자 ID를 DB에 저장하는 요청을 보냄
-          const res = await axios.post("http://localhost:8080/reviews", {
+          const res = await axios.post(`${BASE_API_URI}/reviews`, {
             stars: selectedStars,
             studentName: user.name,
             writeDate: today,
@@ -522,7 +552,7 @@ function MyCalendar() {
         e.preventDefault();
         try {
           // 별점과 사용자 ID를 DB에 저장하는 요청을 보냄
-          const res = await axios.post("http://localhost:8080/Treviews", {
+          const res = await axios.post(`${BASE_API_URI}/Treviews`, {
             stars: [TselectedStars[0], TselectedStars[1]],
             studentName: user.name,
             writeDate: today,

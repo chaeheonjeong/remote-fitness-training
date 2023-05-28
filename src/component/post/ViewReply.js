@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import MyPAReviews from "../mypage/MyPAReviews";
 /* import response from "http-browserify/lib/response"; */
 import usePost from "../../hooks/usePost";
+import { BASE_API_URI } from "../../util/common";
 
 const ViewReply = ({ write, setWrite, writer }) => {
     const navigate = useNavigate();
@@ -71,7 +72,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
   useEffect(() => {
     const fetchReply = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/getReply/${id}`, {
+        const res = await axios.get(`${BASE_API_URI}/getReply/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         if (res.data !== undefined) {
@@ -103,7 +104,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
   const fetchR_Reply = async (rid) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/getR_Reply/${id}/${rid}`,
+        `${BASE_API_URI}/getR_Reply/${id}/${rid}`,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         }
@@ -148,7 +149,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
         console.log("data: ", data);
         
         try {
-          const response = await axios.post(`http://localhost:8080/postreply/${id}`, {
+          const response = await axios.post(`${BASE_API_URI}/postreply/${id}`, {
               reply: String(replyInput),
               rwriter: user.name,
               rwriteDate: today,
@@ -183,7 +184,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
           }
 
           const response = await axios
-            .post(`http://localhost:8080/rAlarm`, data);
+            .post(`${BASE_API_URI}/rAlarm`, data);
             console.log(response.data);
         }
       } catch(error) {
@@ -201,7 +202,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
         const data = { r_reply : replyRInput/* , isRSecret : isRSecret */};
         console.log(data);
         try {
-        const response = await axios.post(`http://localhost:8080/postr_reply/${id}/${selectedRId}`, {
+        const response = await axios.post(`${BASE_API_URI}/postr_reply/${id}/${selectedRId}`, {
             r_reply: String(replyRInput),
             r_rwriter: user.name,
             r_rwriteDate: today,
@@ -256,7 +257,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
         }
 
         const response = await axios
-          .post(`http://localhost:8080/rrAlarm`, data);
+          .post(`${BASE_API_URI}/rrAlarm`, data);
           
           console.log(response.data);
       } catch(error) {
@@ -269,7 +270,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
         const confirmRDelete = window.confirm("대댓글을 삭제하시겠습니까?");
         if(confirmRDelete) {
         try {
-            const response = await axios.delete(`http://localhost:8080/postr_reply/${id}/${selectedRId}/${rrid}`, {
+            const response = await axios.delete(`${BASE_API_URI}/postr_reply/${id}/${selectedRId}/${rrid}`, {
             headers: { Authorization: `Bearer ${user.token}` },
           }
         );
@@ -299,7 +300,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/viewReplyRModify",
+        `${BASE_API_URI}/viewReplyRModify`,
         {
           postRId: id,
           selectedRId: selectedRId,
@@ -322,7 +323,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
     const modifyR_Reply = async (rrid) => {
         try {
         const res = await axios
-        .get(`http://localhost:8080/view/${id}/modify/${selectedRId}/${rrid}`)
+        .get(`${BASE_API_URI}/view/${id}/modify/${selectedRId}/${rrid}`)
         
         if(res.data !== undefined) {
             setReplyRModifyInput(res.data.result[0].r_reply);
@@ -342,7 +343,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
     const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(`http://localhost:8080/view/${id}/reply/${replyId}`)
+        .delete(`${BASE_API_URI}/view/${id}/reply/${replyId}`)
         .then((res) => {
           setReply(reply.filter((reply) => reply._id !== replyId));
           console.log("data", res.data);
@@ -366,7 +367,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
     }
     try {
       const response = await axios.post(
-        "http://localhost:8080/viewReplyModify",
+        `${BASE_API_URI}/viewReplyModify`,
         {
           postId: id,
           _id: replyId,
@@ -387,7 +388,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
   const modifyReply = async (replyId) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/view/${id}/modify/${replyId}`
+        `${BASE_API_URI}/view/${id}/modify/${replyId}`
       );
 
       if (res.data !== undefined) {
@@ -558,29 +559,22 @@ const ViewReply = ({ write, setWrite, writer }) => {
                       </div>
                     </form>
                   )}
-                  
-                  <div>
-                  {!showReplyList ? (
+                  {!showReplyList && (
                     <button className={styles.asdf1} onClick={() => {
                       setShowReplyList(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
                       fetchR_Reply(r._id);
                     }}>대댓글 목록 보기</button>
-                  ) : (
-                    selectedRId === r._id ? (
+                  )}
+                  <div>
+                    {showReplyList && (
                       <button className={styles.asdf1} onClick={() => {
                         setShowReplyList(selectedRId === r._id ? null : r._id);
                         setSelectedRId(selectedRId === r._id ? null : r._id);
                         fetchR_Reply(r._id);
                       }}>대댓글 목록 닫기</button>
-                    ) : (
-                      <button className={styles.asdf1} onClick={() => {
-                        setShowReplyList(selectedRId === r._id ? null : r._id);
-                        setSelectedRId(selectedRId === r._id ? null : r._id);
-                        fetchR_Reply(r._id);
-                      }}>대댓글 목록 보기</button>
-                    )
-                  )}
+                    )}
+                  
                   </div>
                   {showReplyList === r._id && (
                     <div className={styles.rr_reply2}>
@@ -699,7 +693,6 @@ const ViewReply = ({ write, setWrite, writer }) => {
             
             </tbody>
           </table>
-
         </div>
         </>
     );

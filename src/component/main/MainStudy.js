@@ -11,6 +11,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TbCircleArrowUpFilled } from "react-icons/tb";
 import { scrollToTop } from "../../util/common";
+import { BASE_API_URI } from "../../util/common";
 
 function MainStudy() {
   const [studies, setStudies] = useState([]);
@@ -60,7 +61,7 @@ function MainStudy() {
 
     axios
         .get(
-          `http://localhost:8080/searchStudy?selected=${selected}
+          `${BASE_API_URI}/searchStudy?selected=${selected}
           &value=${encodeURIComponent(searchInput)}
           &page=${
             Math.floor(searchResults.length / limit) + 1
@@ -85,7 +86,7 @@ function MainStudy() {
         });
 
       /* axios
-          .get(`http://localhost:8080/searchStudy?selected=${selected}&value=${encodeURIComponent(searchInput)}&page=${page}&limit=4`)
+          .get(`${BASE_API_URI}/searchStudy?selected=${selected}&value=${encodeURIComponent(searchInput)}&page=${page}&limit=4`)
           .then((response) => {
               console.log('검색결과를 가져오겠습니다.');
               const newSearchStudies = response.data.studies;
@@ -131,7 +132,7 @@ function MainStudy() {
     if (hasMore) {
       axios
         .get(
-          `http://localhost:8080/studies?page=${
+          `${BASE_API_URI}/studies?page=${
             Math.floor(renderQ.length / limit) + 1
           }&limit=${limit}`
         )
@@ -155,7 +156,7 @@ function MainStudy() {
   const clickHandler = (id) => {
     axios
       .post(
-        `http://localhost:8080/view`,
+        `${BASE_API_URI}/view`,
         { id: id, postName: "study" } // 서버로 전달할 id
       )
       .then((response) => {

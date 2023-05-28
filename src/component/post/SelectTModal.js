@@ -5,6 +5,8 @@ import styles from "./SelectModal.module.css";
 import usePost from "../../hooks/useTPost";
 
 import userStore from "../../store/user.store";
+import { BASE_API_URI } from "../../util/common";
+
 // 학생모집
 const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => { 
     const { id } = useParams();
@@ -26,7 +28,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
       const fetchWrite = async () => {
         try {
           const res = await axios.get(
-            `http://localhost:8080/getTWrite/${hook.id}`,
+            `${BASE_API_URI}/getTWrite/${hook.id}`,
             {
               headers: { Authorization: `Bearer ${hook.user.token}` },
             }
@@ -72,7 +74,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
       };
 
       const response = await axios.post(
-        `http://localhost:8080/selectedTAlarm`,
+        `${BASE_API_URI}/selectedTAlarm`,
         data
       );
 
@@ -96,7 +98,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
           if(selectedStudent.length === Number(participate.charAt())) {
             if(roomTitle !== "" && startTime !== "") {
               const res = await axios
-              .post(`http://localhost:8080/selectionTInfo`,  {
+              .post(`${BASE_API_URI}/selectionTInfo`,  {
                 hostId: hostId,
                 host: host,
                 applicant: selectedStudent,
@@ -107,7 +109,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
               });
 
               const res2 = await axios
-              .post(`http://localhost:8080/recruitTSave`, {
+              .post(`${BASE_API_URI}/recruitTSave`, {
                 _id: postId,
                 recruit: !hook.recruit,
               });
@@ -134,7 +136,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
 
   const scheduleAdd = async () => {
     try {
-      const res = await axios.post(`http://localhost:8080/TRoomSchedule`, {
+      const res = await axios.post(`${BASE_API_URI}/TRoomSchedule`, {
         host: host,
         applicant: selectedStudent,
         roomTitle: roomTitle,
@@ -152,7 +154,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
   const getRWriter = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/getTRWriter/${id}/${user.name}`
+        `${BASE_API_URI}/getTRWriter/${id}/${user.name}`
       );
 
       console.log(user.name);
@@ -209,15 +211,6 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
                                 <label>{rWriter}</label>
                             </div>
                         ))}
-                        <div>
-                          {click !== 0 && pCount === 0 ? (
-                            <div>수강생을 채택하세요.</div>
-                          ) : (
-                            selectedStudent.length !== Number(participate.charAt()) ? (
-                              <div>{`${participate}`} 채택 가능합니다.</div>
-                            ) : null
-                          )}
-                        </div>
                     </div>
                 </div>
                 <div>
@@ -228,11 +221,6 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
                         onChange={ (e) => setRoomTitle(e.target.value) }
                         autoFocus
                     />
-                    { 
-                      click !== 0 && roomTitle === "" ? (
-                        <div>방 제목을 입력하세요</div>
-                      ) : null 
-                    }
                 </div>
                 <div>
                     <a>예상시작시간</a>

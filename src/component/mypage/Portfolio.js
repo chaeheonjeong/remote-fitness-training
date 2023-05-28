@@ -8,6 +8,7 @@ import Header from "../main/Header";
 import userStore from "../../store/user.store";
 import "./Portfolio.css";
 import { FcOk } from "react-icons/fc";
+import { BASE_API_URI } from "../../util/common";
 
 function Portfolio() {
   const defaultContent = `
@@ -39,7 +40,7 @@ function Portfolio() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/portfolio`, {
+        const res = await axios.get(`${BASE_API_URI}/portfolio`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setTitle(res.data[0].title);
@@ -98,7 +99,7 @@ function Portfolio() {
   } else if (user.token !== null) {
     const checkRegistration = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/portfolio`, {
+        const res = await axios.get(`${BASE_API_URI}/portfolio`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const portfolio = res.data.find((p) => p.writer === user.name);
@@ -119,7 +120,7 @@ function Portfolio() {
     else if (token != null) {
       try {
         const res = await axios.post(
-          `http://localhost:8080/portfolio`,
+          `${BASE_API_URI}/portfolio`,
           {
             title: title,
             content: JSON.parse(JSON.stringify(content)),
@@ -139,7 +140,7 @@ function Portfolio() {
     }
   };
 
-  const imgLink = "http://localhost:8080/images";
+  const imgLink = `${BASE_API_URI}/images`;
 
   const customUploadAdapter = (loader) => {
     // (2)
@@ -154,7 +155,7 @@ function Portfolio() {
               data.append("file", compressedFile);
 
               axios
-                .post("http://localhost:8080/upload", data)
+                .post(`${BASE_API_URI}/upload`, data)
                 .then((res) => {
                   if (!flag) {
                     setFlag(true);

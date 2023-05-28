@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 //import { noti } from "../util/dummy";
 import axios from "axios";
 import userStore from "../store/user.store";
+import { BASE_API_URI } from "../util/common";
 
 export default function useNoti() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +18,7 @@ export default function useNoti() {
 
   const getNotiData = async () => {
     try {
-      const res = await axios.get(`http://localhost:8080/getAlarm`, {
+      const res = await axios.get(`${BASE_API_URI}/getAlarm`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       if (res.data !== undefined) {
@@ -66,7 +67,7 @@ export default function useNoti() {
     console.log("id: ", id);
     try {
       const res = await axios.patch(
-        `http://localhost:8080/updateRoomSchedule/${id}`,
+        `${BASE_API_URI}/updateRoomSchedule/${id}`,
         {
           prepaymentBtn: true,
         },
@@ -86,7 +87,7 @@ export default function useNoti() {
     console.log("id: ", id);
     try {
       const res = await axios.patch(
-        `http://localhost:8080/updateAlarm/${id}`,
+        `${BASE_API_URI}/updateAlarm/${id}`,
         {
           read: true,
         },

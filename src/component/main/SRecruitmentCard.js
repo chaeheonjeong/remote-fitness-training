@@ -146,7 +146,7 @@ function SRecruitmentCard({ title, tags, id, onClick }) {
   /* useEffect(() => {
     axios
       .post(
-        "http://localhost:8080/getCommentCount",
+        "/getCommentCount",
         { id: id, postName: "srecruitment" } // 서버로 전달할 id
       )
       .then((response) => {
@@ -169,11 +169,11 @@ function SRecruitmentCard({ title, tags, id, onClick }) {
   useEffect(() => {
     Promise.all([
       axios.post(
-        "http://localhost:8080/getViewCount",
+        "/getViewCount",
         { id: id, postName: "srecruitment" } // 서버로 전달할 id
       ),
       axios.post(
-        "http://localhost:8080/getCommentCount",
+        "/getCommentCount",
         { id: id, postName: "srecruitment" } // 서버로 전달할 id
       ),
     ])
@@ -195,7 +195,7 @@ function SRecruitmentCard({ title, tags, id, onClick }) {
   /* useEffect(() => {
     axios
       .post(
-        "http://localhost:8080/getViewCount",
+        "/getViewCount",
         { id: id, postName: "srecruitment" } // 서버로 전달할 id
       )
       .then((response) => {

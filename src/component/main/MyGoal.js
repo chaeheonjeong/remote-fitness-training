@@ -6,6 +6,7 @@ import axios from "axios";
 import userStore from "../../store/user.store";
 import { useNavigate } from "react-router-dom";
 import { TbClover2 } from "react-icons/tb";
+import { BASE_API_URI } from "../../util/common";
 
 const MyGoal = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -26,7 +27,7 @@ const MyGoal = () => {
 
   const saveHappinessIndex = async () => {
     try {
-      const response = await axios.post(`http://localhost:8080/saveHappinessIndex`, {
+      const response = await axios.post(`${BASE_API_URI}/saveHappinessIndex`, {
         happinessIndex : dealt,
       }, {
         headers: { Authorization: `Bearer ${user.token}` },
@@ -39,7 +40,7 @@ const MyGoal = () => {
   useEffect(() => {
     if(user.token !== null) {
       axios
-        .get("http://localhost:8080/getHappinessIndex", {
+        .get(`${BASE_API_URI}/getHappinessIndex`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -64,7 +65,7 @@ const MyGoal = () => {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get("http://localhost:8080/updateOrNot", { // 업데이트 여부
+        .get(`${BASE_API_URI}/updateOrNot`, { // 업데이트 여부
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -96,7 +97,7 @@ const MyGoal = () => {
 
   /* const changeCalculated = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/changeCalculated", {
+      const response = await axios.post("${BASE_API_URI}/changeCalculated", {
         calculated: true,
       });
     } catch(error) {

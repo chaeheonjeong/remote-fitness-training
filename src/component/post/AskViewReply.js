@@ -8,6 +8,7 @@ import userStore from "../../store/user.store";
 import { useParams } from "react-router-dom";
 import Reply from "../../server/models/reply";
 import { HiUserCircle } from "react-icons/hi";
+import { BASE_API_URI } from "../../util/common";
 
 const AskViewReply = ({ write, setWrite, writer }) => {
     const [sameUsers, setSameUsers] = useState(false);
@@ -57,7 +58,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
     useEffect(() => {
         const fetchAReply = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/getAReply/${id}`, {
+            const res = await axios.get(`/getAReply/${id}`, {
             headers: { Authorization: `Bearer ${user.token}` },
             });
             if (res.data !== undefined) {
@@ -84,7 +85,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
   const fetchAR_Reply = async (rid) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/getAR_Reply/${id}/${rid}`,
+        `/getAR_Reply/${id}/${rid}`,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         }
@@ -116,7 +117,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
         e.preventDefault();
         const data = { reply: replyAInput };
         try {
-        const response = await axios.post(`http://localhost:8080/postAreply/${id}`, {
+        const response = await axios.post(`${BASE_API_URI}/postAreply/${id}`, {
             Areply: String(replyAInput),
             Arwriter: user.name,
             ArwriteDate: today,
@@ -151,7 +152,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
             }
   
             const response = await axios
-              .post(`http://localhost:8080/rAlarm`, data);
+              .post(`${BASE_API_URI}/rAlarm`, data);
               
               console.log(response.data);
           }
@@ -171,7 +172,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
         const data = { Ar_reply : replyARInput};
         console.log(data);
         try {
-        const response = await axios.post(`http://localhost:8080/postAr_reply/${id}/${selectedARId}`, {
+        const response = await axios.post(`${BASE_API_URI}/postAr_reply/${id}/${selectedARId}`, {
             Ar_reply: String(replyARInput),
             Ar_rwriter: user.name,
             Ar_rwriteDate: today,  
@@ -222,7 +223,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
           }
   
           const response = await axios
-            .post(`http://localhost:8080/rrAlarm`, data);
+            .post(`${BASE_API_URI}/rrAlarm`, data);
             
             console.log(response.data);
         } catch(error) {
@@ -235,7 +236,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
         const confirmARDelete = window.confirm("대댓글을 삭제하시겠습니까?");
         if(confirmARDelete) {
         try {
-            const response = await axios.delete(`http://localhost:8080/postAr_reply/${id}/${selectedARId}/${rrid}`, {
+            const response = await axios.delete(`${BASE_API_URI}/postAr_reply/${id}/${selectedARId}/${rrid}`, {
             headers: { Authorization: `Bearer ${user.token}` },
           }
         );
@@ -253,7 +254,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
     const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(`http://localhost:8080/askView/${id}/reply/${replyId}`)
+        .delete(`${BASE_API_URI}/askView/${id}/reply/${replyId}`)
         .then((res) => {
           setAReply(Areply.filter((Areply) => Areply._id !== replyId));
           console.log("data", res.data);
@@ -274,7 +275,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/viewAReplyModify",
+        `${BASE_API_URI}/viewAReplyModify`,
         {
           postId: id,
           _id: replyId,
@@ -294,7 +295,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
   const modifyAReply = async (replyId) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/askView/${id}/modify/${replyId}`
+        `${BASE_API_URI}/askView/${id}/modify/${replyId}`
       );
 
       if (res.data !== undefined) {
@@ -325,7 +326,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
     }
     try {
       const response = await axios.post(
-        "http://localhost:8080/askviewReplyARModify",
+        `${BASE_API_URI}/askviewReplyARModify`,
         {
           postRId: id,
           selectedARId: selectedARId,
@@ -346,7 +347,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
   const modifyAR_Reply = async (rrid) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/askview/${id}/modify/${selectedARId}/${rrid}`
+        `${BASE_API_URI}/askview/${id}/modify/${selectedARId}/${rrid}`
       );
 
       if (res.data !== undefined) {
@@ -406,7 +407,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
   const fetchARGood = (clickedAReplyId) => {
     if (user.token !== null) {
       axios
-        .get(`http://localhost:8080/getARGood/${clickedAReplyId}`, {
+        .get(`${BASE_API_URI}/getARGood/${clickedAReplyId}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -429,7 +430,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
         });
     } else {
       axios
-        .get(`http://localhost:8080/getARGood2/${clickedAReplyId}`)
+        .get(`${BASE_API_URI}/getARGood2/${clickedAReplyId}`)
         .then((response) => {
           if (response.status === 200) {
             setARGoodCount(response.data.ARcount || 0);
@@ -449,7 +450,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
     const clickARGood = (clickedAReplyId) => {
         if (user.token !== null) {
           axios
-            .post(`http://localhost:8080/setARGood/${clickedAReplyId}`, null, {
+            .post(`${BASE_API_URI}/setARGood/${clickedAReplyId}`, null, {
               headers: { Authorization: `Bearer ${user.token}` },
             })
             .then((response) => {

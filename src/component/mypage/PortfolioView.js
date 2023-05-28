@@ -7,6 +7,7 @@ import userStore from "../../store/user.store";
 import "./PortfolioView.css";
 import ProfileSideBar from "./ProfileSideBar";
 import { FcCancel } from "react-icons/fc";
+import { BASE_API_URI } from "../../util/common";
 
 function PortfolioView() {
   const [portfolio, setPortfolio] = useState([]);
@@ -23,7 +24,7 @@ function PortfolioView() {
       if (writerId) {
         try {
           const res = await axios.get(
-            `http://localhost:8080/portfolio/${writerId}`
+            `${BASE_API_URI}/portfolio/${writerId}`
           );
           const portfolio = res.data;
           if (portfolio.length !== 0) {

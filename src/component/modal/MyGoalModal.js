@@ -3,6 +3,7 @@ import styles from "./MyGoalModal.module.css";
 import axios from "axios";
 import userStore from "../../store/user.store";
 import { AiOutlineClockCircle } from "react-icons/ai";
+import { BASE_API_URI } from "../../util/common";
 
 export default function MyGoalModal({
   visible,
@@ -21,7 +22,7 @@ export default function MyGoalModal({
 
     axios
       .post(
-        "http://localhost:8080/goal-time",
+        `${BASE_API_URI}/goal-time`,
         { hour: Number(hour), min: Number(min) },
         { headers: { Authorization: `Bearer ${user.token}` } }
       )

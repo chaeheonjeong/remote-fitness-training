@@ -118,7 +118,7 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
   /* useEffect(() => {
     axios
       .post(
-        `${BASE_API_URI}/getViewCount`,
+        "${BASE_API_URI}/getViewCount",
         { id: id, postName: "question" } // 서버로 전달할 id
       )
       .then((response) => {
@@ -135,11 +135,11 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
   useEffect(() => {
     Promise.all([
       axios.post(
-        "http://localhost:8080/getViewCount",
+        `${BASE_API_URI}/getViewCount`,
         { id: id, postName: "question" } // 서버로 전달할 id
       ),
       axios.post(
-        "http://localhost:8080/getCommentCount",
+        `${BASE_API_URI}/getCommentCount`,
         { id: id, postName: "question" } // 서버로 전달할 id
       ),
     ])

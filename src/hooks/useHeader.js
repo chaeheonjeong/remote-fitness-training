@@ -7,6 +7,7 @@ import { BsPostcard } from "react-icons/bs";
 import { BsCalendarCheck } from "react-icons/bs";
 import userStore from "../store/user.store";
 import axios from "axios";
+import { BASE_API_URI } from "../util/common";
 
 export default function useHeader() {
   const user = userStore();
@@ -73,7 +74,7 @@ export default function useHeader() {
   useEffect(() => {
     if(user.token !== null) {
       axios
-        .get("http://localhost:8080/getNotiCount", {
+        .get(`${BASE_API_URI}/getNotiCount`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {

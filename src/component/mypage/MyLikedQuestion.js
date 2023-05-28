@@ -99,7 +99,7 @@ function MyLikedQuestion() {
     const clickHandler = (id) => {
         axios
           .post(
-            `http://localhost:8080/View`,
+            `${BASE_API_URI}/View`,
             { id: id, postName: "question" } // 서버로 전달할 id
           )
           .then((response) => {

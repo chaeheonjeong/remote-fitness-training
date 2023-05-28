@@ -12,6 +12,7 @@ import MyPAReviews from "../mypage/MyPAReviews";
 /* import response from "http-browserify/lib/response"; */
 import usePost from "../../hooks/usePost";
 import ViewReply from "./ViewReply";
+import { BASE_API_URI } from "../../util/common";
 
 const ViewWrite = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const ViewWrite = () => {
     const confirmDelete = window.confirm("글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(`http://localhost:8080/writeDelete/${id}`)
+        .delete(`${BASE_API_URI}/writeDelete/${id}`)
         .then((res) => {
           navigate("/study");
         })
@@ -47,7 +48,7 @@ const ViewWrite = () => {
   // 스크랩 수
   const getBookmarkCount = () => {
     axios
-      .get(`http://localhost:8080/getBookmarkCount/${id}`)
+      .get(`${BASE_API_URI}/getBookmarkCount/${id}`)
       .then((res) => {
         if (res.status === 200) {
           setBookmarkCount(res.data.result.goodCount);
@@ -60,7 +61,7 @@ const ViewWrite = () => {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`http://localhost:8080/getWrite/${id}`, {
+        .get(`${BASE_API_URI}/getWrite/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -76,7 +77,7 @@ const ViewWrite = () => {
         });
     } else {
       axios
-        .get(`http://localhost:8080/getWrite2/${id}`)
+        .get(`${BASE_API_URI}/getWrite2/${id}`)
         .then((response) => {
           if (response.status === 200) {
             setWrite(response.data.result[0]);
@@ -93,7 +94,7 @@ const ViewWrite = () => {
   useEffect(() => {
     const fetchWrite = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/getWrite/${id}`, {
+        const res = await axios.get(`${BASE_API_URI}/getWrite/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         if (res.data !== undefined) {
@@ -214,30 +215,29 @@ const ViewWrite = () => {
                     <div style={{ marginRight: "1rem" }}>예상 금액</div>
                     <div style={{ marginRight: "14rem" }}>{write.estimateAmount} 원</div>
 
-                    <div>태그</div>
-                    <div>
-                            {write.tag !== undefined &&
-                            write.tag.map((x, i) => {
-                            return <span key={x + i}>{x}</span>;
-                            })}
-                        </div>
+                <div>태그</div>
+                <div  className={styles.css6}>
+                        {write.tag !== undefined &&
+                        write.tag.map((x, i) => {
+                        return <span key={x + i}>{x}</span>;
+                        })}
                     </div>
-                    <div className={styles.content_3}>
-                    <div>내용</div>
-                    <div dangerouslySetInnerHTML={{ __html: htmlString }} />
-                    <span className={good ? styles.goodBtn : null}>
-                    스크랩{bookmarkCount}
-                    </span>
-                    <span>조회수{write.views}</span>
                 </div>
-
-                <ViewReply
-                    write = {write}
-                    setWrite = {setWrite}
-                    writer = {write.writer}
-                />
+                <div className={styles.content_3}>
+                <div>내용</div>
+                <div dangerouslySetInnerHTML={{ __html: htmlString }} />
+                <div className={styles.goodch}>
+                <span className={good ? styles.goodBtn : null}>
+                스크랩{bookmarkCount}
+                </span>
+                <span>조회수{write.views}</span>
             </div>
-                
+            </div>
+            <ViewReply
+                write = {write}
+                setWrite = {setWrite}
+            />
+            </div>
         </>
     );
 }
