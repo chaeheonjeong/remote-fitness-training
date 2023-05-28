@@ -16,41 +16,44 @@ const Notification = () => {
         hook.rendData.map((x, i) => {
           console.log("%%%%: ", x);
           return (
-              <div
-                key={x._id/*.id  + i */}
-                className={`${styles.smallContainer} ${
-                  x.read === false && styles.unRead
-                }`}
-                onClick={() => {
-                  x.read === false && hook.handleReadComm(x._id)/* hook.setReadComm(!hook.readComm) */;
-                  console.log(x._id);
-                  x.read = true;
-                }}
-              >
-                {" "}
-                {/* onClick={()=>window.open(x.url)} 나중에 URL 추가하고 활성화 */}
-                <div className={styles.title}>
-                  {/* {x.type === "comment" && ( */}
-                    <div>
-                      <VscCommentDiscussion /> {x.title}
-                    </div>
-                  {/* )} */}
-                </div>
+            <div
+              key={x._id /*.id  + i */}
+              className={`${styles.smallContainer} ${
+                x.read === false && styles.unRead
+              }`}
+              onClick={() => {
+                x.read === false &&
+                  hook.handleReadComm(
+                    x._id
+                  ) /* hook.setReadComm(!hook.readComm) */;
+                console.log(x._id);
+                x.read = true;
+              }}
+            >
+              {" "}
+              {/* onClick={()=>window.open(x.url)} 나중에 URL 추가하고 활성화 */}
+              <div className={styles.title}>
+                {/* {x.type === "comment" && ( */}
                 <div>
-                  {console.log(x.message)}
-                  {x.message.length >= 70
-                    ? x.message.substring(0, 70) + "..."
-                    : x.message}
+                  <VscCommentDiscussion /> {x.title}
                 </div>
-                <div className={styles.time}>{x.createAt}</div>
-                {x.role === 'student' ? (
-                  <div>
-                    <button>선금</button>
-                  </div>
-                ) : (
-                  <div></div>
-                )}
+                {/* )} */}
               </div>
+              <div>
+                {console.log(x.message)}
+                {x.message.length >= 70
+                  ? x.message.substring(0, 70) + "..."
+                  : x.message}
+              </div>
+              <div className={styles.time}>{x.createAt}</div>
+              {x.role === "student" ? (
+                <div>
+                  <button>선금</button>
+                </div>
+              ) : (
+                <div></div>
+              )}
+            </div>
           );
         })
       )}
@@ -58,6 +61,5 @@ const Notification = () => {
     </div>
   );
 };
-
 
 export default Notification;

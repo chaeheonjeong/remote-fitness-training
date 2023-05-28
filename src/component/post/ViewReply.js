@@ -9,11 +9,10 @@ import { scrollToTop } from "../../util/common";
 import { HiUserCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import MyPAReviews from "../mypage/MyPAReviews";
-import response from "http-browserify/lib/response";
+/* import response from "http-browserify/lib/response"; */
 import usePost from "../../hooks/usePost";
-import { BASE_API_URI } from "../../util/common";
 
-const ViewReply = ({ write, setWrite }) => {
+const ViewReply = ({ write, setWrite, writer }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const user = userStore();
@@ -30,6 +29,8 @@ const ViewReply = ({ write, setWrite }) => {
 
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [showReplyList, setShowReplyList] = useState(false);
+
+  const postCategory = "view";
 
   const ReplyProfileClick = (userId) => {
     navigate(`/PortfolioView/${userId}`);
@@ -70,7 +71,7 @@ const ViewReply = ({ write, setWrite }) => {
   useEffect(() => {
     const fetchReply = async () => {
       try {
-        const res = await axios.get(`${BASE_API_URI}/getReply/${id}`, {
+        const res = await axios.get(`http://localhost:8080/getReply/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         if (res.data !== undefined) {
@@ -101,9 +102,12 @@ const ViewReply = ({ write, setWrite }) => {
 
   const fetchR_Reply = async (rid) => {
     try {
-      const res = await axios.get(`${BASE_API_URI}/getR_Reply/${id}/${rid}`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
+      const res = await axios.get(
+        `http://localhost:8080/getR_Reply/${id}/${rid}`,
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
 
       if (res.data.data.length) {
         setR_Reply(res.data.data);
@@ -124,7 +128,7 @@ const ViewReply = ({ write, setWrite }) => {
     }
   };
 
-  const [getReplyId, setReplyId] = useState();
+  //const [getReplyId, setReplyId] = useState();
 
   const replyHandler = (e) => {
     setReply(e.target.value);
@@ -138,16 +142,15 @@ const ViewReply = ({ write, setWrite }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = { reply: replyInput /* isSecret: isSecret */ };
+    const data = { reply: replyInput };
 
     console.log("data: ", data);
 
     try {
       const response = await axios.post(
-        `${BASE_API_URI}/postreply/${id}`,
+        `http://localhost:8080/postreply/${id}`,
         {
           reply: String(replyInput),
-          /* isSecret : Boolean(isSecret), */
           rwriter: user.name,
           rwriteDate: today,
         },
@@ -159,6 +162,8 @@ const ViewReply = ({ write, setWrite }) => {
       console.log(typeof data);
       console.log("success", response.data.message);
 
+      createRAlarm();
+
       // 새로운 댓글을 추가합니다.
       setReply([...reply, replyInput]);
       setReplyInput(""); // 댓글 입력창을 초기화합니다.
@@ -166,6 +171,25 @@ const ViewReply = ({ write, setWrite }) => {
       navigate("/");
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const createRAlarm = async () => {
+    try {
+      if (writer !== user.name) {
+        const data = {
+          rwriter: user.name,
+          message: String(replyInput),
+          to: writer,
+          postCategory: postCategory,
+          postId: id,
+        };
+
+        const response = await axios.post(`http://localhost:8080/rAlarm`, data);
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -180,10 +204,9 @@ const ViewReply = ({ write, setWrite }) => {
     console.log(data);
     try {
       const response = await axios.post(
-        `${BASE_API_URI}/postr_reply/${id}/${selectedRId}`,
+        `http://localhost:8080/postr_reply/${id}/${selectedRId}`,
         {
           r_reply: String(replyRInput),
-          /* isRSecret : Boolean(isRSecret), */
           r_rwriter: user.name,
           r_rwriteDate: today,
         },
@@ -196,6 +219,8 @@ const ViewReply = ({ write, setWrite }) => {
       console.log(typeof data);
       console.log("success", response.data.message);
 
+      createRrAlarm();
+
       // 새로운 대댓글을 추가합니다.
       setR_Reply([...r_reply, replyRInput]);
       setReplyRInput(""); // 대댓글 입력창을 초기화합니다.
@@ -206,13 +231,53 @@ const ViewReply = ({ write, setWrite }) => {
     }
   };
 
+  const createRrAlarm = async () => {
+    let writers;
+
+    if (writer !== rWriter) {
+      if (writer !== user.name && rWriter !== user.name) {
+        writers = Array.isArray(rWriter)
+          ? [...rWriter, writer]
+          : [rWriter, writer];
+      } else if (writer !== user.name && rWriter === user.name) {
+        // 댓글만 나
+        writers = [writer];
+      } else if (writer === user.name && rWriter !== user.name) {
+        // 글쓴이만 나
+        writers = [rWriter];
+      }
+    } else {
+      if (writer !== user.name) {
+        writers = [rWriter];
+      }
+    }
+
+    try {
+      setRWriter(writers);
+
+      const data = {
+        rrwriter: user.name,
+        message: String(replyRInput),
+        to: writers,
+        postCategory: postCategory,
+        postId: id,
+      };
+
+      const response = await axios.post(`http://localhost:8080/rrAlarm`, data);
+
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   //대댓글 삭제
   const handleRDelete = async (rrid) => {
     const confirmRDelete = window.confirm("대댓글을 삭제하시겠습니까?");
     if (confirmRDelete) {
       try {
         const response = await axios.delete(
-          `${BASE_API_URI}/postr_reply/${id}/${selectedRId}/${rrid}`,
+          `http://localhost:8080/postr_reply/${id}/${selectedRId}/${rrid}`,
           {
             headers: { Authorization: `Bearer ${user.token}` },
           }
@@ -228,6 +293,8 @@ const ViewReply = ({ write, setWrite }) => {
 
   const [showR_ReplyModifyInput, setShowRModifyReplyInput] = useState(false);
   const [replyRModifyInput, setReplyRModifyInput] = useState("");
+  const [rWriter, setRWriter] = useState("");
+  const [rrTo, setRrTo] = useState([]);
 
   // 대댓글수정
   const modifyRHandleSubmit = async (e, selectedRId, rrid) => {
@@ -239,14 +306,17 @@ const ViewReply = ({ write, setWrite }) => {
     }
 
     try {
-      const response = await axios.post(`${BASE_API_URI}/viewReplyRModify`, {
-        postRId: id,
-        selectedRId: selectedRId,
-        _id: rrid,
-        r_rWriteDate: today,
-        r_reply: String(replyRModifyInput),
-        /* isRSecret: Boolean(isRSecret),  */
-      });
+      const response = await axios.post(
+        "http://localhost:8080/viewReplyRModify",
+        {
+          postRId: id,
+          selectedRId: selectedRId,
+          _id: rrid,
+          r_rWriteDate: today,
+          r_reply: String(replyRModifyInput),
+          /* isRSecret: Boolean(isRSecret),  */
+        }
+      );
 
       alert("대댓글 수정이 완료되었습니다.");
       navigate(`/view/${id}`);
@@ -254,11 +324,12 @@ const ViewReply = ({ write, setWrite }) => {
       console.log(error);
     }
   };
+
   // 대댓글수정(가져오기)
   const modifyR_Reply = async (rrid) => {
     try {
       const res = await axios.get(
-        `${BASE_API_URI}/view/${id}/modify/${selectedRId}/${rrid}`
+        `http://localhost:8080/view/${id}/modify/${selectedRId}/${rrid}`
       );
 
       if (res.data !== undefined) {
@@ -279,7 +350,7 @@ const ViewReply = ({ write, setWrite }) => {
     const confirmDelete = window.confirm("댓글을 삭제하시겠습니까?");
     if (confirmDelete) {
       axios
-        .delete(`${BASE_API_URI}/view/${id}/reply/${replyId}`)
+        .delete(`http://localhost:8080/view/${id}/reply/${replyId}`)
         .then((res) => {
           setReply(reply.filter((reply) => reply._id !== replyId));
           console.log("data", res.data);
@@ -302,13 +373,16 @@ const ViewReply = ({ write, setWrite }) => {
       return;
     }
     try {
-      const response = await axios.post(`${BASE_API_URI}/viewReplyModify`, {
-        postId: id,
-        _id: replyId,
-        rWriteDate: today,
-        reply: String(replyModifyInput),
-        /* isSecret: Boolean(isSecret),  */
-      });
+      const response = await axios.post(
+        "http://localhost:8080/viewReplyModify",
+        {
+          postId: id,
+          _id: replyId,
+          rWriteDate: today,
+          reply: String(replyModifyInput),
+          /* isSecret: Boolean(isSecret),  */
+        }
+      );
 
       alert("수정이 완료되었습니다.");
       navigate(`/view/${id}`);
@@ -321,7 +395,7 @@ const ViewReply = ({ write, setWrite }) => {
   const modifyReply = async (replyId) => {
     try {
       const res = await axios.get(
-        `${BASE_API_URI}/view/${id}/modify/${replyId}`
+        `http://localhost:8080/view/${id}/modify/${replyId}`
       );
 
       if (res.data !== undefined) {
@@ -455,9 +529,13 @@ const ViewReply = ({ write, setWrite }) => {
                 <td>
                   {!showReplyInput && (
                     <button
+                      className={styles.asdf}
                       onClick={() => {
                         setShowReplyInput(selectedRId === r._id ? null : r._id);
                         setSelectedRId(selectedRId === r._id ? null : r._id);
+                        setRWriter(
+                          selectedRId === r.rwriter ? null : r.rwriter
+                        );
                       }}
                     >
                       대댓글 추가
@@ -474,8 +552,13 @@ const ViewReply = ({ write, setWrite }) => {
                           onChange={replyInputRChangeHandler}
                         />
                         <div className={styles.reply_choose}>
-                          <input type="submit" value="대댓글 등록"></input>
+                          <input
+                            className={styles.asdf3}
+                            type="submit"
+                            value="대댓글 등록"
+                          ></input>
                           <button
+                            className={styles.reply_choose2}
                             onClick={() => {
                               setShowReplyInput(null);
                               setSelectedRId(null);
@@ -487,20 +570,24 @@ const ViewReply = ({ write, setWrite }) => {
                       </div>
                     </form>
                   )}
-                  {!showReplyList && (
-                    <button
-                      onClick={() => {
-                        setShowReplyList(selectedRId === r._id ? null : r._id);
-                        setSelectedRId(selectedRId === r._id ? null : r._id);
-                        fetchR_Reply(r._id);
-                      }}
-                    >
-                      대댓글 목록 보기
-                    </button>
-                  )}
+
                   <div>
-                    {showReplyList && (
+                    {!showReplyList ? (
                       <button
+                        className={styles.asdf1}
+                        onClick={() => {
+                          setShowReplyList(
+                            selectedRId === r._id ? null : r._id
+                          );
+                          setSelectedRId(selectedRId === r._id ? null : r._id);
+                          fetchR_Reply(r._id);
+                        }}
+                      >
+                        대댓글 목록 보기
+                      </button>
+                    ) : selectedRId === r._id ? (
+                      <button
+                        className={styles.asdf1}
                         onClick={() => {
                           setShowReplyList(
                             selectedRId === r._id ? null : r._id
@@ -510,6 +597,19 @@ const ViewReply = ({ write, setWrite }) => {
                         }}
                       >
                         대댓글 목록 닫기
+                      </button>
+                    ) : (
+                      <button
+                        className={styles.asdf1}
+                        onClick={() => {
+                          setShowReplyList(
+                            selectedRId === r._id ? null : r._id
+                          );
+                          setSelectedRId(selectedRId === r._id ? null : r._id);
+                          fetchR_Reply(r._id);
+                        }}
+                      >
+                        대댓글 목록 보기
                       </button>
                     )}
                   </div>

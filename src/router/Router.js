@@ -5,10 +5,10 @@ import Register from "../component/auth/Register";
 import FindPw from "../component/auth/FindPw";
 import Main from "../component/main/Main";
 import Notification from "../component/main/Notification";
-import TWrite from "../component/post/TWrite";
+import TWrite from "../component/post/Twrite";
 import Write from "../component/post/Write";
 import View from "../component/post//View";
-import TView from "../component/post/TView";
+import TView from "../component/post/Tview";
 import Ask from "../component/post//Ask";
 import AskView from "../component/post//AskView";
 import MyInfo from "../component/mypage/MyInfo";
@@ -34,6 +34,7 @@ import MyPost from "../component/mypage/MyPost";
 import MyAsk from "../component/mypage/MyAsk";
 import MyPAReviews from "../component/mypage/MyPAReviews";
 import RTCChat from "../component/class/RTCChat";
+import MyLikedTPost from "../component/mypage/MyLikedTPost";
 const Router = () => {
   return (
     <BrowserRouter>
@@ -72,6 +73,7 @@ const Router = () => {
         <Route path="/MyCalendar" element={<MyCalendar />} />
         <Route path="/MyLikedPost" element={<MyLikedPost />} />
         <Route path="/MyLikedQuestion" element={<MyLikedQuestion />} />
+        <Route path="/MyLikedTPost" element={<MyLikedTPost />} />
         <Route path="/View/:id" element={<View />} />
         <Route path="myAsk" element={<MyAsk />} />
         <Route path="myPost" element={<MyPost />} />

@@ -18,7 +18,7 @@
   padding-left: 14px;
 }
 
-.likedStudy {
+.likedSRecruitment {
   background-color: white;
   border: 1.5px solid #8ae52e;
   border-radius: 7px;
@@ -30,7 +30,7 @@
 }
 
 .likedQuestion,
-.likedSRecruitment {
+.likedStudy {
   background-color: white;
   border: 1.5px solid #8ae52e;
   border-radius: 7px;

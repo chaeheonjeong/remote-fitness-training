@@ -5,7 +5,6 @@ import useHeader from "../../hooks/useHeader";
 import userStore from "../../store/user.store";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { BASE_API_URI } from "../../util/common";
 
 const Header = ({ ...props }) => {
   const [profileImg, setProfileImg] = useState(null);
@@ -19,7 +18,7 @@ const Header = ({ ...props }) => {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`${BASE_API_URI}/header-profile`, {
+        .get("http://localhost:8080/header-profile", {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -57,7 +56,7 @@ const Header = ({ ...props }) => {
                   window.open(hook.popUrl, hook.popTarget, hook.popFeat)
                 }
               />
-              <div className={styles.notiCircle}>1</div>
+              {<div className={styles.notiCircle}>{hook.notiCount}</div>}
             </div>
           )}
           {user.token !== null && (

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "./MyCalendar.css";
 import moment from "moment";
@@ -8,7 +9,6 @@ import SideBar from "./SideBar";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "../main/Header";
-import { BASE_API_URI } from "../../util/common";
 
 function MyCalendar() {
   const [addModalIsOpen, setAddModalIsOpen] = useState(false);
@@ -21,11 +21,28 @@ function MyCalendar() {
   const token = localStorage.getItem("token");
   const [scheduleList, setScheduleList] = useState([]);
   const [reviewModalIsOpen, setReviewModalIsOpen] = useState(false);
+  const [roomSchedules, setRoomSchedules] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchRoomSchedules = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/roomSchedules", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setRoomSchedules(res.data);
+        console.log(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchRoomSchedules();
+  }, []);
 
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const res = await axios.get(`${BASE_API_URI}/schedules`, {
+        const res = await axios.get("http://localhost:8080/schedules", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setSchedules(res.data);
@@ -85,7 +102,7 @@ function MyCalendar() {
   const handleDelete = () => {
     if (selectedSchedule) {
       axios
-        .delete(`${BASE_API_URI}/schedules/${selectedSchedule._id}`)
+        .delete(`http://localhost:8080/schedules/${selectedSchedule._id}`)
         .then((res) => {
           console.log("delete success: ", res.data);
           console.log(schedules);
@@ -105,7 +122,7 @@ function MyCalendar() {
   const handleModify = () => {
     axios
       .put(
-        `${BASE_API_URI}/schedules/${selectedSchedule._id}`,
+        `http://localhost:8080/schedules/${selectedSchedule._id}`,
         selectedSchedule
       )
       .then((res) => {
@@ -130,7 +147,7 @@ function MyCalendar() {
     try {
       e.preventDefault();
       const res = await axios.post(
-        `${BASE_API_URI}/schedules`,
+        "http://localhost:8080/schedules",
         {
           title: title,
           date: date,
@@ -155,7 +172,33 @@ function MyCalendar() {
     }
   };
 
-  console.log(selectedSchedule);
+  const handleScheduleClick = (roomSchedule) => {
+    const { startTime, runningTime, date } = roomSchedule;
+    const scheduleStartTime = new Date(`${date} ${startTime}`);
+    const scheduleEndTime = new Date(
+      scheduleStartTime.getTime() + runningTime * 60000
+    );
+
+    console.log(scheduleStartTime);
+    console.log(scheduleEndTime);
+
+    const currentDateTime = new Date();
+    const currentDate = new Date(
+      currentDateTime.getFullYear(),
+      currentDateTime.getMonth(),
+      currentDateTime.getDate()
+    );
+
+    if (currentDateTime < scheduleStartTime) {
+      window.alert("입장 시간이 아직 되지 않았습니다.");
+    } else if (currentDateTime > scheduleEndTime) {
+      window.alert("입장 시간이 초과되었습니다.");
+    } else if (currentDate.getTime() > scheduleStartTime.getTime()) {
+      window.alert("이미 지난 방 일정입니다.");
+    } else {
+      navigate("/");
+    }
+  };
 
   const tileContent = ({ date, view }) => {
     const filteredSchedules = schedules.filter((schedule) => {
@@ -169,17 +212,63 @@ function MyCalendar() {
       );
     });
 
+    const filteredRoomSchedules = roomSchedules.filter((roomSchedule) => {
+      const roomScheduleDate = new Date(roomSchedule.date);
+      return (
+        roomScheduleDate.getDate() === date.getDate() &&
+        roomScheduleDate.getMonth() === date.getMonth() &&
+        roomScheduleDate.getFullYear() === date.getFullYear() &&
+        (view === "month" ||
+          (view === "week" && roomScheduleDate.getDay() === date.getDay()))
+      );
+    });
+
     return (
       <div>
-        {filteredSchedules.map((schedule) => (
-          <div
-            className="showSchedule"
-            key={schedule.title}
-            onClick={() => handleSelectSchedule(schedule)}
-          >
-            {schedule.title}
-          </div>
-        ))}
+        <div>
+          {filteredSchedules.map((schedule) => (
+            <div
+              className="showSchedule"
+              key={schedule.title}
+              onClick={() => handleSelectSchedule(schedule)}
+            >
+              {schedule.title}
+            </div>
+          ))}
+        </div>
+        <div>
+          {filteredRoomSchedules.map((roomSchedule) => {
+            return roomSchedule.userType === "Student" &&
+              roomSchedule.prepaymentBtn === true ? (
+              <div
+                className="showRoomSchedule"
+                key={roomSchedule.roomTitle}
+                onClick={() => {
+                  handleScheduleClick(roomSchedule);
+                  setAddModalIsOpen(false);
+                }}
+              >
+                {roomSchedule.roomTitle}
+              </div>
+            ) : null;
+          })}
+        </div>
+        <div>
+          {filteredRoomSchedules.map((roomSchedule) => {
+            return roomSchedule.userType === "Teacher" ? (
+              <div
+                className="showRoomSchedule"
+                key={roomSchedule.roomTitle}
+                onClick={() => {
+                  handleScheduleClick(roomSchedule);
+                  setAddModalIsOpen(false);
+                }}
+              >
+                {roomSchedule.roomTitle}
+              </div>
+            ) : null;
+          })}
+        </div>
       </div>
     );
   };

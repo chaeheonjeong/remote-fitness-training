@@ -8,5 +8,5 @@ export const scrollToTop = () => {
 //export const BASE_API_URI = "http://192.168.10.104:6060";
 //export const BASE_API_URI_CAM = "http://192.168.10.104:5050";
 
-export const BASE_API_URI = "http://localhost:6060";
+export const BASE_API_URI = "http://localhost:8080";
 export const BASE_API_URI_CAM = "http://localhost:5050";

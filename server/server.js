@@ -4,6 +4,10 @@ const mongoose = require("mongoose");
 const User = require("./models/user");
 const Write = require("./models/write");
 const TWrite = require("./models/tWrite");
+
+const Score = require("./models/score");
+const HappinessIndex = require("./models/happinessIndex");
+
 const Ask = require("./models/ask");
 const Reply = require("./models/reply");
 const R_Reply = require("./models/r_reply");
@@ -43,7 +47,7 @@ const ALikes = require("./models/ALikes");
 const Alarm = require("./models/alarm");
 const Portfolio = require("./models/portfolio");
 const TPostGood = require("./models/tPostGood");
-const HappinessIndex = require("./models/happinessIndex");
+const RoomSchedule = require("./models/roomSchedule");
 
 const storage = multer.diskStorage({
   // (2)
@@ -115,6 +119,33 @@ app.get("/user", async (req, res) => {
     //console.log(res.data);
   } catch (err) {
     res.status(401).send({ message: "Invalid token" });
+  }
+});
+
+app.get("/getNotiCount", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+  var notRead = 0;
+  var notiCount = 0;
+
+  try {
+    const getData = await Alarm.find({ _user: String(userId) });
+
+    for (var i = 0; i < getData[0].content.length; i++) {
+      notRead = getData[0].content[i].read;
+      if (notRead === false) {
+        notiCount += 1;
+      }
+    }
+    return res.status(200).json({
+      data: notiCount,
+      message: `알림 수 가져오기 성공`,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
@@ -904,14 +935,114 @@ app.post("/postWrite", async (req, res) => {
   }
 });
 
-app.post("/postModify", async (req, res) => {
-  const { _id, number, period, date, tag, title, content, recruit } = req.body;
+app.post("/postTModify", async (req, res) => {
+  const {
+    _id,
+    number,
+    date,
+    startTime,
+    runningTime,
+    estimateAmount,
+    tag,
+    title,
+    content,
+    recruit,
+  } = req.body;
+
+  try {
+    const updatedWrite = await TWrite.findOneAndUpdate(
+      { _id },
+      {
+        $set: {
+          number,
+          date,
+          startTime,
+          runningTime,
+          estimateAmount,
+          tag,
+          title,
+          content,
+          recruit,
+        },
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: `Write ${_id} updated successfully`, updatedWrite });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+app.post("/recruitTSave", async (req, res) => {
+  const { _id, recruit } = req.body;
+
+  try {
+    const updatedWrite = await TWrite.findOneAndUpdate(
+      { _id },
+      {
+        $set: { recruit },
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: `TWrite ${_id} updated successfully`, updatedWrite });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+app.post("/recruitSave", async (req, res) => {
+  const { _id, recruit } = req.body;
 
   try {
     const updatedWrite = await Write.findOneAndUpdate(
       { _id },
       {
-        $set: { number, period, date, tag, title, content, recruit },
+        $set: { recruit },
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: `Write ${_id} updated successfully`, updatedWrite });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+app.post("/postModify", async (req, res) => {
+  const {
+    _id,
+    number,
+    date,
+    startTime,
+    runningTime,
+    estimateAmount,
+    tag,
+    title,
+    content /* , recruit */,
+  } = req.body;
+
+  try {
+    const updatedWrite = await Write.findOneAndUpdate(
+      { _id },
+      {
+        $set: {
+          number,
+          date,
+          startTime,
+          runningTime,
+          estimateAmount,
+          tag,
+          title,
+          content /* , recruit */,
+        },
       }
     );
 
@@ -1460,6 +1591,88 @@ app.get("/searchQuestion", async (req, res) => {
   }
 });
 
+// 후기 작성 요청 처리
+app.post("/reviews", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+  const { stars, studentName, writeDate, roomName, teacherName, teacherId } =
+    req.body;
+  try {
+    // 새로운 후기 생성
+    const score = new Score({
+      stars: stars,
+      studentId: userId,
+      studentName: studentName,
+      writeDate: writeDate,
+      roomName: roomName, // 방 이름 저장
+      teacherName: teacherName,
+      teacherId: teacherId,
+    });
+
+    // 후기 저장
+    const savedScore = await score.save();
+
+    res.status(201).json(savedScore);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// 방 목록 가져오기
+app.get("/rooms", async (req, res) => {
+  try {
+    // DB에서 모든 SelectionInfo 정보를 가져옴
+    const selectionTInfoList = await SelectionTInfo.find();
+    // 방 제목만 추출하여 배열로 변환
+    const roomTitles = selectionTInfoList.map(
+      (selectionTInfo) => selectionTInfo.roomTitle
+    );
+    res.status(200).json(roomTitles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+});
+
+app.get("/selectionTInfo", async (req, res) => {
+  try {
+    const selectionTInfo = await SelectionTInfo.find();
+    res.status(200).json(selectionTInfo);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+});
+
+// 방 목록 가져오기
+app.get("/rooms", async (req, res) => {
+  try {
+    // DB에서 모든 SelectionInfo 정보를 가져옴
+    const selectionTInfoList = await SelectionTInfo.find();
+    // 방 제목만 추출하여 배열로 변환
+    const roomTitles = selectionTInfoList.map(
+      (selectionTInfo) => selectionTInfo.roomTitle
+    );
+    res.status(200).json(roomTitles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+});
+
+app.get("/selectionTInfo", async (req, res) => {
+  try {
+    const selectionTInfo = await SelectionTInfo.find();
+    res.status(200).json(selectionTInfo);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+});
+
 app.get("/getGood/:id", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.split(" ")[1];
@@ -1823,8 +2036,272 @@ app.post("/getViewCount", async (req, res) => {
   }
 });
 
-// 댓글
-app.get("/getReply/:id", async (req, res) => {
+app.patch("/updateAlarm/:id", auth, async (req, res) => {
+  const { id } = req.params;
+  const { read } = req.body;
+
+  try {
+    // id로 알림을 찾아서 업데이트
+    const alarm = await Alarm.findOneAndUpdate(
+      { "content._id": id },
+      { $set: { "content.$.read": read } },
+      { new: true }
+    );
+    console.log("here");
+
+    console.log("읽음표시: ", alarm);
+
+    if (!alarm) {
+      return res.status(404).json({ msg: "알림을 찾을 수 없습니다" });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("서버 오류");
+  }
+});
+
+// 댓글 달리면 알림 (글 쓴 사람에게)
+app.post("/rAlarm", async (req, res) => {
+  try {
+    const { rwriter, message, to, postId, postCategory } = req.body;
+
+    const user = await User.findOne({ name: to });
+    const userId = user._id;
+
+    const existingAlarm = await Alarm.findOne({
+      userName: to,
+      "content.title": `${rwriter}님께서 댓글을 작성하였습니다.`,
+      "content.message": message,
+      "content.postCategory": postCategory,
+      "content.location": postId,
+    });
+
+    if (existingAlarm) {
+      console.log("중복된 알림이 이미 저장되어 있습니다.");
+      return;
+    }
+
+    const alarm = await Alarm.findOneAndUpdate(
+      { userName: to },
+      {
+        $push: {
+          content: {
+            $each: [
+              {
+                title: `${rwriter}님께서 댓글을 작성하였습니다.`,
+                message: message,
+                createdAt: new Date(),
+                postCategory: postCategory,
+                location: postId,
+                _id: new mongoose.mongo.ObjectId(),
+              },
+            ],
+          },
+        },
+        $setOnInsert: {
+          userName: to,
+          _user: String(userId),
+        },
+      },
+      { upsert: true, new: true }
+    );
+    //console.log(alarm);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+// 대댓글 달리면 알림 (글 쓴 사람, 댓글 작성자에게)
+app.post("/rrAlarm", async (req, res) => {
+  try {
+    const { rrwriter, message, to, postId, postCategory } = req.body;
+
+    const filteredTo = to.filter((person) => person !== "");
+
+    for (const person of filteredTo) {
+      const user = await User.findOne({ name: person });
+      const userId = user._id;
+
+      const alarm = await Alarm.findOneAndUpdate(
+        { userName: person },
+        {
+          $push: {
+            content: {
+              $each: [
+                {
+                  title: `${rrwriter}님께서 대댓글을 작성하였습니다.`,
+                  message: message,
+                  createdAt: new Date(),
+                  postCategory: postCategory,
+                  location: postId,
+                  _id: new mongoose.mongo.ObjectId(),
+                },
+              ],
+            },
+          },
+          $setOnInsert: {
+            userName: person,
+            _user: String(userId),
+          },
+        },
+        { upsert: true, new: true }
+      );
+    }
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+// 채택된 사람들에게 방 생성되었다는 알림
+app.post("/selectedTAlarm", async (req, res) => {
+  try {
+    const { host, selectedStudent, roomTitle } = req.body;
+
+    //const alarms = await Alarm.find({ userName: { $in: selectedStudent } });
+
+    for (const student of selectedStudent) {
+      const user = await User.findOne({ name: student });
+      const userId = user._id;
+
+      const alarm = await Alarm.findOneAndUpdate(
+        { userName: student },
+        {
+          $push: {
+            //userName: student,
+            content: {
+              $each: [
+                {
+                  title: "새로운 방이 생성되었습니다",
+                  message: `${roomTitle} 방이 생성되었습니다.`,
+                  createdAt: new Date(),
+                  _id: new mongoose.mongo.ObjectId(),
+                  postCategory: "MyCalendar",
+                  role: "student",
+                },
+              ],
+            },
+          },
+          $setOnInsert: {
+            userName: student,
+            _user: String(userId),
+          },
+        },
+        { upsert: true, new: true }
+      );
+      //console.log(alarm);
+    }
+
+    const hostUser = await User.findOne({ name: host });
+    const hostUserId = hostUser._id;
+
+    const hostAlarm = await Alarm.findOneAndUpdate(
+      { userName: host },
+      {
+        $push: {
+          //userName: student,
+          content: {
+            $each: [
+              {
+                title: "새로운 방이 생성되었습니다",
+                message: `${roomTitle} 방이 생성되었습니다.`,
+                createdAt: new Date(),
+                _id: new mongoose.mongo.ObjectId(),
+              },
+            ],
+          },
+        },
+        $setOnInsert: {
+          userName: host,
+          _user: String(hostUserId),
+        },
+      },
+      { upsert: true, new: true }
+    );
+    console.log(hostAlarm);
+
+    res.status(200).send("Alarm created successfully");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+// host와 채택된 사람들에게 방 생성되었다는 알림 // 강사 모집 글
+app.post("/selectedAlarm", async (req, res) => {
+  try {
+    const { host, selectedStudent, roomTitle } = req.body;
+
+    //const alarms = await Alarm.find({ userName: { $in: selectedStudent } });
+
+    for (const student of selectedStudent) {
+      const user = await User.findOne({ name: student });
+      const userId = user._id;
+      //console.log("@@@@: ", userId);
+      const alarm = await Alarm.findOneAndUpdate(
+        { userName: student },
+        {
+          $push: {
+            //userName: student,
+            content: {
+              $each: [
+                {
+                  title: "새로운 방이 생성되었습니다",
+                  message: `${roomTitle} 방이 생성되었습니다.`,
+                  createdAt: new Date(),
+                  _id: new mongoose.mongo.ObjectId(),
+                },
+              ],
+            },
+          },
+          $setOnInsert: {
+            userName: student,
+            _user: String(userId),
+          },
+        },
+        { upsert: true, new: true }
+      );
+      console.log(alarm);
+    }
+
+    const hostUser = await User.findOne({ name: host });
+    const hostUserId = hostUser._id;
+
+    const hostAlarm = await Alarm.findOneAndUpdate(
+      { userName: host },
+      {
+        $push: {
+          //userName: student,
+          content: {
+            $each: [
+              {
+                title: "새로운 방이 생성되었습니다",
+                message: `${roomTitle} 방이 생성되었습니다.`,
+                createdAt: new Date(),
+                _id: new mongoose.mongo.ObjectId(),
+                role: "student",
+              },
+            ],
+          },
+        },
+        $setOnInsert: {
+          userName: host,
+          _user: String(hostUserId),
+        },
+      },
+      { upsert: true, new: true }
+    );
+    console.log(hostAlarm);
+
+    res.status(200).send("Alarm created successfully");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.get("/getAlarm", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.split(" ")[1];
   const decodedToken = jwt.verify(token, mysecretkey);
@@ -3070,6 +3547,10 @@ app.get("/getTRWriter/:id/:nickname", async (req, res) => {
 
     const user = await User.findOne({ name: req.params.nickname });
 
+    const writer = await TWrite.findOne({ _id: req.params.id });
+    console.log(writer);
+    const hostId = await User.findOne({ _id: writer._user });
+
     const myName = req.params.nickname;
     var result = [];
 
@@ -3096,11 +3577,287 @@ app.get("/getTRWriter/:id/:nickname", async (req, res) => {
     console.log("나 제외 ", result);
 
     return res.status(200).json({
+      hostId: hostId,
+      postId: req.params.id,
       data: result,
       message: `댓글 작성자 가져오기 성공`,
     });
   } catch (error) {
     console.log(error);
+  }
+});
+
+// 댓글 작성자
+app.get("/getRWriter/:id/:nickname", async (req, res) => {
+  try {
+    const reply = await Reply.find({ postId: req.params.id });
+    const r_reply = await R_Reply.find({ postId: req.params.id });
+
+    const user = await User.findOne({ name: req.params.nickname });
+
+    const myName = req.params.nickname;
+    var result = [];
+
+    console.log("내 이름은 ", myName);
+
+    // 해당 글의 댓글작성자 list
+    /* const replyWriterList = reply.map(r => r.writer);
+    const rReplyWriterList = r_reply.map(r => r.r_rwriter);
+    const rWriters = [...new Set([...replyWriterList, ...rReplyWriterList])]; */
+
+    const rWriters = [
+      ...new Set([
+        ...reply.map((r) => r.rwriter),
+        ...r_reply.map((r) => r.r_rwriter),
+      ]),
+    ];
+
+    console.log("나 포함 ", rWriters);
+
+    result = rWriters.filter(
+      (rWriter) => rWriter !== myName && !result.includes(rWriter)
+    );
+
+    console.log("나 제외 ", result);
+
+    return res.status(200).json({
+      postId: req.params.id,
+      data: result,
+      message: `댓글 작성자 가져오기 성공`,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.patch("/updateRoomSchedule/:id", auth, async (req, res) => {
+  const { id } = req.params;
+  const { prepaymentBtn } = req.body;
+  console.log(id);
+
+  try {
+    //id로 알림을 찾아서 해당하는 roomSchedule 업데이트.
+    const alarm = await Alarm.findOne({ "content._id": id });
+    const UserName = alarm.userName;
+
+    if (alarm) {
+      const content = alarm.content;
+      console.log(content);
+      const clickAlarm = content.find((item) => item._id.toString() === id);
+      if (clickAlarm) {
+        const message = clickAlarm.message;
+        const roomTitle = message.match(/(\w+)\s+방이 생성되었습니다\./i)[1];
+
+        console.log(roomTitle);
+
+        const roomSchedule = await RoomSchedule.findOneAndUpdate(
+          {
+            roomTitle: roomTitle,
+            userName: UserName,
+          },
+          { $set: { prepaymentBtn: prepaymentBtn } },
+          { new: true }
+        );
+
+        console.log("선금버튼 표시: ", roomSchedule);
+        return res.status(200).json({ message: "Update successful" });
+      } else {
+        console.log("clickAlarm not found");
+      }
+    } else {
+      return res.status(404).json({ message: "Alarm not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("서버 오류");
+  }
+});
+
+//강사모집에서 roomSchedule 추가
+app.post("/roomSchedule", async (req, res) => {
+  const { host, applicant, roomTitle, startTime, date, runningTime } = req.body;
+
+  try {
+    //강사모집에서 host = student
+    const hostUser = await User.findOne({ name: host }).exec();
+    const newHostSchedule = new RoomSchedule({
+      userId: hostUser._id,
+      userName: hostUser.name,
+      userType: "Student",
+      roomTitle: roomTitle,
+      runningTime: runningTime,
+      startTime: startTime,
+      date: date,
+      prepaymentBtn: false,
+    });
+    await newHostSchedule.validate();
+    await newHostSchedule.save();
+
+    //강사 모집에서 applicant = teacher
+    const applicantUsers = await User.find({ name: { $in: applicant } }).exec();
+    for (const applicantUser of applicantUsers) {
+      const newApplicantSchedule = new RoomSchedule({
+        userId: applicantUser._id,
+        userName: applicantUser.name,
+        userType: "Teacher",
+        roomTitle: roomTitle,
+        runningTime: runningTime,
+        startTime: startTime,
+        date: date,
+      });
+      await newApplicantSchedule.validate();
+      await newApplicantSchedule.save();
+    }
+    return res
+      .status(200)
+      .json({ message: `roomSchedule created successfully` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+//학생 모집에서 roomSchedule 추가
+app.post("/TRoomSchedule", async (req, res) => {
+  const { host, applicant, roomTitle, startTime, date, runningTime } = req.body;
+
+  try {
+    //학생모집에서 host = teacher
+    const hostUser = await User.findOne({ name: host }).exec();
+    const newHostSchedule = new RoomSchedule({
+      userId: hostUser._id,
+      userName: hostUser.name,
+      userType: "Teacher",
+      roomTitle: roomTitle,
+      runningTime: runningTime,
+      startTime: startTime,
+      date: date,
+    });
+    await newHostSchedule.validate();
+    await newHostSchedule.save();
+
+    //학생모집에서 applicant = student
+    const applicantUsers = await User.find({ name: { $in: applicant } }).exec();
+    for (const applicantUser of applicantUsers) {
+      const newApplicantSchedule = new RoomSchedule({
+        userId: applicantUser._id,
+        userName: applicantUser.name,
+        userType: "Student",
+        roomTitle: roomTitle,
+        runningTime: runningTime,
+        startTime: startTime,
+        date: date,
+        prepaymentBtn: false,
+      });
+      await newApplicantSchedule.validate();
+      await newApplicantSchedule.save();
+    }
+
+    return res
+      .status(200)
+      .json({ message: `TRoomSchedule created successfully` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+// 채택정보 (방장이름, 수강생, 방제목, 예상시작시간, 시작 날짜)
+app.post("/selectionTInfo", async (req, res) => {
+  const { host, hostId, applicant, roomTitle, startTime } = req.body;
+
+  try {
+    const newSelectionTInfo = new SelectionTInfo({
+      hostId: hostId,
+      host: host,
+      applicant: applicant,
+      roomTitle: roomTitle,
+      runningTime: runningTime,
+      startTime: startTime,
+      date: date,
+    });
+    await newSelectionTInfo.save();
+    return res.status(200).json({ message: `created successfully` });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+//저장된 roomSchedule에서 해당하는 유저에게 해당하는 정보가 보이도록
+app.get("/roomSchedules", auth, async (req, res) => {
+  try {
+    const roomSchedule = await RoomSchedule.find({ userId: req.user.id });
+    res.status(200).json(roomSchedule);
+    console.log(roomSchedule);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// 채택정보 (방장이름, 수강생, 방제목, 예상시작시간)
+app.post("/selectionInfo", async (req, res) => {
+  const { host, applicant, roomTitle, startTime, date, runningTime } = req.body;
+
+  try {
+    const callHost = await User.findOne({ name: host });
+
+    const newSelectionInfo = new SelectionInfo({
+      /* hostId: callHost._id, */
+      host: host,
+      applicant: applicant,
+      roomTitle: roomTitle,
+      runningTime: runningTime,
+      startTime: startTime,
+      date: date,
+    });
+    await newSelectionInfo.save();
+    return res.status(200).json({ message: `created successfully` });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+// 질문 댓글
+app.get("/getAReply/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const result = await AReply.find({ postId: req.params.id });
+
+    if (result) {
+      const sameAUsers = result.map((reply) => reply._user === userId);
+
+      console.log(req.params.postId);
+
+      const profileImgs = await Promise.all(
+        result.map(async (reply) => {
+          const user = await User.findOne({ name: reply.Arwriter });
+
+          if (!user) {
+            throw new Error(`User with name "${reply.Arwriter} not found`);
+          }
+
+          return user.image;
+        })
+      );
+
+      return res.status(200).json({
+        data: result,
+        sameAUsers: sameAUsers,
+        profileImgs: profileImgs,
+        message: ` ${typeof req.params.postId}댓글 가져오기 성공`,
+      });
+    } else {
+      return res.status(404).json({ message: "댓글이 존재하지 않습니다." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
@@ -3165,6 +3922,418 @@ app.get("/getAlarm", async (req, res) => {
       return res.status(200).json({
         data: result,
         message: `알림 가져오기 성공`,
+      });
+    }
+    /* else {
+      return res.status(404).json({ message: "대댓글이 존재하지 않습니다." });
+    } */
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/postAreply/:id", async (req, res) => {
+  const { Areply, /* isASecret, */ Arwriter, ArwriteDate } = req.body;
+  const { id } = req.params;
+
+  const post = await Ask.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const Areplycounter = await AReplyCounter.findOneAndUpdate(
+    { name: "댓글 수" },
+    { $inc: { totalReply: 1 } },
+    { new: true, upsert: true }
+  );
+  const 총댓글수 = Areplycounter.totalReply + 1;
+
+  const ArwriterId = await User.findOne({ name: Arwriter });
+
+  if (!Areplycounter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newAReply = new AReply({
+      postId: id,
+      _id: 총댓글수 + 1,
+      Arwriter: Arwriter,
+      _user: ArwriterId._id,
+      ArwriteDate: ArwriteDate,
+      Areply: Areply,
+      //isASecret : isASecret
+    });
+    await newAReply.save();
+
+    return res.status(200).json({ message: `Reply created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+// 대댓글 T
+app.get("/getTR_Reply/:id/:rid", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  const postRId = req.params.id;
+  const selectedRId = req.params.rid;
+
+  try {
+    const result = await TR_Reply.find({
+      postRId: Number(postRId),
+      selectedRId: Number(selectedRId),
+    });
+    if (result) {
+      const RsameUsers = result.map((reply) => reply._user === userId);
+      console.log(RsameUsers);
+
+      //let RsameUsers = false;
+      //console.log('result[0]: ', result[0].r_rwriter);
+      //if (userId === result[0].r_rwriter) RsameUsers = true;
+      //console.log(postRId);
+      //console.log(selectedRId);
+
+      // 사용자 프로필 이미지 반환
+      const profileImgs = await Promise.all(
+        result.map(async (r_reply) => {
+          const user = await User.findOne({ name: r_reply.r_rwriter });
+
+          if (!user) {
+            throw new Error(`User with name "${r_reply.r_rwriter}" not found`);
+          }
+
+          return user.image;
+        })
+      );
+
+      return res.status(200).json({
+        data: result,
+        RsameUsers: RsameUsers,
+        profileImgs: profileImgs,
+        message: ` ${typeof selectedRId}대댓글 가져오기 성공`,
+      });
+    } else {
+      return res.status(404).json({ message: "대댓글이 존재하지 않습니다." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// 대댓글
+app.get("/getR_Reply/:id/:rid", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  const postRId = req.params.id;
+  const selectedRId = req.params.rid;
+
+  try {
+    const result = await R_Reply.find({
+      postRId: Number(postRId),
+      selectedRId: Number(selectedRId),
+    });
+    if (result) {
+      const RsameUsers = result.map((reply) => reply._user === userId);
+      console.log(RsameUsers);
+
+      //let RsameUsers = false;
+      //console.log('result[0]: ', result[0].r_rwriter);
+      //if (userId === result[0].r_rwriter) RsameUsers = true;
+      //console.log(postRId);
+      //console.log(selectedRId);
+
+      // 사용자 프로필 이미지 반환
+      const profileImgs = await Promise.all(
+        result.map(async (r_reply) => {
+          const user = await User.findOne({ name: r_reply.r_rwriter });
+
+          if (!user) {
+            throw new Error(`User with name "${r_reply.r_rwriter}" not found`);
+          }
+
+          return user.image;
+        })
+      );
+
+      return res.status(200).json({
+        data: result,
+        RsameUsers: RsameUsers,
+        profileImgs: profileImgs,
+        message: ` ${typeof selectedRId}대댓글 가져오기 성공`,
+      });
+    } else {
+      return res.status(404).json({ message: "대댓글이 존재하지 않습니다." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+/// 대댓글 작성 T
+app.post("/postTr_reply/:id/:rid", async (req, res) => {
+  const { r_reply, /* isRSecret, */ r_rwriteDate, r_rwriter } = req.body;
+  const { id, rid } = req.params;
+
+  const post = await TWrite.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const reply = await TReply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "Reply not found" });
+  }
+
+  const r_replycounter = await TR_ReplyCounter.findOneAndUpdate(
+    { name: "대댓글 수" },
+    { $inc: { totalR_Reply: 1 } },
+    { new: true, upsert: true }
+  );
+  const 총대댓글수 = r_replycounter.totalR_Reply + 1;
+
+  const r_rwriterId = await User.findOne({ name: r_rwriter });
+
+  if (!r_replycounter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newR_Reply = new TR_Reply({
+      postRId: id,
+      selectedRId: rid,
+      _id: 총대댓글수 + 1, //댓글번호
+      r_rwriter: r_rwriter,
+      _user: r_rwriterId._id,
+      r_rwriteDate: r_rwriteDate,
+      r_reply: r_reply,
+      //isRSecret : isRSecret
+    });
+    await newR_Reply.save();
+
+    return res.status(200).json({ message: `Reply created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+/// 대댓글 작성
+app.post("/postr_reply/:id/:rid", async (req, res) => {
+  const { r_reply, /* isRSecret, */ r_rwriteDate, r_rwriter } = req.body;
+  const { id, rid } = req.params;
+
+  const post = await Write.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const reply = await Reply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "Reply not found" });
+  }
+
+  const r_replycounter = await R_ReplyCounter.findOneAndUpdate(
+    { name: "대댓글 수" },
+    { $inc: { totalR_Reply: 1 } },
+    { new: true, upsert: true }
+  );
+  const 총대댓글수 = r_replycounter.totalR_Reply + 1;
+
+  const r_rwriterId = await User.findOne({ name: r_rwriter });
+
+  if (!r_replycounter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newR_Reply = new R_Reply({
+      postRId: id,
+      selectedRId: rid,
+      _id: 총대댓글수 + 1, //댓글번호
+      r_rwriter: r_rwriter,
+      _user: r_rwriterId._id,
+      r_rwriteDate: r_rwriteDate,
+      r_reply: r_reply,
+      //isRSecret : isRSecret
+    });
+    await newR_Reply.save();
+
+    return res.status(200).json({ message: `Reply created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+app.get("/view/:id/modify/:selectedRId/:rrid", async (req, res) => {
+  const postId = req.params.id;
+  const selectedRId = req.params.selectedRId;
+  const rrid = req.params.rrid;
+
+  try {
+    const result = await R_Reply.find({
+      postRId: Number(postId),
+      selectedRId: Number(selectedRId),
+      _id: Number(rrid),
+    });
+    console.log(result);
+
+    if (result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    } /* reply */
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/viewTReplyRModify", async (req, res) => {
+  const { postRId, selectedRId, _id, r_rWriteDate, r_reply /* , isRSecret */ } =
+    req.body;
+
+  console.log(postRId + selectedRId + _id + r_rWriteDate + r_reply);
+  try {
+    const updatedViewReplyRModify = await TR_Reply.findOneAndUpdate(
+      { postRId, selectedRId, _id },
+      {
+        $set: { r_rWriteDate, r_reply /* , isRSecret */ },
+      }
+    );
+
+    return res.status(200).json({
+      message: `r_reply ${_id} updated successfully`,
+      updatedViewReplyRModify,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/viewReplyRModify", async (req, res) => {
+  const { postRId, selectedRId, _id, r_rWriteDate, r_reply /* , isRSecret */ } =
+    req.body;
+
+  console.log(postRId + selectedRId + _id + r_rWriteDate + r_reply);
+  try {
+    const updatedViewReplyRModify = await R_Reply.findOneAndUpdate(
+      { postRId, selectedRId, _id },
+      {
+        $set: { r_rWriteDate, r_reply /* , isRSecret */ },
+      }
+    );
+
+    return res.status(200).json({
+      message: `r_reply ${_id} updated successfully`,
+      updatedViewReplyRModify,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// 대댓글 삭제
+app.delete("/postr_reply/:id/:rid/:rrid", async (req, res) => {
+  const { id, rid, rrid } = req.params;
+
+  const post = await Write.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const reply = await Reply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "Reply not found" });
+  }
+
+  const r_reply = await R_Reply.findOne({ _id: rrid });
+  if (!r_reply) {
+    return res.status(404).json({ message: "R_Reply not found" });
+  }
+
+  try {
+    await R_Reply.deleteOne({ _id: rrid });
+
+    return res
+      .status(200)
+      .json({ message: `R_Reply ${rrid} deleted successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+// 대댓글 삭제T
+app.delete("/postTr_reply/:id/:rid/:rrid", async (req, res) => {
+  const { id, rid, rrid } = req.params;
+
+  const post = await TWrite.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "TPost not found" });
+  }
+
+  const reply = await TReply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "TReply not found" });
+  }
+
+  const r_reply = await TR_Reply.findOne({ _id: rrid });
+  if (!r_reply) {
+    return res.status(404).json({ message: "TR_Reply not found" });
+  }
+
+  try {
+    await TR_Reply.deleteOne({ _id: rrid });
+
+    return res
+      .status(200)
+      .json({ message: `TR_Reply ${rrid} deleted successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+app.get("/myLikedPost", auth, async (req, res) => {
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
+
+  const offset = (page - 1) * limit;
+
+  const userId = req.user.id;
+
+  console.log(userId);
+
+  try {
+    const studyLiked = await PostGood.find({ "_users.user": userId });
+
+    console.log(studyLiked);
+
+    const studyLikedIds = studyLiked.map((post) => post._id);
+    console.log(studyLikedIds);
+
+    re;
+    const likedPosts = await Write.find({ _id: { $in: studyLiked } })
+      .skip(offset)
+      .limit(limit);
+    console.log(likedPosts);
+
+    if (studyLiked.length > 0) {
+      return res.status(200).json({
+        likePosts: likedPosts,
+        success: true,
       });
     } else {
       return res.status(404).json({ message: "알림이 존재하지 않습니다." });
@@ -3617,11 +4786,238 @@ app.post("/change-time", async (req, res) => {
   }
 });
 
+app.get("/getReply/:id", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const result = await Reply.find({ postId: req.params.id });
+
+    if (result) {
+      const sameUsers = result.map((reply) => reply._user === userId);
+
+      console.log(sameUsers);
+
+      // 사용자 프로필 이미지 반환
+      const profileImgs = await Promise.all(
+        result.map(async (reply) => {
+          const user = await User.findOne({ name: reply.rwriter });
+
+          if (!user) {
+            throw new Error(`User with name "${reply.rwriter}" not found`);
+          }
+
+          return user.image;
+        })
+      );
+
+      return res.status(200).json({
+        data: result,
+        sameUsers: sameUsers,
+        profileImgs: profileImgs,
+        message: ` ${typeof req.params.postId}댓글 가져오기 성공`,
+      });
+    } else {
+      return res.status(404).json({ message: "댓글이 존재하지 않습니다." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.patch("/updateRoomSchedule/:id", auth, async (req, res) => {
+  const { id } = req.params;
+  const { prepaymentBtn } = req.body;
+  console.log(id);
+
+  try {
+    //id로 알림을 찾아서 해당하는 roomSchedule 업데이트.
+    const alarm = await Alarm.findOne({ "content._id": id });
+    const UserName = alarm.userName;
+
+    if (alarm) {
+      const content = alarm.content;
+      console.log(content);
+      const clickAlarm = content.find((item) => item._id.toString() === id);
+      if (clickAlarm) {
+        const message = clickAlarm.message;
+        const roomTitle = message.match(/(\w+)\s+방이 생성되었습니다\./i)[1];
+
+        console.log(roomTitle);
+
+        const roomSchedule = await RoomSchedule.findOneAndUpdate(
+          {
+            roomTitle: roomTitle,
+            userName: UserName,
+          },
+          { $set: { prepaymentBtn: prepaymentBtn } },
+          { new: true }
+        );
+
+        console.log("선금버튼 표시: ", roomSchedule);
+        return res.status(200).json({ message: "Update successful" });
+      } else {
+        console.log("clickAlarm not found");
+      }
+    } else {
+      return res.status(404).json({ message: "Alarm not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("서버 오류");
+  }
+});
+
+//강사모집에서 roomSchedule 추가
+app.post("/roomSchedule", async (req, res) => {
+  const { host, applicant, roomTitle, startTime, date, runningTime } = req.body;
+
+  try {
+    //강사모집에서 host = student
+    const hostUser = await User.findOne({ name: host }).exec();
+    const newHostSchedule = new RoomSchedule({
+      userId: hostUser._id,
+      userName: hostUser.name,
+      userType: "Student",
+      roomTitle: roomTitle,
+      runningTime: runningTime,
+      startTime: startTime,
+      date: date,
+      prepaymentBtn: false,
+    });
+    await newHostSchedule.validate();
+    await newHostSchedule.save();
+
+    //강사 모집에서 applicant = teacher
+    const applicantUsers = await User.find({ name: { $in: applicant } }).exec();
+    for (const applicantUser of applicantUsers) {
+      const newApplicantSchedule = new RoomSchedule({
+        userId: applicantUser._id,
+        userName: applicantUser.name,
+        userType: "Teacher",
+        roomTitle: roomTitle,
+        runningTime: runningTime,
+        startTime: startTime,
+        date: date,
+      });
+      await newApplicantSchedule.validate();
+      await newApplicantSchedule.save();
+    }
+    return res
+      .status(200)
+      .json({ message: `roomSchedule created successfully` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+//학생 모집에서 roomSchedule 추가
+app.post("/TRoomSchedule", async (req, res) => {
+  const { host, applicant, roomTitle, startTime, date, runningTime } = req.body;
+
+  try {
+    //학생모집에서 host = teacher
+    const hostUser = await User.findOne({ name: host }).exec();
+    const newHostSchedule = new RoomSchedule({
+      userId: hostUser._id,
+      userName: hostUser.name,
+      userType: "Teacher",
+      roomTitle: roomTitle,
+      runningTime: runningTime,
+      startTime: startTime,
+      date: date,
+    });
+    await newHostSchedule.validate();
+    await newHostSchedule.save();
+
+    //학생모집에서 applicant = student
+    const applicantUsers = await User.find({ name: { $in: applicant } }).exec();
+    for (const applicantUser of applicantUsers) {
+      const newApplicantSchedule = new RoomSchedule({
+        userId: applicantUser._id,
+        userName: applicantUser.name,
+        userType: "Student",
+        roomTitle: roomTitle,
+        runningTime: runningTime,
+        startTime: startTime,
+        date: date,
+        prepaymentBtn: false,
+      });
+      await newApplicantSchedule.validate();
+      await newApplicantSchedule.save();
+    }
+
+    return res
+      .status(200)
+      .json({ message: `TRoomSchedule created successfully` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+// 채택정보 (방장이름, 수강생, 방제목, 예상시작시간, 시작 날짜)
+app.post("/selectionTInfo", async (req, res) => {
+  const { host, applicant, roomTitle, startTime, date, runningTime } = req.body;
+
+  try {
+    const newSelectionTInfo = new SelectionTInfo({
+      host: host,
+      applicant: applicant,
+      roomTitle: roomTitle,
+      runningTime: runningTime,
+      startTime: startTime,
+      date: date,
+    });
+    await newSelectionTInfo.save();
+    return res.status(200).json({ message: `created successfully` });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+//저장된 roomSchedule에서 해당하는 유저에게 해당하는 정보가 보이도록
+app.get("/roomSchedules", auth, async (req, res) => {
+  try {
+    const roomSchedule = await RoomSchedule.find({ userId: req.user.id });
+    res.status(200).json(roomSchedule);
+    console.log(roomSchedule);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// 채택정보 (방장이름, 수강생, 방제목, 예상시작시간)
+app.post("/selectionInfo", async (req, res) => {
+  const { host, applicant, roomTitle, startTime, date, runningTime } = req.body;
+
+  try {
+    const newSelectionInfo = new SelectionInfo({
+      host: host,
+      applicant: applicant,
+      roomTitle: roomTitle,
+      runningTime: runningTime,
+      startTime: startTime,
+      date: date,
+    });
+    await newSelectionInfo.save();
+    return res.status(200).json({ message: `created successfully` });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
 app.get("/", (req, res) => {
   res.send("hello world!");
 });
 
-app.listen(6060, () => {
+app.listen(8080, () => {
   console.log("서버가 시작되었습니다.");
   // delete require.cache["axios"];
   // console.log(require.cache);

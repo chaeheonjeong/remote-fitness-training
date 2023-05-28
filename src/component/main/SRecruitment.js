@@ -10,7 +10,7 @@ import loadingImg from "../../images/loadingImg.gif";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TbCircleArrowUpFilled } from "react-icons/tb";
-import { BASE_API_URI, scrollToTop } from "../../util/common";
+import { scrollToTop } from "../../util/common";
 
 function SRecruitment() {
   const [studies, setStudies] = useState([]);
@@ -58,7 +58,7 @@ function SRecruitment() {
 
     axios
       .get(
-        `${BASE_API_URI}/searchSRecruitment?selected=${selected}&value=${encodeURIComponent(
+        `http://localhost:8080/searchSRecruitment?selected=${selected}&value=${encodeURIComponent(
           searchInput
         )}&page=${page}&limit=4`
       )
@@ -108,7 +108,7 @@ function SRecruitment() {
     if (hasMore) {
       axios
         .get(
-          `${BASE_API_URI}/srecruitments?page=${
+          `http://localhost:8080/srecruitments?page=${
             Math.floor(renderQ.length / limit) + 1
           }&limit=${limit}`
         )
@@ -132,7 +132,7 @@ function SRecruitment() {
   const clickHandler = (id) => {
     axios
       .post(
-        `${BASE_API_URI}/view`,
+        `http://localhost:8080/view`,
         { id: id, postName: "srecruitment" } // 서버로 전달할 id
       )
       .then((response) => {

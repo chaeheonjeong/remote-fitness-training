@@ -4,19 +4,19 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import QuestionRoomCard from "../main/QuestionRoomCard";
-import "./MyLikedQuestion.css";
-import styles from "./MyLikedQuestion.module.css";
+import SRecruitmentCard from "../main/SRecruitmentCard";
+import "./MyLikedPost.css";
+import styles from "./MyLikedTPost.module.css";
 import SideBar from "./SideBar";
 import Header from "../main/Header";
 
 import loadingImg from "../../images/loadingImg.gif";
 
-function MyLikedQuestion() {
+function MyLikedTPost() {
   const navigate = useNavigate();
 
-  const [likedQuestions, setLikedQuestions] = useState([]);
-  const [likedQuestionIds, setLikedQuestionIds] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
+  const [likedPostIds, setLikedPostIds] = useState([]);
 
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
@@ -31,42 +31,33 @@ function MyLikedQuestion() {
     );
   };
 
-  /* const moreQuestions = () => {
-        
-            
-        //fetchLikedQuestions();
-    }; */
-
-  const moreQuestions = async () => {
+  const morePosts = async () => {
     const token = localStorage.getItem("token");
 
     axios
-      .get(`http://localhost:8080/myLikedQuestion?page=${page}&limit=6`, {
+      .get(`http://localhost:8080/myLikedTPost?page=${page}&limit=6`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        const newLikedQuestions = response.data.likeQuestions;
-        console.log(newLikedQuestions);
-        const isLastPage = newLikedQuestions.length < 6;
+        const newLikedPosts = response.data.likePosts;
+        console.log(newLikedPosts);
+        const isLastPage = newLikedPosts.length < 6;
 
         if (isLastPage) {
           setHasMore(false);
         }
 
-        /* console.log("글: " +  getQuestions.data.likedQuestions);
-                    setLikedQuestions(getQuestions.data.likedQuestions); */
-
-        const prevLikedQuestions = [...likedQuestions];
+        const prevLikedPosts = [...likedPosts];
         console.log("Page: ", page);
-        setLikedQuestions((prevLikedQuestions) => [
-          ...prevLikedQuestions,
-          ...newLikedQuestions,
+        setLikedPosts((prevLikedPosts) => [
+          ...prevLikedPosts,
+          ...newLikedPosts,
         ]);
         console.log(
-          "Number of loaded LikedQuestions: " +
-            (prevLikedQuestions.length + newLikedQuestions.length)
+          "Number of loaded LikedPosts: " +
+            (prevLikedPosts.length + newLikedPosts.length)
         );
         setPage((prevPage) => prevPage + 1);
       })
@@ -74,35 +65,20 @@ function MyLikedQuestion() {
         console.log(error);
         setIsLoading(false);
       });
-
-    //const getQuestions = await axios
-
-    //try {
-    /* if(Array.isArray(getQuestions.data.likedQuestions)) {
-                setLikedQuestions(getQuestions.data.likedQuestions);
-                console.log(getQuestions.data.likedQuestions);
-                console.log('관심글을 불러왔습니다');
-            } else {
-                console.log('서버 응답이 올바르지 않습니다.');
-            } */
-
-    /* } catch (error) {
-            console.log(error);
-        } */
   };
 
   useEffect(() => {
-    moreQuestions();
+    morePosts();
   }, []);
 
   const clickHandler = (id) => {
     axios
       .post(
         `http://localhost:8080/View`,
-        { id: id, postName: "question" } // 서버로 전달할 id
+        { id: id, postName: "srecruitment" } // 서버로 전달할 id
       )
       .then((response) => {
-        navigate(`/AskView/${id}`);
+        navigate(`/tView/${id}`);
       })
       .catch((error) => {
         console.log(error);
@@ -113,7 +89,7 @@ function MyLikedQuestion() {
     <div>
       <Header />
       <SideBar />
-      <div className="likedQuestion">
+      <div className="likedPost">
         <Link to="/myLikedPost">
           <button className={styles.likedStudy}>강사모집</button>
         </Link>
@@ -124,21 +100,21 @@ function MyLikedQuestion() {
           <button className={styles.likedQuestion}>질문글</button>
         </Link>
         <InfiniteScroll
-          dataLength={likedQuestions.length}
-          next={moreQuestions}
+          dataLength={likedPosts.length}
+          next={morePosts}
           hasMore={hasMore}
           loader={loaderImg()}
         >
-          {likedQuestions.length > 0 ? (
-            likedQuestions.map((Question, index) => {
+          {likedPosts.length > 0 ? (
+            likedPosts.map((post, index) => {
               return (
-                <QuestionRoomCard
-                  title={Question.title}
-                  tags={Array.isArray(Question.tag) ? [...Question.tag] : []}
-                  id={Question._id}
-                  key={Question._id}
+                <SRecruitmentCard
+                  title={post.title}
+                  tags={Array.isArray(post.tag) ? [...post.tag] : []}
+                  id={post._id}
+                  key={post._id}
                   onClick={() => {
-                    clickHandler(Question._id);
+                    clickHandler(post._id);
                   }}
                 />
               );
@@ -155,17 +131,17 @@ function MyLikedQuestion() {
                 )} */}
       </div>
 
-      {/* <div className="likedQuestion">
-                <button><Link to="/myLikedQuestion">Study</Link></button>
+      {/* <div className="likedPost">
+                <button><Link to="/myLikedPost">Study</Link></button>
                 <button>Question</button>
-                { likedQuestions.length > 0 ? (likedQuestions.map(Question => {
-                    console.log("Question: "+ Question);
+                { likedPosts.length > 0 ? (likedPosts.map(post => {
+                    console.log("post: "+ post);
                     return(
                         <StudyRoomCard 
-                            title={Question.title}
-                            tags={Array.isArray(Question.tag) ? [...Question.tag] : []} 
-                            id={Question._id}
-                            key={Question._id}
+                            title={post.title}
+                            tags={Array.isArray(post.tag) ? [...post.tag] : []} 
+                            id={post._id}
+                            key={post._id}
                         />
                     );
                 })
@@ -174,4 +150,4 @@ function MyLikedQuestion() {
     </div>
   );
 }
-export default MyLikedQuestion;
+export default MyLikedTPost;

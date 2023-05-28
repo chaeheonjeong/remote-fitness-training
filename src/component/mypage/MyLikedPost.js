@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -10,9 +11,9 @@ import SideBar from "./SideBar";
 import Header from "../main/Header";
 
 import loadingImg from "../../images/loadingImg.gif";
-import { BASE_API_URI } from "../../util/common";
 
 function MyLikedPost() {
+  const navigate = useNavigate();
   const [likedPosts, setLikedPosts] = useState([]);
   const [likedPostIds, setLikedPostIds] = useState([]);
 
@@ -39,7 +40,7 @@ function MyLikedPost() {
     const token = localStorage.getItem("token");
 
     axios
-      .get(`${BASE_API_URI}/myLikedPost?page=${page}&limit=6`, {
+      .get(`http://localhost:8080/myLikedPost?page=${page}&limit=6`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -72,26 +73,25 @@ function MyLikedPost() {
         console.log(error);
         setIsLoading(false);
       });
-
-    //const getPosts = await axios
-
-    //try {
-    /* if(Array.isArray(getPosts.data.likedPosts)) {
-                setLikedPosts(getPosts.data.likedPosts);
-                console.log(getPosts.data.likedPosts);
-                console.log('관심글을 불러왔습니다');
-            } else {
-                console.log('서버 응답이 올바르지 않습니다.');
-            } */
-
-    /* } catch (error) {
-            console.log(error);
-        } */
   };
 
   useEffect(() => {
     morePosts();
   }, []);
+
+  const clickHandler = (id) => {
+    axios
+      .post(
+        `http://localhost:8080/View`,
+        { id: id, postName: "study" } // 서버로 전달할 id
+      )
+      .then((response) => {
+        navigate(`/view/${id}`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div>
@@ -99,10 +99,13 @@ function MyLikedPost() {
       <SideBar />
       <div className="likedPost">
         <Link to="/myLikedPost">
-          <button className={styles.likedStudy}>Study</button>
+          <button className={styles.likedStudy}>강사모집</button>
+        </Link>
+        <Link to="/myLikedTPost">
+          <button className={styles.likedSRecruitment}>학생모집</button>
         </Link>
         <Link to="/myLikedQuestion">
-          <button className={styles.likedQuestion}>Question</button>
+          <button className={styles.likedQuestion}>질문글</button>
         </Link>
         <InfiniteScroll
           dataLength={likedPosts.length}
@@ -118,6 +121,9 @@ function MyLikedPost() {
                   tags={Array.isArray(post.tag) ? [...post.tag] : []}
                   id={post._id}
                   key={post._id}
+                  onClick={() => {
+                    clickHandler(post._id);
+                  }}
                 />
               );
             })
