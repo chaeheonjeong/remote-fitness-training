@@ -53,7 +53,7 @@ function MyCalendar() {
     useEffect(() =>{
         const fetchRoomSchedules = async () => {
             try{
-                const res = await axios.get("http://localhost:8080/roomSchedules",{
+                const res = await axios.get(`${BASE_API_URI}/roomSchedules`,{
                     headers : {Authorization: `Bearer ${token}`}
                 });
                 setRoomSchedules(res.data);
@@ -123,7 +123,7 @@ const handleDelete = () => {
   };
 
   const handleModify = () => {
-    axios.put(`http://localhost:8080/schedules/${selectedSchedule._id}`, selectedSchedule)
+    axios.put(`${BASE_API_URI}/schedules/${selectedSchedule._id}`, selectedSchedule)
         .then(res => {
             console.log('update success: ', res.data);
             const updatedScheudles = schedules.map(schedule => {
@@ -145,7 +145,7 @@ const handleDelete = () => {
 const handleFormSubmit = async (e) => {
     try{
         e.preventDefault();
-        const res = await axios.post("http://localhost:8080/schedules",{
+        const res = await axios.post(`${BASE_API_URI}/schedules`,{
             title : title,
             date : date,
             contents : contents
@@ -336,7 +336,7 @@ const tileContent = ({date,view}) => {
     // 방 목록 가져오기
     const fetchRoomList = async () => {
         try {
-          const response = await axios.get('http://localhost:8080/rooms');
+          const response = await axios.get(`${BASE_API_URI}/rooms`);
           const rooms = response.data.map((room, index) => ({
             id: index, // 간단하게 인덱스를 사용하여 id 설정
             name: room,
@@ -363,7 +363,7 @@ const tileContent = ({date,view}) => {
     // 방 목록 가져오기
     const TfetchRoomList = async () => {
         try {
-        const response = await axios.get('http://localhost:8080/Trooms');
+        const response = await axios.get(`${BASE_API_URI}/Trooms`);
         const Trooms = response.data.map((room, index) => ({
             id: index, // 간단하게 인덱스를 사용하여 id 설정
             name: room,
@@ -391,7 +391,7 @@ const tileContent = ({date,view}) => {
     // 후기를 작성한 방인지 확인하는 함수
     const isRoomReviewed = async (roomName) => {
         try {
-        const response = await axios.get('http://localhost:8080/reviews');
+        const response = await axios.get(`${BASE_API_URI}/reviews`);
         const reviews = response.data;
     
         // 방 이름과 현재 사용자를 기준으로 후기 데이터를 필터링
@@ -408,7 +408,7 @@ const tileContent = ({date,view}) => {
     // 호스트가 후기를 작성한 방인지 확인하는 함수
     const TisRoomReviewed = async (roomName) => {
         try {
-        const response = await axios.get('http://localhost:8080/Treviews');
+        const response = await axios.get(`${BASE_API_URI}/Treviews`);
         const Treviews = response.data;
     
         // 방 이름을 기준으로 후기 데이터를 필터링
@@ -436,7 +436,7 @@ const tileContent = ({date,view}) => {
 
     const fetchParticipatedRooms = async () => {
         try {
-          const response = await axios.get('http://localhost:8080/selectionTInfo');
+          const response = await axios.get(`${BASE_API_URI}/selectionTInfo`);
           const participatedRooms = response.data
             .filter(room => room.applicant.includes(user.name))
             .map(room => ({
@@ -455,7 +455,7 @@ const tileContent = ({date,view}) => {
       //강사 모집의 경우
       const TfetchParticipatedRooms = async () => {
         try {
-          const response = await axios.get('http://localhost:8080/selectionInfo');
+          const response = await axios.get(`${BASE_API_URI}/selectionInfo`);
           const TparticipatedRooms = response.data
             .filter(room => room.host.includes(user.name))
             .map(room => ({
@@ -534,7 +534,7 @@ const tileContent = ({date,view}) => {
         e.preventDefault();
         try {
           // 별점과 사용자 ID를 DB에 저장하는 요청을 보냄
-          const res = await axios.post("http://localhost:8080/reviews", {
+          const res = await axios.post(`${BASE_API_URI}/reviews`, {
             stars: selectedStars,
             studentName: user.name,
             writeDate: today,
