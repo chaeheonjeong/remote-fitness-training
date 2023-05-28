@@ -1,0 +1,134 @@
+footer {
+    display:flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+  
+  footer button {
+    border-radius: 7px;
+    border: 1.5px solid rgb(189, 188, 188);
+    width: 3.5rem;
+  }
+  
+/*   .image {
+      border: solid 0.5px;
+      text-align: center;
+      width: 240px;
+      margin-bottom: 13px;
+  }
+  
+  .openStudyTitle {
+      margin-bottom: 13px;
+  }
+  
+  .openStudyTitle input {
+    width: 11.5rem;
+  } */
+  
+  .container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100%;
+      backdrop-filter: brightness(0.60);
+  }
+  
+  .closeBox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: 10;
+  }
+    
+    .modalWrapper {
+      background-color: white;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      border-radius: 2rem;
+      z-index: 20;
+      position: relative;
+      padding: 2rem 1rem;
+    }
+
+    .amount {
+        display: block;
+    }
+
+    .selectStudent {
+        border: solid 1px black;
+        height: 100px;
+        overflow: auto;
+    }
+    
+    .openStudyCancle {
+      height: 1.8rem;
+      font-size: 0.8rem;
+      border: 2px solid;
+      border: none;
+      color: rgb(49, 49, 49);
+      cursor: pointer;
+      padding: 0 0.5rem;
+    }
+    
+    .openStudyCancle:hover {
+      filter: brightness(0.85);
+    }
+    
+    .makeOpenStudy {
+      height: 1.8rem;
+      font-size: 0.8rem;
+      border: 2px solid;
+      border: none;
+      color: rgb(49, 49, 49);
+      cursor: pointer;
+      padding: 0 0.5rem;
+    }
+    .makeOpenStudy:hover {
+      filter: brightness(0.85);
+    }
+    
+/*     .inputWrapper{
+      align-items: center;
+      gap: 2rem;
+    } */
+    
+    .ModalClose {
+      transition: visibility 0.2s ease-out;
+      visibility: hidden;
+      animation: fadeOut 0.2s;
+    }
+    .ModalOpen {
+      visibility: visible;
+      animation: fadeIn 0.2s;
+      z-index: 999;
+    }
+    
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+    
+    @keyframes fadeOut {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+    }

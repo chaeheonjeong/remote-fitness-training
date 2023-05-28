@@ -1,0 +1,38 @@
+.swiperContent {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 0rem 4rem;
+}
+
+.medalWrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.swiper {
+  height: 9.5rem;
+  width: 38rem;
+  position: relative;
+}
+
+.profile {
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  border: 1px solid #555555;
+  cursor: pointer;
+}
+
+/* 이전 화살표 스타일 */
+.swiper-button-prev {
+  color: red;
+}
+
+/* 다음 화살표 스타일 */
+.swiper-button-next {
+  color: red;
+}

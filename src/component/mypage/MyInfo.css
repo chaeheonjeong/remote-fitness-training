@@ -1,0 +1,150 @@
+@font-face {
+    font-family: 'Cafe24SsurroundAir';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24SsurroundAir.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.MyInfo{
+    margin-left: 25%;
+    height: calc(100vh - 5rem);
+    top: 5rem;
+    margin-top: 3%;
+}
+
+.Profile{
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+    border: 1px solid #555555;
+}
+
+.img-btn{
+    font-family: 'Cafe24SsurroundAir';
+    border : none;
+    border-radius: 5px;
+    background-color: #F1E0AC;
+    padding-inline: 3px;
+
+}
+
+.Title{
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 40px;
+}
+
+.Information{
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 20px;
+    text-align: left;
+    margin-left: 10%;
+
+}
+
+.Input{
+    border: none;
+    border-bottom: 2px solid rgb(225, 225, 225);
+    align-items: left;
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 20px;
+    padding: 2px;
+    width: 30%;
+    margin-top: 30px;
+}
+
+.Btn{
+    font-family: 'Cafe24SsurroundAir';
+    border : none;
+    border-radius: 5px;
+    margin-left : 5px;
+    margin-top : 20px;
+    background-color: #F1E0AC;
+}
+
+.CBtn{
+    font-family: 'Cafe24SsurroundAir';
+    border : none;
+    border-radius: 5px;
+    margin-left: 65px;
+
+    background-color: #F1E0AC;
+}
+
+.DBtn{
+    font-family: 'Cafe24SsurroundAir';
+    border : none;
+    margin-left: 5px;
+    border-radius: 5px;
+    background-color: #F1E0AC;
+}
+
+.pwd{
+    font-family: 'Cafe24SsurroundAir';
+    text-align: left;
+
+}
+
+._input{
+    border: none;
+    border-bottom: 2px solid rgb(225, 225, 225);
+    box-sizing: border-box;
+    padding: 7px 0px;
+    position: relative;
+    top: 50%;
+    width: 300px;
+    margin-bottom: 7px;
+    align-items: center;
+}
+
+.password-match{
+    border: none;
+    border-bottom: 2px solid rgb(225, 225, 225);
+    box-sizing: border-box;
+    padding: 7px 0px;
+    position: relative;
+    top: 50%;
+    width: 300px;
+    margin-bottom: 7px;
+    align-items: center;
+}
+
+.password-not-match{
+    border: none;
+    border-bottom: 2px solid rgb(225, 225, 225);
+    box-sizing: border-box;
+    padding: 7px 0px;
+    position: relative;
+    top: 50%;
+    width: 300px;
+    margin-bottom: 7px;
+    align-items: center;
+}
+
+.password-not-match:focus{
+    border-color: #CC3636;
+}
+
+._input:focus{
+    border-color: #F1E0AC;
+}
+
+.nickname{
+    word-spacing: 10px;
+}
+
+.changeBtn{
+    font-family: 'Cafe24SsurroundAir';
+    border-radius: 5px;
+    margin-left: 5px;
+    border: none;
+    background-color: #F1E0AC;
+
+}
+
+.email{
+    word-spacing: 5px;
+}
+
+.noLogin{
+    text-align: center;
+}
