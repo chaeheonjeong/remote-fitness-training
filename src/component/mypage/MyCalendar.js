@@ -34,8 +34,6 @@ function MyCalendar() {
     const [scheduleList, setScheduleList] = useState([]);
     const [reviewModalIsOpen, setReviewModalIsOpen] = useState(false);
     const [roomSchedules, setRoomSchedules] = useState([]);
-    const [notiData, setNotiData] = useState([]);
-    const hook = useNoti();
 
     const [TaddModalIsOpen, setTAddModalIsOpen] = useState(false);
     const [TdetailModalIsOpen, setTDetailModalIsOpen] = useState(false);
@@ -293,6 +291,20 @@ const tileContent = ({date,view}) => {
                 scheduleDate.getFullYear() === date.getFullYear()
             );
         });
+
+        const filteredRoomSchedules = roomSchedules.filter((roomSchedule) => {
+            const roomScheduleDate = new Date(roomSchedule.date);
+            return(
+                roomScheduleDate.getDate() === date.getDate() &&
+                roomScheduleDate.getMonth() === date.getMonth() &&
+                roomScheduleDate.getFullYear() === date.getFullYear()
+            );
+        });
+
+        if(filteredRoomSchedules.length > 0) {
+            return;
+        }
+
 
         if(filteredSchedules.length === 1){
             setSelectedSchedule(filteredSchedules[0]);

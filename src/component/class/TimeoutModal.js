@@ -12,7 +12,7 @@ export default function TimeoutModal({ onConfirm }) {
         <AiOutlineClockCircle size="40" className={styles.clock} />
         <div className={styles.contentWrapper}>
           <div style={{ fontWeight: "700" }}>
-            화상미팅 시간을 모두 사용하셨습니다.
+            화상미팅 시간을 모두 사용하셨습니다!
           </div>
           <button onClick={onConfirm} className={styles.btnOk}>
             확인

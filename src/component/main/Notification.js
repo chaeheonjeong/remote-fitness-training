@@ -48,7 +48,9 @@ const Notification = () => {
                 <div className={styles.time}>{x.createAt}</div>
                 {x.role === 'student' ? (
                   <div>
-                    <button>선금</button>
+                     <button  onClick={() => {
+                      hook.handlePreBtn(x._id)/* hook.setReadComm(!hook.readComm) */;
+                    }}>선금</button>
                   </div>
                 ) : (
                   <div></div>

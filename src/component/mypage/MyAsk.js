@@ -26,7 +26,7 @@ const MyAsk = () => {
           src={loadingImg}
           alt="loadingImg"
         ></img>
-        <div className={styles.loading}>loading...</div>
+        <div className={styles.loading}>loading....</div>
       </div>
     );
   }
@@ -83,8 +83,6 @@ const MyAsk = () => {
         <button
           onClick={() => {
             navigate("/myPost");
-
-            
           }}
         >
           스터디

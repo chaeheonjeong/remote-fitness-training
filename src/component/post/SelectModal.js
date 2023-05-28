@@ -20,7 +20,6 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
     const [runningTime, setRunningTime] = useState("");
     const [date, setDate] = useState("");
 
-    const [preBtn, setPreBtn] = useState(false);
     const [postId, setPostId] = useState();
 
     const [pCount, setPCount] = useState(1);
@@ -87,7 +86,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
 
         try {
           if(selectedStudent.length === 1) {
-            if(preBtn === true && roomTitle !== "") {
+            if(roomTitle !== "") {
               const res = await axios
               .post(`http://localhost:8080/selectionInfo`,  {
                 host: host,
@@ -268,7 +267,6 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
                     </a>
                     <button onClick={(e) => {
                       e.preventDefault();
-                      setPreBtn(true);
                     }}>
                       선금 결제하러 가기
                     </button>
@@ -281,7 +279,6 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
                   className={styles.makeOpenStudy}
                   type="submit"
                   onClick={handleSubmit}
-                  disabled={!preBtn} // 선금 버튼 눌렀을 때만 버튼 활성화
                 >
                   만들기
                 </button>

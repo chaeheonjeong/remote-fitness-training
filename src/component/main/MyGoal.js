@@ -6,7 +6,6 @@ import axios from "axios";
 import userStore from "../../store/user.store";
 import { useNavigate } from "react-router-dom";
 import { TbClover2 } from "react-icons/tb";
-import HappinessIndex from "../../server/models/happinessIndex";
 
 const MyGoal = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);

@@ -1,4 +1,3 @@
-<<<<<<< HEAD:src/server/models/select_s.js
 const mogoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -6,14 +5,6 @@ const select_sSchema = new Schema({
     /* 댓글 단 사람 이름 */
     applicant : { type: String, required:true },
     teacherId: { type: String, required: true },
-=======
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-
-const select_sSchema = new Schema({
-  /* 댓글 단 사람 이름 */
-  applicant: { type: String, required: true },
->>>>>>> fc3dde5b43cb337e82f771769daad32e1f1ae3c2:server/models/select_s.js
 });
 
 /* select_sSchema.set("collection", "select_s");

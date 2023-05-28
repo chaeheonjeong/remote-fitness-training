@@ -13,9 +13,6 @@ const Ar_replycounterSchema = new Schema(
 Ar_replycounterSchema.set("collection", "Ar_replycounter");
 
 // counters 모델 생성
-const AR_ReplyCounter = mongoose.model(
-  "Ar_replycounter",
-  Ar_replycounterSchema
-);
+const AR_ReplyCounter = mongoose.model("Ar_replycounter", Ar_replycounterSchema);
 
 module.exports = AR_ReplyCounter;
