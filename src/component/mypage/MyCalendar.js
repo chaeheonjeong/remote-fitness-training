@@ -48,7 +48,7 @@ function MyCalendar() {
     //강사모집의 경우
     const [TselectedRoom, setTSelectedRoom] = useState(null); // 선택한 방
     const [TroomList, setTRoomList] = useState([]); // 방 목록
-    //const [TselectedStars, setTSelectedStars] = useState(0); // 추가: 선택한 별점
+    const [TselectedStars, setTSelectedStars] = useState(0); // 추가: 선택한 별점
 
     useEffect(() =>{
         const fetchRoomSchedules = async () => {
@@ -258,11 +258,11 @@ const tileContent = ({date,view}) => {
     //강사모집의 경우
     const [TroomListModal, setTRoomListModal] = useState([]);
     const [TparticipatedRooms, setTParticipatedRooms] = useState([]);
-    //const [TselectedApplicant, setTSelectedApplicant] = useState(null); 
-    const [TselectedApplicant, setTSelectedApplicant] = useState([null, null]); // 수정: 강사 이름을 배열로 변경
-    //const [TselectedApplicantId, setTSelectedApplicantId] = useState(null);
-    const [TselectedApplicantId, setTSelectedApplicantId] = useState([null, null]); // 수정: 강사 ID를 배열로 변경
-    const [TselectedStars, setTSelectedStars] = useState([0, 0]); // 수정: 강사별 별점을 배열로 변경
+    const [TselectedApplicant, setTSelectedApplicant] = useState(null); 
+    //const [TselectedApplicant, setTSelectedApplicant] = useState([null, null]); // 수정: 강사 이름을 배열로 변경
+    const [TselectedApplicantId, setTSelectedApplicantId] = useState(null);
+    //const [TselectedApplicantId, setTSelectedApplicantId] = useState([null, null]); // 수정: 강사 ID를 배열로 변경
+    //const [TselectedStars, setTSelectedStars] = useState([0, 0]); // 수정: 강사별 별점을 배열로 변경
 
 
     // 방 선택 시 후기 작성 모달 열기
@@ -277,8 +277,8 @@ const tileContent = ({date,view}) => {
     // 방 선택 시 후기 작성 모달 열기
     const ThandleRoomSelect = (room) => {
         setTSelectedRoom(room);
-        setTSelectedApplicant([...room.applicant]); // 호스트 정보 저장
-        setTSelectedApplicantId([...room.applicantId]);
+        setTSelectedApplicant(room.applicant); // 호스트 정보 저장
+        setTSelectedApplicantId(room.applicantId);
         setTReviewModalIsOpen(true);
     };
 
@@ -322,7 +322,7 @@ const tileContent = ({date,view}) => {
 
     const today = new Date();
 
-    /* const formatDate = (today) => {
+    const formatDate = (today) => {
         const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
         const year = today.getFullYear();
         const month = today.getMonth() + 1;
@@ -331,7 +331,7 @@ const tileContent = ({date,view}) => {
         const formattedDate = `${year}.${month}.${dateW}(${dayOfWeek})`;
         
         return formattedDate;
-    }; */
+    }; 
 
     // 방 목록 가져오기
     const fetchRoomList = async () => {
@@ -412,7 +412,7 @@ const tileContent = ({date,view}) => {
         const Treviews = response.data;
     
         // 방 이름을 기준으로 후기 데이터를 필터링
-        const TfilteredReviews = Treviews.filter(review => review.roomName === roomName && review.studentName === user.id);
+        const TfilteredReviews = Treviews.filter(review => review.roomName === roomName && review.studentName === user.name);
     
         // 후기가 존재하면 true, 존재하지 않으면 false 반환
         return TfilteredReviews.length > 0;
@@ -460,10 +460,10 @@ const tileContent = ({date,view}) => {
             .filter(room => room.host.includes(user.name))
             .map(room => ({
               id: room._id,
-              applicantId : [...room.applicantId],
+              applicantId : room.applicantId,
               name: `방 이름 : ${room.roomTitle}`,
-              description: `강사: ${[...room.applicant]} - 시작시간: ${room.startTime}`,
-              applicant: [...room.applicant], // 호스트의 이름 추가
+              description: `강사: ${room.applicant} - 시작시간: ${room.startTime}`,
+              applicant: room.applicant, // 호스트의 이름 추가
             }));
           setTParticipatedRooms(TparticipatedRooms);
         } catch (error) {
@@ -493,8 +493,8 @@ const tileContent = ({date,view}) => {
       const ThandleReviewModalClose = () => {
         setTSelectedRoom(null);
         setTReviewModalIsOpen(false);
-        setTSelectedStars([0, 0]);
-        //setTSelectedStars(0); // 추가: 별점 선택 초기화
+        //setTSelectedStars([0, 0]);
+        setTSelectedStars(0); // 추가: 별점 선택 초기화
       };
 
       const handleReviewModalOpen = async () => {
@@ -514,16 +514,18 @@ const tileContent = ({date,view}) => {
       };
 
       //강사 모집
-      /* const ThandleStarClick = (stars) => {
+      const ThandleStarClick = (stars) => {
         setTSelectedStars(stars);
-      }; */
-      const ThandleStarClick = (star, index) => {
+      };
+     /*  const ThandleStarClick = (star, index) => {
         setTSelectedStars((prevStars) => {
           const updatedStars = [...prevStars]; // 이전의 별점 배열을 복사
           updatedStars[index] = star; // 해당 인덱스에 새로운 별점 설정
           return updatedStars; // 업데이트된 별점 배열 반환
         });
-      };
+      }; */
+
+      
     
       console.log(selectedSchedule);
     
@@ -571,7 +573,8 @@ const tileContent = ({date,view}) => {
         try {
           // 별점과 사용자 ID를 DB에 저장하는 요청을 보냄
           const res = await axios.post("http://localhost:8080/Treviews", {
-            stars: [TselectedStars[0], TselectedStars[1]],
+            //stars: [TselectedStars[0], TselectedStars[1]],
+            stars: TselectedStars,
             studentName: user.name,
             writeDate: today,
             roomName: TselectedRoom.name, // 선택된 방의 이름 전달
@@ -585,7 +588,8 @@ const tileContent = ({date,view}) => {
           console.log('Review submitted:', res.data);
           console.log(TselectedApplicantId );
 
-          setTSelectedStars([0, 0]); // 수정: 별점 선택 초기화
+          setTSelectedStars(0);
+          //setTSelectedStars([0, 0]); // 수정: 별점 선택 초기화
           ThandleReviewModalClose();
           navigate("/MyCalendar");
           
@@ -638,7 +642,7 @@ const tileContent = ({date,view}) => {
         <p>강사 ID: {selectedHostId}</p>
         {selectedStars >= 0 && <p>선택한 별점: {selectedStars}</p>}
             <div className="starContainer">
-                {[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
+                {[0, 1, 2, 3, 4, 5].map((star) => (
                 <span
                     key={star}
                     className={selectedStars >= star ? 'selected' : ''}
@@ -718,7 +722,7 @@ const tileContent = ({date,view}) => {
         >
           X
         </button>
-        {TselectedRoom && (
+        {/*{TselectedRoom && (
         <div className="teacherroom">
             <p>강사모집방 이름: {TselectedRoom.name}</p>
             {TselectedApplicant[0] && (
@@ -816,16 +820,16 @@ const tileContent = ({date,view}) => {
         </div>
         )}
     </Modal>
-    </div>
+    </div>*/}
         
-        {/* {TselectedRoom && (
+        {TselectedRoom && (
         <div>
             <p>강사모집방 이름: {TselectedRoom.name}</p>
             <p>강사 이름: {TselectedApplicant}</p>
             <p>강사 ID: {TselectedApplicantId}</p>
             {TselectedStars >= 0 && <p>선택한 별점: {TselectedStars}</p>}
                 <div className="starContainer">
-                {[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
+                {[0, 1, 2, 3, 4, 5].map((star) => (
                     <span
                     key={star}
                     className={TselectedStars >= star ? "selected" : ""}
@@ -863,7 +867,7 @@ const tileContent = ({date,view}) => {
             </div>
             )}
         </Modal>
-        </div> */}
+        </div> 
         
         <div className = "MyCalendar">
             <Calendar onClickDay={handleSelectDate} value={date}

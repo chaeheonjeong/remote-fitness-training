@@ -343,22 +343,22 @@ const ViewReply = ({ write, setWrite, writer }) => {
     };
     // 대댓글수정(가져오기)
     const modifyR_Reply = async (rrid) => {
-        try {
-        const res = await axios
-        .get(`http://localhost:8080/view/${id}/modify/${selectedRId}/${rrid}`)
-        
-        if(res.data !== undefined) {
-            setReplyRModifyInput(res.data.result[0].r_reply);
-        }
-        } catch(error) {
-        console.log(error);
-        }
-    }
+      try {
+      const res = await axios
+      .get(`http://localhost:8080/view/${id}/modify/${selectedRId}/${rrid}`)
+      
+      if(res.data !== undefined) {
+          setReplyRModifyInput(res.data.result[0].r_reply);
+      }
+      } catch(error) {
+      console.log(error);
+      }
+  }
 
-    // 대댓글수정(내용반영)
-    const modifyR_ReplyInputChangeHandler = (e) => {
-        setReplyRModifyInput(e.target.value);
-    }
+  // 대댓글수정(내용반영)
+  const modifyR_ReplyInputChangeHandler = (e) => {
+      setReplyRModifyInput(e.target.value);
+  }
     
     // 댓글삭제 
     const deleteReply = (replyId) => {
