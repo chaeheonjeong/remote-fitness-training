@@ -19,14 +19,13 @@ const MyGoal = () => {
   const navigate = useNavigate();
 
   const [score, setScore] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const setTime = (h, m) => {
     setHour(h);
     setMinute(m);
   };
 
-  const saveHappinessIndex = async () => {
+  /* const saveHappinessIndex = async () => {
     try {
       const response = await axios.post(`http://localhost:8080/saveHappinessIndex`, {
         happinessIndex : dealt,
@@ -36,11 +35,10 @@ const MyGoal = () => {
     } catch(error) {
       console.log(error);
     }
-  };
+  }; */
 
   useEffect(() => {
     if(user.token !== null) {
-      setIsLoading(true);
       axios
         .get("http://localhost:8080/getHappinessIndex", {
           headers: { Authorization: `Bearer ${user.token}` },
@@ -52,7 +50,6 @@ const MyGoal = () => {
               console.log(response.data.message);
               setDealt(response.data.data);
               //saveHappinessIndex();
-              setIsLoading(false);
             } else {
               setDealt(50);
             }
@@ -61,12 +58,11 @@ const MyGoal = () => {
         .catch((error) => {
           console.log(error);
           setDealt(50);
-          setIsLoading(false);
         });
     }
   }, []);
 
-  useEffect(() => {
+ /*  useEffect(() => {
     if (user.token !== null) {
       axios
         .get("http://localhost:8080/updateOrNot", { // 업데이트 여부
@@ -76,9 +72,10 @@ const MyGoal = () => {
           if (response.status === 200) {
             const updateOrNot = response.data.data;
 
+            console.log("2: ", dealt);
+
             updateOrNot.forEach((value) => {
-              console.log(value.stars);
-              console.log("2: ", dealt);
+              console.log("starts", value.stars);
               if(value.stars === 0) {
                 setDealt((prevDealt) => Math.round((prevDealt - 1) * 10) / 10);
               } else if(value.stars >= 1 && value.stars <= 5) {
@@ -97,115 +94,14 @@ const MyGoal = () => {
   useEffect(() => {
     console.log("dealt: ", dealt);
     saveHappinessIndex();
-  }, [dealt]);
-
-  /* const changeCalculated = async () => {
-    try {
-      const response = await axios.post("http://localhost:8080/changeCalculated", {
-        calculated: true,
-      });
-    } catch(error) {
-      console.log(error);
-    }
-  } */
-
-/*   useEffect(() => {
-    if (user.token !== null) {
-      axios
-        .get("http://localhost:8080/study-time", {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setStyHour(Number(response.data.timeH));
-            setStyMinute(Number(response.data.timeM));
-          }
-        })
-        .catch((error) => {
-          setStyHour(0);
-          setStyMinute(0);
-        });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (user.token !== null) {
-      axios
-        .get("http://localhost:8080/ggoal-time", {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setHour(Number(response.data.goalTimeH));
-            setMinute(Number(response.data.goalTimeM));
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          setDealt(50);
-          setHour(0);
-          setMinute(0);
-        });
-    }
-  }, []); */
-
-  /* useEffect(() => {
-    let per =
-      Math.floor(((styHour * 60 + styMinute) / (hour * 60 + minute)) * 10000) /
-      100;
-    if (per > 100) per = 100;
-    setDealt(per);
-  }, [styHour, styMinute, hour, minute]); */
-
-/*   useEffect(() => {
-    let per = 50;
-
-    switch(score) {
-      case 0: 
-        per = dealt - 1;
-        break;
-      case 1:
-        per = dealt + 0.2;
-        break;
-      case 2:
-        per = dealt + 0.4;
-        break;
-      case 3:
-        per = dealt + 0.6;
-        break;
-      case 4:
-        per = dealt + 0.8;
-        break;
-      case 5:
-        per = dealt + 1;
-        break;
-    }
-
-    if(per > 100) per = 100;
-    setDealt(per);
-  }, [dealt, score]); */
+  }, [dealt]); */
 
   return (
     <>
-      {/* <MyGoalModal
-        visible={modalIsOpen}
-        setVisible={setModalIsOpen}
-        originMinute={minute}
-        originHour={hour}
-        setOriginTime={setTime}
-      /> */}
       <div className={styles.wrapper}>
         <div className={styles.title}>내 행복지수</div>
         <div className={styles.content}>
           <div style={{ display: "flex", alignItems: "center" }}>
-            {/* <button
-              className={styles.studyBtn}
-              onClick={() => {
-                user.token !== null ? setModalIsOpen(true) : navigate("/login");
-              }}
-            >
-              설정
-            </button> */}
           </div>
           <div
             style={{
@@ -226,7 +122,6 @@ const MyGoal = () => {
               {user.token !== null ? dealt : `50`}%
             </label>
             &nbsp;
-            {/* <label className={styles.progLabel2}>달성</label> */}
           </div>
           <div className={styles.progress}>
             <div

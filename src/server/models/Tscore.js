@@ -11,6 +11,7 @@ const TscoreSchema = new Schema(
     studentId: {type: String, required: true },
     teacherId: { type: [String], required: true },
     calculated: { type: Boolean, default: false },
+    review: { type: String },
   }
 );
 

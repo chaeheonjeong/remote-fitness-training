@@ -522,7 +522,7 @@ app.get("/getHappinessIndex", async(req, res) => {
   }
 })
 
-app.get("/updateOrNot", async(req, res) => {
+/* app.get("/updateOrNot", async(req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.split(" ")[1];
   const decodedToken = jwt.verify(token, mysecretkey);
@@ -533,13 +533,15 @@ app.get("/updateOrNot", async(req, res) => {
     calculated: false,
   };
 
+  console.log("filter ", filter);
+
   try {
     const getInfo = await Score.find(filter);
     const getTInfo = await TScore.find(filter);
 
     const updateOrNot = [...getInfo, ...getTInfo];
 
-    console.log(updateOrNot);
+    console.log("updateOrNot ", updateOrNot);
 
     if(updateOrNot.length !== 0) {
       return res.status(200).json({
@@ -558,9 +560,9 @@ app.get("/updateOrNot", async(req, res) => {
     console.log(error);
     res.status(500).json({ success: false, message: "Server Error" });
   }
-});
+}); */
 
-app.post("/saveHappinessIndex", async(req, res) => {
+/* app.post("/saveHappinessIndex", async(req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.split(" ")[1];
   const decodedToken = jwt.verify(token, mysecretkey);
@@ -621,7 +623,7 @@ app.post("/saveHappinessIndex", async(req, res) => {
     console.log(error);
     res.status(500).json({ success: false, message: "Server Error" });
   }
-});
+}); */
 
 
 app.post('/nick-change', async (req, res) => {
@@ -1235,6 +1237,37 @@ app.post("/postTreply/:id", async (req, res) => {
   }
 });
 
+app.post("/reviews", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+  const { stars, studentName, writeDate, roomName, teacherName, teacherId, review } = req.body;
+  try {
+    
+
+    // 새로운 후기 생성
+    const score = new Score({
+      stars : stars,
+      studentId : userId,
+      studentName : studentName,
+      writeDate : writeDate,
+      roomName: roomName, // 방 이름 저장
+      teacherName : teacherName,
+      teacherId : teacherId,
+      review: review,
+    });
+
+    // 후기 저장
+    const savedScore = await score.save();
+
+    res.status(201).json(savedScore);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 // 방 목록 가져오기
 app.get("/rooms", async (req, res) => {
@@ -1269,7 +1302,7 @@ app.post("/Treviews", async (req, res) => {
   const token = authHeader.split(" ")[1];
   const decodedToken = jwt.verify(token, mysecretkey);
   const userId = decodedToken.id;
-  const { stars, studentName, writeDate, roomName, teacherName, teacherId } =
+  const { stars, studentName, writeDate, roomName, teacherName, teacherId, review } =
     req.body;
   try {
     const savedTScores = [];
@@ -1284,6 +1317,7 @@ app.post("/Treviews", async (req, res) => {
         roomName: roomName,
         teacherName: teacherName[i],
         teacherId: teacherId[i],
+        review: review,
       });
 
       // 후기 저장
@@ -1295,6 +1329,64 @@ app.post("/Treviews", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/reviews", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+  const { stars, studentName, writeDate, roomName, teacherName, teacherId, review } =
+    req.body;
+  try {
+    const savedTScores = [];
+
+    for (let i = 0; i < teacherName.length; i++) {
+      // 새로운 후기 생성
+      const Tscore = new TScore({
+        stars: stars[i],
+        studentId: userId,
+        studentName: studentName,
+        writeDate: writeDate,
+        roomName: roomName,
+        teacherName: teacherName[i],
+        teacherId: teacherId[i],
+        review: review,
+      });
+
+      // 후기 저장
+      const savedTScore = await Tscore.save();
+      savedTScores.push(savedTScore);
+    }
+
+    res.status(201).json(savedTScores);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/getReview/:id", async(req, res) => {
+  const teacherId = req.params.id;
+
+  try {
+    const reviews = await TScore.find({ teacherId: teacherId });
+    const reviews2 = await Score.find({ teacherId: teacherId });
+
+    const reviewPack = [...reviews, ...reviews2];
+
+    if(reviewPack) {
+      return res.status(200).json({
+        result: reviewPack,
+        message: `ReviewPack 가져오기 성공`,
+      });
+    }
+
+
+  } catch(error) {
+    console.error(error);
+    res.status(500).json({ message: "서버 오류" });
   }
 });
 
@@ -1359,6 +1451,8 @@ app.post("/postreply/:id", async (req, res) => {
     res.status(500).json({ message: `서버오류` });
   }
 });
+
+
 
 app.post("/viewReplyRModify", async(req, res) => {
   const { postRId, selectedRId, _id, r_rWriteDate, r_reply, isRSecret } = req.body;
@@ -1936,7 +2030,7 @@ app.post("/postModify", async (req, res) => {
     const updatedWrite = await Write.findOneAndUpdate(
       { _id },
       {
-        $set: { number, period, date, tag, title, content, recruit },
+        $set: { number, /* period,  */date, startTime, runningTime, estimateAmount, tag, title, content, recruit },
       }
     );
 
@@ -3848,6 +3942,26 @@ app.get("/header-profile", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+// view 스크랩 수 가져오기(모집글)
+app.get("/getBookmarkCount/:id", async(req, res) => {
+  const postId = req.params.id;
+  
+  try {
+    const result = await PostGood.findOne({ _id: Number(postId) });
+
+    if(result) {
+      //console.log('result: ', result);
+      return res.status(200).json({
+        result: result,
+        message: `스크랩 수 가져오기 성공`,
+      });
+    }
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+})
 
 // tView 스크랩 수 가져오기(모집글)
 app.get("/getTBookmarkCount/:id", async(req, res) => {

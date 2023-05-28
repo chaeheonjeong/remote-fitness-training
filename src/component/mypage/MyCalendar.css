@@ -315,7 +315,7 @@ font-family: 'Cafe24SsurroundAir';
 
 .teacherroom {
   /* 모달 내용 스타일 */
-  max-height: 200px; /* 모달 내용의 최대 높이를 지정 */
+  max-height: 32rem; /* 모달 내용의 최대 높이를 지정 */
   overflow-y: auto; /* 세로 스크롤바를 자동으로 생성 */
 }
 
@@ -364,4 +364,13 @@ font-family: 'Cafe24SsurroundAir';
   /* 마우스가 올라갔을 때의 스타일 */
   background-color: rgb(255, 255, 112);
   border: 2px solid rgb(0, 213, 68);
+}
+
+.reviewBox {
+  border: 2px solid rgb(0, 213, 68);
+}
+
+.Modal {
+  width: 30rem;
+  height: 40rem;
 }

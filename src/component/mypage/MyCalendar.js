@@ -16,6 +16,7 @@ import useNoti from "../../hooks/useNoti";
 //import ReviewList from './ReviewList'; // 수정: 후기 목록 컴포넌트 추가
 //import ReviewModal from './ReviewModal'; // 수정: 후기 모달 컴포넌트 추가
 import { BASE_API_URI } from "../../util/common";
+import MyGoal from '../main/MyGoal';
 
 function MyCalendar() {
     const { id } = useParams();
@@ -43,6 +44,8 @@ function MyCalendar() {
     const [selectedRoom, setSelectedRoom] = useState(null); // 선택한 방
     const [roomList, setRoomList] = useState([]); // 방 목록
     const [selectedStars, setSelectedStars] = useState(0); // 추가: 선택한 별점
+
+    const [review, setReview] = useState("");
 
     //강사모집의 경우
     const [TselectedRoom, setTSelectedRoom] = useState(null); // 선택한 방
@@ -524,6 +527,7 @@ const tileContent = ({date,view}) => {
             roomName: selectedRoom.name, // 선택된 방의 이름 전달
             teacherId: selectedHostId, // 선택된 호스트의 이름 전달
             teacherName: selectedHost, // 선택된 호스트의 이름 전달
+            review: review,
         },{
             headers : {Authorization: `Bearer ${token}`}
         });
@@ -561,6 +565,7 @@ const tileContent = ({date,view}) => {
             roomName: TselectedRoom.name, // 선택된 방의 이름 전달
             teacherId: TselectedApplicantId, // 선택된 호스트의 이름 전달
             teacherName: TselectedApplicant, // 선택된 호스트의 이름 전달
+            review: review,
         },{
             headers : {Authorization: `Bearer ${token}`}
         });
@@ -632,6 +637,24 @@ const tileContent = ({date,view}) => {
                 </span>
                 ))}
             </div>
+        
+            <div className="writeReview"> 
+                    <p>리뷰 작성</p>
+                    <textarea
+                        className="reviewBox"
+                        placeholder="리뷰를 작성해주세요 (30자 이상)"
+                        cols="40"
+                        rows="13"
+                        onChange={(e) => {
+                            if (e.target.value.length >= 30) {
+                              setReview(e.target.value);
+                            }
+                          }}
+                        type="text"
+                    >
+                    </textarea>
+                </div>
+            
             <button type="submit" onClick={handleReviewSubmit}>
                 등록
             </button>
@@ -706,6 +729,22 @@ const tileContent = ({date,view}) => {
                     {star}{" "}
                     </span>
                 ))}
+                </div>
+                <div className="writeReview"> 
+                    <p>리뷰 작성</p>
+                    <textarea
+                        className="reviewBox"
+                        placeholder="리뷰를 작성해주세요 (30자 이상)"
+                        cols="40"
+                        rows="13"
+                        onChange={(e) => {
+                            if (e.target.value.length >= 30) {
+                              setReview(e.target.value);
+                            }
+                          }}
+                        type="text"
+                    >
+                    </textarea>
                 </div>
             </div>
             )}
