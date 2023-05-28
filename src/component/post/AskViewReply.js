@@ -6,7 +6,6 @@ import { scrollToTop } from "../../util/common";
 import styles from './AskView.module.css';
 import userStore from "../../store/user.store";
 import { useParams } from "react-router-dom";
-import Reply from '../../server/models/reply';
 import { HiUserCircle } from "react-icons/hi";
 
 const AskViewReply = ({ write, setWrite, writer }) => {
