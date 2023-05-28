@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const tPostGoodSchema = new Schema(
+const askGoodSchema = new Schema(
   {
     _id: { type: Number, required: true },
     _users: { type: [Object], required: false },
@@ -12,8 +12,8 @@ const tPostGoodSchema = new Schema(
   }
 );
 
-tPostGoodSchema.set("collection", "tPostGood");
+askGoodSchema.set("collection", "askGood");
 
-const TPostGood = mongoose.model("tPostGood", tPostGoodSchema);
+const AskGood = mongoose.model("askGood", askGoodSchema);
 
-module.exports = TPostGood;
+module.exports = AskGood;

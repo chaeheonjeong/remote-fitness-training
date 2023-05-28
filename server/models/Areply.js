@@ -1,15 +1,18 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const AreplySchema = new Schema({
-  postId: { type: Number, required: true },
-  _id: { type: Number, required: true },
-  Arwriter: { type: String, required: true },
-  ArwriteDate: { type: String, required: true },
-  Areply: { type: String, required: true },
-  isASecret: { type: Boolean, default: false },
-  _user: { type: String, required: true },
-});
+const AreplySchema = new Schema(
+  {
+    postId : {type: Number, required: true },
+    _id : { type: Number, required: true },
+    Arwriter: { type: String, required: true },
+    _user: { type: String, required: true },
+    ArwriteDate: { type: String, required: true },
+    Areply: { type: String, required: true },
+    likes: { type: [String], default: [], index: true }, // 좋아요 수 필드 추가
+    likesCount: { type: Number, default: 0 }, // 좋아요 수 필드 추가
+  },
+);
 
 AreplySchema.set("collection", "Areply");
 
