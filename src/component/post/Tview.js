@@ -1,3 +1,4 @@
+import TViewWrite from "./TViewWrite";
 
 const TView = () => {
   return (
@@ -6,3 +7,4 @@ const TView = () => {
     </>
   );
 }
+export default TView;

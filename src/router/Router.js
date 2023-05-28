@@ -8,7 +8,7 @@ import Notification from "../component/main/Notification";
 import TWrite from "../component/post/Twrite";
 import Write from "../component/post/Write";
 import View from "../component/post//View";
-import TView from "../component/post/TView";
+import TView from "../component/post/Tview";
 import Ask from "../component/post//Ask";
 import AskView from "../component/post//AskView";
 import MyInfo from "../component/mypage/MyInfo";
@@ -64,7 +64,7 @@ const Router = () => {
         <Route path="/View/:id" element={<View />} />
         <Route path="/Ask" element={<Ask />} />
         <Route path="/modifyAsk/:id" element={<ModifyAsk />} />
-        <Route path="/tView/:id" element={<TView />} />
+        <Route path="/TView/:id" element={<TView />} />
 
         <Route path="/AskView/:id" element={<AskView />} />
         <Route path="/MyInfo" element={<MyInfo />} />

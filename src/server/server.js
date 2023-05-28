@@ -17,9 +17,9 @@ const SelectionInfo = require("./models/selectionInfo");
 const SelectionTInfo = require("./models/selectionTInfo");
 
 const TReply = require("./models/Treply");
-const TR_Reply = require("./models/Tr_reply");
+const TR_Reply = require("./models/tr_reply");
 const TReplyCounter = require("./models/Treplycounter");
-const TR_ReplyCounter = require("./models/Tr_replycounter");
+const TR_ReplyCounter = require("./models/tr_replycounter");
 
 const AReply = require("./models/Areply");
 const AR_Reply = require("./models/Ar_reply");
@@ -2389,84 +2389,6 @@ app.get("/questions", async (req, res) => {
     }
   });
 
-  // 후기 작성 요청 처리
-  app.post("/reviews", async (req, res) => {
-    const authHeader = req.headers.authorization;
-    const token = authHeader.split(" ")[1];
-    const decodedToken = jwt.verify(token, mysecretkey);
-    const userId = decodedToken.id;
-    const { stars, studentName, writeDate, roomName, teacherName, teacherId } = req.body;
-    try {
-      
-  
-      // 새로운 후기 생성
-      const score = new Score({
-        stars : stars,
-        studentId : userId,
-        studentName : studentName,
-        writeDate : writeDate,
-        roomName: roomName, // 방 이름 저장
-        teacherName : teacherName,
-        teacherId : teacherId,
-      });
-  
-      // 후기 저장
-      const savedScore = await score.save();
-  
-      res.status(201).json(savedScore);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  });
-  
-  // 방 목록 가져오기
-  app.get("/rooms", async (req, res) => {
-    try {
-      // DB에서 모든 SelectionInfo 정보를 가져옴
-      const selectionTInfoList = await SelectionTInfo.find();
-      // 방 제목만 추출하여 배열로 변환
-      const roomTitles = selectionTInfoList.map((selectionTInfo) => selectionTInfo.roomTitle);
-      res.status(200).json(roomTitles);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "서버 오류" });
-    }
-  });
-  
-  app.get("/selectionTInfo", async (req, res) => {
-    try {
-      const selectionTInfo = await SelectionTInfo.find();
-      res.status(200).json(selectionTInfo);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "서버 오류" });
-    }
-  });
-  
-  // 방 목록 가져오기
-  app.get("/rooms", async (req, res) => {
-    try {
-      // DB에서 모든 SelectionInfo 정보를 가져옴
-      const selectionTInfoList = await SelectionTInfo.find();
-      // 방 제목만 추출하여 배열로 변환
-      const roomTitles = selectionTInfoList.map((selectionTInfo) => selectionTInfo.roomTitle);
-      res.status(200).json(roomTitles);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "서버 오류" });
-    }
-  });
-  
-  app.get("/selectionTInfo", async (req, res) => {
-    try {
-      const selectionTInfo = await SelectionTInfo.find();
-      res.status(200).json(selectionTInfo);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "서버 오류" });
-    }
-  });
 
 app.get("/getGood/:id", async (req, res) => {
   const authHeader = req.headers.authorization;
@@ -3247,8 +3169,8 @@ app.post("/saveHappinessIndex", async(req, res) => {
   if(happinessIndex !== undefined) {
     const existing = await HappinessIndex.findOne({ _user: userId });
     
-    console.log("-", typeof(happinessIndex));
-    console.log("--", typeof(existing.happinessIndex));
+    //console.log("-", typeof(happinessIndex));
+    //console.log("--", typeof(existing.happinessIndex));
     if(existing) {
       existing.happinessIndex = String(happinessIndex);
 
@@ -4231,51 +4153,7 @@ app.delete("/postTr_reply/:id/:rid/:rrid", async (req, res) => {
   }
 });
 
-app.get('/myLikedPost', auth, async(req, res) => {
-  const page = parseInt(req.query.page);
-  const limit = parseInt(req.query.limit);
 
-  const offset = (page - 1) * limit;
-
-  const userId = req.user.id;
-
-  console.log(userId);
-
-  try {
-    const studyLiked = await PostGood.find(
-      { '_users.user': userId }
-    );
-    
-    console.log(studyLiked);
-
-    const studyLikedIds = studyLiked.map(post => post._id);
-    console.log(studyLikedIds);
-
-    re
-    const likedPosts = await Write.find({ _id: { $in: studyLiked } })
-      .skip(offset)
-      .limit(limit);
-    console.log(likedPosts); 
-
-    
-
-    if(studyLiked.length > 0) {
-      return res.status(200).json({ 
-        likePosts: likedPosts,
-        success: true,
-       });
-    } else {
-      return res.status(400).json({ 
-        message: "데이터가 존재하지 않습니다.",
-        success: false,
-       });
-    }
-
-  } catch(error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
 
 app.get('/myLikedQuestion', auth, async(req, res) => {
   const page = parseInt(req.query.page);

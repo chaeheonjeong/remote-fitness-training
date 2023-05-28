@@ -3621,7 +3621,7 @@ app.get("/", (req, res) => {
   res.send("hello world!");
 });
 
-app.listen(6060, () => {
+app.listen(8080, () => {
   console.log("서버가 시작되었습니다.");
   // delete require.cache["axios"];
   // console.log(require.cache);
