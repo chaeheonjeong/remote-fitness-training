@@ -110,6 +110,20 @@ function PortfolioView() {
       <Header />
       <ProfileSideBar />
       <div className="viewContent">
+        <div>{portfolio[0]?.gender}</div>
+        <div>{portfolio[0]?.career}</div>
+        <div>{portfolio[0]?.price}</div>
+        <div>{portfolio[0]?.sports}</div>
+        <div>
+          {portfolio[0]?.paymentMethods.map((method, index) => (
+            <div key={index}>{method}</div>
+          ))}
+        </div>
+        <div>
+          {portfolio[0]?.tags.map((tag, index) => (
+            <div key={index}>{tag}</div>
+          ))}
+        </div>
         <div className="view_title">
           <div className="viewTitle">제목 {portfolio[0]?.title}</div>
         </div>

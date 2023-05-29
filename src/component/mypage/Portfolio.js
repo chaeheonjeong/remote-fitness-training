@@ -9,20 +9,9 @@ import userStore from "../../store/user.store";
 import "./Portfolio.css";
 import { FcOk } from "react-icons/fc";
 import { BASE_API_URI } from "../../util/common";
+import styles from "./PortfolioModify.module.css";
 
 function Portfolio() {
-  const defaultContent = `
-    <h2>포트폴리오 작성 예시</h2>
-    <br>
-    <p> 경력 : </p> 
-    <br>
-    <p> 운동 종목 : </p> 
-    <br>
-    <p> 가격대 : </p>
-    <br>
-    <p> 성별 : </p>
-    `;
-
   const today = new Date();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -32,6 +21,47 @@ function Portfolio() {
   const token = localStorage.getItem("token");
   const user = userStore();
   const [isRegistered, setIsRegistered] = useState(false);
+
+  const [sports, setSports] = useState("");
+  const [career, setCareer] = useState("");
+  const [tags, setTags] = useState([]);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [gender, setGender] = useState("");
+  const [price, setPrice] = useState("");
+
+  function handleKeyPress(e) {
+    if (e.code === "Enter" || e.code === "Comma" || e.code === "Space") {
+      const newTag = e.target.value.trim();
+
+      if (tags.includes(newTag)) {
+        alert("중복되는 태그가 있습니다");
+        e.target.value = "";
+        e.preventDefault();
+      } else {
+        if (tags.length < 5) {
+          if (newTag !== "") {
+            setTags([...tags, newTag]);
+            e.target.value = "";
+            e.preventDefault();
+          }
+        } else {
+          alert("태그는 최대 5개까지 가능합니다.");
+          e.target.value = "";
+          e.preventDefault();
+        }
+      }
+    }
+  }
+
+  const handlePaymentMethodChange = (value) => {
+    if (paymentMethods.includes(value)) {
+      // 이미 선택된 결제 수단인 경우, 선택 해제
+      setPaymentMethods(paymentMethods.filter((method) => method !== value));
+    } else {
+      // 새로운 결제 수단을 선택한 경우, 선택 추가
+      setPaymentMethods([...paymentMethods, value]);
+    }
+  };
 
   const handleTitle = (e) => {
     setTitle(e.target.value);
@@ -43,6 +73,12 @@ function Portfolio() {
         const res = await axios.get(`${BASE_API_URI}/portfolio`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        setGender(res.data[0].gender);
+        setCareer(res.data[0].career);
+        setPrice(res.data[0].price);
+        setSports(res.data[0].sports);
+        setPaymentMethods(res.data[0].paymentMethods);
+        setTags(res.data[0].tags);
         setTitle(res.data[0].title);
         setContent(res.data[0].content);
         console.log(res.data);
@@ -77,6 +113,20 @@ function Portfolio() {
         <div className="viewContent">
           <div className="view_title">
             <div className="viewTitle">제목 {title}</div>
+          </div>
+          <div>{gender}</div>
+          <div>{career}</div>
+          <div>{price}</div>
+          <div>{sports}</div>
+          <div>
+            {paymentMethods.map((method, index) => (
+              <div key={index}>{method}</div>
+            ))}
+          </div>
+          <div>
+            {tags.map((tag, index) => (
+              <div key={index}>{tag}</div>
+            ))}
           </div>
           <div className="view_contents">
             <div
@@ -122,6 +172,11 @@ function Portfolio() {
         const res = await axios.post(
           `${BASE_API_URI}/portfolio`,
           {
+            gender: gender,
+            career: career,
+            price: price,
+            paymentMethods: paymentMethods,
+            tags: tags,
             title: title,
             content: JSON.parse(JSON.stringify(content)),
             writer: user.name,
@@ -265,9 +320,127 @@ function Portfolio() {
     <div>
       <Header />
       <SideBar />
-      <div>
-        <div className="title">
-          <text className="titleText">제목</text>
+      <div className={styles.choose}>
+        <div className={styles.ch1}>
+          <p className={styles.nn}>성별</p>
+          <select
+            name="gender"
+            className={styles.number}
+            defaultValue="default"
+            onChange={(e) => {
+              setGender(e.target.value);
+            }}
+          >
+            <option value="default" disabled hidden>
+              성별 선택
+            </option>
+            <option value="남자">남자</option>
+            <option value="여자">여자</option>
+          </select>
+
+          <p className={styles.ww}>경력</p>
+          <input
+            className={styles.estimatedAmount_input}
+            onChange={(event) => {
+              setCareer(event.target.value);
+            }}
+            type="text"
+            id="career"
+            name="career"
+            value={career}
+          />
+        </div>
+        <div className={styles.ch2}>
+          <text className={styles.ww}>가격대</text>
+          <input
+            className={styles.estimatedAmount_input}
+            onChange={(event) => {
+              setPrice(event.target.value);
+            }}
+            type="currency"
+            pattern="[0-9]+"
+            id="estimatedAmount"
+            name="estimatedAmount"
+            min="0"
+            step="100"
+            value={price}
+          ></input>{" "}
+          원<p className={styles.ww}>운동 종목</p>
+          <input
+            className={styles.estimatedAmount_input}
+            onChange={(event) => {
+              setSports(event.target.value);
+            }}
+            type="text"
+            id="sports"
+            name="sports"
+            value={sports}
+          />
+        </div>
+
+        <div className={styles.ch3}>
+          <p className={styles.nn}>결제 수단</p>
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                value="현금 결제"
+                checked={paymentMethods.includes("현금 결제")}
+                onChange={(e) => handlePaymentMethodChange(e.target.value)}
+              />
+              현금 결제
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                value="카드 결제"
+                checked={paymentMethods.includes("카드 결제")}
+                onChange={(e) => handlePaymentMethodChange(e.target.value)}
+              />
+              카드 결제
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                value="계좌 이체"
+                checked={paymentMethods.includes("계좌 이체")}
+                onChange={(e) => handlePaymentMethodChange(e.target.value)}
+              />
+              계좌 이체
+            </label>
+          </div>
+          <p className={styles.tt}>태그</p>
+          <div>
+            <input
+              className={styles.tag_input}
+              onKeyPress={handleKeyPress}
+              type="text"
+              placeholder="해시태그 입력(최대 5개)"
+            />
+            <div className={styles.tag_tagPackage}>
+              {tags.map((tag, index) => (
+                <span key={index} className={styles.tag_tagindex}>
+                  {tag}
+                  <button
+                    className={styles.tag_Btn}
+                    onClick={() => {
+                      setTags(tags.filter((tag, i) => i !== index));
+                    }}
+                  >
+                    &times;
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.title_input}>
+          <text className={styles.cc}>제목</text>
           <input
             onChange={handleTitle}
             className="titleInput"
@@ -275,10 +448,11 @@ function Portfolio() {
             placeholder="제목을 입력하세요."
           />
         </div>
-        <div className="content">
+
+        <div className={styles.content}>
           <CKEditor
             editor={ClassicEditor}
-            data={defaultContent}
+            data={htmlString}
             config={{
               placeholder: "내용을 입력하세요.",
               extraPlugins: [uploadPlugin],
@@ -289,16 +463,22 @@ function Portfolio() {
                 content: data,
               });
             }}
+            onBlur={(e, editor) => {
+              // console.log("Blur.", editor);
+            }}
+            onFocus={(e, editor) => {
+              // console.log("Focus.", editor);
+            }}
           />
         </div>
-        <div className="btn">
-          <input
-            type="submit"
-            value="등록"
-            className="submitBtn"
-            onClick={handleSubmit}
-          />
-        </div>
+      </div>
+      <div className={styles.btn}>
+        <input
+          type="submit"
+          value="등록"
+          className="submitBtn"
+          onClick={handleSubmit}
+        />
       </div>
     </div>
   );
