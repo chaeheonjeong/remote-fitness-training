@@ -1300,27 +1300,21 @@ app.post("/reviews", async (req, res) => {
     review,
   } = req.body;
   try {
-    const savedTScores = [];
+    // 새로운 후기 생성
+    const score = new Score({
+      stars: stars,
+      studentId: userId,
+      studentName: studentName,
+      writeDate: writeDate,
+      roomName: roomName, // 방 이름 저장
+      teacherName: teacherName,
+      teacherId: teacherId,
+    });
 
-    for (let i = 0; i < teacherName.length; i++) {
-      // 새로운 후기 생성
-      const Tscore = new TScore({
-        stars: stars[i],
-        studentId: userId,
-        studentName: studentName,
-        writeDate: writeDate,
-        roomName: roomName,
-        teacherName: teacherName[i],
-        teacherId: teacherId[i],
-        review: review,
-      });
+    // 후기 저장
+    const savedScore = await score.save();
 
-      // 후기 저장
-      const savedTScore = await Tscore.save();
-      savedTScores.push(savedTScore);
-    }
-
-    res.status(201).json(savedTScores);
+    res.status(201).json(savedScore);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal server error" });
@@ -1350,7 +1344,7 @@ app.get("/getReview/:id", async (req, res) => {
 
 ///// 후기 강사모집의 경우
 // 후기 작성 요청 처리
-app.post("/Treviews", async (req, res) => {
+/* app.post("/Treviews", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.split(" ")[1];
   const decodedToken = jwt.verify(token, mysecretkey);
@@ -1386,6 +1380,43 @@ app.post("/Treviews", async (req, res) => {
     }
 
     res.status(201).json(savedTScores);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}); */
+///// 후기 강사모집의 경우
+app.post("/Treviews", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+  const {
+    stars,
+    studentName,
+    writeDate,
+    roomName,
+    teacherName,
+    teacherId,
+    review,
+  } = req.body;
+  try {
+    // 새로운 후기 생성
+    const Tscore = new TScore({
+      stars: stars,
+      studentId: userId,
+      studentName: studentName,
+      writeDate: writeDate,
+      roomName: roomName,
+      teacherName: teacherName,
+      teacherId: teacherId,
+      review: review,
+    });
+
+    // 후기 저장
+    const savedTScore = await Tscore.save();
+
+    res.status(201).json(savedTScore);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal server error" });
@@ -1478,6 +1509,474 @@ app.post("/viewReplyRModify", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// 대댓글 T
+app.get("/getTR_Reply/:id/:rid", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  const postRId = req.params.id;
+  const selectedRId = req.params.rid;
+
+  try {
+    const result = await TR_Reply.find({
+      postRId: Number(postRId),
+      selectedRId: Number(selectedRId),
+    });
+    if (result) {
+      const RsameUsers = result.map((reply) => reply._user === userId);
+      console.log(RsameUsers);
+
+      //let RsameUsers = false;
+      //console.log('result[0]: ', result[0].r_rwriter);
+      //if (userId === result[0].r_rwriter) RsameUsers = true;
+      //console.log(postRId);
+      //console.log(selectedRId);
+
+      // 사용자 프로필 이미지 반환
+      const profileImgs = await Promise.all(
+        result.map(async (r_reply) => {
+          const user = await User.findOne({ name: r_reply.r_rwriter });
+
+          if (!user) {
+            throw new Error(`User with name "${r_reply.r_rwriter}" not found`);
+          }
+
+          return user.image;
+        })
+      );
+
+      return res.status(200).json({
+        data: result,
+        RsameUsers: RsameUsers,
+        profileImgs: profileImgs,
+        message: ` ${typeof selectedRId}대댓글 가져오기 성공`,
+      });
+    } else {
+      return res.status(404).json({ message: "대댓글이 존재하지 않습니다." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+/// 대댓글 작성
+app.post("/postr_reply/:id/:rid", auth, async (req, res) => {
+  const { r_reply, isRSecret, r_rwriteDate, r_rwriter } = req.body;
+  const { id, rid } = req.params;
+  const userId = req.user.id;
+
+  console.log(rid);
+
+  const post = await Write.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const reply = await Reply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "Reply not found" });
+  }
+
+  const r_replycounter = await R_ReplyCounter.findOneAndUpdate(
+    { name: "대댓글 수" },
+    { $inc: { totalR_Reply: 1 } },
+    { new: true, upsert: true }
+  );
+  const 총대댓글수 = r_replycounter.totalR_Reply + 1;
+
+  if (!r_replycounter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newR_Reply = new R_Reply({
+      postRId: id,
+      selectedRId: rid,
+      _id: 총대댓글수 + 1, //댓글번호
+      r_rwriter: r_rwriter,
+      r_rwriteDate: r_rwriteDate,
+      r_reply: r_reply,
+      isRSecret: isRSecret,
+      _user: userId,
+    });
+    await newR_Reply.save();
+    console.log(isRSecret);
+    return res.status(200).json({ message: `Reply created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+// 대댓글 삭제
+app.delete("/postr_reply/:id/:rid/:rrid", async (req, res) => {
+  const { id, rid, rrid } = req.params;
+
+  const post = await Write.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const reply = await Reply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "Reply not found" });
+  }
+
+  const r_reply = await R_Reply.findOne({ _id: rrid });
+  if (!r_reply) {
+    return res.status(404).json({ message: "R_Reply not found" });
+  }
+
+  try {
+    await R_Reply.deleteOne({ _id: rrid });
+
+    return res
+      .status(200)
+      .json({ message: `R_Reply ${rrid} deleted successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+app.get("/view/:id/modify/:selectedRId/:rrid", async (req, res) => {
+  const postId = req.params.id;
+  const selectedRId = req.params.selectedRId;
+  const rrid = req.params.rrid;
+
+  try {
+    const result = await R_Reply.find({
+      postRId: Number(postId),
+      selectedRId: Number(selectedRId),
+      _id: Number(rrid),
+    });
+    console.log(result);
+
+    if (result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    } /* reply */
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+/// 대댓글 작성 T
+app.post("/postTr_reply/:id/:rid", async (req, res) => {
+  const { r_reply, /* isRSecret, */ r_rwriteDate, r_rwriter } = req.body;
+  const { id, rid } = req.params;
+
+  const post = await TWrite.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const reply = await TReply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "Reply not found" });
+  }
+
+  const r_replycounter = await TR_ReplyCounter.findOneAndUpdate(
+    { name: "대댓글 수" },
+    { $inc: { totalR_Reply: 1 } },
+    { new: true, upsert: true }
+  );
+  const 총대댓글수 = r_replycounter.totalR_Reply + 1;
+
+  const r_rwriterId = await User.findOne({ name: r_rwriter });
+
+  if (!r_replycounter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newR_Reply = new TR_Reply({
+      postRId: id,
+      selectedRId: rid,
+      _id: 총대댓글수 + 1, //댓글번호
+      r_rwriter: r_rwriter,
+      _user: r_rwriterId._id,
+      r_rwriteDate: r_rwriteDate,
+      r_reply: r_reply,
+      //isRSecret : isRSecret
+    });
+    await newR_Reply.save();
+
+    return res.status(200).json({ message: `Reply created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+// 대댓글 삭제T
+app.delete("/postTr_reply/:id/:rid/:rrid", async (req, res) => {
+  const { id, rid, rrid } = req.params;
+
+  const post = await TWrite.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "TPost not found" });
+  }
+
+  const reply = await TReply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "TReply not found" });
+  }
+
+  const r_reply = await TR_Reply.findOne({ _id: rrid });
+  if (!r_reply) {
+    return res.status(404).json({ message: "TR_Reply not found" });
+  }
+
+  try {
+    await TR_Reply.deleteOne({ _id: rrid });
+
+    return res
+      .status(200)
+      .json({ message: `TR_Reply ${rrid} deleted successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+// 대댓글 T
+app.get("/getTR_Reply/:id/:rid", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  const postRId = req.params.id;
+  const selectedRId = req.params.rid;
+
+  try {
+    const result = await TR_Reply.find({
+      postRId: Number(postRId),
+      selectedRId: Number(selectedRId),
+    });
+    if (result) {
+      const RsameUsers = result.map((reply) => reply._user === userId);
+      console.log(RsameUsers);
+
+      //let RsameUsers = false;
+      //console.log('result[0]: ', result[0].r_rwriter);
+      //if (userId === result[0].r_rwriter) RsameUsers = true;
+      //console.log(postRId);
+      //console.log(selectedRId);
+
+      // 사용자 프로필 이미지 반환
+      const profileImgs = await Promise.all(
+        result.map(async (r_reply) => {
+          const user = await User.findOne({ name: r_reply.r_rwriter });
+
+          if (!user) {
+            throw new Error(`User with name "${r_reply.r_rwriter}" not found`);
+          }
+
+          return user.image;
+        })
+      );
+
+      return res.status(200).json({
+        data: result,
+        RsameUsers: RsameUsers,
+        profileImgs: profileImgs,
+        message: ` ${typeof selectedRId}대댓글 가져오기 성공`,
+      });
+    } else {
+      return res.status(404).json({ message: "대댓글이 존재하지 않습니다." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+/// 대댓글 작성
+app.post("/postr_reply/:id/:rid", auth, async (req, res) => {
+  const { r_reply, isRSecret, r_rwriteDate, r_rwriter } = req.body;
+  const { id, rid } = req.params;
+  const userId = req.user.id;
+
+  console.log(rid);
+
+  const post = await Write.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const reply = await Reply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "Reply not found" });
+  }
+
+  const r_replycounter = await R_ReplyCounter.findOneAndUpdate(
+    { name: "대댓글 수" },
+    { $inc: { totalR_Reply: 1 } },
+    { new: true, upsert: true }
+  );
+  const 총대댓글수 = r_replycounter.totalR_Reply + 1;
+
+  if (!r_replycounter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newR_Reply = new R_Reply({
+      postRId: id,
+      selectedRId: rid,
+      _id: 총대댓글수 + 1, //댓글번호
+      r_rwriter: r_rwriter,
+      r_rwriteDate: r_rwriteDate,
+      r_reply: r_reply,
+      isRSecret: isRSecret,
+      _user: userId,
+    });
+    await newR_Reply.save();
+    console.log(isRSecret);
+    return res.status(200).json({ message: `Reply created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+// 대댓글 삭제
+app.delete("/postr_reply/:id/:rid/:rrid", async (req, res) => {
+  const { id, rid, rrid } = req.params;
+
+  const post = await Write.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const reply = await Reply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "Reply not found" });
+  }
+
+  const r_reply = await R_Reply.findOne({ _id: rrid });
+  if (!r_reply) {
+    return res.status(404).json({ message: "R_Reply not found" });
+  }
+
+  try {
+    await R_Reply.deleteOne({ _id: rrid });
+
+    return res
+      .status(200)
+      .json({ message: `R_Reply ${rrid} deleted successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+app.get("/view/:id/modify/:selectedRId/:rrid", async (req, res) => {
+  const postId = req.params.id;
+  const selectedRId = req.params.selectedRId;
+  const rrid = req.params.rrid;
+
+  try {
+    const result = await R_Reply.find({
+      postRId: Number(postId),
+      selectedRId: Number(selectedRId),
+      _id: Number(rrid),
+    });
+    console.log(result);
+
+    if (result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    } /* reply */
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+/// 대댓글 작성 T
+app.post("/postTr_reply/:id/:rid", async (req, res) => {
+  const { r_reply, /* isRSecret, */ r_rwriteDate, r_rwriter } = req.body;
+  const { id, rid } = req.params;
+
+  const post = await TWrite.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const reply = await TReply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "Reply not found" });
+  }
+
+  const r_replycounter = await TR_ReplyCounter.findOneAndUpdate(
+    { name: "대댓글 수" },
+    { $inc: { totalR_Reply: 1 } },
+    { new: true, upsert: true }
+  );
+  const 총대댓글수 = r_replycounter.totalR_Reply + 1;
+
+  const r_rwriterId = await User.findOne({ name: r_rwriter });
+
+  if (!r_replycounter) {
+    return res.status(500).json({ message: "Counter not found" });
+  }
+  try {
+    const newR_Reply = new TR_Reply({
+      postRId: id,
+      selectedRId: rid,
+      _id: 총대댓글수 + 1, //댓글번호
+      r_rwriter: r_rwriter,
+      _user: r_rwriterId._id,
+      r_rwriteDate: r_rwriteDate,
+      r_reply: r_reply,
+      //isRSecret : isRSecret
+    });
+    await newR_Reply.save();
+
+    return res.status(200).json({ message: `Reply created successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+// 대댓글 삭제T
+app.delete("/postTr_reply/:id/:rid/:rrid", async (req, res) => {
+  const { id, rid, rrid } = req.params;
+
+  const post = await TWrite.findOne({ _id: id });
+  if (!post) {
+    return res.status(404).json({ message: "TPost not found" });
+  }
+
+  const reply = await TReply.findOne({ _id: rid });
+  if (!reply) {
+    return res.status(404).json({ message: "TReply not found" });
+  }
+
+  const r_reply = await TR_Reply.findOne({ _id: rrid });
+  if (!r_reply) {
+    return res.status(404).json({ message: "TR_Reply not found" });
+  }
+
+  try {
+    await TR_Reply.deleteOne({ _id: rrid });
+
+    return res
+      .status(200)
+      .json({ message: `TR_Reply ${rrid} deleted successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
   }
 });
 
@@ -1703,11 +2202,10 @@ app.get("/getPortfolio/:name", async (req, res) => {
 });
 
 /// 질문글 댓글 작성
-app.post("/postAreply/:id", async (req, res) => {
-  const { Areply, isASecret, Arwriter, ArwriteDate } = req.body;
+app.post("/postAreply/:id", auth, async (req, res) => {
+  const { Areply, isASecret, Arwriter, ArwriteDate, likes } = req.body;
   const { id } = req.params;
   const userId = req.user.id;
-  console.log(userId);
 
   const post = await Ask.findOne({ _id: id });
   if (!post) {
@@ -1732,6 +2230,8 @@ app.post("/postAreply/:id", async (req, res) => {
       ArwriteDate: ArwriteDate,
       Areply: Areply,
       isASecret: isASecret,
+      _user: userId,
+      likes: likes,
     });
     await newAReply.save();
 
@@ -1754,7 +2254,6 @@ app.put("/likeAreply/:id", auth, async (req, res) => {
 
     const likedByUser = reply.likes.includes(userId);
     if (likedByUser) {
-      0;
       // 이미 좋아요한 상태라면 좋아요 취소
       reply.likes.pull(userId);
       reply.likesCount -= 1;
@@ -3214,6 +3713,55 @@ app.get("/recommend", async (req, res) => {
   }
 });
 
+// 댓글 내용 가져오기
+app.get("/tView/:id/modify/:replyId", async (req, res) => {
+  const postId = req.params.id;
+  const replyId = req.params.replyId;
+
+  try {
+    const result = await TReply.find({
+      postId: Number(postId),
+      _id: Number(replyId),
+    });
+    console.log(result);
+    if (result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// 대댓글 내용 가져오기 Ask
+app.get("/tView/:id/modify/:selectedARId/:rrid", async (req, res) => {
+  const postId = req.params.id;
+  const selectedARId = req.params.selectedARId;
+  const rrid = req.params.rrid;
+
+  try {
+    const result = await TR_Reply.find({
+      postRId: Number(postId),
+      selectedARId: Number(selectedARId),
+      _id: Number(rrid),
+    });
+    console.log(result);
+
+    if (result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 app.post("/getViewCount", async (req, res) => {
   const { id, postName } = req.body;
 
@@ -3962,9 +4510,20 @@ app.get("/getAReply/:id", async (req, res) => {
     if (result) {
       const sameAUsers = result.map((reply) => reply._user === userId);
 
-      //let sameAUsers = false;
-      if (userId === result[0]._user) sameAUsers = true;
       console.log(req.params.postId);
+
+      const profileImgs = await Promise.all(
+        result.map(async (reply) => {
+          const user = await User.findOne({ name: reply.Arwriter });
+
+          if (!user) {
+            throw new Error(`User with name "${reply.Arwriter} not found`);
+          }
+
+          return user.image;
+        })
+      );
+
       return res.status(200).json({
         data: result,
         sameAUsers: sameAUsers,
@@ -3973,6 +4532,81 @@ app.get("/getAReply/:id", async (req, res) => {
       });
     } else {
       return res.status(404).json({ message: "댓글이 존재하지 않습니다." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+//ask 대댓글
+app.get("/getAR_Reply/:id/:rid", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  const postRId = req.params.id;
+  const selectedARId = req.params.rid;
+
+  try {
+    const result = await AR_Reply.find({
+      postRId: Number(postRId),
+      selectedARId: Number(selectedARId),
+    });
+    if (result) {
+      const RsameUsers = result.map((reply) => reply._user === userId);
+
+      // 사용자 프로필 이미지 반환
+      const profileImgs = await Promise.all(
+        result.map(async (Ar_reply) => {
+          const user = await User.findOne({ name: Ar_reply.Ar_rwriter });
+
+          if (!user) {
+            throw new Error(
+              `User with name "${Ar_reply.Ar_rwriter}" not found`
+            );
+          }
+
+          return user.image;
+        })
+      );
+
+      return res.status(200).json({
+        data: result,
+        RsameUsers: RsameUsers,
+        profileImgs: profileImgs,
+        message: ` ${typeof selectedARId}대댓글 가져오기 성공`,
+      });
+    }
+    /* else {
+      return res.status(404).json({ message: "대댓글이 존재하지 않습니다." });
+    } */
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// 댓글 내용 가져오기 Ask
+app.get("/askView/:id/modify/:replyId", async (req, res) => {
+  const postId = req.params.id;
+  const selectedARId = req.params.selectedARId;
+  const rrid = req.params.rrid;
+
+  try {
+    const result = await AR_Reply.find({
+      postRId: Number(postId),
+      selectedARId: Number(selectedARId),
+      _id: Number(rrid),
+    });
+    console.log(result);
+
+    if (result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
     }
   } catch (error) {
     console.error(error);
