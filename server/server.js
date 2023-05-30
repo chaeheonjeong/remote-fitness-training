@@ -3322,10 +3322,20 @@ app.get("/recommend", async (req, res) => {
             name = user.name;
             profileImage = user.image || null;
           }
+
+          // portfolio에서 userId가 userId인 문서 가져오기
+          const portfolio = await Portfolio.findOne({ userId });
+
+          result.push({
+            happiness,
+            name,
+            profileImage,
+            userId,
+            portfolio: portfolio || [],
+          });
         } catch (error) {
           console.log(error);
         }
-        result.push({ happiness, name, profileImage, userId });
       }
       return res.status(200).json({
         topHappiness: result,
