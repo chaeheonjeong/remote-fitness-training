@@ -41,7 +41,7 @@ margin: 0 0.7rem 0.6rem 0;
 
 .reaction {
 display: flex;
-float: right;
+float: left;
 }
 
 .view {
@@ -61,7 +61,15 @@ height: 25px;
   display: flex;
   border: 1.5px solid #8AE52E;
   border-radius: 7px;
-  background-color: #F4F9F4;
+  background-color: #FAFAFA;
+  margin: 2px 2px;
+  color: black;
+  cursor: pointer;
+}
+
+.questionBoxWrapper:hover,
+.questionBoxWrapper:focus {
+  box-shadow: 0px 15px 10px -18px rgb(0, 0, 0, 0.3); 
 }
 
 /* .participants {

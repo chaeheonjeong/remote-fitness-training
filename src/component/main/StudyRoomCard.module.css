@@ -9,19 +9,22 @@
 }
 h1 {
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: 400;
   margin-bottom: 1rem;
 }
 
 .heart {
 width: 25px;
 height: 25px;
+margin-left: 5px;
+margin-top: 5px;
 position: absolute;
 }
 
 .studyTitle {
   margin-bottom: 50px;
   margin-top: 50px;
+  font-size: 30px;
   display: inline-block;
 }
 
@@ -32,7 +35,7 @@ height: 35%;
 .studyTag {
   border: none;
   display: inline-block;
-  background-color: #8AE52E;
+  background-color: #CFFF8D;
   border-radius: 7px;
   text-align: center;
   padding: 0 0.5rem 0 0.5rem;
@@ -41,7 +44,7 @@ height: 35%;
 
 .reaction {
 display: flex;
-float: right;
+float: left;
 }
 
 .view {
@@ -61,5 +64,13 @@ height: 25px;
   display: flex;
   border: 1.5px solid #8AE52E;
   border-radius: 7px;
-  background-color: #F4F9F4;
+  background-color: #FAFAFA;
+  margin: 2px 2px;
+  color: black;
+  cursor: pointer;
+}
+
+.questionBoxWrapper:hover,
+.questionBoxWrapper:focus {
+  box-shadow: 0px 15px 10px -18px rgb(0, 0, 0, 0.3); 
 }
