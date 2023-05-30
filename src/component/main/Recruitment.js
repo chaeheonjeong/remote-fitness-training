@@ -143,7 +143,7 @@ function MainStudy() {
       .catch((error) => {
         console.log(error);
       });
-  };
+  }; 
 
   return (
     <>
@@ -163,7 +163,7 @@ function MainStudy() {
               <button className={styles.recruitment}>모집글</button>
               {/* <Link to="/study">
                     <button className={styles.study}>스터디</button>
-                    </Link> */}
+hook.searchInpu                    </Link> */}
               <Link to="/question">
                 <button className={styles.question}>질문</button>
               </Link>
@@ -180,7 +180,7 @@ function MainStudy() {
                   id="searchInput"
                   name="searchInput"
                   value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
+                  onChange={(e) => {setSearchInput(e.target.value)}}
                 />
                 <button type="submit">검색</button>
               </form>

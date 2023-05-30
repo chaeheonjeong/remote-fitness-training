@@ -13,10 +13,12 @@ import Ask from "../component/post//Ask";
 import AskView from "../component/post//AskView";
 import MyInfo from "../component/mypage/MyInfo";
 import Jitsi from "../component/videochat/jitsi";
+import Header from "../component/main/Header";
 
 /* import TRecruitment from "../component/main/TRecruitment"; */
 import SRecruitment from "../component/main/SRecruitment";
 import Recruitment from "../component/main/Recruitment";
+import SubBanner from "../component/main/SubBanner";
 /* import TRecruitment from "../component/main/MainStudy"; */
 
 import Portfolio from "../component/mypage/Portfolio";
@@ -53,6 +55,11 @@ const Router = () => {
         <Route
           path="/sRecruitment"
           element={[<Main key="main" />, <SRecruitment key="srecruitment" />]}
+        />
+
+        <Route
+          path="/Recruitment"
+          element={[<Header key="header" />, <SubBanner key="banner" />, <Recruitment key="recruitment" />]}
         />
         
 

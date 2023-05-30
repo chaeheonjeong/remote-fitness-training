@@ -1,5 +1,9 @@
 .body {
   padding: 2.8rem 6rem;
+  width: 79.5%;
+  justify-content: center;
+  align-items: center;
+  margin-left: 155px;
 }
 
 /* Select & Search */
@@ -15,6 +19,8 @@
 
 .menu {
   padding: 20px 0 70px 0;
+  justify-content: center;
+  align-items: center;
 }
 
 .menu button {
@@ -23,6 +29,8 @@
   padding: 3px 5px 3px 5px;
   height: 2rem;
   width: 5rem;
+  justify-content: center;
+  align-items: center;
 }
 
 .select {

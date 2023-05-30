@@ -21,6 +21,7 @@ export default function bannerSwiper() {
         style={{
           "--swiper-navigation-color": "#fff",
           "--swiper-pagination-color": "#fff",
+          "--swiper-navigation-size": "30px"
         }}
         speed={600}
         parallax={true}
