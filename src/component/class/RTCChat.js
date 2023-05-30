@@ -9,8 +9,8 @@ import Video, {
 } from "./Video";
 import { BsCameraVideo } from "react-icons/bs";
 import { BsCameraVideoOff } from "react-icons/bs";
-import { BiMicrophone } from "react-icons/bi";
-import { BiMicrophoneOff } from "react-icons/bi";
+import { BsMic } from "react-icons/bs";
+import { BsMicMute } from "react-icons/bs";
 import { RxExit } from "react-icons/rx";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
@@ -539,7 +539,9 @@ const RTCChat = () => {
           }}
           className="h-full"
         >
-          <div className="w-full flex flex-col h-full justify-center items-center">
+          <div
+            className={`w-full flex flex-col h-full justify-center items-center`}
+          >
             <div
               style={{
                 position: "relative",
@@ -602,16 +604,17 @@ const RTCChat = () => {
                       </div>
                       <div>
                         {muted ? (
-                          <BiMicrophoneOff
-                            size="20"
+                          <BsMicMute
+                            size="16"
+                            width="100"
                             color="#5a5a5a"
-                            style={{ cursor: "pointer" }}
+                            style={{ cursor: "pointer", strokeWidth: "0.5px" }}
                           />
                         ) : (
-                          <BiMicrophone
-                            size="20"
+                          <BsMic
+                            size="16"
                             color="#5a5a5a"
-                            style={{ cursor: "pointer" }}
+                            style={{ cursor: "pointer", strokeWidth: "0.5px" }}
                           />
                         )}
                       </div>
@@ -645,37 +648,33 @@ const RTCChat = () => {
                   <BsCameraVideo
                     size="25"
                     color="#5a5a5a"
-                    style={{ cursor: "pointer" }}
+                    style={{ strokeWidth: "0.15px" }}
                   />
                 ) : (
                   <BsCameraVideoOff
                     size="25"
                     color="#5a5a5a"
-                    style={{ cursor: "pointer" }}
+                    style={{ strokeWidth: "0.15px" }}
                   />
                 )}
               </button>
               <button onClick={toggleMic} className={styles.mikeButton}>
                 {muted ? (
-                  <BiMicrophone
-                    size="26"
+                  <BsMic
+                    size="24"
                     color="#5a5a5a"
-                    style={{ cursor: "pointer" }}
+                    style={{ strokeWidth: "0.2px" }}
                   />
                 ) : (
-                  <BiMicrophoneOff
-                    size="26"
+                  <BsMicMute
+                    size="24"
                     color="#5a5a5a"
-                    style={{ cursor: "pointer" }}
+                    style={{ strokeWidth: "0.2px" }}
                   />
                 )}
               </button>
               <button onClick={exitHandler} className={styles.mikeButton}>
-                <RxExit
-                  size="25"
-                  color="#5a5a5a"
-                  style={{ cursor: "pointer" }}
-                />
+                <RxExit size="25" color="#5a5a5a" className={styles.camIcon} />
               </button>
               <div className={styles.timeContainer}>
                 {isDropdownOpen && (
@@ -702,7 +701,9 @@ const RTCChat = () => {
             </div>
           </div>
 
-          <div className="w-[500px] bg-white flex flex-col h-screen top-0 z-1 right-0 border border-[rgb(219,219,219)]">
+          <div
+            className={`w-[500px] bg-white flex flex-col h-screen top-0 z-1 right-0 border border-[rgb(219,219,219)]`}
+          >
             <div className={styles.chatDivContainer}>
               <div className={styles.chatDiv}>Chat💬</div>
             </div>
@@ -725,8 +726,8 @@ const RTCChat = () => {
                   className={styles.chatTextArea}
                   placeholder="여기에 채팅을 입력해주세요..."
                 />
-                <div className={styles.buttonBox}>
-                  <button onClick={msgClickHandler}>보내기</button>
+                <div className={styles.buttonBox} onClick={msgClickHandler}>
+                  <button>보내기</button>
                 </div>
               </div>
             </div>

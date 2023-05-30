@@ -7,6 +7,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import userStore from "../../store/user.store";
+import Header from "../main/Header";
+import { SiNaver } from "react-icons/si";
+import { RiKakaoTalkFill } from "react-icons/ri";
 
 const Login = () => {
   const [emailText, setEmailText] = useState("");
@@ -30,36 +33,120 @@ const Login = () => {
   }, [user.token]);
 
   return (
-    <div className={styles.authWrapper}>
-      <AuthForm onSubmit={submitHandler}>
-        <AuthInput
-          type="text"
-          placeholder="E-mail"
-          inputColor={true}
-          eventHandler={setEmailText}
-        />
-        <AuthInput
-          type="password"
-          placeholder="비밀번호"
-          inputColor={true}
-          eventHandler={setPassText}
-        />
-        <label className={styles.warnLabel}>{warnLabel}</label>
-        <label className={styles.findPassLabel} onClick={findPasswordHandler}>
-          비밀번호를 잊으셨나요?
-        </label>
-        <AuthSubmitButton text="로그인" />
-        <button
-          type="submit"
-          className={styles.registerBtn}
-          onClick={() => {
-            navigate("/register");
-          }}
-        >
-          회원가입
-        </button>
-      </AuthForm>
-    </div>
+    <>
+      <Header />
+      <div className={styles.container}>
+        <div className={`${styles.authWrapper} pt-18`}>
+          <AuthForm onSubmit={submitHandler} name={"로그인"}>
+            <div className={`${styles.inputWrapper}  w-[430px]`}>
+              <div>
+                <div className={styles.label}>이메일</div>
+                <AuthInput
+                  type="text"
+                  placeholder="E-mail"
+                  inputColor={true}
+                  eventHandler={setEmailText}
+                />
+              </div>
+              <div>
+                <div className={styles.label}>비밀번호</div>
+                <AuthInput
+                  type="password"
+                  placeholder="비밀번호"
+                  inputColor={true}
+                  eventHandler={setPassText}
+                />
+              </div>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                {" "}
+                <label className={styles.warnLabel}>{warnLabel}</label>
+              </div>
+              <AuthSubmitButton text="이메일 로그인" />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  width: "100%",
+                  gap: "1rem",
+                  paddingTop: "1rem",
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: "14px",
+                    color: "rgb(113, 113, 113)",
+                    fontWeight: "550",
+                    cursor: "pointer",
+                  }}
+                  onClick={findPasswordHandler}
+                >
+                  비밀번호 찾기
+                </p>{" "}
+                <p
+                  style={{
+                    fontSize: "14px",
+                    color: "rgb(201, 201, 201)",
+                  }}
+                >
+                  |
+                </p>
+                <p
+                  style={{
+                    fontSize: "14px",
+                    color: "rgb(113, 113, 113)",
+                    fontWeight: "550",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    navigate("/register");
+                  }}
+                >
+                  회원가입
+                </p>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                  marginTop: "3rem",
+                }}
+              >
+                <button className={styles.KakaoSocialBtn}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: "0.8rem",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <RiKakaoTalkFill size={25} />
+                    카카오로 시작하기
+                  </div>
+                </button>
+                <button className={styles.NaverSocialBtn}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: "0.8rem",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <SiNaver />
+                    네이버로 시작하기
+                  </div>
+                </button>
+              </div>
+            </div>
+          </AuthForm>
+        </div>
+      </div>
+    </>
   );
 };
 

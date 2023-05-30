@@ -36,12 +36,12 @@ const Header = ({ ...props }) => {
   }, [props.callback]);
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} fixed w-full`}>
       {/* {console.log(profileImg)} */}
       <label
         className={styles.linkLabel}
         onClick={() => {
-          hook.navigate("/login");
+          hook.navigate("/");
         }}
       >
         고습도치
