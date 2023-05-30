@@ -6,9 +6,10 @@
 }
 
 .container {
-  z-index: 3;
+  z-index: 9;
   width: 100%;
   position: fixed;
+  top: 0;
   display: flex;
   border-bottom: 2px solid;
   border-color: #FAFAFA;

@@ -3301,43 +3301,6 @@ app.post("/getCommentCount", async (req, res) => {
   }
 });
 
-app.get("/recommend", async (req, res) => {
-  try {
-    const topHappinessDocs = await HappinessIndex.find()
-      .sort({ happinessIndex: -1 })
-      .limit(3);
-
-    if (topHappinessDocs) {
-      const result = [];
-      for (let i = 0; i < topHappinessDocs.length; i++) {
-        const happiness = topHappinessDocs[i].happinessIndex;
-        const userId = topHappinessDocs[i]._user;
-
-        let name = null;
-        let profileImage = null;
-
-        try {
-          const user = await User.findById(userId);
-          if (user) {
-            name = user.name;
-            profileImage = user.image || null;
-          }
-        } catch (error) {
-          console.log(error);
-        }
-        result.push({ happiness, name, profileImage, userId });
-      }
-      return res.status(200).json({
-        topHappiness: result,
-        message: "상위 행복 지수 문서 가져오기 성공",
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
-
 // 댓글 내용 가져오기
 app.get("/tView/:id/modify/:replyId", async(req, res) => {
   const postId = req.params.id;
@@ -5275,6 +5238,54 @@ app.post('/openStudy', async (req, res) => {
         } else {
           return res.status(204).json({
             message: `이미지가 없습니다.`,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+    });
+
+    app.get("/recommend", async (req, res) => {
+      try {
+        const topHappinessDocs = await HappinessIndex.find()
+          .sort({ happinessIndex: -1 })
+          .limit(3);
+    
+        if (topHappinessDocs) {
+          const result = [];
+          for (let i = 0; i < topHappinessDocs.length; i++) {
+            const happiness = topHappinessDocs[i].happinessIndex;
+            const userId = topHappinessDocs[i]._user;
+    
+            let name = null;
+            let profileImage = null;
+    
+            try {
+              const user = await User.findById(userId);
+              if (user) {
+                name = user.name;
+                profileImage = user.image || null;
+              }
+    
+              // portfolio에서 userId가 userId인 문서 가져오기
+              const portfolio = await Portfolio.findOne({ userId });
+    
+              result.push({
+                happiness,
+                name,
+                profileImage,
+                userId,
+                portfolio: portfolio || [],
+              });
+              console.log(portfolio);
+            } catch (error) {
+              console.log(error);
+            }
+          }
+          return res.status(200).json({
+            topHappiness: result,
+            message: "상위 행복 지수 문서 가져오기 성공",
           });
         }
       } catch (error) {
