@@ -46,6 +46,26 @@ const Header = ({ ...props }) => {
       >
         고습도치
       </label>
+      <ul className={styles.nav}>
+        <li>
+        <Link
+            to="/Recruitment"
+            style={{ textDecoration: "none", color: "black" }}
+            > 강사모집 </Link>
+        </li>
+        <li>
+        <Link
+            to="/detailsRecruitment"
+            style={{ textDecoration: "none", color: "black" }}
+            > 학생모집 </Link>
+        </li>
+        <li>
+        <Link
+            to="/detailQuestion"
+            style={{ textDecoration: "none", color: "black" }}
+            > 질문Q&A </Link>
+        </li>
+      </ul>
       <div className={styles.smallContainer}>
         <div className={styles.smallContainer2}>
           {user.token !== null && (
