@@ -1,12 +1,18 @@
-.wrapper {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    padding: 2.8rem 6rem;
-    gap: 3rem;
+.myhappiness {
+    display: flex;
+    padding: 5rem 6rem;
+    justify-content: center;
+    align-items: center;
 }
 
-@media (max-width : 1000px) {
-    .wrapper {
-        grid-template-columns: repeat(1, 1fr);
-    }
+.banner{
+    display: flex;
+    padding: 6rem 6rem;
+}
+
+.ranking{
+    display: flex;
+    padding: 0 6rem;
+    justify-content: center;
+    align-items: center;
 }
