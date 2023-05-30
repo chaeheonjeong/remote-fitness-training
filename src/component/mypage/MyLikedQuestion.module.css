@@ -20,21 +20,34 @@
 
   .likedStudy, .likedSRecruitment {
     background-color: white;
-    border: 1.5px solid #8AE52E;
+    border: 2px solid #8AE52E;
     border-radius: 7px;
     padding: 3px 5px 3px 5px;
     height: 2rem;
     width: 5rem;
-    margin-right: 0.5rem;
+    margin-right: 0.75rem;
   }
 
   .likedQuestion {
     background-color: white;
-    border: 1.5px solid #8AE52E;
+    border: 2px solid #8AE52E;
     border-radius: 7px;
     padding: 3px 5px 3px 5px;
     height: 2rem;
     width: 5rem;
-    margin-right: 0.5rem;
+    margin-right: 0.75rem;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .likedQuestion:hover {
+    background-color: rgb(47, 199, 47);
+    color: white;
+    font-weight: bold;
+    transform: scale(1.1);
+  }
+  .likedStudy:hover, .likedSRecruitment:hover {
+    background-color: rgb(47, 199, 47);
+    color: white;
+    font-weight: bold;
+    transform: scale(1.1);
   }

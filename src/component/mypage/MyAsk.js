@@ -81,13 +81,14 @@ const MyAsk = () => {
       <SideBar />
       <div className={styles.contentWrapper}>
         <button
+        className="sstudy1"
           onClick={() => {
             navigate("/myPost");
           }}
         >
           스터디
         </button>
-        <button>질문</button>
+        <button className="aask1">질문</button>
         {renderQ.length !== 0 ? (
           <InfiniteScroll
             dataLength={renderQ.length}

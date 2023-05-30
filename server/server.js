@@ -1819,46 +1819,6 @@ app.delete("/view/:id/reply/:replyId", async(req, res) => {
 });
 
 
-/// 댓글 작성
-app.post("/postreply/:id", auth, async (req, res) => {
-  const { reply, isSecret, rwriter, rwriteDate } = req.body;
-  const { id } = req.params;
-  const userId = req.user.id;
-
-  const post = await Write.findOne({ _id: id });
-  if (!post) {
-    return res.status(404).json({ message: "Post not found" });
-  }
-
-  const replycounter = await ReplyCounter.findOneAndUpdate({ name: '댓글 수' }, { $inc: { totalReply: 1 } }, { new: true, upsert: true });
-  const 총댓글수 = (replycounter.totalReply +1);
-
-  const rwriterId = await User.findOne({ name: rwriter });
-
-  if (!replycounter) {
-    return res.status(500).json({ message: "Counter not found" });
-  }
-  try {
-    const newReply = new Reply({
-      postId : id,
-      _id: 총댓글수 + 1, 
-      rwriter: rwriter,
-      _user: rwriterId._id,
-      rwriteDate : rwriteDate,
-      reply : reply,
-      //isSecret : isSecret
-
-      
-      /* _user: userId */
-    });
-    await newReply.save();
-
-    return res.status(200).json({ message: `Reply created successfully` });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: `서버오류` });
-  }
-});
 
 // 작성자 프로필 이미지 누르면
 app.post("/view/:id/:writer", async (req, res) => {

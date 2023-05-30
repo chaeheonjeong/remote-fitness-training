@@ -26,16 +26,18 @@
 }
 
 .SideBarTitle{
+    margin-bottom: 50px;
     font-size: 1.9rem;
     font-family: 'SUITE-Regular';
 }
 
-.sidBarList{
-    list-style: style none;
+.SideBarList {
+    list-style: none;
     padding: 0.5rem;
-}
+  }
 
 .SideBarListItem{
+    margin-bottom: 10px;
     padding: 5px;
     cursor: pointer;
     display: flex;
@@ -44,8 +46,16 @@
     font-family: 'SUITE-Regular';
     font-size: 20px;
 }
+.active,
+.active:hover {
+  background-color: #ABC4AA;
+  transform: scale(1.1);
+    padding: 5px;
+    cursor: pointer;
+    display: flex-end;
+    width: 100%;
 
-.SideBarListItem.active,
-.SideBarListItem:hover{
-    background-color:#B7C4CF;
+    border-radius: 10px;
+    font-family: 'SUITE-Regular';
+    font-size: 23px;
 }

@@ -4,3 +4,23 @@
   top: 5rem;
   margin-top: 3%;
 }
+.sstudy1 {
+  background-color: rgb(0, 0, 0);
+  margin-right: 10px;
+  padding: 4px;
+  border-radius: 5px;
+}
+.sstudy1:hover {
+  background-color: rgb(255, 255, 255); /* 바뀌고자 하는 색상으로 변경해주세요 */
+  border: 2px solid aquamarine; /* 바뀌고자 하는 색상으로 변경해주세요 */
+}
+
+.aask1 {
+  background-color: rgb(0, 213, 57)!important;
+  padding: 4px;
+  border-radius: 5px;
+}
+.aask1:hover {
+  background-color: rgb(255, 255, 255)!important; /* 바뀌고자 하는 색상으로 변경해주세요 */
+  border: 2px solid aquamarine !important;
+}

@@ -180,15 +180,21 @@ function MyInfo() {
   return (
     <div>
       <Header imgFile={imgFile} callback={call} />
-      <SideBar />
-      {user ? (
-        <div className="MyInfo">
+  <SideBar />
+  
+  <div className="info1">
+    <div className="title2">기본정보</div>
+    {user ? (
+      
+      <div className="MyInfo">
+        <div className="profile-wrapper">
+        <div className="profile-image">
           {imgFile ? (
             <img className="Profile" src={imgFile} alt="프로필 이미지" />
           ) : (
             <HiUserCircle size="180" />
           )}
-          <label className="img-btn" for="ProfileImg">
+          <label className="img-btn" htmlFor="ProfileImg">
             프로필 변경
           </label>
           <input
@@ -199,24 +205,40 @@ function MyInfo() {
             ref={imgRef}
             style={{ display: "none" }}
           />
+          </div>
+
           <form className="Information" onSubmit={handleFormSubmit}>
-            <label className="nickname">닉네임 </label>
-            <input
-              type="text"
-              value={user.name}
-              className="Input"
-              onChange={(e) => setUser({ ...user, name: e.target.value })}
-            />
+          <div className="profile-info">
+            <div className="info">
+              <div className="nickname-wrapper">
+                <label className="nickname">닉네임 </label>
+                <input
+                  type="text"
+                  value={user.name}
+                  className="Input"
+                  onChange={(e) => setUser({ ...user, name: e.target.value })}
+                />
+              </div>
+            </div>
+         
+            {nameError && <p style={{ color: "red", fontSize: "12px" }}>{nameError}</p>}
+            
+            
+            <div className="infoi">
+              <label className="email">이메일 </label>
+              <input type="text" value={user.email} className="Input" />
+            </div>
             <br />
-            {nameError && <p style={{ color: "red" }}>{nameError}</p>}
-            <label className="email">이메일 </label>
-            <input type="text" value={user.email} className="Input" />
-            <br />
-            <button type="submit" value="modify" className="Btn">
-              수정
-            </button>
+            </div>
+            <div className="edit-button">
+              <button type="submit" value="modify" className="Btn">
+                정보수정
+              </button>
+            </div>
           </form>
           <div>
+            
+          <div className="btn-group">
             <button onClick={() => setModalIsOpen(true)} className="CBtn">
               비밀번호 변경
             </button>
@@ -268,7 +290,7 @@ function MyInfo() {
                   required
                 />
               </div>
-              {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+              {errorMessage && <p style={{ color: "red", fontSize: "12px" }}>{errorMessage}</p>}
               <div className="pwd">
                 <p>
                   <label className="password">새 비밀번호 확인</label>
@@ -295,9 +317,13 @@ function MyInfo() {
             </form>
           </Modal>
         </div>
+        </div></div>
       ) : (
         <p className="noLogin">로그인되어 있지 않습니다. 로그인을 해주세요</p>
       )}
+      
+      
+      </div>
     </div>
   );
 }

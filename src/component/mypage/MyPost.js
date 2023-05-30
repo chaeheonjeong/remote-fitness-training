@@ -79,8 +79,9 @@ const MyPost = () => {
       <Header />
       <SideBar />
       <div className={styles.contentWrapper}>
-        <button>스터디</button>
+        <button className="sstudy1">스터디</button>
         <button
+          className="aask1"
           onClick={() => {
             navigate("/myAsk");
           }}

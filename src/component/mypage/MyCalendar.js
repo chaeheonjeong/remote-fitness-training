@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Calendar from 'react-calendar';
 import './MyCalendar.css';
 import moment from 'moment';
+import { IconName } from "react-icons/go";
 import axios from "axios";
 //import styles from "./SelectModal.module.css";
 import usePost from "../../hooks/usePost";
@@ -442,7 +443,7 @@ const tileContent = ({date,view}) => {
             .map(room => ({
               id: room._id,
               hostId : room.hostId,
-              name: `방 이름 : ${room.roomTitle}`,
+              name: `학생모집방 이름 : ${room.roomTitle}`,
               description: `강사: ${room.host} - 시작시간: ${room.startTime}`,
               host: room.host, // 호스트의 이름 추가
             }));
@@ -461,7 +462,7 @@ const tileContent = ({date,view}) => {
             .map(room => ({
               id: room._id,
               applicantId : room.applicantId,
-              name: `방 이름 : ${room.roomTitle}`,
+              name: `강사모집방 이름 : ${room.roomTitle}`,
               description: `강사: ${room.applicant} - 시작시간: ${room.startTime}`,
               applicant: room.applicant, // 호스트의 이름 추가
             }));
@@ -608,10 +609,10 @@ const tileContent = ({date,view}) => {
 
 
     return(
-        <div>
+        <div className="mycalendar-container">
         <Header />
         <SideBar />
-        <div className="reviewBtn">
+        <div className="reviewBtn" style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 1 }}>
         <button
             className="starsub"
             type="submit"
@@ -636,10 +637,10 @@ const tileContent = ({date,view}) => {
         </button>
         
         {selectedRoom && (
-        <div>
-        <p>선택한 방: {selectedRoom.name}</p>
+        <div className='hhhh'>
+        <p>{selectedRoom.name}</p>
         <p>강사 이름: {selectedHost}</p>
-        <p>강사 ID: {selectedHostId}</p>
+        {/* <p>강사 ID: {selectedHostId}</p> */}
         {selectedStars >= 0 && <p>선택한 별점: {selectedStars}</p>}
             <div className="starContainer">
                 {[0, 1, 2, 3, 4, 5].map((star) => (
@@ -671,7 +672,7 @@ const tileContent = ({date,view}) => {
                     </textarea>
                 </div>
             
-            <button type="submit" onClick={handleReviewSubmit}>
+            <button type="submit" className="sssbtn" onClick={handleReviewSubmit}>
                 등록
             </button>
             </div>
@@ -697,9 +698,9 @@ const tileContent = ({date,view}) => {
             </div>
         )}
         </Modal>
-    </div>
+        </div>
 
-    <div className="TreviewBtn">
+        <div className="TreviewBtn" style={{ position: 'absolute', top: '10px', left: '150px', zIndex: 2 }}>
         <button
             className="starsub"
             type="submit"
@@ -819,14 +820,14 @@ const tileContent = ({date,view}) => {
             )}
         </div>
         )}
-    </Modal>
-    </div>*/}
+        </Modal>
+        </div>*/}
         
         {TselectedRoom && (
-        <div>
-            <p>강사모집방 이름: {TselectedRoom.name}</p>
+        <div className='hhhh'>
+            <p>{TselectedRoom.name}</p>
             <p>강사 이름: {TselectedApplicant}</p>
-            <p>강사 ID: {TselectedApplicantId}</p>
+            {/* <p>강사 ID: {TselectedApplicantId}</p> */}
             {TselectedStars >= 0 && <p>선택한 별점: {TselectedStars}</p>}
                 <div className="starContainer">
                 {[0, 1, 2, 3, 4, 5].map((star) => (
@@ -840,7 +841,7 @@ const tileContent = ({date,view}) => {
                     </span>
                 ))}
                 </div>
-                <button type="submit" onClick={ThandleReviewSubmit}>
+                <button type="submit" className="sssbtn" onClick={ThandleReviewSubmit}>
                 등록
                 </button>
             </div>
@@ -872,25 +873,27 @@ const tileContent = ({date,view}) => {
         <div className = "MyCalendar">
             <Calendar onClickDay={handleSelectDate} value={date}
                 formatDay={(locale, date) => moment(date).format("DD")}
-                tileContent={tileContent} 
+                tileContent={tileContent}
             />
             <Modal className='Modal' ariaHideApp={false} isOpen={addModalIsOpen} onRequestClose={handleAddModalClose} overlayClassName='Overlay'>
                 <button type="submit" onClick={() => setAddModalIsOpen(false)} className='ModalButton'>X</button>
-                <h2>
+                <div className="addadd">
                     <DatePicker selected={date} onChange={handleDateChange} />
-                </h2>
+                </div>
                 <form onSubmit={handleFormSubmit}>
+                    <div className='writewrite'>
                     <label className='scheduleName'>
-                        제목 :
-                        <input className='input' type="text" placeholder='제목을 입력해주세요' value={title} onChange={handleTitleChange} />
+                        <div className='ttt'>제목</div>
+                        <input type="text" placeholder='제목을 입력해주세요' className='writewrite3' value={title} onChange={handleTitleChange} />
                     </label>
                     <br/>
                     <label className='schedlueContents'>
-                        내용 : 
-                        <input className='Contents' type="text" placeholder='내용을 입력해주세요' value={contents} onChange={handleContentsChange} />
+                        <div className='tttt'>내용</div>
+                        <input type="text" placeholder='내용을 입력해주세요' value={contents} className='writewrite2' onChange={handleContentsChange} />
                     </label>
                     <div>
                         <button type="submit" className='add'>추가</button>
+                    </div>
                     </div>
                 </form>
             </Modal>
@@ -898,17 +901,24 @@ const tileContent = ({date,view}) => {
             <Modal className='Modal' ariaHideApp={false} isOpen={detailModalIsOpen} onRequestClose={() => setDetailModalIsOpen(false)} overlayClassName='Overlay'>
                 <button type="button" onClick={() => {setSelectedSchedule(null); setDetailModalIsOpen(false);}} className='ModalButton'>X</button>
                 {selectedSchedule ? (
-                    <div>
+                    <div className='writewrite'>
+
                         <button type="button" onClick={() => {
                             setSelectedSchedule(null);
                             setDetailModalIsOpen(false);
                             setAddModalIsOpen(true);
-                        }} className="addBtn">새 일정 추가</button>
-                        <p> 날짜 : {moment(selectedSchedule.date).format("YYYY-MM-DD")} </p>
-                        <p className='scheduleName'>제목 : <input className='input' type="text" value={selectedSchedule.title} onChange={(e) => setSelectedSchedule({ ...selectedSchedule, title: e.target.value })} /></p>
-                        <p className='schedlueContents'>내용 : <input className='Contents' type="text" value={selectedSchedule.contents} onChange={(e) => setSelectedSchedule({ ...selectedSchedule, contents: e.target.value })} /></p>
-                        <button type="submit" onClick={handleModify} className='modify'>수정</button>
-                        <button type="submit" onClick={handleDelete} className="delete">삭제</button>
+                        }} className="addadd2">새 일정 추가</button>
+                        <div className='ttt2'> 날짜 : {moment(selectedSchedule.date).format("YYYY-MM-DD")} </div>
+                        <div className='ttt5'>제목</div>
+                        <input className='writewrite4' type="text" value={selectedSchedule.title} onChange={(e) => setSelectedSchedule({ ...selectedSchedule, title: e.target.value })} />
+                        <div className='ttt4'>내용</div> 
+                        <input className='writewrite5' type="text" value={selectedSchedule.contents} onChange={(e) => setSelectedSchedule({ ...selectedSchedule, contents: e.target.value })} />
+                        <div className='writewrite6'>
+                            <button type="submit" onClick={handleModify} className='modify'>수정</button>
+                            <button type="submit" onClick={handleDelete} className="delete">삭제</button>
+                        
+
+                        </div>
                     </div>
                 ) : null} 
             </Modal>
