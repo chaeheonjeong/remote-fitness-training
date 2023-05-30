@@ -6,6 +6,7 @@ import styles from "./RankSwiper.module.css";
 import { BiMedal } from "react-icons/bi";
 import { HiUserCircle } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import Portfolio from "../mypage/Portfolio";
 
 const medalColor = [
   "rgba(247, 247, 35, 0.99)",
@@ -17,7 +18,6 @@ const RankRender = ({ ranker, index }) => {
   return (
     <div className={styles.swiperContent}>
       <div className={styles.medalWrapper}>
-        {console.log(ranker, index)}
         <BiMedal size="30" color={index < 3 && medalColor[index]} />
       </div>
       <span>
@@ -41,6 +41,31 @@ const RankRender = ({ ranker, index }) => {
           : ranker.name}
       </span>
       <span>{ranker.happiness}</span>
+      {console.log(ranker.portfolio)}
+      {ranker.portfolio.length !== 0 && (
+        <div>
+          <span>성별: {ranker.portfolio.gender}</span>
+          <span>경력: {ranker.portfolio.career}</span>
+          <span>가격대: {ranker.portfolio.price}</span>
+          {Array.isArray(ranker.portfolio.sports) && (
+            <span>
+              종목:{" "}
+              {ranker.portfolio.sports.map((sport, index) => (
+                <span key={index + "#$"}>{sport}</span>
+              ))}
+            </span>
+          )}
+          {Array.isArray(ranker.portfolio.paymentMethods) && (
+            <span>
+              결제수단:{" "}
+              {ranker.portfolio.paymentMethods.map((payment, index) => (
+                <span key={index + "&*"}>{payment}</span>
+              ))}
+            </span>
+          )}
+          <span>제목: {ranker.portfolio.title}</span>
+        </div>
+      )}
     </div>
   );
 };

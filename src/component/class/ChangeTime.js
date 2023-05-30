@@ -10,8 +10,7 @@ const ChangeTime = ({
   originHour,
   handleDropdownToggle,
   setOriginTime,
-  DBName,
-  postID,
+  roomTitle,
 }) => {
   const [min, setMin] = useState(originMinute);
   const [hour, setHour] = useState(originHour);
@@ -29,8 +28,7 @@ const ChangeTime = ({
       .post(`${BASE_API_URI}/change-time`, {
         hour: Number(hour),
         minute: Number(min),
-        DBName: DBName,
-        postID: postID,
+        roomTitle: roomTitle,
       })
       .catch((error) => {
         console.error(error);

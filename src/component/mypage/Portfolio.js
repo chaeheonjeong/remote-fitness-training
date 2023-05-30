@@ -28,6 +28,7 @@ function Portfolio() {
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [gender, setGender] = useState("");
   const [price, setPrice] = useState("");
+  const [review, setReview] = useState([]);
 
   function handleKeyPress(e) {
     if (e.code === "Enter" || e.code === "Comma" || e.code === "Space") {
@@ -99,6 +100,24 @@ function Portfolio() {
     }
   }, [content]);
 
+  useEffect(() => {
+    const getReview = async () => {
+      try {
+        const res = await axios.get(`${BASE_API_URI}/getMyReview`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.data !== undefined) {
+          console.log(res.data);
+          setReview(res.data.reviews.reviewContents);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getReview();
+  }, []);
+
   console.log(htmlString);
 
   if (isRegistered) {
@@ -144,6 +163,21 @@ function Portfolio() {
         >
           수정하기
         </button>
+        <div className="reviewContent">
+          <div className="review">후기</div>
+        </div>
+        <div className="review_contents">
+          {console.log(review)}
+          {review.map((item, index) => (
+            <div className="reviewContents" key={index + "___"}>
+              <div>작성자 {item.writerName.charAt(0) + "****"}</div>
+
+              <div>작성일자 {item.date}</div>
+              <div>별점 {item.star}</div>
+              <div>리뷰내용 {item.reviewContent}</div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   } else if (user.token !== null) {
@@ -175,6 +209,7 @@ function Portfolio() {
             gender: gender,
             career: career,
             price: price,
+            sports: sports,
             paymentMethods: paymentMethods,
             tags: tags,
             title: title,

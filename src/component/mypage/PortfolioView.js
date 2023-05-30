@@ -17,10 +17,9 @@ function PortfolioView() {
   const [isRegistered, setIsRegistered] = useState(false);
   const { writerId } = useParams();
   const [review, setReview] = useState([]);
+
   //const [student, setStudent] = useState([""]);
   //const [writeDate, setWriteDate] = useState([""]);
-
-  console.log(writerId);
 
   useEffect(() => {
     const fetchPortfolio = async () => {
@@ -43,33 +42,12 @@ function PortfolioView() {
 
     const getReview = async () => {
       try {
-        const res = await axios.get(`${BASE_API_URI}/getReview/${writerId}`, {
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await axios.post(`${BASE_API_URI}/getTargetReview`, {
+          targetUser: writerId,
         });
         if (res.data !== undefined) {
-          //console.log("!!!!!: ", res.data.result);
-          /* setStudent(res.data.result.studentName);
-                    setWriteDate(res.data.result.writeDate); */
-
-          console.log(res.data.result[33].teacherId, writerId);
-          if (writerId) {
-            for (var i = 0; i < res.data.result.length; i++) {
-              //setReview(res.data.result[i]);
-
-              const formattedDate = new Date(
-                res.data.result[i].writeDate
-              ).toLocaleDateString("ko-KR");
-              res.data.result[i].writeDate = formattedDate;
-
-              const studentName = res.data.result[i].studentName;
-              const maskedName =
-                studentName.charAt(0) + "*".repeat(studentName.length - 1);
-              res.data.result[i].studentName = maskedName;
-            }
-            setReview(res.data.result);
-
-            review.map((item, index) => console.log(item.review));
-          }
+          console.log(res.data);
+          setReview(res.data.reviews.reviewContents);
         }
       } catch (error) {
         console.log(error);
@@ -78,7 +56,7 @@ function PortfolioView() {
 
     fetchPortfolio();
     getReview();
-  }, [writerId, token]);
+  }, []);
 
   useEffect(() => {
     if (portfolio[0]?.content !== undefined) {
@@ -94,14 +72,31 @@ function PortfolioView() {
 
   if (isRegistered === false) {
     return (
-      <div className="Registered">
-        <Header />
-        <ProfileSideBar />
-        <p className="_registered">
-          {" "}
-          <FcCancel size={28} />볼 수 있는 포트폴리오가 없습니다.
-        </p>
-      </div>
+      <>
+        <div className="Registered">
+          <Header />
+          <ProfileSideBar />
+          <p className="_registered">
+            {" "}
+            <FcCancel size={28} />볼 수 있는 포트폴리오가 없습니다.
+          </p>
+        </div>
+        <div className="reviewContent">
+          <div className="review">후기</div>
+        </div>
+        <div className="review_contents">
+          {console.log(review)}
+          {review.map((item, index) => (
+            <div className="reviewContents" key={index + "___"}>
+              <div>작성자 {item.writerName.charAt(0) + "****"}</div>
+
+              <div>작성일자 {item.date}</div>
+              <div>별점 {item.star}</div>
+              <div>리뷰내용 {item.reviewContent}</div>
+            </div>
+          ))}
+        </div>
+      </>
     );
   }
 
@@ -138,17 +133,16 @@ function PortfolioView() {
         <div className="review">후기</div>
       </div>
       <div className="review_contents">
-        {review.map((item, index) =>
-          item.review !== undefined ? (
-            <div className="reviewContents">
-              <div key={index}>
-                <div>{item.studentName}</div>
-                <div>{item.writeDate}</div>
-                <div>{item.review}</div>
-              </div>
-            </div>
-          ) : null
-        )}
+        {console.log(review)}
+        {review.map((item, index) => (
+          <div className="reviewContents" key={index + "___"}>
+            <div>작성자 {item.writerName.charAt(0) + "****"}</div>
+
+            <div>작성일자 {item.date}</div>
+            <div>별점 {item.star}</div>
+            <div>리뷰내용 {item.reviewContent}</div>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -85,7 +85,7 @@ const Router = () => {
         <Route path="/View/:id" element={<View />} />
         <Route path="myAsk" element={<MyAsk />} />
         <Route path="myPost" element={<MyPost />} />
-        <Route path="/class/chat" element={<RTCChat />} />
+        <Route path="/class/chat/:roomTitle" element={<RTCChat />} />
       </Routes>
     </BrowserRouter>
   );

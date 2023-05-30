@@ -82,9 +82,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
 
           /* console.log("sameUsers: ", res.data.sameUsers); */
 
-          console.log(pImg);
-
-          console.log(res.data.message);
+          console.log(res.data);
         }
         console.log(res.data);
       } catch (err) {

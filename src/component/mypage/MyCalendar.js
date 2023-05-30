@@ -17,12 +17,12 @@ import useNoti from "../../hooks/useNoti";
 //import ReviewModal from './ReviewModal'; // 수정: 후기 모달 컴포넌트 추가
 import { BASE_API_URI } from "../../util/common";
 import MyGoal from "../main/MyGoal";
+import ReviewModal from "./ReviewModal";
 
 function MyCalendar() {
   const { id } = useParams();
   const user = userStore();
   const navigate = useNavigate();
-
   const [addModalIsOpen, setAddModalIsOpen] = useState(false);
   const [detailModalIsOpen, setDetailModalIsOpen] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -49,6 +49,7 @@ function MyCalendar() {
   const [TselectedRoom, setTSelectedRoom] = useState(null); // 선택한 방
   const [TroomList, setTRoomList] = useState([]); // 방 목록
   const [TselectedStars, setTSelectedStars] = useState(0); // 추가: 선택한 별점
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const fetchRoomSchedules = async () => {
@@ -181,6 +182,7 @@ function MyCalendar() {
     const scheduleEndTime = new Date(
       scheduleStartTime.getTime() + runningTime * 60000
     );
+    const roomTitle = roomSchedule.roomTitle;
 
     console.log(scheduleStartTime);
     console.log(scheduleEndTime);
@@ -199,7 +201,7 @@ function MyCalendar() {
     } else if (currentDate.getTime() > scheduleStartTime.getTime()) {
       window.alert("이미 지난 방 일정입니다.");
     } else {
-      navigate("/");
+      navigate(`/class/chat/${roomTitle}`);
     }
   };
 
@@ -363,7 +365,7 @@ function MyCalendar() {
     try {
       const response = await axios.get(`${BASE_API_URI}/rooms`);
       const rooms = response.data.map((room, index) => ({
-        id: index, // 간단하게 인덱스를 사용하여 id 설정
+        id: index + "*&*&*&*", // 간단하게 인덱스를 사용하여 id 설정
         name: room,
         description: "", // 빈 설명 추가
       }));
@@ -393,7 +395,7 @@ function MyCalendar() {
     try {
       const response = await axios.get(`${BASE_API_URI}/Trooms`);
       const Trooms = response.data.map((room, index) => ({
-        id: index, // 간단하게 인덱스를 사용하여 id 설정
+        id: index + "*(*(*(*(", // 간단하게 인덱스를 사용하여 id 설정
         name: room,
         description: "", // 빈 설명 추가
       }));
@@ -473,7 +475,7 @@ function MyCalendar() {
       const participatedRooms = response.data
         .filter((room) => room.applicant.includes(user.name))
         .map((room) => ({
-          id: room._id,
+          id: room._id + "^&^&^&^",
           hostId: room.hostId,
           name: `방 이름 : ${room.roomTitle}`,
           description: `강사: ${room.host} - 시작시간: ${room.startTime}`,
@@ -492,7 +494,7 @@ function MyCalendar() {
       const TparticipatedRooms = response.data
         .filter((room) => room.host.includes(user.name))
         .map((room) => ({
-          id: room._id,
+          id: room._id + "{}{}",
           applicantId: room.applicantId,
           name: `방 이름 : ${room.roomTitle}`,
           description: `강사: ${room.applicant} - 시작시간: ${room.startTime}`,
@@ -642,269 +644,20 @@ function MyCalendar() {
 
   return (
     <div>
+      <ReviewModal visible={visible} setVisible={setVisible} />
       <Header />
       <SideBar />
       <div className="reviewBtn">
         <button
           className="starsub"
           type="submit"
-          onClick={handleReviewModalOpen}
+          onClick={() => {
+            setVisible(!visible);
+          }}
         >
-          학생모집방 후기 작성
+          후기 작성
         </button>
-        <Modal
-          className="Modal"
-          ariaHideApp={false}
-          isOpen={reviewModalIsOpen}
-          onRequestClose={handleReviewModalClose}
-          overlayClassName="Overlay"
-        >
-          <h2 className="starwrite">학생모집 방 후기 작성</h2>
-          <button
-            type="submit"
-            onClick={handleReviewModalClose}
-            className="ModalButton"
-          >
-            X
-          </button>
-
-          {selectedRoom && (
-            <div>
-              <p>선택한 방: {selectedRoom.name}</p>
-              <p>강사 이름: {selectedHost}</p>
-              <p>강사 ID: {selectedHostId}</p>
-              {selectedStars >= 0 && <p>선택한 별점: {selectedStars}</p>}
-              <div className="starContainer">
-                {[0, 1, 2, 3, 4, 5].map((star) => (
-                  <span
-                    key={star}
-                    className={selectedStars >= star ? "selected" : ""}
-                    onClick={() => handleStarClick(star)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {star}{" "}
-                  </span>
-                ))}
-              </div>
-
-              <div className="writeReview">
-                <p>리뷰 작성</p>
-                <textarea
-                  className="reviewBox"
-                  placeholder="리뷰를 작성해주세요 (30자 이상)"
-                  cols="40"
-                  rows="13"
-                  onChange={(e) => {
-                    if (e.target.value.length >= 30) {
-                      setReview(e.target.value);
-                    }
-                  }}
-                  type="text"
-                ></textarea>
-              </div>
-
-              <button type="submit" onClick={handleReviewSubmit}>
-                등록
-              </button>
-            </div>
-          )}
-          {!selectedRoom && (
-            <div className="roomListContainer">
-              {roomListModal.length > 0 ? (
-                <div>
-                  {participatedRooms.map((room) => (
-                    <div
-                      key={room.id}
-                      className={`roomItem ${
-                        selectedRoom === room ? "selected" : ""
-                      }`}
-                      onClick={() => handleRoomSelect(room)}
-                    >
-                      <h3>{room.name}</h3>
-                      <p>{room.description}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p>Loading...</p>
-              )}
-            </div>
-          )}
-        </Modal>
       </div>
-
-      <div className="TreviewBtn">
-        <button
-          className="starsub"
-          type="submit"
-          onClick={ThandleReviewModalOpen}
-        >
-          강사모집 방 후기 작성
-        </button>
-        <Modal
-          className="Modal"
-          ariaHideApp={false}
-          isOpen={TreviewModalIsOpen}
-          onRequestClose={ThandleReviewModalClose}
-          overlayClassName="Overlay"
-        >
-          <h2 className="starwrite">강사모집방 후기 작성</h2>
-          <button
-            type="submit"
-            onClick={ThandleReviewModalClose}
-            className="ModalButton"
-          >
-            X
-          </button>
-          {/*{TselectedRoom && (
-        <div className="teacherroom">
-            <p>강사모집방 이름: {TselectedRoom.name}</p>
-            {TselectedApplicant[0] && (
-            <div className='teacherroom1'>
-                <p>강사1 이름: {TselectedApplicant[0]}</p>
-                <p>강사1 ID: {TselectedApplicantId[0]}</p>
-                {TselectedStars[0] >= 0 && (
-                <p>선택한 별점: {TselectedStars[0]}</p>
-                )}
-                <div className="starContainer">
-                {[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
-                    <span
-                    key={star}
-                    className={
-                        TselectedStars[0] >= star ? "selected" : ""
-                    }
-                    onClick={() => ThandleStarClick(star, 0)}
-                    style={{ cursor: "pointer" }}
-                    >
-                    {star}{" "}
-                    </span>
-                ))}
-                </div>
-                <div className="writeReview"> 
-                    <p>리뷰 작성</p>
-                    <textarea
-                        className="reviewBox"
-                        placeholder="리뷰를 작성해주세요 (30자 이상)"
-                        cols="40"
-                        rows="13"
-                        onChange={(e) => {
-                            if (e.target.value.length >= 30) {
-                              setReview(e.target.value);
-                            }
-                          }}
-                        type="text"
-                    >
-                    </textarea>
-                </div>
-            </div>
-            )}
-
-            {TselectedApplicant[1] && (
-            <div className='teacherroom2'>
-                <p>강사2 이름: {TselectedApplicant[1]}</p>
-                <p>강사2 ID: {TselectedApplicantId[1]}</p>
-                {TselectedStars[1] >= 0 && (
-                <p>선택한 별점: {TselectedStars[1]}</p>
-                )}
-                <div className="starContainer">
-                {[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
-                    <span
-                    key={star}
-                    className={
-                        TselectedStars[1] >= star ? "selected" : ""
-                    }
-                    onClick={() => ThandleStarClick(star, 1)}
-                    style={{ cursor: "pointer" }}
-                    >
-                    {star}{" "}
-                    </span>
-                ))}
-                </div>
-            </div>
-            )}
-
-            {(TselectedApplicant[0] || TselectedApplicant[1]) && (
-            <button type="submit" onClick={ThandleReviewSubmit}>
-                등록
-            </button>
-            )}
-        </div>
-        )}
-
-        {!TselectedRoom && (
-        <div className="TroomListContainer">
-            {TroomListModal.length > 0 ? (
-            <div >
-                {TparticipatedRooms.map((room) => (
-                <div
-                    key={room.id}
-                    className={`TroomItem ${
-                    TselectedRoom === room ? "Tselected" : ""
-                    }`}
-                    onClick={() => ThandleRoomSelect(room)}
-                >
-                    <h3>{room.name}</h3>
-                    <p>{room.description}</p>
-                </div>
-                ))}
-            </div>
-            ) : (
-            <p>Loading...</p>
-            )}
-        </div>
-        )}
-    </Modal>
-    </div>*/}
-
-          {TselectedRoom && (
-            <div>
-              <p>강사모집방 이름: {TselectedRoom.name}</p>
-              <p>강사 이름: {TselectedApplicant}</p>
-              <p>강사 ID: {TselectedApplicantId}</p>
-              {TselectedStars >= 0 && <p>선택한 별점: {TselectedStars}</p>}
-              <div className="starContainer">
-                {[0, 1, 2, 3, 4, 5].map((star) => (
-                  <span
-                    key={star}
-                    className={TselectedStars >= star ? "selected" : ""}
-                    onClick={() => ThandleStarClick(star)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {star}{" "}
-                  </span>
-                ))}
-              </div>
-              <button type="submit" onClick={ThandleReviewSubmit}>
-                등록
-              </button>
-            </div>
-          )}
-
-          {!TselectedRoom && (
-            <div className="TroomListContainer">
-              {TroomListModal.length > 0 ? (
-                <div>
-                  {TparticipatedRooms.map((room) => (
-                    <div
-                      key={room.id}
-                      className={`TroomItem ${
-                        TselectedRoom === room ? "Tselected" : ""
-                      }`}
-                      onClick={() => ThandleRoomSelect(room)}
-                    >
-                      <h3>{room.name}</h3>
-                      <p>{room.description}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p>Loading...</p>
-              )}
-            </div>
-          )}
-        </Modal>
-      </div>
-
       <div className="MyCalendar">
         <Calendar
           onClickDay={handleSelectDate}

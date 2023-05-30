@@ -13,7 +13,7 @@ import { BiMicrophone } from "react-icons/bi";
 import { BiMicrophoneOff } from "react-icons/bi";
 import { RxExit } from "react-icons/rx";
 import { AiOutlineClockCircle } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import userStore from "../../store/user.store";
 import ChangeTime from "./ChangeTime";
 import { BASE_API_URI_CAM } from "../../util/common";
@@ -38,6 +38,7 @@ const SOCKET_SERVER_URL = BASE_API_URI_CAM;
 
 const RTCChat = () => {
   const socketRef = useRef();
+  const { roomTitle } = useParams();
   const pcsRef = useRef({});
   const localVideoRef = useRef(null);
   const localStreamRef = useRef();
@@ -65,8 +66,6 @@ const RTCChat = () => {
     setHour(h);
     setMinute(m);
   };
-  const postID = 85;
-  const DBName = "write";
   const [showModal, setShowModal] = useState(false); // 모달 보이기/감추기 상태
 
   const handleModalConfirm = () => {
@@ -78,7 +77,7 @@ const RTCChat = () => {
     const timeData = {
       hour: hour,
       minute: minute,
-      room: postID,
+      room: roomTitle,
     };
 
     if (socketRef.current !== undefined) {
@@ -86,11 +85,13 @@ const RTCChat = () => {
     }
 
     axios
-      .post(`${BASE_API_URI}/get-time2`, { postID: postID, DBName: DBName })
+      .post(`${BASE_API_URI}/get-time`, { roomTitle: roomTitle })
       .then((response) => {
         if (response.status === 200) {
           setHour(response.data.hour);
           setMinute(response.data.minute);
+
+          console.log(hour, minute);
 
           const currentTime = new Date();
           const finishTime = new Date(currentTime);
@@ -127,7 +128,7 @@ const RTCChat = () => {
 
   const clickTime = () => {
     axios
-      .post(`${BASE_API_URI}/get-time`, { postID: postID, DBName: DBName })
+      .post(`${BASE_API_URI}/get-time`, { roomTitle: roomTitle })
       .then((response) => {
         if (response.status === 200) {
           setHour(response.data.hour);
@@ -167,7 +168,7 @@ const RTCChat = () => {
 
   const msgClickHandler = () => {
     socketRef.current.emit("chat_send", {
-      room: postID,
+      room: roomTitle,
       msg: msg,
       name: userMe.name,
     });
@@ -193,7 +194,7 @@ const RTCChat = () => {
       if (!socketRef.current) return;
       !bool &&
         socketRef.current.emit("join_room", {
-          room: postID,
+          room: roomTitle,
           email: `${userMe.name}`,
         });
 
@@ -226,7 +227,7 @@ const RTCChat = () => {
 
     setMuted((prevMuted) => !prevMuted);
 
-    socketRef.current.emit("toggle_mic", { room: postID, muted: !muted });
+    socketRef.current.emit("toggle_mic", { room: roomTitle, muted: !muted });
   }, [muted, socketRef]);
 
   const createPeerConnection = useCallback((socketID, email) => {
@@ -493,13 +494,13 @@ const RTCChat = () => {
           if (rms > threshold && muted === false) {
             setSpeaking(true);
             socketRef.current.emit("speaking", {
-              room: postID,
+              room: roomTitle,
               speaking: true,
             });
           } else if (rms < threshold || muted === true) {
             setSpeaking(false);
             socketRef.current.emit("speaking", {
-              room: postID,
+              room: roomTitle,
               speaking: false,
             });
           }
@@ -683,8 +684,7 @@ const RTCChat = () => {
                     originHour={hour}
                     handleDropdownToggle={handleDropdownToggle}
                     setOriginTime={setTime}
-                    DBName={DBName}
-                    postID={postID}
+                    roomTitle={roomTitle}
                   />
                 )}
                 <button
