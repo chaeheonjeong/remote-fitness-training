@@ -61,7 +61,15 @@ height: 25px;
   display: flex;
   border: 1.5px solid #8AE52E;
   border-radius: 7px;
-  background-color: #F4F9F4;
+  background-color: #FAFAFA;
+  transition: transform 0.2s ease;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+  rgba(0, 0, 0, 0.3) 0px 0px 7px -3px;
+  cursor: pointer;
+}
+
+.questionBoxWrapper:hover{
+  transform: translateY(-2px);
 }
 
 /* .participants {

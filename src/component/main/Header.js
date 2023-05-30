@@ -1,6 +1,7 @@
 import styles from "./Header.module.css";
 import { HiUserCircle } from "react-icons/hi";
 import { GoBell } from "react-icons/go";
+import { Link } from "react-router-dom";
 import useHeader from "../../hooks/useHeader";
 import userStore from "../../store/user.store";
 import axios from "axios";
@@ -46,6 +47,26 @@ const Header = ({ ...props }) => {
       >
         고습도치
       </label>
+      <ul className={styles.nav}>
+        <li>
+        <Link
+            to="/Recruitment"
+            style={{ textDecoration: "none", color: "black" }}
+            > 강사모집 </Link>
+        </li>
+        <li>
+        <Link
+            to="/sRecruitment"
+            style={{ textDecoration: "none", color: "black" }}
+            > 학생모집 </Link>
+        </li>
+        <li>
+        <Link
+            to="/question"
+            style={{ textDecoration: "none", color: "black" }}
+            > 질문Q&A </Link>
+        </li>
+      </ul>
       <div className={styles.smallContainer}>
         <div className={styles.smallContainer2}>
           {user.token !== null && (

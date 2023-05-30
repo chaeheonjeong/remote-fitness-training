@@ -6,16 +6,20 @@
 }
 
 .container {
+  z-index: 3;
+  width: 100%;
+  position: fixed;
   display: flex;
   border-bottom: 2px solid;
   border-color: #FAFAFA;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 1.2rem 5rem;
   background-color: #FAFAFA;
 }
 
 .smallContainer {
+  float: right;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -23,6 +27,7 @@
 }
 
 .smallContainer2 {
+  float: right;
   display: flex;
   align-items: center;
   margin-right: 2rem;
@@ -30,7 +35,27 @@
   background-color: #FAFAFA;
 }
 
+.nav{
+  float: left;
+  list-style: none;
+  width: 45%;
+}
+
+.nav li{
+  float: left;
+  font-family: 'SUITE-Regular';
+}
+
+.nav a{
+  line-height: 40px;
+  padding: 0 15px;
+  text-decoration: none;
+  font-family: 'SUITE-Regular';
+}
+
 .linkLabel {
+  padding-right: 15px;
+  float: left;
   font-size: 1.5rem;
   font-weight: bolder;
   color: #8AE52E;

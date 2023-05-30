@@ -55,6 +55,10 @@ function RankSwiper({ rankers }) {
     <>
       {rankers.length > 0 && (
         <Swiper
+          style={{
+            "--swiper-navigation-color": "#16C79A",
+            "--swiper-pagination-color": "#16C79A",
+          }}
           className={styles.swiper} // 수정된 부분
           spaceBetween={10}
           slidesPerView={1}
