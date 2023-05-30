@@ -19,6 +19,8 @@ import Header from "../component/main/Header";
 import SRecruitment from "../component/main/SRecruitment";
 import Recruitment from "../component/main/Recruitment";
 import SubBanner from "../component/main/SubBanner";
+import SubQuestionBanner from "../component/main/SubQuestionBanner";
+import SubStudentBanner from "../component/main/SubStudentBanner";
 /* import TRecruitment from "../component/main/MainStudy"; */
 
 import Portfolio from "../component/mypage/Portfolio";
@@ -51,10 +53,19 @@ const Router = () => {
           path="/question"
           element={[<Main key="qmain" />, <MainQuestion key="question" />]}
         />
+        <Route
+          path="/detailQuestion"
+          element={[<Header key="header" />, <SubQuestionBanner key="questionbanner" />, <MainQuestion key="question" />]}
+        />
 
         <Route
           path="/sRecruitment"
           element={[<Main key="main" />, <SRecruitment key="srecruitment" />]}
+        />
+
+        <Route
+          path="/detailsRecruitment"
+          element={[<Header key="header" />, <SubStudentBanner key="studentbanner" />, <SRecruitment key="srecruitment" />]}
         />
 
         <Route

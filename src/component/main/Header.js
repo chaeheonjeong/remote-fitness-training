@@ -56,13 +56,13 @@ const Header = ({ ...props }) => {
         </li>
         <li>
         <Link
-            to="/sRecruitment"
+            to="/detailsRecruitment"
             style={{ textDecoration: "none", color: "black" }}
             > 학생모집 </Link>
         </li>
         <li>
         <Link
-            to="/question"
+            to="/detailQuestion"
             style={{ textDecoration: "none", color: "black" }}
             > 질문Q&A </Link>
         </li>

@@ -37,8 +37,8 @@ export default function bannerSwiper() {
           slot="container-start"
           className="parallax-bg"
           style={{
-            "background-color":
-              "#16C79A",
+            "background-image":
+            "url(https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80)",
           }}
           data-swiper-parallax="-23%"
         ></div>
@@ -75,7 +75,7 @@ export default function bannerSwiper() {
             </p>
           </div>
           <div className="Tbutton" data-swiper-parallx="-100">
-            <Link to="/sRecruitment"
+            <Link to="/detailsRecruitment"
             style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}
             >
                 <BsArrowRightCircle style={{ marginRight: '5px' }}/>바로가기
@@ -95,7 +95,7 @@ export default function bannerSwiper() {
             </p>
           </div>
           <div className="Tbutton" data-swiper-parallx="-100">
-          <Link to="/question"
+          <Link to="/detailQuestion"
             style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}
             >
                 <BsArrowRightCircle style={{ marginRight: '5px' }}/>바로가기
