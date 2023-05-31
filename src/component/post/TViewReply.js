@@ -564,6 +564,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
                       setShowReplyList(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
                       fetchR_Reply(r._id);
+                      console.log("1", showReplyList === r._id);
                     }}>대댓글 목록 보기</button>
                   ) : (
                     selectedRId === r._id ? (
@@ -571,12 +572,14 @@ const TViewReply = ({ write, setWrite, writer }) => {
                         setShowReplyList(selectedRId === r._id ? null : r._id);
                         setSelectedRId(selectedRId === r._id ? null : r._id);
                         fetchR_Reply(r._id);
+                        console.log("2", showReplyList === r._id);
                       }}>대댓글 목록 닫기</button>
                       ) : (
                         <button className={styles.asdf1} onClick={() => {
                           setShowReplyList(selectedRId === r._id ? null : r._id);
                           setSelectedRId(selectedRId === r._id ? null : r._id);
                           fetchR_Reply(r._id);
+                          console.log("3", showReplyList === r._id);
                         }}>대댓글 목록 보기</button>
                       )
                   )}
@@ -630,6 +633,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
                                       setShowRModifyReplyInput(selectedRId === rr._id ? null : rr._id);
                                       setSelectedRId(selectedRId === rr._id ? null : rr._id);
                                       modifyR_Reply(rr._id);
+                                              console.log("here ", showR_ReplyModifyInput, selectedRId, rr._id);
                                     }}
                                   ></input>
                                   { showR_ReplyModifyInput === rr._id && (

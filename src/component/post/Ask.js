@@ -151,39 +151,46 @@ function Ask() {
   return (
     <>
       <Header />
-      <div className={styles.ask}>
-        <div className={styles.title_input}>
-          <text className={styles.tt}>제목</text>
-          <input
-            onChange={titleHandler}
-            className={styles.title_tinput}
-            value={title}
-            placeholder="제목을 입력하세요."
-          />
-        </div>
-        <div>
-          <input
+      <div className={styles.all}>
+        <div className={styles.write_title}>질문글 작성</div>
+        <hr />
+        <div className={styles.tags}>
+        <text className={styles.tt}>태그</text>
+          <input 
             className={styles.tag_input}
             onKeyPress={handleKeyPress}
-            type='text'
+            type="text"
             placeholder="해시태그 입력(최대 5개)"
           />
           <div className={styles.tag_tagPackage}>
-            {tags.map((tag, index) => (
-              <span key={index} className={styles.tag_tagindex}>
-                {tag}
-                <button
-                  className={styles.tag_Btn}
-                  onClick={() => {
-                    setTags(tags.filter((tag, i) => i !== index));
-                  }}
-                >
-                  &times;
-                </button>
-              </span>
-            ))}
+          {tags.map((tag, index) => (
+            <span key={index} className={styles.tag_tagindex}>
+              {tag}
+              <button
+                className={styles.tag_Btn}
+                onClick={() => {
+                  setTags(tags.filter((tag, i) => i !== index));
+                }}
+              >
+                &times;
+              </button>
+            </span>
+          ))}
           </div>
+        </div>
 
+        <hr />
+
+        <div className={styles.ch3}>
+          <div className={styles.title_input}>
+            <text className={styles.tt}>제목</text>
+            <input
+              onChange={titleHandler}
+              className={styles.title_tinput}
+              value={title}
+              placeholder="제목을 입력하세요."
+            />
+          </div>
           <div className={styles.content}>
             <CKEditor
               editor={ClassicEditor}
@@ -211,7 +218,6 @@ function Ask() {
             }} */
             />
           </div>
-
           <div className={styles.btn}>
             <input
               type="button"
@@ -229,6 +235,7 @@ function Ask() {
             />
           </div>
         </div>
+
       </div>
     </>
   );

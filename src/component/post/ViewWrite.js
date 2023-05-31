@@ -137,49 +137,103 @@ const ViewWrite = () => {
     return(
         <>
             <Header />
+            <div className={styles.all}>
+            <div className={styles.left}>
+            <div className={styles.body}>
             <div className={styles.detail}>
-                <div className={styles.content_4}>
                 <div className={styles.content_4_a}>
                     <div>
-                    <button
-                        className={write.recruit ? styles.cbtn : styles.falseBtn}
-                    >
-                        {write.recruit ? "모집중" : "모집완료"}
-                    </button>
+                        <button
+                            className={write.recruit ? styles.cbtn : styles.falseBtn}
+                        >
+                            {write.recruit ? "모집중" : "모집완료"}
+                        </button>
                     </div>
-                </div>
-                {sameUser && (
-                    <div className={styles.content_4_b}>
-                    <input
-                        className={styles.dd}
-                        type="button"
-                        value="삭제"
-                        onClick={() => {
-                            deleteHandler();
-                        }}
-                        />
-                    <input
-                        className={styles.mm}
-                        type="button"
-                        value="수정"
-                        onClick={() => {
-                        navigate(`/modifyPost/${id}`);
-                        }}
-                    />
-                    </div>
-                )}
                 </div>
                 <div className={styles.content_1}>
-                <div>제목</div>
-                <div>{write.title}</div>
+                <div className={styles.content_1_1}>
+                    <div style={{ fontSize: "45px", fontWeight: "600" }}>{write.title}</div>
+                    <div className={styles.date}>
+                        {write.writeDate !== undefined &&
+                        formatDate(new Date(write.writeDate))}
+                    </div>
                 </div>
-                <div className={styles.content_2}>
+                    
+
+                    <div className={styles.content_4}>   
+                    {sameUser && (
+                        <div className={styles.content_4_b}>
+                        <input
+                            className={styles.dd}
+                            type="button"
+                            value="삭제"
+                            onClick={() => {
+                                deleteHandler();
+                            }}
+                            />
+                        <input
+                            className={styles.mm}
+                            type="button"
+                            value="수정"
+                            onClick={() => {
+                            navigate(`/modifyPost/${id}`);
+                            }}
+                        />
+                        </div>
+                    )}
+                    </div>
+                </div>
+                <hr/> 
+                </div>
+                
+                <div className={styles.content_3}>
+                    <div className={styles.write} dangerouslySetInnerHTML={{ __html: htmlString }} />
+
+                    <div className={styles.write_bottom}>
+                        <div className={styles.tags}>
+                            <div >
+                                {write.tag !== undefined &&
+                                write.tag.map((x, i) => {
+                                return <span key={x + i} className={styles.tag}>
+                                            <div className={styles.hashtag}>#</div> 
+                                            <div className={styles.tag_content}>{x}</div>
+                                        </span>;
+                                })}
+                            </div>
+                        </div>
+
+
+                        <div className={styles.scrap}>
+                        <span className={good ? styles.goodBtn : null}>
+                        스크랩 {bookmarkCount}
+                        </span>
+                        <span className={styles.views}>조회수 {write.views}</span>
+                    </div>
+                </div>       
+        </div>
+        </div>
+
+        <ViewReply
+                write = {write}
+                setWrite = {setWrite}
+                writer = {write.writer}
+            />
+        </div>
+
+        <div className={styles.info_all}>
+            <div className={styles.noti_pack}>
+                <p className={styles.emoji}>💡</p>
+                <p className={styles.noti}>댓글 작성시 신청완료 (대댓글 제외)</p>
+            </div>
+
+            <div className={styles.writer_info}>
+            <div className={styles.content_2}>
                     <div>작성자</div>
                     <div className={styles.profile1} onClick={() => {passHandler(write._user)}} 
-                        style={{ marginRight: "12.5rem" }}>
+                        style={{ marginRight: "0.8rem"}}>
                         {profileImg === null ? (
                             <HiUserCircle
-                            size="40"
+                            size="50"
                             color="#5a5a5a"
                             style={{ cursor: "pointer" }}
                             />
@@ -190,56 +244,49 @@ const ViewWrite = () => {
                             alt="프로필 이미지"
                             />
                         )}
-                        {write.writer}
-                    </div>
-                    <div>
-                        날짜{" "}
-                        {write.writeDate !== undefined &&
-                        formatDate(new Date(write.writeDate))}
+                        <div className={styles.profileInfo}>
+                            <div className={styles.name}>{write.writer}</div>
+                        </div>
                     </div>
                 </div>
                 </div>
+                <div className={styles.info}>
+                <div className={styles.info_title}>상세정보</div>
                 <div className={styles.content5_all}>
-                <div className={styles.content_5}>
-                <div style={{ marginRight: "1rem" }}>모집인원</div>
-                <div className={styles.css1} style={{ marginRight: "15rem" }}>{write.number}</div>
+                    <div className={styles.title}>
+                    <div className={styles.css1_head} style={{ marginRight: "1rem" }}>모집인원</div>
+                    <div className={styles.css2_head} style={{ marginRight: "1rem" }}> 시작 예정일</div>
+                    <div className={styles.css3_head} style={{ marginRight: "1rem" }}> 시작 시간</div>
+                    <div className={styles.css4_head} style={{ marginRight: "1rem" }}>예상 진행시간</div>
+                    <div className={styles.css5_head} style={{ marginRight: "1rem" }}>예상 금액</div>
+                </div>
 
-                <div style={{ marginRight: "1rem" }}> 시작 예정일</div>
-                <div className={styles.css2} style={{ marginRight: "15rem" }}>{write.date}</div>
+                <div className={styles.properties}>
+                    <div className={styles.css1}>{write.number}</div>
+                    <div className={styles.css2}>{write.date}</div>
+                    <div className={styles.css3}>{write.startTime}</div>
+                    <div className={styles.css4}>{write.runningTime} 분</div>
+                    <div className={styles.css5}>{write.estimateAmount} 원</div>
+                </div>
+                {/* <div id={styles.properties_title}>
+                    
+                </div>
+                <div id={styles.properties_title}>
+                </div>
+                <div id={styles.properties_title}>
+                </div>
                 
-                <div style={{ marginRight: "1rem" }}> 시작 시간</div>
-                <div className={styles.css3}>{write.startTime}</div>
+                <div id={styles.properties_title}>
                 </div>
-                <div className={styles.content_5a}>
-                <div style={{ marginRight: "1rem" }}>예상 진행시간</div>
-                <div className={styles.css4} style={{ marginRight: "14rem" }}>{write.runningTime} 분</div>
-
-                <div style={{ marginRight: "1rem" }}>예상 금액</div>
-                <div className={styles.css5} style={{ marginRight: "14rem" }}>{write.estimateAmount} 원</div>
-
-                <div>태그</div>
-                <div className={styles.css6}>
-                        {write.tag !== undefined &&
-                        write.tag.map((x, i) => {
-                        return <span key={x + i}>{x}</span>;
-                        })}
-                    </div>
+                <div id={styles.properties_title}>
+                </div> */}
                 </div>
-                <div className={styles.content_3}>
-                <div dangerouslySetInnerHTML={{ __html: htmlString }} />
-                <div className={styles.goodch}>
-                <span className={good ? styles.goodBtn : null}>
-                스크랩{bookmarkCount}
-                </span>
-                <span>조회수{write.views}</span>
-            </div>
-            </div>
-            <ViewReply
-                write = {write}
-                setWrite = {setWrite}
-                writer = {write.writer}
-            />
-            </div>
+                </div>
+        </div>
+        </div>
+            
+            
+            
         </>
     );
 }

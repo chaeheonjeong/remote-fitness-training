@@ -1,64 +1,138 @@
-.ask {
-  margin-top: 10px;
+.all {
+  width: 70%;
+  margin: auto;
 }
 
-.ask{
-    padding: 2rem;
-    border: 4px solid black;
-    margin: 30px;
-    margin-top: 80px;
-    
-  }
-  
-  .ask {
-    margin-top: 10px;
-  }
-  
-  .title_input {
-    display: flex;
-    font-size: 20px;
-    margin-bottom: 10px;
-    border-bottom:3px;
-    padding : 5px;
-    height: 40px;
-  }
-  
-  .cc {
-    margin-right: 30px;
-  }
-
-.cc {
-  margin-right: 30px;
+.write_title {
+  font-size: 40px;
+  margin-bottom: 2rem;
+  font-weight: bold;
 }
 
-.tt {
-  margin-right: 30px;
+text {
+  margin: 0 1% 0 1%;
 }
 
-  
-  .btn {
-    text-align: end;
-    margin-top : 20px;
-    margin-right: 65px;
-  }
-  
-  .title_tinput {
-    width: 90%;
-    padding: 5px;
-    border: solid 1.6px black;
-  }
+.ch3 {
+  margin-top: 2rem;
+}
 
-.cc {
-  margin-right: 30px;
+.title_input {
+  margin-bottom: 1.5rem;
+}
+
+.title_tinput {
+  border: 1px solid #24B422;
+  border-radius: 5px;
+  width: 98%;
+  height: 3rem;
+  padding: 1rem;
+  margin: 0 1% 0 1%;
 }
 
 .btn {
+  margin: 2rem 1% 4rem 1%;
   text-align: end;
 }
 
+.submit {
+  margin-left: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #1A8C4A;
+  background-color: #1A8C4A;
+  color: white;
+  font-weight: bold;
+  width: 4rem;
+  height: 2rem;
+}
+
+.submit:hover {
+  filter: brightness(0.85);
+}
+
+.cancel {
+  border-radius: 5px;
+  border: 1px solid #24B422;
+  width: 4rem;
+  height: 2rem;
+}
+
+.cancel:hover {
+  filter: brightness(0.85);
+}
+
+.tags {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.tag_tagPackage {
+  margin-top: 1rem;
+}
+
+.tag_tagindex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #8AE52A;
+  border-radius: 4px;
+  padding-left: 0.5rem;
+}
+
+.tag_input {
+  width: 98%;
+  text-align: center;
+  margin-right: 0;
+  border: 1px solid #24B422;
+  border-radius: 5px;
+  font-weight: bolder;
+  height: 3rem;
+  padding: 0 1rem;
+  margin: 0 1% 0 1%;
+}
+
+.tags text, .title_input text {
+  margin-bottom: 0.1rem;
+  display: block;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.tag_tagindex p {
+  display: inline-block;
+  margin: 8px 6px 8px 8px;
+}
+
+.tag_Btn {
+  font-weight: bold;
+  width: 24px;
+  height: 40px;
+  border-radius: 0 3px;
+  font-size: 20px;
+  padding: 0 4px 0 4px;
+}
+
+.tag_Btn:hover {
+  display: block;
+  background-color: #ea5a3e;
+  color: white;
+  font-size: 20px;
+}
+
 .content {
+  width: 98%;
   margin-top: 20px;
-  width: 90%;
-  margin-left: 73px;
-  border: solid 1.6px black;
+  margin-left: 1%;
+}
+
+.ck.ck-editor {
+  border-radius: 5px;
+  border: 1px solid #24B422;
+}
+
+.ck.ck-editor__main>.ck-editor__editable {
+min-height: 30rem;
 }

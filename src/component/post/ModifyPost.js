@@ -170,176 +170,185 @@ const ModifyPost = () => {
     }
 
       <Header />
-      <div className="choose">
-        <button
-          className={hook.recruit ? "cbtn" : "falseBtn"}
-          onClick={() => {
-            selection();
-          }}
-          disabled={!hook.recruit}
-        >
-          {hook.recruit ? "모집중" : "모집완료"}
-        </button>
-        <div className="ch1">
-          <text className="nn">모집인원</text>
-
-          <select
-            name="number"
-            className="number"
-            onChange={(e) => {
-              hook.setPCondition(e.target.value);
+      <div className="all">
+        <div className="choose">
+          <button
+            className={hook.recruit ? "cbtn" : "falseBtn"}
+            onClick={() => {
+              selection();
             }}
+            disabled={!hook.recruit}
           >
-            {[1].map((number, index) => (
-              <option
-                key={number + index}
-                value={typeof number === "number" ? `${number}명` : "10명 이상"}
-                selected={numberSelect(number)}
-              >
-                {typeof number === "number" ? `${number}명` : number}
-              </option>
-            ))}
-          </select>
-          <text className="ww">시작시간</text>
-            <input
-              type="time"
-              id="startTime"
-              className="startTime_input"
-              onChange={(event) => {
-                hook.setStartTime(event.target.value);
-              }}
-              defaultValue={hook.startTime}
-            ></input>
-        </div>
-
-        <div className="ch2">
-          {/* <text className="ss">시작예정일</text>
-          <input
-            type="date"
-            id="date"
-            className="date"
-            onChange={(event) => {
-              hook.setDate(event.target.value);
-            }}
-            defaultValue={hook.date}
-          ></input> */}
-
-            <text className="ww">예상진행시간</text>
-              <input
-                className="runningTime"
-                onChange={(event) => {
-                  hook.setRunningTime(event.target.value);
-                }}
-                defaultValue={hook.runningTime}
-                placeholder="분 단위로 입력" 
-                type="number" 
-                id="runningTime" 
-                name="runningTime" 
-                min="0" 
-                max="1440" 
-                step="1"
-              />
-
-              <text className="ww">예상금액</text> 
-              <input
-                className="estimatedAmount_input"
-                onChange={(event) => {
-                  hook.setEstimateAmount(event.target.value);
-                }}
-                defaultValue={hook.estimateAmount}
-                type="currency"
-                pattern="[0-9]+"
-                id="estimatedAmount" 
-                name="estimatedAmount" 
-                min="0"
-                step="100"
-              ></input> 원
-        </div>
-
-        <div className="ch3">
-          <text className="ss">시작예정일</text>
-          <input
-            type="date"
-            id="date"
-            className="date"
-            onChange={(event) => {
-              hook.setDate(event.target.value);
-            }}
-            defaultValue={hook.date}
-          ></input>
-
-          <text className="tt">태그</text>
-          <div>
-            <input
-              className="tag_input"
-              onKeyPress={hook.handleKeyPress}
-              type="text"
-              placeholder="해시태그 입력(최대 5개)"
-            />
-            <div className="tag_tagPackage">
-              {hook.tags !== undefined &&
-                hook.tags.map((tag, index) => (
-                  <span key={tag + index} className="tag_tagindex">
-                    {tag}
-                    <button
-                      className="tag_Btn"
-                      onClick={() => {
-                        hook.setTags(hook.tags.filter((tag, i) => i !== index));
-                      }}
+            {hook.recruit ? "모집중" : "모집완료"}
+          </button>
+          <hr/>
+          {/* <div><p></p>기본정보를 입력해주세요</div> */}
+          <div className="select">
+            <div className="left">
+              <div className="recruit_num">
+                <text className="nn">모집인원</text>
+                <select
+                  name="number"
+                  className="number"
+                  onChange={(e) => {
+                    hook.setPCondition(e.target.value);
+                  }}
+                >
+                  {[1].map((number, index) => (
+                    <option
+                      key={number + index}
+                      value={typeof number === "number" ? `${number}명` : "10명 이상"}
+                      selected={numberSelect(number)}
                     >
-                      &times;
-                    </button>
-                  </span>
-                ))}
+                      {typeof number === "number" ? `${number}명` : number}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="running_time">
+                <text className="ww">예상진행시간 (분)</text>
+                  <input
+                    className="runningTime"
+                    onChange={(event) => {
+                      hook.setRunningTime(event.target.value);
+                    }}
+                    defaultValue={hook.runningTime}
+                    placeholder="분 단위로 입력" 
+                    type="number" 
+                    id="runningTime" 
+                    name="runningTime" 
+                    min="0" 
+                    max="1440" 
+                    step="1"
+                  />
+              </div>
+
+              <div className="start-date">
+                <text className="ss">시작예정일</text>
+                <input
+                  type="date"
+                  id="date"
+                  className="date"
+                  onChange={(event) => {
+                    hook.setDate(event.target.value);
+                  }}
+                  defaultValue={hook.date}
+                ></input>
+              </div>
+            </div>
+
+            <div className="right">
+              <div className="start_time">
+                <text className="ww">시작시간</text>
+                  <input
+                    type="time"
+                    id="startTime"
+                    className="startTime_input"
+                    onChange={(event) => {
+                      hook.setStartTime(event.target.value);
+                    }}
+                    defaultValue={hook.startTime}
+                ></input>
+              </div>
+
+              <div className="pay">
+                <text className="ww">예상금액 (원)</text> 
+                  <input
+                    className="estimatedAmount_input"
+                    onChange={(event) => {
+                      hook.setEstimateAmount(event.target.value);
+                    }}
+                    defaultValue={hook.estimateAmount}
+                    type="currency"
+                    pattern="[0-9]+"
+                    id="estimatedAmount" 
+                    name="estimatedAmount" 
+                    min="0"
+                    step="100"
+                  ></input> 
+              </div>
+
+              <div className="tags">
+                <text className="tt">태그</text>
+                  <input
+                    className="tag_input"
+                    onKeyPress={hook.handleKeyPress}
+                    type="text"
+                    placeholder="해시태그 입력(최대 5개)"
+                  />
+                  <div className="tag_tagPackage">
+                    {hook.tags !== undefined &&
+                      hook.tags.map((tag, index) => (
+                        <span key={tag + index} className="tag_tagindex">
+                          <p>{tag}</p>
+                          <button
+                            className="tag_Btn"
+                            onClick={() => {
+                              hook.setTags(hook.tags.filter((tag, i) => i !== index));
+                            }}
+                          >
+                            &times;
+                          </button>
+                        </span>
+                      ))}
+                  </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="title_input">
-          <text className="cc">제목</text>
-          <input
-            onChange={(e) => {
-              hook.setTitle(e.target.value);
-            }}
-            className="title_tinput"
-            placeholder="제목을 입력하세요."
-            defaultValue={hook.title}
-          />
-        </div>
-        <div className="content">
-          <CKEditor
-            editor={ClassicEditor}
-            data={hook.htmlString}
-            config={{
-              placeholder: "내용을 입력하세요.",
-              extraPlugins: [uploadPlugin],
-            }}
-            /*           onReady={(editor) => {
-            console.log("Editor is ready to use!", editor);
-          }} */
-            onChange={(e, editor) => {
-              const data = editor.getData();
-              hook.setContent({
-                content: data,
-              });
-            }}
-          />
-        </div>
 
-        <div className="btn">
-          <input
-            type="button"
-            value="취소"
-            className="cancel"
-            onClick={() => {
-              hook.navigate(`/view/${hook.id}`);
-            }}
-          />
-          <input
-            type="submit"
-            value="수정"
-            className="submit"
-            onClick={hook.handleModify}
-          />
+          <hr/>
+
+          <div className="ch3">
+          <div className="title_input">
+            <text className="cc">제목</text>
+            <input
+              onChange={(e) => {
+                hook.setTitle(e.target.value);
+              }}
+              className="title_tinput"
+              placeholder="제목을 입력하세요."
+              defaultValue={hook.title}
+            />
+          </div>
+          <div className="content">
+            <CKEditor
+              editor={ClassicEditor}
+              data={hook.htmlString}
+              config={{
+                placeholder: "내용을 입력하세요.",
+                extraPlugins: [uploadPlugin],
+              }}
+              /*           onReady={(editor) => {
+              console.log("Editor is ready to use!", editor);
+            }} */
+              onChange={(e, editor) => {
+                const data = editor.getData();
+                hook.setContent({
+                  content: data,
+                });
+              }}
+            />
+          </div>
+          
+          <div className="btn">
+            <input
+              type="button"
+              value="취소"
+              className="cancel"
+              onClick={() => {
+                hook.navigate(`/view/${hook.id}`);
+              }}
+            />
+            <input
+              type="submit"
+              value="수정"
+              className="submit"
+              onClick={hook.handleModify}
+            />
+          </div>
+          </div>
+
         </div>
       </div>
     </>

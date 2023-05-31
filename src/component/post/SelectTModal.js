@@ -186,17 +186,32 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
           <div className={styles.closeBox} onClick={() => setModal(false)} />
           <div className={styles.modalWrapper}>
             <strong>채택</strong>
-            <button
+            {/* <button
               className={styles.ModalClose}
               onClick={() => setModal(false)}
             >
               &times;
-            </button>
+            </button> */}
             <div className={styles.inputWrapper}>
               <form>
-                <div>
-                    <a>수강생</a>
-                    <div className={styles.selectStudent}>
+                <div className={styles.room_title}>
+                    <a>방 제목</a>
+                    <input
+                        type="text"
+                        name="title"
+                        onChange={ (e) => setRoomTitle(e.target.value) }
+                        autoFocus
+                    />
+                    { 
+                      click !== 0 && roomTitle === "" ? (
+                        <div id={styles.message}>방 제목을 입력하세요</div>
+                      ) : null 
+                    }
+                </div>
+                
+                <div className={styles.pick_teacher}>
+                    <a>수강생 선택</a>
+                    <div className={styles.select_teacher}>
                         {rWriterList.map((rWriter) => (
                             <div key={rWriter}>
                                 <input
@@ -209,30 +224,17 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
                         ))}
                         <div>
                           {click !== 0 && pCount === 0 ? (
-                            <div>수강생을 채택하세요.</div>
+                            <div id={styles.message}>수강생을 선택하세요.</div>
                           ) : (
                             selectedStudent.length !== Number(participate.charAt()) ? (
-                              <div>{`${participate}`} 채택 가능합니다.</div>
+                              <div id={styles.message}>{`${participate}`} 선택 가능합니다.</div>
                             ) : null
                           )}
                         </div>
                     </div>
                 </div>
-                <div>
-                    <a>방 제목</a>
-                    <input
-                        type="text"
-                        name="title"
-                        onChange={ (e) => setRoomTitle(e.target.value) }
-                        autoFocus
-                    />
-                    { 
-                      click !== 0 && roomTitle === "" ? (
-                        <div>방 제목을 입력하세요</div>
-                      ) : null 
-                    }
-                </div>
-                <div>
+                
+                <div className={styles.start_time}>
                     <a>예상시작시간</a>
                     <input  
                         type="time"
@@ -242,12 +244,12 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
                     />
                     { 
                       click !== 0 && startTime === "" ? (
-                        <div>예상시작시간을 설정하세요</div>
+                        <div id={styles.message}>예상시작시간을 설정하세요</div>
                       ) : null 
                     }
                 </div>
-                <div>
-                    <a>예상진행시간</a>
+                <div className={styles.running_time}>
+                    <a>예상진행시간 (분)</a>
                     <input  
                         type="number" 
                         min="0" 
@@ -256,9 +258,9 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
                         name="runningTime"
                         onChange={ (e) => setRunningTime(e.target.value) }
                         value={runningTime}
-                    /> 분
+                    />
                 </div>
-                <div>
+                <div className={styles.start_date}>
                   <a>시작예정일</a>
                   <input
                     type="date"
@@ -269,32 +271,23 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
                     value={date}
                   />
                 </div>
-
-                {/* 이 부분은 수강생이 선생님 모집하는 경우에만 보이기 */}
-                {/* <div>
-                    <a className={styles.amount}>
-                        선금 결제 금액 : 
-                    </a>
-                    <button>선금 결제하러 가기</button>
-                </div> */}
-
               </form>
     
               <footer>
                 <button
-                  className={styles.makeOpenStudy}
-                  type="submit"
-                  onClick={handleSubmit}
-                >
-                  만들기
-                </button>
-                <button
-                  className={styles.openStudyCancle}
+                  className={styles.cancle}
                   onClick={() => {
                     setModal(false);
                   }}
                 >
                   취소
+                </button>
+                <button
+                  className={styles.make}
+                  type="submit"
+                  onClick={handleSubmit}
+                >
+                  만들기
                 </button>
               </footer>
             </div>
