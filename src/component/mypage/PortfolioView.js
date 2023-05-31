@@ -7,6 +7,8 @@ import userStore from "../../store/user.store";
 import "./PortfolioView.css";
 import ProfileSideBar from "./ProfileSideBar";
 import { FcSportsMode, FcCancel } from "react-icons/fc";
+import { MdPayment, MdAttachMoney} from "react-icons/md";
+import { BsFillTrophyFill, BsGenderAmbiguous } from "react-icons/bs";
 import { AiFillTag } from "react-icons/ai";
 import { BASE_API_URI } from "../../util/common";
 
@@ -106,9 +108,12 @@ function PortfolioView() {
       <Header />
       <ProfileSideBar />
       <div className="viewContent">
-        <div>성별 {portfolio[0]?.gender}</div>
-        <div>경력 {portfolio[0]?.career}</div>
-        <div>가격대 {portfolio[0]?.price}</div>
+      <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+        <BsGenderAmbiguous style={{ marginRight: '5px' }}/>성별 {portfolio[0]?.gender}</div>
+        <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+        <BsFillTrophyFill style={{ marginRight: '5px' }}/>경력 {portfolio[0]?.career}</div>
+        <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+        <MdAttachMoney style={{ marginRight: '5px' }}/>가격대 {portfolio[0]?.price}</div>
         <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}><FcSportsMode style={{ marginRight: '5px' }}/>운동종목 {portfolio[0]?.sports}</div>
 
         {/* <div>
@@ -116,7 +121,7 @@ function PortfolioView() {
             <div key={index}>가능결제수단 {method}</div>
           ))}
         </div> */}
-        <div>
+        <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}><MdPayment style={{ marginRight: '5px' }}/>
             가능결제수단 {portfolio[0]?.paymentMethods.map((method, index) => (
               <text key={index} className="pp">{method}</text>
             ))}

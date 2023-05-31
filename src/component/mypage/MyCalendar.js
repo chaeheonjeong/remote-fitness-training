@@ -11,6 +11,7 @@ import Modal from "react-modal";
 import userStore from "../../store/user.store";
 import SideBar from "./SideBar";
 import DatePicker from "react-datepicker";
+import { FcPlus } from "react-icons/fc";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "../main/Header";
 import useNoti from "../../hooks/useNoti";
@@ -681,8 +682,8 @@ function MyCalendar() {
                             setSelectedSchedule(null);
                             setDetailModalIsOpen(false);
                             setAddModalIsOpen(true);
-                        }} >새 일정 추가</button>
-                        <div className='ttt2'> 날짜 : {moment(selectedSchedule.date).format("YYYY-MM-DD")} </div>
+                        }} ><FcPlus size="30"/></button>
+                        <div className='ttt2'> {moment(selectedSchedule.date).format("YYYY-MM-DD")} </div>
                         <div className='ttt5'>제목</div>
                         <input className='writewrite4' type="text" value={selectedSchedule.title} onChange={(e) => setSelectedSchedule({ ...selectedSchedule, title: e.target.value })} />
                         <div className='ttt4'>내용</div> 

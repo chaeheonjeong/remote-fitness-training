@@ -7,14 +7,15 @@
 
 .title2 {
     font-family: 'Cafe24SsurroundAir';
-    margin-top: 40px;
+    margin-top: 120px;
     font-size: 25px;
     font-weight: bold;
     margin-left: 25%;
 }
 .MyInfo{
-    border: 1px solid #0b9e00;
-    background-color: rgb(240, 255, 237);
+    border: 1px solid #8AE52E;
+    background-color: #FAFAFA;
+    border-radius: 30px;
     padding: 40px;
     margin-left: 25%;
     height: calc(53vh - 5rem);

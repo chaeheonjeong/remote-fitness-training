@@ -130,10 +130,9 @@ function Portfolio() {
           <FcOk size={18} /> 등록이 완료되었습니다.{" "}
         </p>
         <div className="viewContent">
-          <div className="view_title">
-            <div className="viewTitle">제목 {title}</div>
-          </div>
-          <div>성별 {gender}</div>
+          
+        <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+        <BsGenderAmbiguous style={{ marginRight: '5px' }}/>성별 {gender}</div>
           <div>경력 {career}</div>
           <div>가격대 {price}</div>
           <div>운동종목 {sports}</div>
@@ -147,7 +146,11 @@ function Portfolio() {
               <div key={index}>태그 {tag}</div>
             ))}
           </div>
+          <div className="view_title">
+            <div className="viewTitle">제목 {title}</div>
+          </div>
           <div className="view_contents">
+            
             <div
               className="viewContents"
               dangerouslySetInnerHTML={{ __html: htmlString }}
