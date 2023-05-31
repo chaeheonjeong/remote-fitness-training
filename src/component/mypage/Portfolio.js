@@ -7,6 +7,7 @@ import SideBar from "./SideBar";
 import Header from "../main/Header";
 import userStore from "../../store/user.store";
 import "./Portfolio.css";
+import { BsFillTrophyFill, BsGenderAmbiguous } from "react-icons/bs";
 import { FcOk } from "react-icons/fc";
 import { BASE_API_URI } from "../../util/common";
 import styles from "./PortfolioModify.module.css";

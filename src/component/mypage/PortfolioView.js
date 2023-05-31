@@ -108,7 +108,7 @@ function PortfolioView() {
       <Header />
       <ProfileSideBar />
       <div className="viewContent">
-      <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+        <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
         <BsGenderAmbiguous style={{ marginRight: '5px' }}/>성별 {portfolio[0]?.gender}</div>
         <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
         <BsFillTrophyFill style={{ marginRight: '5px' }}/>경력 {portfolio[0]?.career}</div>

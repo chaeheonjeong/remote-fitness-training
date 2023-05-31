@@ -16,11 +16,11 @@
 }
 
 .react-calendar {
-  width: 850px;
+  width: 900px;
   height: 650px;
   max-width: 100%;
-  background: #F0EBE3;
-  border: 1px solid #D0C9C0;
+  background: #FAFAFA;
+  border: 1px solid #FAFAFA;
   line-height: 1.125em;
   border-radius: 10px;
   box-shadow: 0px 0px 20px #e0e0e0;
@@ -71,7 +71,7 @@
   font-size: 15px;
 }
 .react-calendar__navigation button:disabled {
-  background-color: #D0C9C0;
+  background-color: #FAFAFA;
 }
 .react-calendar__navigation button:enabled:hover,
 .react-calendar__navigation button:enabled:focus {
@@ -102,7 +102,7 @@
   color: #AA5656;
 }
 .react-calendar__month-view__days__day--neighboringMonth {
-  color: #CDC9C3;
+  color: #76a6c9;
 }
 .react-calendar__year-view .react-calendar__tile,
 .react-calendar__decade-view .react-calendar__tile,
@@ -112,7 +112,7 @@
 .react-calendar__tile {
   position: relative;
   max-width: 100%;
-  background: #F0EBE3;
+  background: #f4f6ff;
   text-align: start;
   line-height: 16px;
   width: 50px;
@@ -122,36 +122,36 @@
   border-right: 1px;
 }
 .react-calendar__tile:disabled {
-  background: #F0EBE3;
+  background: #e3ebf0;
 }
 .react-calendar__tile:enabled:hover,
 .react-calendar__tile:enabled:focus {
-  background-color: #D0C9C0;
+  background-color: #FAFAFA;
 }
 .react-calendar__tile--now {
-  background: #DFD3C3;
+  background: #FAFAFA;
 }
 .react-calendar__tile--now:enabled:hover,
 .react-calendar__tile--now:enabled:focus {
-  background: #DFD3C3;
+  background: #FAFAFA;
 }
 .react-calendar__tile--hasActive {
-  background: #D7C0AE;
+  background: #9bc2da;
 }
 .react-calendar__tile--hasActive:enabled:hover,
 .react-calendar__tile--hasActive:enabled:focus {
-  background: #D7C0AE;
+  background: #d9e4eb;
 }
 .react-calendar__tile--active {
-  background: #b7cfbc;
-  color: white;
+  background: #d9e4eb;
+  color: rgb(20, 32, 21);
 }
 .react-calendar__tile--active:enabled:hover,
 .react-calendar__tile--active:enabled:focus {
   background: #D7C0AE;
 }
 .react-calendar--selectRange .react-calendar__tile--hover {
-  background-color: #E6BA95;
+  background-color: #abe695;
 }
 
 .Modal{
@@ -202,7 +202,7 @@
   list-style-type: none;
   text-align: center;
   border-radius: 5px;
-  background-color: #ABC4AA;
+  background-color: #e8ffe7;
   margin-top: 0.8px;
 }
 
@@ -210,7 +210,7 @@
     list-style-type: none;
     text-align: center;
     border-radius: 5px;
-    background-color: #66b460;
+    background-color: #ceefcd;
     margin-top: 0.8px;
     font-weight: bolder;
     padding: 1px;
@@ -266,7 +266,7 @@ font-family: 'Cafe24SsurroundAir';
 border-radius: 5px;
 border: none;
 font-family: 'Cafe24SsurroundAir';
-margin-top: 35px;
+margin-top: 25px;
 }
 
 .modify{
@@ -307,7 +307,7 @@ font-family: 'Cafe24SsurroundAir';
 }
 
 .starsub {
-  background-color: #f0ae16;
+  background-color: #b4ed7e;
   border-radius: 5px;
   border: none;
   font-family: 'Cafe24SsurroundAir';
