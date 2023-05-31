@@ -120,3 +120,29 @@
   visibility: visible;
   animation: fadeIn 0.2s;
 }
+
+.camearButton:hover {
+  filter: brightness(0.85);
+}
+
+.mikeButton:hover {
+  filter: brightness(0.85);
+}
+
+.timeButton:hover {
+  filter: brightness(0.85);
+}
+
+.buttonBox:hover {
+  filter: brightness(0.85);
+}
+
+.chatTextArea:focus {
+  outline: none;
+  border-color: #8ae52e;
+  box-shadow: 0 0 3px #8ae52e;
+}
+
+.chatBg {
+  background-color: #f7f7f7;
+}

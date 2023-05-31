@@ -1,24 +1,24 @@
-.input {
+.authInput {
   height: 3rem;
   width: 100%;
-  border: 2px solid rgb(96, 93, 93);
-  border-radius: 0.8rem;
+  border: 1.4px solid rgb(217, 217, 217);
+  border-radius: 5px;
   font-size: 1rem;
-  padding: 0 0.8rem;
   margin: 0.5rem 0;
-}
-input:focus {
-  outline: none;
-}
-input {
-  padding: 0;
+  padding: 0 0.8rem;
   box-sizing: border-box;
+}
+
+.authInput:focus {
+  outline: none;
+  border-color: #8ae52e;
+  box-shadow: 0 0 3px #8ae52e;
 }
 .falseInput {
   height: 3rem;
   width: 100%;
   border: 2px solid red;
-  border-radius: 0.8rem;
+  border-radius: 5px;
   font-size: 1rem;
   padding: 0 0.8rem;
   margin: 0.5rem 0;

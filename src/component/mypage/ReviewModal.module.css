@@ -15,7 +15,7 @@
   align-items: center;
   height: 100vh;
   width: 100%;
-  backdrop-filter: brightness(0.6);
+  backdrop-filter: brightness(0.8);
   z-index: 10;
 }
 .closeBox {
@@ -34,15 +34,6 @@
   align-items: center;
   border-radius: 0.7rem;
   position: relative;
-}
-
-.contentWrapper {
-  gap: 1.8rem;
-  padding: 1.2rem 3rem 2rem 3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: "SUITE-Regular";
 }
 
 .btnCancle {
@@ -74,6 +65,8 @@
 }
 .btnOk:hover {
   filter: brightness(0.85);
+  background-color: #cfff8d;
+  border-color: #cfff8d;
 }
 .buttonWrapper {
   display: flex;
@@ -115,6 +108,12 @@
   background-color: #8ae52e;
   margin-top: 2rem;
   color: #409969;
+}
+
+.contentWrapper {
+  width: 400px;
+  height: 300px;
+  overflow: auto; /* 내용이 부모 요소를 넘치면 숨김 처리 */
 }
 
 @keyframes fadeIn {
