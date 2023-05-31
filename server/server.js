@@ -3469,7 +3469,7 @@ app.get("/getAReply/:id", async (req, res) => {
       return res.status(200).json({
         data: result,
         sameAUsers: sameAUsers,
-        profileImgs: profileImgs,
+        profileImgs: null,
         message: ` ${typeof req.params.postId}댓글 가져오기 성공`,
       });
     } else {
