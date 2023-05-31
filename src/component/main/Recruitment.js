@@ -160,10 +160,12 @@ function MainStudy() {
         <div className={styles.menu}>
           <div className={styles.topRow}>
             <div className={styles.select}>
-              <button className={styles.recruitment}>모집글</button>
-              {/* <Link to="/study">
-                    <button className={styles.study}>스터디</button>
-hook.searchInpu                    </Link> */}
+              <Link to="/">
+              <button className={styles.tRecruitment}>강사모집</button>
+              </Link>
+              <Link to="/sRecruitment">
+              <button className={styles.sRecruitment}>학생모집</button>
+              </Link>
               <Link to="/question">
                 <button className={styles.question}>질문</button>
               </Link>
@@ -180,7 +182,8 @@ hook.searchInpu                    </Link> */}
                   id="searchInput"
                   name="searchInput"
                   value={searchInput}
-                  onChange={(e) => {setSearchInput(e.target.value)}}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  placeholder="검색어를 입력해주세요"
                 />
                 <button type="submit">검색</button>
               </form>
@@ -192,17 +195,6 @@ hook.searchInpu                    </Link> */}
               >
                 글쓰기
               </button>
-            </div>
-          </div>
-
-          <div className={styles.underline}>
-            <div className={styles.recruitments}>
-              <Link to="/">
-                <button className={styles.tRecruitment}>강사모집</button>
-              </Link>
-              <Link to="/sRecruitment">
-                <button className={styles.sRecruitment}>학생모집</button>
-              </Link>
             </div>
           </div>
         </div>

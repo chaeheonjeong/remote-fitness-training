@@ -75,6 +75,24 @@
   font-family: 'SUITE-Regular';
 }
 
+.nav{
+  float: left;
+  list-style: none;
+  width: 45%;
+}
+
+.nav li{
+  float: left;
+  font-family: 'SUITE-Regular';
+}
+
+.nav a{
+  line-height: 40px;
+  padding: 0 15px;
+  text-decoration: none;
+  font-family: 'SUITE-Regular';
+}
+
 .linkLabel {
   padding-right: 15px;
   float: left;

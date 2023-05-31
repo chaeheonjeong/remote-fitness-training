@@ -7,6 +7,7 @@ import userStore from "../../store/user.store";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_API_URI } from "../../util/common";
+import { Link } from "react-router-dom";
 
 const Header = ({ ...props }) => {
   const [profileImg, setProfileImg] = useState(null);
