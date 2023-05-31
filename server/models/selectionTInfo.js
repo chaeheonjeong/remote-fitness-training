@@ -10,7 +10,8 @@ const selectionTInfoSchema = new Schema(
     roomTitle: { type: String, required: true },
     runningTime: {type: String, required: true},
     startTime: { type: String, required: true },
-    date: {type: String, required: true}
+    date: {type: String, required: true},
+    reviewTWritten: { type: Boolean, default: false }, // 후기 작성 여부 필드 추가
   },
   { versionKey: false } // versionKey를 false로 지정해야 합니다.
 );

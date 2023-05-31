@@ -11,6 +11,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TbCircleArrowUpFilled } from "react-icons/tb";
 import { scrollToTop } from "../../util/common";
+import { BASE_API_URI } from "../../util/common";
 
 function MainQuestion() {
   const navigate = useNavigate();
@@ -19,7 +20,6 @@ function MainQuestion() {
   const [hasMore, setHasMore] = useState(true);
 
   const [searchInput, setSearchInput] = useState("");
-
 
   const [questions, setQuestions] = useState([]);
   const [page, setPage] = useState(1);
@@ -50,64 +50,68 @@ function MainQuestion() {
   };
 
   const searchResult = () => {
-    console.log('btn click!!!!!!!!');
+    console.log("btn click!!!!!!!!");
     console.log(selected);
 
     setSearching(true);
     setNoResult(false);
 
-    if(searchInput === '') {
-        
+    if (searchInput === "") {
     }
 
     axios
-            .get(`http://localhost:8080/searchQuestion?selected=${selected}&value=${encodeURIComponent(searchInput)}&page=${page}&limit=6`)
-            .then((response) => {
-                console.log('검색결과를 가져오겠습니다.');
-                const newSearchQuestion = response.data.questions;
-                const isLastPage = newSearchQuestion.length < 6;
+      .get(
+        `${BASE_API_URI}/searchQuestion?selected=${selected}&value=${encodeURIComponent(
+          searchInput
+        )}&page=${page}&limit=6`
+      )
+      .then((response) => {
+        console.log("검색결과를 가져오겠습니다.");
+        const newSearchQuestion = response.data.questions;
+        const isLastPage = newSearchQuestion.length < 6;
 
-                try {
-                    if(isLastPage) {
-                        setHasMore(false);
-                    }
+        try {
+          if (isLastPage) {
+            setHasMore(false);
+          }
 
-                    const prevSearchQuestion = [...questions];
-                    setSearchResults(prevSearchQuestion => [...prevSearchQuestion, ...newSearchQuestion]);
-                    setPage(prevSearchPage => prevSearchPage + 1);
+          const prevSearchQuestion = [...questions];
+          setSearchResults((prevSearchQuestion) => [
+            ...prevSearchQuestion,
+            ...newSearchQuestion,
+          ]);
+          setPage((prevSearchPage) => prevSearchPage + 1);
 
-                    console.log(response.data.questions.length);
-                    if(response.data.questions.length === 0) {
-                        setNoResult(true);
-                    }
-                } catch(error) {
-                    console.log('검색결과: ', error);
-                    setHasMore(false);
-                    setIsLoading(false);
-                } finally {
-                }
-            })
-        
-    };
+          console.log(response.data.questions.length);
+          if (response.data.questions.length === 0) {
+            setNoResult(true);
+          }
+        } catch (error) {
+          console.log("검색결과: ", error);
+          setHasMore(false);
+          setIsLoading(false);
+        } finally {
+        }
+      });
+  };
 
-    const searchHandler = (event) => {
-      event.preventDefault();
-      searchResult();
-      setSearchResults([]);
+  const searchHandler = (event) => {
+    event.preventDefault();
+    searchResult();
+    setSearchResults([]);
   };
 
   useEffect(() => {
-      setQuestions([]);
-      setPage(1);
-      setHasMore(true);
+    setQuestions([]);
+    setPage(1);
+    setHasMore(true);
   }, [searchInput]);
-
 
   const moreQuestions = () => {
     if (hasMore)
       axios
         .get(
-          `http://localhost:8080/questions?page=${
+          `${BASE_API_URI}/questions?page=${
             Math.floor(renderQ.length / limit) + 1
           }&limit=${limit}`
         )
@@ -130,7 +134,7 @@ function MainQuestion() {
   const clickHandler = (id) => {
     axios
       .post(
-        "http://localhost:8080/view",
+        `${BASE_API_URI}/view`,
         { id: id, postName: "question" } // 서버로 전달할 id
       )
       .then((response) => {
@@ -155,14 +159,17 @@ function MainQuestion() {
       </div>
       <div className={styles.body}>
         <div className={styles.menu}>
-            <div className={styles.select}>
-                <Link to="/">
-                    <button className={styles.recruitment}>모집글</button>
-                </Link>
-                <Link to="/question">
-                    <button className={styles.question}>질문</button>
-                </Link>
-            </div>
+          <div className={styles.select}>
+            <Link to="/">
+              <button className={styles.tRecruitment}>강사모집</button>
+            </Link>
+            <Link to="/sRecruitment">
+              <button className={styles.sRecruitment}>학생모집</button>
+            </Link>
+            <Link to="/question">
+              <button className={styles.question}>질문</button>
+            </Link>
+          </div>
 
           <div className={styles.searchAndMake} onSubmit={searchHandler}>
             <form className={styles.search}>
@@ -174,7 +181,7 @@ function MainQuestion() {
               <input
                 id="searchInput"
                 name="searchInput"
-                value={searchInput} 
+                value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
               />
               <button type="submit">검색</button>
@@ -194,48 +201,13 @@ function MainQuestion() {
 
         {/* 검색 */}
         {searching && !noResult && (
-                    <InfiniteScroll
-                        dataLength = {questions.length}
-                        next = { page !== 1 ? searchResult : null }
-                        hasMore = {hasMore}
-                        loader = {<LoaderImg />}
-                    >
-                    {
-                        searchResults.map((data, index) => {
-                            return (
-                                <QuestionRoomCard 
-                                    title={data.title}
-                                    tags={Array.isArray(data.tag) ? [...data.tag] : []} 
-                                    id={data._id}
-                                    key={data._id}
-                                    onClick={() => {
-                                      clickHandler(data._id);
-                                    }}
-                                />
-                            );
-                        })
-                    }
-                    </InfiniteScroll>
-                )}
-
-                {
-                    noResult ? (
-                        <div className={styles.noResult}>
-                            <a>⚠️ 검색결과가 없습니다 ⚠️{noResult}</a>
-                        </div>
-                    ) : null
-                }
-
-      {!searching && (
-        <InfiniteScroll
-          dataLength={renderQ.length}
-          next={moreQuestions}
-          hasMore={hasMore}
-          loader={<LoaderImg />}
-          key={Math.random()}
-        >
-          {renderQ &&
-            renderQ.map((data, index) => {
+          <InfiniteScroll
+            dataLength={questions.length}
+            next={page !== 1 ? searchResult : null}
+            hasMore={hasMore}
+            loader={<LoaderImg />}
+          >
+            {searchResults.map((data, index) => {
               return (
                 <QuestionRoomCard
                   title={data.title}
@@ -248,8 +220,39 @@ function MainQuestion() {
                 />
               );
             })}
-        </InfiniteScroll>
-      )}
+          </InfiniteScroll>
+        )}
+
+        {noResult ? (
+          <div className={styles.noResult}>
+            <a>⚠️ 검색결과가 없습니다 ⚠️{noResult}</a>
+          </div>
+        ) : null}
+
+        {!searching && (
+          <InfiniteScroll
+            dataLength={renderQ.length}
+            next={moreQuestions}
+            hasMore={hasMore}
+            loader={<LoaderImg />}
+            key={Math.random()}
+          >
+            {renderQ &&
+              renderQ.map((data, index) => {
+                return (
+                  <QuestionRoomCard
+                    title={data.title}
+                    tags={Array.isArray(data.tag) ? [...data.tag] : []}
+                    id={data._id}
+                    key={data._id}
+                    onClick={() => {
+                      clickHandler(data._id);
+                    }}
+                  />
+                );
+              })}
+          </InfiniteScroll>
+        )}
       </div>
     </>
   );

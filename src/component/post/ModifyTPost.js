@@ -7,6 +7,7 @@ import axios from "axios";
 import Header from "../main/Header";
 
 import SelectTModal from "./SelectTModal";
+import { BASE_API_URI } from "../../util/common";
 
 const ModifyTPost = () => {
   const hook = usePost();
@@ -14,7 +15,7 @@ const ModifyTPost = () => {
   const [flag, setFlag] = useState(false);
   const [modal, setModal] = useState(false);
 
-  const imgLink = "http://localhost:8080/images";
+  const imgLink = `${BASE_API_URI}/images`;
 
   const customUploadAdapter = (loader) => {
     // (2)
@@ -29,7 +30,7 @@ const ModifyTPost = () => {
               data.append("file", compressedFile);
 
               axios
-                .post("http://localhost:8080/upload", data)
+                .post(`${BASE_API_URI}/upload`, data)
                 .then((res) => {
                   if (!flag) {
                     setFlag(true);
@@ -102,12 +103,9 @@ const ModifyTPost = () => {
   useEffect(() => {
     const fetchWrite = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8080/getTWrite/${hook.id}`,
-          {
-            headers: { Authorization: `Bearer ${hook.user.token}` },
-          }
-        );
+        const res = await axios.get(`${BASE_API_URI}/getTWrite/${hook.id}`, {
+          headers: { Authorization: `Bearer ${hook.user.token}` },
+        });
         if (res.data !== undefined) {
           hook.setPCondition(res.data.result[0].number);
           /* hook.setPeriodCondition(res.data.result[0].number.period); */
@@ -147,7 +145,7 @@ const ModifyTPost = () => {
 
   const selection = () => {
     setModal(!modal);
-  }
+  };
 
   const [recruitChange, setRecruitChange] = useState();
 
@@ -158,15 +156,14 @@ const ModifyTPost = () => {
 
   return (
     <>
-    { modal && (
+      {modal && (
         <SelectTModal
-          modal = {modal}
-          setModal = {setModal}
+          modal={modal}
+          setModal={setModal}
           onRecruitChange={handleRecruitChange}
           participate={hook.pCondition}
         />
-      )
-    }
+      )}
 
       <Header />
       <div className="all">

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 //import { noti } from "../util/dummy";
 import axios from "axios";
 import userStore from "../store/user.store";
+import { BASE_API_URI } from "../util/common";
 
 export default function useNoti() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -14,20 +15,19 @@ export default function useNoti() {
   const [preBtnClick, setPreBtnClick] = useState(false);
 
   const user = userStore();
-  
+
   const getNotiData = async () => {
     try {
-      const res = await axios
-        .get(`http://localhost:8080/getAlarm`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
-        if(res.data !== undefined) {
-          setNotiData(res.data.data[0]);
-        }
-    } catch(error) {
+      const res = await axios.get(`${BASE_API_URI}/getAlarm`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      if (res.data !== undefined) {
+        setNotiData(res.data.data[0]);
+      }
+    } catch (error) {
       console.log(error);
     }
-  } 
+  };
   useEffect(() => {
     getNotiData();
   }, []);
@@ -40,18 +40,21 @@ export default function useNoti() {
   };
 
   useEffect(() => {
-    if(notiData && notiData.content) {
+    if (notiData && notiData.content) {
       console.log("@@: ", notiData);
       setTotalPage(Math.ceil(notiData.content.length / perPage));
-      if(currentPage <= totalPage) {
+      if (currentPage <= totalPage) {
         setCurrentPage(1);
       }
     }
   }, [notiData]);
 
   useEffect(() => {
-    if(notiData && notiData.content) {
-      const arr = notiData.content.slice((currentPage - 1) * perPage, perPage * currentPage);
+    if (notiData && notiData.content) {
+      const arr = notiData.content.slice(
+        (currentPage - 1) * perPage,
+        perPage * currentPage
+      );
       console.log(arr);
       setRendData(arr);
     } else {
@@ -61,31 +64,31 @@ export default function useNoti() {
   }, [currentPage, notiData]);
 
   const handlePreBtn = async (id) => {
-    console.log('id: ', id);
-    try{
-      const res = await axios.patch(
-        `http://localhost:8080/updateRoomSchedule/${id}`,
-        {
-          prepaymentBtn: true
-        },
-        {
-          headers: { Authorization: `Bearer ${user.token}` }
-        }
-      );
-      if(res.data.success) {
-        setPreBtnClick(!preBtnClick);
-        console.log('성공', id);
-      }
-    }catch(err){
-      console.error(err);
-    }
-  }
-
-  const handleReadComm = async (id) => {
-    console.log('id: ', id);
+    console.log("id: ", id);
     try {
       const res = await axios.patch(
-        `http://localhost:8080/updateAlarm/${id}`,
+        `${BASE_API_URI}/updateRoomSchedule/${id}`,
+        {
+          prepaymentBtn: true,
+        },
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
+      if (res.data.success) {
+        setPreBtnClick(!preBtnClick);
+        console.log("성공", id);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleReadComm = async (id) => {
+    console.log("id: ", id);
+    try {
+      const res = await axios.patch(
+        `${BASE_API_URI}/updateAlarm/${id}`,
         {
           read: true,
         },
@@ -93,16 +96,16 @@ export default function useNoti() {
           headers: { Authorization: `Bearer ${user.token}` },
         }
       );
-      
-      if(res.data.success) {
+
+      if (res.data.success) {
         setReadComm(!readComm);
-        console.log('성공', id);
+        console.log("성공", id);
       }
     } catch (error) {
       console.log(error);
     }
-  }
-  
+  };
+
   return {
     currentPage,
     setCurrentPage,
@@ -113,6 +116,6 @@ export default function useNoti() {
     readComm,
     setReadComm,
     handleReadComm,
-    handlePreBtn
+    handlePreBtn,
   };
 }

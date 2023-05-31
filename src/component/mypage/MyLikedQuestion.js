@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import QuestionRoomCard from "../main/QuestionRoomCard";
@@ -14,10 +14,10 @@ import loadingImg from "../../images/loadingImg.gif";
 import { BASE_API_URI } from "../../util/common";
 
 function MyLikedQuestion() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [likedQuestions, setLikedQuestions] = useState([]);
-    const [likedQuestionIds, setLikedQuestionIds] = useState([]);
+  const [likedQuestions, setLikedQuestions] = useState([]);
+  const [likedQuestionIds, setLikedQuestionIds] = useState([]);
 
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
@@ -96,50 +96,58 @@ function MyLikedQuestion() {
     moreQuestions();
   }, []);
 
-    const clickHandler = (id) => {
-        axios
-          .post(
-            `http://localhost:8080/View`,
-            { id: id, postName: "question" } // 서버로 전달할 id
-          )
-          .then((response) => {
-            navigate(`/AskView/${id}`);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-    };
+  const clickHandler = (id) => {
+    axios
+      .post(
+        `${BASE_API_URI}/View`,
+        { id: id, postName: "question" } // 서버로 전달할 id
+      )
+      .then((response) => {
+        navigate(`/AskView/${id}`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-    return(
-        <div>
-            <Header />
-            <SideBar/>
-            <div className="likedQuestion">
-                <Link to="/myLikedPost"><button className={styles.likedStudy}>강사모집</button></Link>
-                <Link to="/myLikedTPost"><button className={styles.likedSRecruitment}>학생모집</button></Link>
-                <Link to="/myLikedQuestion"><button className={styles.likedQuestion}>질문글</button></Link>
-                <InfiniteScroll
-                    dataLength = {likedQuestions.length}
-                    next = { moreQuestions }
-                    hasMore = {hasMore}
-                    loader = {loaderImg()}
-                >
-                {
-                likedQuestions.length > 0 ? ( likedQuestions.map((Question, index) => {
-                        return (
-                            <QuestionRoomCard 
-                                title={Question.title}
-                                tags={Array.isArray(Question.tag) ? [...Question.tag] : []} 
-                                id={Question._id}
-                                key={Question._id}
-                                onClick={() => {
-                                    clickHandler(Question._id);
-                                }}
-                            />
-                        );
-                    })) : (<p>관심글이 아직 없습니다.</p>)
-                }
-                </InfiniteScroll>
+  return (
+    <div>
+      <Header />
+      <SideBar />
+      <div className="likedQuestion">
+        <Link to="/myLikedPost">
+          <button className={styles.likedStudy}>강사모집</button>
+        </Link>
+        <Link to="/myLikedTPost">
+          <button className={styles.likedSRecruitment}>학생모집</button>
+        </Link>
+        <Link to="/myLikedQuestion">
+          <button className={styles.likedQuestion}>질문글</button>
+        </Link>
+        <InfiniteScroll
+          dataLength={likedQuestions.length}
+          next={moreQuestions}
+          hasMore={hasMore}
+          loader={loaderImg()}
+        >
+          {likedQuestions.length > 0 ? (
+            likedQuestions.map((Question, index) => {
+              return (
+                <QuestionRoomCard
+                  title={Question.title}
+                  tags={Array.isArray(Question.tag) ? [...Question.tag] : []}
+                  id={Question._id}
+                  key={Question._id}
+                  onClick={() => {
+                    clickHandler(Question._id);
+                  }}
+                />
+              );
+            })
+          ) : (
+            <p>관심글이 아직 없습니다.</p>
+          )}
+        </InfiniteScroll>
 
         {/* { !hasMore && (
                         <div className={styles.noData}>

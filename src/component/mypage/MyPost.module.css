@@ -4,3 +4,60 @@
   top: 5rem;
   margin-top: 3%;
 }
+.sstudy1 {
+  background-color: rgb(165, 215, 169);
+  font-weight: bold;
+  margin-right: 10px;
+  padding: 4px;
+  border-radius: 5px;
+}
+.sstudy1:hover {
+  background-color: rgb(165, 215, 169); /* 바뀌고자 하는 색상으로 변경해주세요 */
+  border: 2px solid rgb(148, 221, 93); /* 바뀌고자 하는 색상으로 변경해주세요 */
+  font-weight: bold;
+  transform: scale(1.1);
+}
+
+.aask1 {
+  background-color: rgb(229, 255, 218);
+  padding: 4px;
+  border-radius: 5px;
+  
+}
+.aask1:hover {
+  color: rgb(0, 0, 0);
+  background-color: rgb(165, 215, 169);/* 바뀌고자 하는 색상으로 변경해주세요 */
+  border: 2px solid rgb(148, 221, 93) ;
+  font-weight: bold;
+  transform: scale(1.1);
+}
+
+.sstudy2 {
+  background-color: rgb(229, 255, 218);
+  margin-right: 10px;
+  
+  padding: 4px;
+  border-radius: 5px;
+}
+.sstudy2:hover {
+  background-color: rgb(165, 215, 169); /* 바뀌고자 하는 색상으로 변경해주세요 */
+  border: 2px solid rgb(148, 221, 93); /* 바뀌고자 하는 색상으로 변경해주세요 */
+  font-weight: bold;
+  transform: scale(1.1);
+}
+
+.aask2 {
+  background-color: rgb(165, 215, 169);
+  padding: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-weight: bold;
+  border-radius: 5px;
+}
+.aask2:hover {
+  color: rgb(0, 0, 0);
+  background-color: rgb(165, 215, 169);/* 바뀌고자 하는 색상으로 변경해주세요 */
+  border: 2px solid rgb(148, 221, 93) ;
+  font-weight: bold;
+  transform: scale(1.1);
+}

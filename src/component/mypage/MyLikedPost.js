@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import StudyRoomCard from "../main/StudyRoomCard";
@@ -14,9 +14,9 @@ import loadingImg from "../../images/loadingImg.gif";
 import { BASE_API_URI } from "../../util/common";
 
 function MyLikedPost() {
-    const navigate = useNavigate();
-    const [likedPosts, setLikedPosts] = useState([]);
-    const [likedPostIds, setLikedPostIds] = useState([]);
+  const navigate = useNavigate();
+  const [likedPosts, setLikedPosts] = useState([]);
+  const [likedPostIds, setLikedPostIds] = useState([]);
 
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
@@ -36,6 +36,20 @@ function MyLikedPost() {
             
         //fetchLikedPosts();
     }; */
+
+  const clickHandler = (id) => {
+    axios
+      .post(
+        `${BASE_API_URI}/View`,
+        { id: id, postName: "study" } // 서버로 전달할 id
+      )
+      .then((response) => {
+        navigate(`/view/${id}`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const morePosts = async () => {
     const token = localStorage.getItem("token");
@@ -57,67 +71,67 @@ function MyLikedPost() {
 
         /* console.log("글: " +  getPosts.data.likedPosts);
                     setLikedPosts(getPosts.data.likedPosts); */
-        
-                    const prevLikedPosts = [...likedPosts];
-                    console.log('Page: ', page);
-                    setLikedPosts(prevLikedPosts => [...prevLikedPosts, ...newLikedPosts]);
-                    console.log('Number of loaded LikedPosts: ' + (prevLikedPosts.length + newLikedPosts.length));
-                    setPage(prevPage => prevPage + 1);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    setIsLoading(false);
-                })
-    };
+
+        const prevLikedPosts = [...likedPosts];
+        console.log("Page: ", page);
+        setLikedPosts((prevLikedPosts) => [
+          ...prevLikedPosts,
+          ...newLikedPosts,
+        ]);
+        console.log(
+          "Number of loaded LikedPosts: " +
+            (prevLikedPosts.length + newLikedPosts.length)
+        );
+        setPage((prevPage) => prevPage + 1);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  };
 
   useEffect(() => {
     morePosts();
   }, []);
 
-    const clickHandler = (id) => {
-        axios
-          .post(
-            `http://localhost:8080/View`,
-            { id: id, postName: "study" } // 서버로 전달할 id
-          )
-          .then((response) => {
-            navigate(`/view/${id}`);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-    };
-
-    return(
-        <div>
-            <Header />
-            <SideBar/>
-            <div className="likedPost">
-                <Link to="/myLikedPost"><button className={styles.likedStudy}>강사모집</button></Link>
-                <Link to="/myLikedTPost"><button className={styles.likedSRecruitment}>학생모집</button></Link>
-                <Link to="/myLikedQuestion"><button className={styles.likedQuestion}>질문글</button></Link>
-                <InfiniteScroll
-                    dataLength = {likedPosts.length}
-                    next = { morePosts }
-                    hasMore = {hasMore}
-                    loader = {loaderImg()}
-                >
-                {
-                likedPosts.length > 0 ? ( likedPosts.map((post, index) => {
-                        return (
-                            <StudyRoomCard 
-                                title={post.title}
-                                tags={Array.isArray(post.tag) ? [...post.tag] : []} 
-                                id={post._id}
-                                key={post._id}
-                                onClick={() => {
-                                    clickHandler(post._id);
-                                }}
-                            />
-                        );
-                    })) : (<p>관심글이 아직 없습니다.</p>)
-                }
-                </InfiniteScroll>
+  return (
+    <div>
+      <Header />
+      <SideBar />
+      <div className="likedPost">
+        <Link to="/myLikedPost">
+          <button className={styles.likedStudy}>강사모집</button>
+        </Link>
+        <Link to="/myLikedTPost">
+          <button className={styles.likedSRecruitment}>학생모집</button>
+        </Link>
+        <Link to="/myLikedQuestion">
+          <button className={styles.likedQuestion}>질문글</button>
+        </Link>
+        <InfiniteScroll
+          dataLength={likedPosts.length}
+          next={morePosts}
+          hasMore={hasMore}
+          loader={loaderImg()}
+        >
+          {likedPosts.length > 0 ? (
+            likedPosts.map((post, index) => {
+              return (
+                <StudyRoomCard
+                  title={post.title}
+                  tags={Array.isArray(post.tag) ? [...post.tag] : []}
+                  id={post._id}
+                  key={post._id}
+                  onClick={() => {
+                    clickHandler(post._id);
+                  }}
+                />
+              );
+            })
+          ) : (
+            <p>관심글이 아직 없습니다.</p>
+          )}
+        </InfiniteScroll>
 
         {/* { !hasMore && (
                         <div className={styles.noData}>

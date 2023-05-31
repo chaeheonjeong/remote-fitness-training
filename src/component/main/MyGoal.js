@@ -6,6 +6,7 @@ import axios from "axios";
 import userStore from "../../store/user.store";
 import { useNavigate } from "react-router-dom";
 import { TbClover2 } from "react-icons/tb";
+import { BASE_API_URI } from "../../util/common";
 
 const MyGoal = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -24,27 +25,15 @@ const MyGoal = () => {
     setMinute(m);
   };
 
-  /* const saveHappinessIndex = async () => {
-    try {
-      const response = await axios.post(`http://localhost:8080/saveHappinessIndex`, {
-        happinessIndex : dealt,
-      }, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-    } catch(error) {
-      console.log(error);
-    }
-  }; */
-
   useEffect(() => {
-    if(user.token !== null) {
+    if (user.token !== null) {
       axios
-        .get("http://localhost:8080/getHappinessIndex", {
+        .get(`${BASE_API_URI}/getHappinessIndex`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
-          if(response.status === 200) {
-            if(response.data.data !== null) {
+          if (response.status === 200) {
+            if (response.data.data !== null) {
               console.log(response.data.data);
               console.log(response.data.message);
               setDealt(response.data.data);
@@ -61,47 +50,12 @@ const MyGoal = () => {
     }
   }, []);
 
- /*  useEffect(() => {
-    if (user.token !== null) {
-      axios
-        .get("http://localhost:8080/updateOrNot", { // 업데이트 여부
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            const updateOrNot = response.data.data;
-
-            console.log("2: ", dealt);
-
-            updateOrNot.forEach((value) => {
-              console.log("starts", value.stars);
-              if(value.stars === 0) {
-                setDealt((prevDealt) => Math.round((prevDealt - 1) * 10) / 10);
-              } else if(value.stars >= 1 && value.stars <= 5) {
-                setDealt((prevDealt) => Math.round((prevDealt + value.stars * 0.2) * 10) / 10);           
-              }
-              if(dealt > 100) setDealt(100);
-            })
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log("dealt: ", dealt);
-    saveHappinessIndex();
-  }, [dealt]); */
-
   return (
     <>
       <div className={styles.wrapper}>
         <div className={styles.title}>내 행복지수</div>
         <div className={styles.content}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-          </div>
+          <div style={{ display: "flex", alignItems: "center" }}></div>
           <div
             style={{
               display: "flex",
@@ -112,10 +66,7 @@ const MyGoal = () => {
           >
             <label style={{ fontWeight: "500", fontSize: "1.2rem" }}>
               행복지수
-                <TbClover2
-                size="20"
-                className={styles.clover}
-              />
+              <TbClover2 size="20" className={styles.clover} />
             </label>
             <label className={styles.progLabel1}>
               {user.token !== null ? dealt : `50`}%

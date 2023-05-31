@@ -4,13 +4,19 @@
   font-weight: normal;
   font-style: normal;
 }
+.mycalendar-container {
+  overflow: hidden;
+}
+
 .MyCalendar{
-margin-left: 20%;
+  margin-top: 75px;
+  margin-left: 20%;
+  position: relative;
 }
 
 .react-calendar {
   width: 850px;
-  height: 560px;
+  height: 600px;
   max-width: 100%;
   background: #F0EBE3;
   border: 1px solid #D0C9C0;
@@ -54,6 +60,8 @@ margin-left: 20%;
   display: flex;
   margin: 50px;
   margin-bottom: 50px;
+  font-weight: bolder;
+  font-size: 18px;
 }
 .react-calendar__navigation button {
   min-width: 100px;
@@ -66,18 +74,21 @@ margin-left: 20%;
 }
 .react-calendar__navigation button:enabled:hover,
 .react-calendar__navigation button:enabled:focus {
-  background-color: #D0C9C0;
+  background-color: #ffffff;
+  padding: 3px;
   border-radius: 10px;
 }
 .react-calendar__month-view__weekdays {
   text-align: center;
-  text-transform: uppercase;
-  font-weight: bold;
+  /* text-transform: uppercase; */
+  font-family: 'Cafe24SsurroundAir';
+  font-weight: bolder;
   margin-bottom: 10px;
-  font-size: 0.85em;
+  font-size: 1.05em;
 }
 .react-calendar__month-view__weekdays__weekday {
   padding: 0.5em;
+  
 }
 .react-calendar__month-view__weekNumbers .react-calendar__tile {
   display: flex;
@@ -104,7 +115,7 @@ margin-left: 20%;
   text-align: start;
   line-height: 16px;
   width: 50px;
-  height: 65px;
+  height: 80px;
   font-size: 12px;
   font-family: 'Cafe24SsurroundAir';
   border-right: 1px;
@@ -131,7 +142,7 @@ margin-left: 20%;
   background: #D7C0AE;
 }
 .react-calendar__tile--active {
-  background: #B7C4CF;
+  background: #b7cfbc;
   color: white;
 }
 .react-calendar__tile--active:enabled:hover,
@@ -148,9 +159,10 @@ margin-left: 20%;
   height: 300px;
   padding: 40px;
   text-align: center;
-  background-color: #ffff;
+  /* background-color: #ffff; */
   border-radius: 10px;
   box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+  background-color: #b7cfbc;
 }
 
 .Overlay{
@@ -196,8 +208,10 @@ margin-left: 20%;
     list-style-type: none;
     text-align: center;
     border-radius: 5px;
-    background-color: #6096B4;
+    background-color: #66b460;
     margin-top: 0.8px;
+    font-weight: bolder;
+    padding: 1px;
   }
 
 .input{
@@ -257,7 +271,7 @@ margin-top: 35px;
 border-radius: 5px;
 border: none;
 font-family: 'Cafe24SsurroundAir';
-margin-top: 35px;
+margin-top: 30px;
 margin-left: 5px;
 }
 
@@ -265,7 +279,7 @@ margin-left: 5px;
 border-radius: 5px;
 border: none;
 font-family: 'Cafe24SsurroundAir';
-margin-top: 35px;
+margin-top: 30px;
 margin-left: 5px;
 }
 
@@ -281,13 +295,13 @@ font-family: 'Cafe24SsurroundAir';
 }
 
 .reviewBtn{
-  float: right;
-  margin-top: 10px;
+  margin-top: 50px;
+  margin-left: 1175px;
 }
 
 .TreviewBtn{
-  float: right;
-  margin-top: 10px;
+  margin-left: 855px;
+  margin-top: 50px;
 }
 
 .starsub {
@@ -303,13 +317,13 @@ font-family: 'Cafe24SsurroundAir';
 
 .roomListContainer {
   /* 모달 내용 스타일 */
-  max-height: 200px; /* 모달 내용의 최대 높이를 지정 */
+  max-height: 300px; /* 모달 내용의 최대 높이를 지정 */
   overflow-y: auto; /* 세로 스크롤바를 자동으로 생성 */
 }
 
 .TroomListContainer {
   /* 모달 내용 스타일 */
-  max-height: 200px; /* 모달 내용의 최대 높이를 지정 */
+  max-height: 300px; /* 모달 내용의 최대 높이를 지정 */
   overflow-y: auto; /* 세로 스크롤바를 자동으로 생성 */
 }
 
@@ -328,42 +342,47 @@ font-family: 'Cafe24SsurroundAir';
 }
 
 .starwrite {
-  margin-bottom: 20px;
-  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 50px;
+  font-size: 26px;
   font-weight: bold;
 }
 
+
+
 .highlighted {
   background-color: lightblue;
-}S
+}
 .Thighlighted {
   background-color: lightblue;
 }
 
 .roomItem {
   /* 기본 스타일 */
-  background-color: white;
-  border: 1px solid black;
+  background-color: rgb(195, 206, 191);
+  border: 2px solid #c1dfc0;
+  padding: 5px;
   /* 기타 스타일 */
 }
 
 .TroomItem {
   /* 기본 스타일 */
-  background-color: white;
-  border: 1px solid black;
+  background-color: rgb(197, 199, 213);
+  border: 2px solid #aaafc4;
+  padding: 5px;
   /* 기타 스타일 */
 }
 
 .roomItem:hover {
   /* 마우스가 올라갔을 때의 스타일 */
-  background-color: lightblue;
-  border: 2px solid red;
+  background-color: rgb(211, 255, 191);
+  border: 2px solid rgb(88, 157, 82);
 }
 
 .TroomItem:hover {
   /* 마우스가 올라갔을 때의 스타일 */
-  background-color: rgb(255, 255, 112);
-  border: 2px solid rgb(0, 213, 68);
+  background-color: #cbd9ff;
+  border: 2px solid rgb(0, 25, 213);
 }
 
 .reviewBox {
@@ -373,4 +392,147 @@ font-family: 'Cafe24SsurroundAir';
 .Modal {
   width: 30rem;
   height: 40rem;
+}
+
+.writeReview {
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 14px;
+  
+}
+
+.hhhh {
+  font-size: 18px;
+}
+
+.sssbtn {
+  margin-top: 5px;
+  background-color: rgb(0, 213, 68);
+  border-radius: 5px;
+  padding:3px;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+
+.add {
+  background-color: #ABC4AA;
+  padding: 4px;
+}
+
+.addadd {
+  margin-top: 20px;
+  font-size: 24px;
+  text-align: center;
+  /* background-color: #e3ebe2; */
+
+  margin-bottom: 40px;
+}
+
+.mmmdd {
+  text-align: center;
+  background-color: #e3ebe2;
+}
+
+.addadd2 {
+  font-size: 18px;
+  /*\ border-radius: 5px solid rgb(0, 213, 57); */
+  background-color: #66b460;
+  margin-bottom: 40px;
+  padding: 3px;
+}
+
+.writewrite {
+  /* border: 2px solid rgb(0, 213, 57); */
+  padding-bottom: 25px;
+  padding-top: 50px;
+  background-color: #e3ebe2;
+  margin-top: 40px;
+}
+
+.writewrite2 {
+  width: 250px;
+  height: 200px;
+  
+}
+
+.writewrite3 {
+  width: 250px;
+  height: 40px;
+  margin-bottom: 30px;
+}
+
+.ttt {
+  font-weight: bold;
+  text-align: left;
+  margin-left: 80px;
+}
+
+
+.tttt {
+  font-weight: bold;
+  text-align: left;
+  margin-left: 80px;
+}
+
+.modify{
+  background-color: #ABC4AA;
+  padding: 4px;
+
+}
+
+.delete {
+  background-color: #ABC4AA;
+  padding: 4px;
+}
+
+.ttt2 {
+  margin-bottom: 30px;
+  font-size: 19px;
+}
+
+.ttt4 {
+  font-weight: bold;
+  text-align: left;
+  margin-left: 78px;
+}
+
+.ttt5 {
+  font-weight: bold;
+  text-align: left;
+  margin-left: 78px;
+  margin-top: 10px;
+}
+
+.writewrite5 {
+  width: 250px;
+  height: 100px;
+  padding: 3px;
+  margin-bottom: 10px;
+}
+
+.writewrite4 {
+  width: 250px;
+  height: 60px;
+  padding: 3px;
+  margin-bottom: 30px;
+}
+
+.sstudy {
+  background-color: rgb(0, 213, 57);
+  margin-right: 10px;
+  padding: 4px;
+  border-radius: 5px;
+}
+.sstudy:hover {
+  background-color: rgb(46, 170, 1); /* 바뀌고자 하는 색상으로 변경해주세요 */
+}
+
+.aask {
+  background-color: rgb(0, 213, 57);
+  padding: 4px;
+  border-radius: 5px;
+}
+.aask:hover {
+  background-color: rgb(46, 170, 1); /* 바뀌고자 하는 색상으로 변경해주세요 */
 }

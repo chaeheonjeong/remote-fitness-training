@@ -6,15 +6,8 @@ const AuthForm = (props) => {
 
   return (
     <form onSubmit={props.onSubmit} className={styles.form}>
-      <label
-        className={styles.label}
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        Link
-      </label>
-      {props.children}
+      <label className={styles.label}>{props.name}</label>
+      <div className={styles.inputWrapper}>{props.children}</div>
     </form>
   );
 };

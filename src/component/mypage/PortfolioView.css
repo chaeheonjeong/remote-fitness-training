@@ -7,6 +7,7 @@
     padding: 0.7rem;
     margin-top: 20px;
     margin-left: 370px;
+    margin-bottom: 30px;
     box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
 
 }
@@ -48,4 +49,12 @@
     margin-top: 20px;
     margin-left: 370px;
     box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+}
+
+.pp {
+    margin-right: 7px;
+}
+
+.ppf {
+    margin-left: 10px;
 }

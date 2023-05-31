@@ -13,10 +13,14 @@ import Ask from "../component/post//Ask";
 import AskView from "../component/post//AskView";
 import MyInfo from "../component/mypage/MyInfo";
 import Jitsi from "../component/videochat/jitsi";
+import Header from "../component/main/Header";
 
 /* import TRecruitment from "../component/main/TRecruitment"; */
 import SRecruitment from "../component/main/SRecruitment";
 import Recruitment from "../component/main/Recruitment";
+import SubBanner from "../component/main/SubBanner";
+import SubQuestionBanner from "../component/main/SubQuestionBanner";
+import SubStudentBanner from "../component/main/SubStudentBanner";
 /* import TRecruitment from "../component/main/MainStudy"; */
 
 import Portfolio from "../component/mypage/Portfolio";
@@ -49,10 +53,24 @@ const Router = () => {
           path="/question"
           element={[<Main key="qmain" />, <MainQuestion key="question" />]}
         />
+        <Route
+          path="/detailQuestion"
+          element={[<Header key="header" />, <SubQuestionBanner key="questionbanner" />, <MainQuestion key="question" />]}
+        />
 
         <Route
           path="/sRecruitment"
           element={[<Main key="main" />, <SRecruitment key="srecruitment" />]}
+        />
+
+        <Route
+          path="/detailsRecruitment"
+          element={[<Header key="header" />, <SubStudentBanner key="studentbanner" />, <SRecruitment key="srecruitment" />]}
+        />
+
+        <Route
+          path="/Recruitment"
+          element={[<Header key="header" />, <SubBanner key="banner" />, <Recruitment key="recruitment" />]}
         />
         
 
@@ -79,17 +97,18 @@ const Router = () => {
 
         <Route path="myAsk" element={<MyAsk />} />
         <Route path="myPost" element={<MyPost />} />
-        <Route path="Jitsi" element={<Jitsi/>}/>
-        <Route path="Portfolio" element={<Portfolio/>}/>
-        <Route path="PortfolioView/:writerId" element={<PortfolioView/>}/>
-        <Route path="PortfolioModify" element={<PortfolioModify/>}/>
+        <Route path="Jitsi" element={<Jitsi />} />
+        <Route path="Portfolio" element={<Portfolio />} />
+        <Route path="PortfolioView/:writerId" element={<PortfolioView />} />
+        <Route path="PortfolioModify" element={<PortfolioModify />} />
         <Route path="/View/:id" element={<View />} />
         <Route path="myAsk" element={<MyAsk />} />
         <Route path="myPost" element={<MyPost />} />
-        <Route path="/class/chat" element={<RTCChat />} />
+        <Route path="/class/chat/:roomTitle" element={<RTCChat />} />
       </Routes>
     </BrowserRouter>
   );
 };
 
 export default Router;
+

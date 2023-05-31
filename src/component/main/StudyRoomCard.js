@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-import emptyHeart from "../../images/emptyHeart.png";
-import fullHeart from "../../images/heart.png";
-import view from "../../images/view.png";
-import comment from "../../images/comment.png";
+import {HiOutlineHeart} from "react-icons/hi";
+import {HiHeart} from "react-icons/hi";
+import {HiOutlineEye} from "react-icons/hi";
+import {HiOutlineChat} from "react-icons/hi";
 import styles from "./StudyRoomCard.module.css";
 import userStore from "../../store/user.store";
+import { BASE_API_URI } from "../../util/common";
 
 function StudyRoomCard({ title, tags, id, onClick }) {
   const user = userStore();
@@ -23,7 +24,7 @@ function StudyRoomCard({ title, tags, id, onClick }) {
   const clickHeart = () => {
     if (user.token !== null) {
       axios
-        .post(`http://localhost:8080/setGoodPost/${id}`, null, {
+        .post(`${BASE_API_URI}/setGoodPost/${id}`, null, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -44,27 +45,26 @@ function StudyRoomCard({ title, tags, id, onClick }) {
   const HeartBtn = () => {
     if (!heart) {
       return (
-        <img
+        <HiOutlineHeart
           className={styles.heart}
-          src={emptyHeart}
-          alt="emptyHeart"
+          alt="HiOutlineHeart"
           onClick={() => {
             changeHeart();
             clickHeart();
           }}
-        ></img>
+        />
       );
     } else {
       return (
-        <img
+        <HiHeart
           className={styles.heart}
-          src={fullHeart}
-          alt="fullHeart"
+          alt="HiHeart"
+          style={{color: "#DD4A48" }}
           onClick={() => {
             changeHeart();
             clickHeart();
           }}
-        ></img>
+        />
       );
     }
   };
@@ -100,7 +100,7 @@ function StudyRoomCard({ title, tags, id, onClick }) {
   useEffect(() => {
     if (user.token !== null) {
       axios
-        .get(`http://localhost:8080/getGoodPost/${id}`, {
+        .get(`${BASE_API_URI}/getGoodPost/${id}`, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
@@ -136,27 +136,30 @@ function StudyRoomCard({ title, tags, id, onClick }) {
   useEffect(() => {
     Promise.all([
       axios.post(
-        "http://localhost:8080/getViewCount",
+        `${BASE_API_URI}/getViewCount`,
         { id: id, postName: "study" } // 서버로 전달할 id
       ),
       axios.post(
-        "http://localhost:8080/getCommentCount",
+        `${BASE_API_URI}/getCommentCount`,
         { id: id, postName: "study" } // 서버로 전달할 id
       ),
     ])
-    .then(([viewCountResponse, commentCountResponse]) => {
-      if (viewCountResponse.status === 200 && commentCountResponse.status === 200) {
-        setViewCount(viewCountResponse.data.count);
+      .then(([viewCountResponse, commentCountResponse]) => {
+        if (
+          viewCountResponse.status === 200 &&
+          commentCountResponse.status === 200
+        ) {
+          setViewCount(viewCountResponse.data.count);
 
-        //console.log("조회수: ", viewCountResponse.data.count);
-        //console.log("댓글수: ", commentCountResponse.data.result);
-      
-        setCommentCount(commentCountResponse.data.result);
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+          //console.log("조회수: ", viewCountResponse.data.count);
+          //console.log("댓글수: ", commentCountResponse.data.result);
+
+          setCommentCount(commentCountResponse.data.result);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   return (
@@ -166,11 +169,12 @@ function StudyRoomCard({ title, tags, id, onClick }) {
         <h1 className={styles.studyTitle}>
           {title.length > 5 ? title.slice(0, 5) + "..." : title}
         </h1>
+
         {<Hashtag />}
         <div className={styles.reaction}>
-          <img className={styles.view} src={view} alt="view"></img>
+          <HiOutlineEye className={styles.view} alt="HiOutlineEye"/>
           <a>{viewCount}</a>
-          <img className={styles.comment} src={comment} alt="comment"></img>
+          <HiOutlineChat className={styles.comment} alt="HiOutlineChat"/>
           <a>{commentCount}</a>
         </div>
       </div>

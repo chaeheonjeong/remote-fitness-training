@@ -74,8 +74,6 @@
 }
 .btnOk:hover {
   filter: brightness(0.85);
-  background-color: #cfff8d;
-  border-color: #cfff8d;
 }
 .buttonWrapper {
   display: flex;
