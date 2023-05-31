@@ -5,13 +5,17 @@
     font-style: normal;
   }
 
+.styles.choose {
+    
+}
+
 .title{
     display: flex;
     font-size: 20px;
     margin-top: 20px;
     margin-bottom:10px;
     margin-left: 370px;
-    border-bottom: 3px;
+    border-bottom: 2px;
     padding: 5px;
     height: 40px;
 }
@@ -28,7 +32,7 @@
     width: 88%;
     padding: 5px;
     border: none;
-    border-bottom: solid 1.6px black;
+    border-bottom: solid 1.6px rgb(69, 182, 71);
     font-size: 20px;
     font-family: 'SUITE-Regular';
 }
@@ -46,8 +50,9 @@
 }
 
 .registered{
-    margin-left: 770px;
-    font-size: 10px;
+    margin-top: 20px;
+    margin-left: 815px;
+    font-size: 11px;
     display: flex;
     text-align: center;
 }

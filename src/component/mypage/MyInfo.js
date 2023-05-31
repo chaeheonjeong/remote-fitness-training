@@ -268,30 +268,30 @@ function MyInfo() {
             <form className="change" onSubmit={handleChangePassword}>
               <div className="pwd">
                 <p>
-                  <label className="password">현재 비밀번호</label>
+                  <label className="passwordp">현재 비밀번호</label>
                 </p>
                 <input
                   type="password"
-                  className="_input"
+                  className="_input2"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
-              <div className="pwd">
+              <div className="pwd2">
                 <p>
                   <label className="password">새 비밀번호</label>
                 </p>
                 <input
                   type="password"
-                  className="_input"
+                  className="_input2"
                   value={newPassword}
                   onChange={handleNewPwdChange}
                   required
                 />
               </div>
               {errorMessage && <p style={{ color: "red", fontSize: "12px" }}>{errorMessage}</p>}
-              <div className="pwd">
+              <div className="pwd3">
                 <p>
                   <label className="password">새 비밀번호 확인</label>
                 </p>

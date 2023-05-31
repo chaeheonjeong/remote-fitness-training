@@ -11,7 +11,7 @@ import userStore from "../../store/user.store";
 import QuestionRoomCard from "../main/QuestionRoomCard";
 import { BASE_API_URI } from "../../util/common";
 
-const MyAsk = () => {
+const MyAsk = ({ activeButton }) => {
   const navigate = useNavigate();
   const [renderQ, setRenderQ] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -69,26 +69,29 @@ const MyAsk = () => {
       )
       .then((response) => {
         navigate(`/askView/${id}`);
+
       })
       .catch((error) => {
         console.log(error);
       });
   };
+  
+
 
   return (
     <div>
       <Header />
-      <SideBar />
+      <SideBar activeButton={activeButton} />
       <div className={styles.contentWrapper}>
         <button
-        className="sstudy1"
+        className={styles.sstudy2}
           onClick={() => {
             navigate("/myPost");
           }}
         >
           스터디
         </button>
-        <button className="aask1">질문</button>
+        <button className={styles.aask2}>질문</button>
         {renderQ.length !== 0 ? (
           <InfiniteScroll
             dataLength={renderQ.length}

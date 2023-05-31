@@ -10,7 +10,7 @@ import loadingImg from "../../images/loadingImg.gif";
 import userStore from "../../store/user.store";
 import { BASE_API_URI } from "../../util/common";
 
-const MyPost = () => {
+const MyPost = ({ activeButton }) => {
   const navigate = useNavigate();
   const [renderQ, setRenderQ] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -68,22 +68,26 @@ const MyPost = () => {
       )
       .then((response) => {
         navigate(`/view/${id}`);
+
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
+  
+
   return (
     <div>
       <Header />
-      <SideBar />
+      <SideBar activeButton={activeButton} />
       <div className={styles.contentWrapper}>
-        <button className="sstudy1">스터디</button>
+        <button className={styles.sstudy1}>스터디</button>
         <button
-          className="aask1"
+          className={styles.aask1}
           onClick={() => {
             navigate("/myAsk");
+            
           }}
         >
           질문

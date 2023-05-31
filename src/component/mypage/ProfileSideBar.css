@@ -11,6 +11,7 @@
 
     position: fixed;
     top: 5rem;
+    margin-left: 5;
 
     border-right: 2px solid rgb(225, 225, 225);
     background-color: #FBF7F0;

@@ -122,18 +122,34 @@
 .pwd{
     font-family: 'Cafe24SsurroundAir';
     text-align: left;
+    margin-top: 70px;
 
 }
 
-._input{
+.pwd2{
+    font-family: 'Cafe24SsurroundAir';
+    text-align: left;
+    margin-top: 10px;
+
+}
+
+.pwd3{
+    font-family: 'Cafe24SsurroundAir';
+    text-align: left;
+    margin-top: 10px;
+
+}
+
+._input2{
     border: none;
     border-bottom: 2px solid rgb(225, 225, 225);
     box-sizing: border-box;
-    padding: 7px 0px;
+    padding: 7px;
     position: relative;
     top: 50%;
-    width: 600px;
-    margin-bottom: 7px;
+    width: 100%;
+    margin-bottom: 20px;
+    
     align-items: center;
 }
 
@@ -141,10 +157,10 @@
     border: none;
     border-bottom: 2px solid rgb(225, 225, 225);
     box-sizing: border-box;
-    padding: 7px 0px;
+    padding: 7px ;
     position: relative;
     top: 50%;
-    width: 300px;
+    width: 100%;
     margin-bottom: 7px;
     align-items: center;
 }
@@ -153,10 +169,10 @@
     border: none;
     border-bottom: 2px solid rgb(225, 225, 225);
     box-sizing: border-box;
-    padding: 7px 0px;
+    padding: 7px;
     position: relative;
     top: 50%;
-    width: 300px;
+    width: 100%;
     margin-bottom: 7px;
     align-items: center;
 }
@@ -183,9 +199,14 @@
     padding: 4px;
     border: none;
     background-color: #F1E0AC;
+    margin-top: 50px;
 
 }
 
+.change {
+    display: contents;
+    align-items: center;
+}
 .email{
     word-spacing: 5px;
 }

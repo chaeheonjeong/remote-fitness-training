@@ -37,6 +37,20 @@ function MyLikedPost() {
         //fetchLikedPosts();
     }; */
 
+  const clickHandler = (id) => {
+    axios
+      .post(
+        `${BASE_API_URI}/View`,
+        { id: id, postName: "study" } // 서버로 전달할 id
+      )
+      .then((response) => {
+        navigate(`/view/${id}`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const morePosts = async () => {
     const token = localStorage.getItem("token");
 
@@ -79,20 +93,6 @@ function MyLikedPost() {
   useEffect(() => {
     morePosts();
   }, []);
-
-  const clickHandler = (id) => {
-    axios
-      .post(
-        `${BASE_API_URI}/View`,
-        { id: id, postName: "study" } // 서버로 전달할 id
-      )
-      .then((response) => {
-        navigate(`/view/${id}`);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
   return (
     <div>
