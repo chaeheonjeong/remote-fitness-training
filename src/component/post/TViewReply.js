@@ -691,6 +691,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
                                         selectedRId === rr._id ? null : rr._id
                                       );
                                       modifyR_Reply(rr._id);
+                                              console.log("here ", showR_ReplyModifyInput, selectedRId, rr._id);
                                     }}
                                   ></input>
                                   {showR_ReplyModifyInput === rr._id && (
