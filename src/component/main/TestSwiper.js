@@ -11,11 +11,12 @@ function TestSwiper(props) {
   return (
     <Swiper
       style={{
-        height: "680px",
-        width: "500px",
+        height: "300px",
+        width: "76%",
         position: "relative",
         left: "-80px",
         top: "-30px",
+        justifyContent:"center"
       }}
       spaceBetween={10}
       slidesPerView={1}

@@ -25,7 +25,6 @@ function MyCalendar() {
   const { id } = useParams();
   const user = userStore();
   const navigate = useNavigate();
-
   const [addModalIsOpen, setAddModalIsOpen] = useState(false);
   const [detailModalIsOpen, setDetailModalIsOpen] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -481,25 +480,25 @@ function MyCalendar() {
     }
   };
 
+  //강사 모집의 경우
+  const TfetchParticipatedRooms = async () => {
+    try {
+      const response = await axios.get(`${BASE_API_URI}/selectionInfo`);
+      const TparticipatedRooms = response.data
+        .filter((room) => room.host.includes(user.name))
+        .map((room) => ({
+          id: room._id + "{}{}",
+          applicantId: room.applicantId,
+          name: `방 이름 : ${room.roomTitle}`,
+          description: `강사: ${room.applicant} - 시작시간: ${room.startTime}`,
+          applicant: room.applicant, // 호스트의 이름 추가
+        }));
+      setTParticipatedRooms(TparticipatedRooms);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-      //강사 모집의 경우
-      const TfetchParticipatedRooms = async () => {
-        try {
-          const response = await axios.get(`${BASE_API_URI}/selectionInfo`);
-          const TparticipatedRooms = response.data
-            .filter((room) => room.host.includes(user.name))
-            .map((room) => ({
-              id: room._id + "{}{}",
-              applicantId: room.applicantId,
-              name: `방 이름 : ${room.roomTitle}`,
-              description: `강사: ${room.applicant} - 시작시간: ${room.startTime}`,
-              applicant: room.applicant, // 호스트의 이름 추가
-            }));
-          setTParticipatedRooms(TparticipatedRooms);
-        } catch (error) {
-          console.error(error);
-        }
-      };
     
   useEffect(() => {
     fetchRoomList();
@@ -639,7 +638,6 @@ function MyCalendar() {
           onClick={() => {
             setVisible(!visible);
           }}
-
         >
           후기 작성
         </button>

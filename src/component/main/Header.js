@@ -1,6 +1,7 @@
 import styles from "./Header.module.css";
 import { HiUserCircle } from "react-icons/hi";
 import { GoBell } from "react-icons/go";
+import { Link } from "react-router-dom";
 import useHeader from "../../hooks/useHeader";
 import userStore from "../../store/user.store";
 import axios from "axios";
@@ -36,16 +37,36 @@ const Header = ({ ...props }) => {
   }, [props.callback]);
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} fixed w-full`}>
       {/* {console.log(profileImg)} */}
       <label
         className={styles.linkLabel}
         onClick={() => {
-          hook.navigate("/login");
+          hook.navigate("/");
         }}
       >
         고습도치
       </label>
+      <ul className={styles.nav}>
+        <li>
+        <Link
+            to="/Recruitment"
+            style={{ textDecoration: "none", color: "black" }}
+            > 강사모집 </Link>
+        </li>
+        <li>
+        <Link
+            to="/detailsRecruitment"
+            style={{ textDecoration: "none", color: "black" }}
+            > 학생모집 </Link>
+        </li>
+        <li>
+        <Link
+            to="/detailQuestion"
+            style={{ textDecoration: "none", color: "black" }}
+            > 질문Q&A </Link>
+        </li>
+      </ul>
       <div className={styles.smallContainer}>
         <div className={styles.smallContainer2}>
           {user.token !== null && (

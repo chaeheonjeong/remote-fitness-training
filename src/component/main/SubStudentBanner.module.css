@@ -1,0 +1,82 @@
+@font-face {
+    font-family: 'SUITE-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+.banner h1{
+    font-family: 'SUITE-Regular';
+  margin: 0;
+  font-size: 50px;
+  text-align: center;
+}
+
+.banner h6{
+    font-family: 'SUITE-Regular';
+  font-size: 16px;
+  margin: 0;
+  text-align: center;
+}
+
+.banner {
+  color: white;
+  background: url(https://i.imgur.com/1DRTAiD.jpg) top left/cover no-repeat,  rgba(0, 0, 0, 0.5);
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6rem;
+  background-blend-mode: multiply;
+}
+
+.searchAndMake{
+    font-family: 'SUITE-Regular';
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    margin-top: 200px;
+}
+
+.search{
+    display: flex;
+}
+
+.search input{
+    display:block;
+    width:26rem;
+    margin:4.5rem 1rem 2rem;
+    border:0;
+    font-size:1.2rem;
+    padding:.75rem 1rem;
+    border-radius:3px;
+    box-shadow:0 1px 2px #aaa;
+    transition:.5s, margin-bottom .15s;
+    color: black;
+}
+
+.search select{
+    display:block;
+    width:6rem;
+    margin:4.5rem 0 2rem;
+    border:0;
+    font-size:1.2rem;
+    padding:.75rem 1rem;
+    border-radius:3px;
+    box-shadow:0 1px 2px #aaa;
+    transition:.5s, margin-bottom .15s;
+    color: black;
+}
+
+.search button{
+    background-color: #16C79A;
+    width:6rem;
+    margin:4.5rem 0 2rem;
+    border:0;
+    font-size:1.2rem;
+    padding:.75rem 1rem;
+    border-radius:3px;
+    box-shadow:0 1px 2px #aaa;
+    transition:.5s, margin-bottom .15s;
+
+}

@@ -23,25 +23,29 @@
 .emailInput {
   position: relative;
   height: 3rem;
-  border: 2px solid rgb(96, 93, 93);
-  border-radius: 0.8rem;
-  font-size: 1rem;
+  width: 69%;
   padding: 0 0.8rem;
   margin: 0.5rem 0;
   flex: 1;
+  border: 1.4px solid rgb(217, 217, 217);
+  border-radius: 5px;
+  font-size: 1rem;
+  padding: 0 0.8rem;
+  margin: 0.5rem 0;
 }
 
 .emailBtn {
-  height: 2.7rem;
+  height: 2.9rem;
   width: 100px;
-  font-size: 0.75rem;
-  border-radius: 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 5px;
   padding: 0 1rem;
   margin-left: 10px;
   border: none;
   transition: all 0.3s ease;
-  background-color: #3cf6c7;
-  color: black;
+  background-color: #8ae52e;
+  color: white;
   cursor: pointer;
 }
 
@@ -49,11 +53,14 @@
   filter: brightness(0.85);
 }
 
-.emailWrapper {
+.inputWrapper {
+  background-color: white;
+  padding: 3rem 2rem;
+  border: 0.7px solid rgb(224, 224, 224);
+  border-radius: 10px;
   display: flex;
-  width: 100%;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .warnLabel {
@@ -72,10 +79,44 @@
 .nickInput {
   position: relative;
   height: 3rem;
-  border: 2px solid rgb(96, 93, 93);
-  border-radius: 0.8rem;
+  border: 1.4px solid rgb(217, 217, 217);
+  border-radius: 5px;
   font-size: 1rem;
   padding: 0 0.8rem;
   margin: 0.5rem 0;
   flex: 1;
+}
+
+.container {
+  background-color: #f7f7f7;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.label {
+  font-weight: 600;
+}
+
+.emailWrapper {
+  background-color: white;
+  padding: 3rem 2rem;
+  border: 0.7px solid rgb(224, 224, 224);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.emailInput:focus {
+  outline: none;
+  border-color: #8ae52e;
+  box-shadow: 0 0 3px #8ae52e;
+}
+
+.nickInput:focus {
+  outline: none;
+  border-color: #8ae52e;
+  box-shadow: 0 0 3px #8ae52e;
 }

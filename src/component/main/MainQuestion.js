@@ -161,7 +161,10 @@ function MainQuestion() {
         <div className={styles.menu}>
           <div className={styles.select}>
             <Link to="/">
-              <button className={styles.recruitment}>모집글</button>
+              <button className={styles.tRecruitment}>강사모집</button>
+            </Link>
+            <Link to="/sRecruitment">
+              <button className={styles.sRecruitment}>학생모집</button>
             </Link>
             <Link to="/question">
               <button className={styles.question}>질문</button>

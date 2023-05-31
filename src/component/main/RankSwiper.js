@@ -42,7 +42,6 @@ const RankRender = ({ ranker, index }) => {
           : ranker.name}
       </span>
       <span>{ranker.happiness}</span>
-      {console.log(ranker.portfolio)}
       {ranker.portfolio.length !== 0 && (
         <div>
           <span>성별: {ranker.portfolio.gender}</span>
@@ -81,6 +80,11 @@ function RankSwiper({ rankers }) {
     <>
       {rankers.length > 0 && (
         <Swiper
+          style={{
+            "--swiper-navigation-color": "#16C79A",
+            "--swiper-pagination-color": "#16C79A",
+            "--swiper-navigation-size": "30px"
+          }}
           className={styles.swiper} // 수정된 부분
           spaceBetween={10}
           slidesPerView={1}

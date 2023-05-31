@@ -62,6 +62,7 @@ const ObjectId = mongoose.Types.ObjectId;
 const auth = require("./auth");
 const { profile } = require("console");
 const RoomSchedule = require("./models/roomSchedule");
+const ReviewContent = require("./models/reviewContent");
 
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
@@ -321,7 +322,18 @@ app.delete("/schedules/:id", (req, res) => {
 });
 //포트폴리오 작성 저장
 app.post("/portfolio", auth, async (req, res) => {
-  const { title, content, writer, writeDate, gender, career, price, sports, paymentMethods, tags} = req.body;
+  const {
+    gender,
+    career,
+    price,
+    sports,
+    paymentMethods,
+    tags,
+    title,
+    content,
+    writer,
+    writeDate,
+  } = req.body;
 
   try {
     const newPortfolio = new Portfolio({
@@ -370,8 +382,6 @@ app.get("/portfolio/:id", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
-
-
 
 app.post("/recruitTSave", async (req, res) => {
   const { _id, recruit } = req.body;
@@ -1451,8 +1461,8 @@ app.post("/postreply/:id", async (req, res) => {
       _id: 총댓글수 + 1, 
       rwriter: rwriter,
       _user: rwriterId._id,
-      rwriteDate : rwriteDate,
-      reply : reply,
+      rwriteDate: rwriteDate,
+      reply: reply,
       //isSecret : isSecret
     });
     await newReply.save();
@@ -3195,6 +3205,50 @@ app.post("/getCommentCount", async (req, res) => {
   }
 });
 
+// 댓글 내용 가져오기
+app.get("/tView/:id/modify/:replyId", async(req, res) => {
+  const postId = req.params.id;
+  const replyId = req.params.replyId;
+
+  try {
+    const result = await TReply.find({ postId: Number(postId), _id: Number(replyId)  });
+    console.log(result);
+    if(result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    }
+  } catch(error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+})
+
+
+// 대댓글 내용 가져오기 Ask
+app.get("/tView/:id/modify/:selectedARId/:rrid", async(req, res) => {
+  const postId = req.params.id;
+  const selectedARId = req.params.selectedARId;
+  const rrid = req.params.rrid;
+
+  try {
+    const result = await TR_Reply.find({ postRId: Number(postId), selectedARId: Number(selectedARId), _id: Number(rrid) });
+    console.log(result);
+
+    if(result) {
+      return res.status(200).json({
+        result: result,
+        message: `댓글 id 가져오기 성공`,
+      });
+    }
+  } catch(error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+})
+
+
 app.post("/getViewCount", async (req, res) => {
   const { id, postName } = req.body;
 
@@ -3949,7 +4003,7 @@ app.get("/getAReply/:id", async (req, res) => {
       return res.status(200).json({
         data: result,
         sameAUsers: sameAUsers,
-        profileImgs: profileImgs,
+        profileImgs: null,
         message: ` ${typeof req.params.postId}댓글 가져오기 성공`,
       });
     } else {
@@ -5067,16 +5121,10 @@ app.post("/askviewReplyARModify", async (req, res) => {
 });
 
 app.post("/get-time", async (req, res) => {
-  const { postID, DBName } = req.body;
-  let dbName;
-  if (DBName === "write") {
-    dbName = Write;
-  } else if (DBName === "twrite") {
-    dbName = TWrite;
-  }
+  const { roomTitle } = req.body;
 
   try {
-    const result = await dbName.findOne({ _id: postID });
+    const result = await RoomSchedule.findOne({ roomTitle: roomTitle });
     if (result) {
       const startDateTime = new Date(`${result.date}T${result.startTime}:00`);
 
@@ -5086,51 +5134,10 @@ app.post("/get-time", async (req, res) => {
       // 남은 시간을 계산합니다.
       const remainingTime =
         startDateTime.getTime() +
-        (parseInt(result.runningTime) + 1) * 60000 -
+        parseInt(result.runningTime) * 60000 -
         currentDateTime.getTime();
 
-      // 시, 분, 초 단위로 변환합니다.
-      const hours = Math.floor(remainingTime / 3600000);
-      const minutes = Math.floor((remainingTime % 3600000) / 60000);
-
-      return res.status(200).json({
-        hour: hours,
-        minute: minutes,
-        message: `시간 가져오기 성공`,
-      });
-    } else {
-      return res.status(404).json({ message: "글이 존재하지 않습니다." });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
-
-app.post("/get-time2", async (req, res) => {
-  const { postID, DBName } = req.body;
-  let dbName;
-  if (DBName === "write") {
-    dbName = Write;
-  } else if (DBName === "twrite") {
-    dbName = TWrite;
-  }
-
-  try {
-    const result = await dbName.findOne({ _id: postID });
-    if (result) {
-      const startDateTime = new Date(`${result.date}T${result.startTime}:00`);
-
-      // 현재 시간을 가져옵니다.
-      const currentDateTime = new Date();
-
-      // 남은 시간을 계산합니다.
-      const remainingTime =
-        startDateTime.getTime() +
-        (parseInt(result.runningTime) + 1) * 60000 -
-        currentDateTime.getTime();
-
-      // 시, 분, 초 단위로 변환합니다.
+      // 시간과 분으로 변환합니다.
       const hours = Math.floor(remainingTime / 3600000);
       const minutes = Math.floor((remainingTime % 3600000) / 60000);
 
@@ -5149,36 +5156,232 @@ app.post("/get-time2", async (req, res) => {
 });
 
 app.post("/change-time", async (req, res) => {
-  const { hour, minute, DBName, postID } = req.body;
-  let dbName;
-  if (DBName === "write") {
-    dbName = Write;
-  } else if (DBName === "twrite") {
-    dbName = TWrite;
-  }
+  const { hour, minute, roomTitle } = req.body;
 
   try {
-    const result = await dbName.findOne({ _id: postID });
-    if (result) {
-      const startDateTime = new Date(`${result.date}T${result.startTime}:00`);
-      const currentDateTime = new Date();
+    const result = await RoomSchedule.find({ roomTitle: roomTitle });
+    if (result.length > 0) {
+      for (const item of result) {
+        const startDateTime = new Date(`${item.date}T${item.startTime}:00`);
+        const currentDateTime = new Date();
 
-      // 경과 시간을 밀리초로 계산합니다.
-      const elapsedTimeInMillis =
-        currentDateTime.getTime() - startDateTime.getTime();
+        // 경과 시간을 밀리초로 계산합니다.
+        const elapsedTimeInMillis =
+          currentDateTime.getTime() - startDateTime.getTime();
 
-      // 경과 시간을 분으로 변환합니다.
-      const elapsedTimeInMinutes = Math.floor(elapsedTimeInMillis / 60000);
+        // 경과 시간을 분으로 변환합니다.
+        const elapsedTimeInMinutes = Math.floor(elapsedTimeInMillis / 60000);
 
-      const newRemainingTime =
-        parseInt(hour) * 60 + parseInt(minute) + elapsedTimeInMinutes;
+        // runningTime을 hour과 minute으로 계산합니다.
+        const newRunningTime =
+          parseInt(hour) * 60 + parseInt(minute) + 1 + elapsedTimeInMinutes;
 
-      result.runningTime = String(newRemainingTime);
-      await result.save();
-      return res.status(200).json({ message: "CamTime updated successfully" });
+        // runningTime을 업데이트합니다.
+        item.runningTime = String(newRunningTime);
+        await item.save();
+      }
+
+      return res
+        .status(200)
+        .json({ message: "runningTime updated successfully" });
     } else {
-      return res.status(204).json({
-        message: `이미지가 없습니다.`,
+      return res.status(404).json({
+        message: "해당 roomTitle의 데이터를 찾을 수 없습니다.",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/get-reviews", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    const myRoomSchedules = await RoomSchedule.find({
+      userId: userId,
+      userType: "Student",
+      prepaymentBtn: true,
+    }).exec();
+
+    const studentRoomTitles = myRoomSchedules.map(
+      (schedule) => schedule.roomTitle
+    );
+    const currentDateTime = new Date();
+
+    const teacherRoomSchedules = await RoomSchedule.find({
+      roomTitle: { $in: studentRoomTitles },
+      userType: "Teacher",
+      reviewWritten: { $exists: false },
+    }).exec();
+
+    const result = []; // 결과를 저장할 배열
+
+    teacherRoomSchedules.forEach((item) => {
+      const startTime = item.startTime;
+      const date = item.date;
+      const runningTime = item.runningTime;
+
+      const startTimeObj = new Date();
+      const [hours, minutes] = startTime.split(":");
+      startTimeObj.setHours(parseInt(hours));
+      startTimeObj.setMinutes(parseInt(minutes));
+
+      const dateObj = new Date(date);
+
+      const combinedDateTime = new Date(
+        dateObj.getFullYear(),
+        dateObj.getMonth(),
+        dateObj.getDate(),
+        startTimeObj.getHours(),
+        startTimeObj.getMinutes()
+      );
+
+      combinedDateTime.setMinutes(
+        combinedDateTime.getMinutes() + parseInt(runningTime)
+      );
+
+      const targetDateTime = new Date(combinedDateTime);
+
+      if (targetDateTime <= currentDateTime) {
+        result.push(item);
+      }
+    });
+
+    return res.status(200).json({ result: result });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/send-review", async (req, res) => {
+  const {
+    teacherId,
+    sendStar,
+    reviewWrittenId,
+    reviewContent,
+    writerName,
+    date,
+  } = req.body;
+
+  try {
+    let happinessIndexIncrement;
+
+    switch (sendStar) {
+      case 5:
+        happinessIndexIncrement = 1;
+        break;
+      case 4:
+        happinessIndexIncrement = 0.8;
+        break;
+      case 3:
+        happinessIndexIncrement = 0.6;
+        break;
+      case 2:
+        happinessIndexIncrement = 0.4;
+        break;
+      case 1:
+        happinessIndexIncrement = 0.2;
+        break;
+      case 0:
+        happinessIndexIncrement = -1;
+        break;
+      default:
+        happinessIndexIncrement = 0;
+    }
+
+    let updatedHappinessIndex = await HappinessIndex.findOne({
+      _user: teacherId,
+    });
+
+    if (!updatedHappinessIndex) {
+      updatedHappinessIndex = new HappinessIndex({
+        _user: teacherId,
+        happinessIndex: "50.0", // 초기값을 문자열로 설정
+      });
+    }
+
+    const parsedHappinessIndex = parseFloat(
+      updatedHappinessIndex.happinessIndex
+    );
+    updatedHappinessIndex.happinessIndex = (
+      parsedHappinessIndex + happinessIndexIncrement
+    )
+      .toFixed(1)
+      .toString(); // 계산 후 다시 문자열로 변환
+    await updatedHappinessIndex.save();
+
+    await RoomSchedule.findOneAndUpdate(
+      { _id: reviewWrittenId },
+      { reviewWritten: true }
+    );
+
+    const review = {
+      star: sendStar,
+      writerName: writerName,
+      date: date,
+      reviewContent: reviewContent,
+    };
+
+    const reviewUser = await ReviewContent.findOne({ _user: teacherId });
+    if (reviewUser) {
+      reviewUser.reviewContents.push(review);
+      await reviewUser.save();
+    } else {
+      const newReviewUser = new ReviewContent({
+        _user: teacherId,
+        reviewContents: [review],
+      });
+      await newReviewUser.save();
+    }
+
+    return res.status(200).json({
+      message: `Happiness Index for user ${teacherId} updated successfully`,
+      updatedHappinessIndex,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/getMyReview", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+
+  try {
+    let reviews = await ReviewContent.findOne({
+      _user: userId,
+    });
+    if (reviews) {
+      return res.status(200).json({
+        reviews: reviews,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.post("/getTargetReview", async (req, res) => {
+  const { targetUser } = req.body;
+
+  console.log(targetUser);
+  try {
+    let reviews = await ReviewContent.findOne({
+      _user: targetUser,
+    });
+    if (reviews) {
+      return res.status(200).json({
+        reviews: reviews,
       });
     }
   } catch (error) {

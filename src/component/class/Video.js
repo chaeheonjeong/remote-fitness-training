@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { BiMicrophone } from "react-icons/bi";
-import { BiMicrophoneOff } from "react-icons/bi";
+import { BsMic } from "react-icons/bs";
+import { BsMicMute } from "react-icons/bs";
 
 export const Container = styled.div`
   position: relative;
@@ -38,7 +38,6 @@ const Video = ({
     if (ref.current) ref.current.srcObject = stream;
   }, [stream]);
 
-
   return (
     <Container
       className={`m-[10px] aspect-square w-full float-left ${
@@ -71,16 +70,16 @@ const Video = ({
           </div>
           <div>
             {isMuted ? (
-              <BiMicrophoneOff
-                size="20"
+              <BsMicMute
+                size="16"
                 color="#5a5a5a"
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", strokeWidth: "0.5px" }}
               />
             ) : (
-              <BiMicrophone
-                size="20"
+              <BsMic
+                size="16"
                 color="#5a5a5a"
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", strokeWidth: "0.5px" }}
               />
             )}
           </div>

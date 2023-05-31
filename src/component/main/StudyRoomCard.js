@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-import emptyHeart from "../../images/emptyHeart.png";
-import fullHeart from "../../images/heart.png";
-import view from "../../images/view.png";
-import comment from "../../images/comment.png";
+import {HiOutlineHeart} from "react-icons/hi";
+import {HiHeart} from "react-icons/hi";
+import {HiOutlineEye} from "react-icons/hi";
+import {HiOutlineChat} from "react-icons/hi";
 import styles from "./StudyRoomCard.module.css";
 import userStore from "../../store/user.store";
 import { BASE_API_URI } from "../../util/common";
@@ -45,27 +45,26 @@ function StudyRoomCard({ title, tags, id, onClick }) {
   const HeartBtn = () => {
     if (!heart) {
       return (
-        <img
+        <HiOutlineHeart
           className={styles.heart}
-          src={emptyHeart}
-          alt="emptyHeart"
+          alt="HiOutlineHeart"
           onClick={() => {
             changeHeart();
             clickHeart();
           }}
-        ></img>
+        />
       );
     } else {
       return (
-        <img
+        <HiHeart
           className={styles.heart}
-          src={fullHeart}
-          alt="fullHeart"
+          alt="HiHeart"
+          style={{color: "#DD4A48" }}
           onClick={() => {
             changeHeart();
             clickHeart();
           }}
-        ></img>
+        />
       );
     }
   };
@@ -170,11 +169,12 @@ function StudyRoomCard({ title, tags, id, onClick }) {
         <h1 className={styles.studyTitle}>
           {title.length > 5 ? title.slice(0, 5) + "..." : title}
         </h1>
+
         {<Hashtag />}
         <div className={styles.reaction}>
-          <img className={styles.view} src={view} alt="view"></img>
+          <HiOutlineEye className={styles.view} alt="HiOutlineEye"/>
           <a>{viewCount}</a>
-          <img className={styles.comment} src={comment} alt="comment"></img>
+          <HiOutlineChat className={styles.comment} alt="HiOutlineChat"/>
           <a>{commentCount}</a>
         </div>
       </div>
