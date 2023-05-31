@@ -1,6 +1,6 @@
 import Header from "./Header";
 import MyGoal from "./MyGoal";
-import BannerSwiper from "./bannerSwiper";
+import BannerSwiper from "./MainBannerSwiper";
 import StudyRanking from "./StudyRanking";
 import styles from "./Main.module.css";
 

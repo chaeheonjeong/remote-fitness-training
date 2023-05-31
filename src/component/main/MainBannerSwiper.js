@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -9,12 +9,13 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-import "./bannerSwiper.css";
+import "./MainBannerSwiper.css";
 
 // import required modules
 import { Parallax, Pagination, Navigation, Autoplay } from "swiper";
 
-export default function bannerSwiper() {
+function MainBannerSwiper() {
+
   return (
     <>
       <Swiper
@@ -108,3 +109,5 @@ export default function bannerSwiper() {
     </>
   );
 }
+
+export default MainBannerSwiper;
