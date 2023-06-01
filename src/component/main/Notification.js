@@ -42,7 +42,7 @@ const Notification = () => {
                   <div className={styles.titleWrapper}>
                     <VscCommentDiscussion style={{ strokeWidth: "0.4px" }} />{" "}
                     {"    "}
-                    <span style={{ fontWeight: "600" }}>{x.title}</span>
+                    <span style={{ fontWeight: "590" }}>{x.title}</span>
                   </div>
                   {/* )} */}
                 </div>
@@ -53,7 +53,7 @@ const Notification = () => {
                     justifyContent: "space-between",
                   }}
                 >
-                  <div>
+                  <div style={{ fontSize: "0.85rem", marginTop: "0.5rem" }}>
                     {console.log("+ ", x.message)}
                     {x.message.length >= 70
                       ? x.message.substring(0, 70) + "..."

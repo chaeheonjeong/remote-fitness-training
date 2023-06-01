@@ -259,7 +259,7 @@ function PortfolioView() {
   return (
     <>
       <Header />
-      <div style={{ marginTop: "100px" }}>
+      <div style={{ marginTop: "80px" }}>
         <ProfileSideBar setNameHandler={setName} />
         {console.log(name)}
         <div
