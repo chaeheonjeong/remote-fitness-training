@@ -1,5 +1,4 @@
 .title2 {
-    font-family: 'Cafe24SsurroundAir';
     margin-top: 140px;
     font-size: 25px;
     font-weight: bold;
@@ -43,7 +42,6 @@
 }
 
 .img-btn{
-    font-family: 'Cafe24SsurroundAir';
     border: none;
     border-radius: 5px;
     background-color:rgb(222, 235, 222);
@@ -69,7 +67,6 @@
 }
 
 .Btn{
-    font-family: 'Cafe24SsurroundAir';
     border : none;
     border-radius: 5px;
     margin-left : 5px;
@@ -79,7 +76,6 @@
 }
 
 .CBtn{
-    font-family: 'Cafe24SsurroundAir';
     border : none;
     border-radius: 5px;
     margin-left: 65px;
@@ -90,7 +86,6 @@
 }
 
 .DBtn{
-    font-family: 'Cafe24SsurroundAir';
     border : none;
     margin-left: 5px;
     padding: 4px;
@@ -167,12 +162,10 @@
 .nickname {
   word-spacing: 5px;
   /* margin-right: 10px;
-    font-family: 'Cafe24SsurroundAir';
     font-size: 20px; */
 }
 
 .changeBtn{
-    font-family: 'Cafe24SsurroundAir';
     border-radius: 5px;
     margin-left: 5px;
     padding: 4px;

@@ -209,7 +209,6 @@ border: none;
 border-bottom: 1px solid #CCC;
 color: #555;
 box-sizing: border-box;
-font-family: 'Cafe24SsurroundAir';
 font-size: 18px;
 height: 30px;
 padding: 10px 0px;
@@ -266,7 +265,6 @@ text-align: center;
 .add{
 border-radius: 5px;
 border: none;
-font-family: 'Cafe24SsurroundAir';
 margin-top: 25px;
 }
 
@@ -308,7 +306,6 @@ margin-top: 25px;
   border-radius: 5px;
   width: 100px;
   border: none;
-  font-family: 'Cafe24SsurroundAir';
   margin-top: 80px;
   margin-left: 500px;
   padding : 8px;
