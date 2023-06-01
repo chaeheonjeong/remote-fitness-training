@@ -9,9 +9,9 @@
   display: flex;
 }
 
-.calendar{
+.calendar {
   flex: 4;
-  background-color: #FFFBF5;
+  background-color: #fffbf5;
 }
 
 .App-logo {

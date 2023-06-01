@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import emptyHeart from "../../images/emptyHeart.png";
-import fullHeart from "../../images/heart.png";
-import view from "../../images/view.png";
-import comment from "../../images/comment.png";
+
+import {HiOutlineHeart} from "react-icons/hi";
+import {HiHeart} from "react-icons/hi";
+import {HiOutlineEye} from "react-icons/hi";
+import {HiOutlineChat} from "react-icons/hi";
 import styles from "./QuestionRoomCard.module.css";
 import "./InfiniteScroll.css";
 import { Fragment } from "react";
@@ -47,27 +48,26 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
   const HeartBtn = () => {
     if (!heart) {
       return (
-        <img
+        <HiOutlineHeart
           className={styles.heart}
-          src={emptyHeart}
-          alt="emptyHeart"
+          alt="HiOutlineHeart"
           onClick={() => {
             changeHeart();
             clickHeart();
           }}
-        ></img>
+        />
       );
     } else {
       return (
-        <img
-          className={styles.heart}
-          src={fullHeart}
-          alt="fullHeart"
-          onClick={() => {
-            changeHeart();
-            clickHeart();
-          }}
-        ></img>
+        <HiHeart
+        className={styles.heart}
+        alt="HiHeart"
+        style={{color: "#8ae52e" }}
+        onClick={() => {
+          changeHeart();
+          clickHeart();
+        }}
+      />
       );
     }
   };
@@ -153,10 +153,10 @@ function QuestionRoomCard({ title, tags, id, onClick }) {
         </h1>
         {<Hashtag />}
         <div className={styles.reaction}>
-          <img className={styles.view} src={view} alt="view"></img>
-          <a>{viewCount}</a>
-          <img className={styles.comment} src={comment} alt="comment"></img>
-          <a>{commentCount}</a>
+          <HiOutlineEye className={styles.view} alt="HiOutlineEye"/>
+          <a style={{color:"#7D8F69", fontSize: ".8rem"}}>{viewCount}</a>
+          <HiOutlineChat className={styles.comment} alt="HiOutlineChat"/>
+          <a style={{color:"#7D8F69", fontSize: ".8rem"}}>{commentCount}</a>
         </div>
       </div>
     </div>

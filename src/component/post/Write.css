@@ -1,140 +1,166 @@
+.all {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.select {
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem 0 2rem 0;
+}
+
+.left, .right {
+  display: inline-block;
+  width: 50%;
+  margin-left: 1%;
+}
+
+.left input, .right input, .left select {
+  width: 98%;
+  text-align: center;
+  margin-right: 0;
+  border: 1px solid #24B422;
+  border-radius: 5px;
+  font-weight: bolder;
+  height: 3rem;
+  padding: 0 1rem;
+}
+
+.left text, .right text {
+  margin-bottom: 0.1rem;
+  display: block;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.recruit_num, .running_time, .start_date,
+.start_time, .pay, .tags {
+  margin-bottom: 4rem;
+}
+
+
 .choose {
     margin-top: 10px;
-  }
-  
-  .ch1 {
-    font-size: 20px;
-    display: flex;
-    margin-bottom: 20px;
-    border-bottom: 3px;
-    padding: 5px;
-  }
-  
-  .ch2 {
-    font-size: 20px;
-    display: flex;
-  
-    margin-bottom: 50px;
-    border-bottom: 3px;
-    padding: 5px;
+    width: 70%;
   }
 
   .ch3 {
-    font-size: 20px;
-    display: flex;
-    margin-bottom: 50px;
-    border-bottom: 3px;
-    padding: 5px;
+    margin-top: 2rem;
   }
-  
+
+  hr {
+    border: none;
+    border-top: 2px solid #e5e7eb;
+  }
   .title_input {
-    display: flex;
-    font-size: 20px;
-    margin-bottom: 10px;
-    border-bottom: 3px;
-    padding: 5px;
-    height: 40px;
+    margin-bottom: 1.5rem;
   }
 
-  
-  .runningTime {
-    margin-right: 36.8%;
-    border-radius: 20px;
-    padding: 5px;
-    border: solid 2px black;
-    height: 10%;
-  }
-  
-  .date {
-    margin-right: 35%;
-    border-radius: 20px;
-    padding: 5px;
-    border: solid 2px black;
-  }
-  
-  .number {
-    margin-right: 38.5%;
-    border-radius: 20px;
-    padding: 3px;
-    border: solid 2px black;
-  }
-  
-  .period {
-    border-radius: 20px;
-    padding: 3px;
-    border: solid 2px black;
-  }
-  
-  .nn {
-    margin-right: 30px;
-  }
-  
-  .ww {
-    margin-right: 30px;
-  }
-  
-  .ss {
-    margin-right: 30px;
-  }
-  
   .cc {
-    margin-right: 30px;
-  }
-  
-  .tt {
-    margin-right: 30px;
-  }
-  
-  .btn {
-    text-align: end;
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 1% 0 1%;
+    margin-bottom: 0.2rem;
   }
 
-  .startTime_input {
-    /* width: 100%; */
-    border-radius: 20px;
-    padding: 5px;
-    border: solid 2px black;
+  .title_tinput {
+    border: 1px solid #24B422;
+    border-radius: 5px;
+    width: 98%;
+    height: 3rem;
+    padding: 1rem;
+    margin: 0 1% 0 1%;
+  }
+
+  .content {
+    width: 98%;
+    margin-top: 20px;
+    margin-left: 1%;
+  }
+
+  .ck.ck-editor {
+    border-radius: 5px;
+    border: 1px solid #24B422;
+  }
+
+.ck.ck-editor__main>.ck-editor__editable {
+  min-height: 30rem;
+}
+
+.btn {
+  margin: 2rem 1% 4rem 1%;
+  text-align: end;
+}
+
+.submit {
+  margin-left: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #1A8C4A;
+  background-color: #1A8C4A;
+  color: white;
+  font-weight: bold;
+  width: 4rem;
+  height: 2rem;
+}
+
+.submit:hover {
+  filter: brightness(0.85);
+}
+
+.cancel {
+  border-radius: 5px;
+  border: 1px solid #24B422;
+  width: 4rem;
+  height: 2rem;
+}
+
+.cancel:hover {
+  filter: brightness(0.85);
+}
+
+  .tag_tagPackage {
+    margin-top: 1rem;
+  }
+
+  .tag_tagindex {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #8AE52A;
+    border-radius: 4px;
+    padding-left: 0.5rem;
   }
   
   .tag_input {
     width: 100%;
     border-radius: 20px;
-    padding: 5px;
     border: solid 2px black;
   }
   
-  .tag_tagindex {
-    font-size: 15px;
-    color: blue;
+  .tag_tagindex p {
+    display: inline-block;
+    margin: 8px 6px 8px 8px;
   }
-  /*
-  .tag_Btn {
-    width: 15px;
-    height: 15px;
-    text-align: center;
-    align-items: center;
-  }
-  */
 
-  .estimatedAmount_input {
-    /* width: 100%; */
-    border-radius: 20px;
-    padding: 5px;
-    border: solid 2px black;
-    height: 10%;
+  .tag_Btn {
+    font-weight: bold;
+    width: 24px;
+    height: 40px;
+    border-radius: 0 3px;
+    font-size: 20px;
+    padding: 0 4px 0 4px;
   }
-  
-  .title_tinput {
-    width: 90%;
-    padding: 5px;
-    border: solid 2px black;
-  }
-  
-  .content {
-    margin-top: 20px;
-    width: 90%;
-    margin-left: 73px;
-    border: solid 1.6px black;
+
+  .tag_Btn:hover {
+    display: block;
+    background-color: #ea5a3e;
+    color: white;
+    font-size: 20px;
   }
   
   .cbtn {
@@ -143,6 +169,15 @@
     border-radius: 200px;
     background-color: green;
     color: white;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    margin-left: 1%;
+    width: 5rem;
+    height: 2.5rem;
+  }
+
+  .cbtn:hover {
+    filter: brightness(0.85);
   }
   
   .falseBtn {
@@ -151,6 +186,11 @@
     border-radius: 200px;
     background-color: red;
     color: white;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    margin-left: 1%;
+    width: 5rem;
+    height: 2.5rem;
   }
 
   .ck.ck-editor__editable {

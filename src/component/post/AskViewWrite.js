@@ -113,107 +113,121 @@ const AskViewWrite = () => {
     const dateW = today.getDate();
     const dayOfWeek = daysOfWeek[today.getDay()];
     const formattedDate = `${year}.${month}.${dateW}(${dayOfWeek})`;
-
     return formattedDate;
   };
 
-  return (
-    <>
-      <Header />
-      <div className={styles.detail}>
-        <div className={styles.content_4}>
-          <div className={styles.content_4_a}>
-            <input
-              type="button"
-              value="목록"
-              id="view_list_button1"
-              onClick={() => {
-                navigate("/");
-              }}
-            />
-          </div>
+    return (
+        <>
+            <Header />
+            <div className={styles.all}>
+            <div className={styles.left}>
+                <div className={styles.body}>
+                    <div className={styles.detail}>
 
-          {sameUser && (
-            <div className={styles.content_4_b}>
-              <input
-                className={styles.dd}
-                type="button"
-                value="삭제"
-                onClick={() => {
-                  deleteHandler();
-                }}
-              />
-              <input
-                className={styles.mm}
-                type="button"
-                value="수정"
-                onClick={() => {
-                  navigate(`/modifyAsk/${id}`);
-                }}
-              />
-            </div>
-          )}
-        </div>
+                        <div className={styles.content_4_a}>
+                            <input type='button' value='목록' id='view_list_button1' onClick={() => {
+                                navigate("/question");
+                            }}/>
+                        </div>
 
-        <div className={styles.content_1}>
-          <div>제목{write.title}</div>
-        </div>
-        <div className={styles.content_2}>
-          <div className={styles.content_2_a}>
-            <div>작성자</div>
-            <div
-              className={styles.profile1}
-              onClick={() => {
-                passHandler(write._user);
-              }}
-              style={{ marginRight: "12.5rem" }}
-            >
-              {profileImg === null ? (
-                <HiUserCircle
-                  size="40"
-                  color="#5a5a5a"
-                  style={{ cursor: "pointer" }}
-                />
-              ) : (
-                <img
-                  className={styles.profile}
-                  src={profileImg}
-                  alt="프로필 이미지"
-                />
-              )}
-              {write.writer}
-            </div>
-            <div>|</div>
-            <div>
-              날짜
-              {write.writeDate !== undefined &&
-                formatDate(new Date(write.writeDate))}
-            </div>
-          </div>
-        </div>
-        <div className={styles.content_5}>
-          <div className={styles.content_5_a}>
-            <div>
-              태그
-              {write.tag !== undefined &&
-                write.tag.map((x, i) => {
-                  return <span key={x + i}>{x}</span>;
-                })}
-            </div>
-          </div>
-        </div>
-        <div className={styles.content_3}>
-          <div>내용</div>
-          <div dangerouslySetInnerHTML={{ __html: htmlString }} />
-          <span className={good ? styles.goodBtn : null}>
-            스크랩{aBookmarkCount}
-          </span>
-          <span> 조회수 {write.views} </span>
-        </div>
-      </div>
+                        <div className={styles.content_1}>
+                        <div className={styles.content_1_1}>
+                            <div style={{ fontSize: "45px", fontWeight: "600" }}>{write.title}</div>
+                            
+                            <div className={styles.content_2}>
+                        <div className={styles.profile1} onClick={() => {passHandler(write._user)}} style={{ marginRight: "0.8rem" }}>
+                            {profileImg === null ? (
+                                <HiUserCircle
+                                size="40"
+                                color="#5a5a5a"
+                                style={{ cursor: "pointer" }}
+                                />
+                            ) : (
+                                <img
+                                className={styles.profile}
+                                src={profileImg}
+                                alt="프로필 이미지"
+                                />
+                            )}
+                            <div className={styles.profileInfo}>
+                                <div className={styles.name}>{write.writer}</div>
+                            </div>
+                        </div>
+                        </div>
+                            
+                            <div className={styles.date}>
+                                {write.writeDate !== undefined &&
+                                formatDate(new Date(write.writeDate))}
+                            </div>
+                            
+                        </div>
 
-      <AskViewReply write={write} setWrite={setWrite} writer={write.writer} />
-    </>
-  );
-};
+                        
+
+                        <div className={styles.content_4}>
+                            
+                                        
+                            {sameUser && (
+                            <div className={styles.content_4_b}>
+                                <input
+                                className={styles.dd}
+                                type="button"
+                                value="삭제"
+                                onClick={() => {
+                                    deleteHandler();
+                                }}
+                                />
+                                <input
+                                className={styles.mm}
+                                type="button"
+                                value="수정"
+                                onClick={() => {
+                                    navigate(`/modifyAsk/${id}`);
+                                }}
+                                />
+                            </div>
+                            )}
+                        </div>
+                        </div>
+                        <hr/> 
+                    </div>
+                    
+                    <div className={styles.content_3}>
+                    <div className={styles.write} dangerouslySetInnerHTML={{ __html: htmlString }} />
+                    
+                    <div className={styles.write_bottom}>
+                        <div className={styles.tags}>
+                            <div>
+                                {write.tag !== undefined &&
+                                write.tag.map((x, i) => {
+                                    return <span key={x + i} className={styles.tag}>
+                                                <div className={styles.hashtag}>#</div> 
+                                                <div className={styles.tag_content}>{x}</div>
+                                            </span>;
+                                    })}
+                                </div>
+                            </div>
+                            
+                            <div className={styles.scrap}>
+                            <span className={good ? styles.goodBtn : null}>
+                                스크랩 {aBookmarkCount}
+                            </span>
+                            <span className={styles.views}>조회수 {write.views} </span>
+                            </div>
+                    </div>
+                    </div>
+                </div>
+
+                <AskViewReply
+                        write = {write}
+                        setWrite = {setWrite}
+                        writer = {write.writer}
+                    />
+
+               
+            </div>   
+            </div>
+        </>
+    );
+}
 export default AskViewWrite;

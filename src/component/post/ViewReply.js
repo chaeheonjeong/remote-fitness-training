@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "./View.module.css";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -15,6 +15,7 @@ import usePost from "../../hooks/usePost";
 
 const ViewReply = ({ write, setWrite, writer }) => {
     const navigate = useNavigate();
+    const textareaRef = useRef();
     const { id } = useParams();
     const user = userStore();
     //const [write, setWrite] = useState([]);
@@ -22,6 +23,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
     const [sameUser, setSameUser] = useState(false);
     const [selectedId, setSelectedId] = useState();
     const [selectedRId, setSelectedRId] = useState();
+    const [selectedRRId, setSelectedRRId] = useState();
     const [good, setGood] = useState(false);
     const [bookmarkCount, setBookmarkCount] = useState(0);
     const [profileImg, setProfileImg] = useState(null);
@@ -375,6 +377,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
             .catch((err) => console.log(err));
         }
     };
+    const [canRRModify, setCanRRModify] = useState(false);
     const [showReplyModifyInput, setShowModifyReplyInput] = useState(false);
     const [replyModifyInput, setReplyModifyInput] = useState("");
 
@@ -463,119 +466,175 @@ const ViewReply = ({ write, setWrite, writer }) => {
     );
   });
 
+  const autoResize = () => {
+    const textarea = textareaRef.current;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }
 
     return(
         <>
         {/* 댓글 입력 폼 */}
         <form onSubmit={handleSubmit}>
           <div className={styles.content_6}>
-            <input
+            <textarea
               type="text"
               className={styles.reply_input}
               placeholder="댓글 내용을 입력해주세요."
               value={replyInput}
               onChange={replyInputChangeHandler}
+              ref={textareaRef}
+              onInput={autoResize}   
             />
             <div className={styles.reply_choose}>
-              <input type="submit" className={styles.sbtn} value="등록"></input>
+              <input type="submit" className={styles.sbtn} value="신청"></input>
             </div>
           </div>
         </form>
         
 
         <div className={styles.rr_reply}>
-          <table>
-            <thead>
-              <tr className={styles.replyName}>
-                <th>닉네임</th>
-                <th>댓글 내용</th>
-                <th>날짜</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* {reply.map((r, index) => ( */}
-              {currentReply.map((r, index) => (
-              
-              <tr className={styles.replyTitle} key={r._id}>
-                <td key={r._id} onClick={() => ReplyProfileClick(r._user)} >
-                  <div>
-                  {/* {!pImg || !pImg[index] ? ( */}
-                  {!rPImg[index] ? (
-                    <HiUserCircle
-                      size="40"
-                      color="#5a5a5a"
-                      style={{ cursor: "pointer" }}
-                    />
-                  ) : (
-                    <img
-                      className={styles.profile}
-                      /* src={pImg[index]} */
-                      src={rPImg[index]}
-                      alt="프로필 이미지"
-                    />
-                  )}
-                  {r.rwriter}
-                  </div>
-                </td>
-                <td>{r.reply}</td>
-                <td>{" "}
-                {r.rwriteDate !== undefined &&
-                  formatDate(new Date(r.rwriteDate))}</td>
+          <div>
+            {currentReply.map((r, index) => (
+              <div className={styles.replies} key={r._id}>
+                <div className={styles.reply_package}>
+                  
+                    <div className={styles.rwriter_pack}>
+                      <div key={r._id} className={styles.reply_top} 
+                        onClick={() => ReplyProfileClick(r._user)}
+                      >
+                    {/* {!pImg || !pImg[index] ? ( */}
+                    {!rPImg[index] ? (
+                      <HiUserCircle
+                        size="40"
+                        color="#5a5a5a"
+                        style={{ cursor: "pointer" }}
+                      />
+                    ) : (
+                      <img
+                        className={styles.profile}
+                        /* src={pImg[index]} */
+                        src={rPImg[index]}
+                        alt="프로필 이미지"
+                      />
+                    )}
+                    </div>
 
-
-                {/* 댓글 수정 & 삭제 */}
-                {sameUsers[index] && (
-                  <td>
-                    <input type="button" className={styles.rdbtn} value="삭제" onClick={ deleteReply.bind(null, r._id) }></input>
-                    <input 
-                      type="button" 
-                      className={styles.rmbtn} 
-                      value="수정" 
-                      onClick={ () => {
-                        setShowModifyReplyInput(selectedId === r._id ? null : r._id);
-                        setSelectedId(selectedId === r._id ? null : r._id);
-                        modifyReply(r._id);
-                      }}
-                     ></input>
-                     { showReplyModifyInput === r._id && (
-                      <form onSubmit={(e) => modifyHandleSubmit(e, r._id)}> 
-                          <div className={styles.handle}>
-                          
-                            <input
-                              type="text"
-                              className={styles.reply_input}
-                              value={replyModifyInput}
-                              onChange={modifyReplyInputChangeHandler}
-                            />
-                            <div className={styles.reply_choose}>
-                              <input className={styles.rrrr} type="submit" value="댓글수정"></input>
-                              <button className={styles.rrrr2} onClick={() => {setShowModifyReplyInput(null); setSelectedId(null);}}>댓글수정 취소</button>
-                            </div>
+                        <div className={styles.rwriter}>
+                          <div className={styles.rname}>
+                            {r.rwriter}
                           </div>
-                      </form>
-                    ) }
-                  </td>
-                )}
+                          <div className={styles.rdate}>
+                            {r.rwriteDate !== undefined &&
+                            formatDate(new Date(r.rwriteDate))}
+                          </div>
+                        </div>
+                      </div>
 
-                <td>
+
+                    {sameUsers[index] && (
+                       showReplyModifyInput !== r._id ? (
+                      <div className={styles.rdm_btn}>
+                        <input 
+                          type="button" 
+                          className={styles.rmbtn} 
+                          value="수정" 
+                          onClick={ () => {
+                            setShowModifyReplyInput(selectedId === r._id ? null : r._id);
+                            setSelectedId(selectedId === r._id ? null : r._id);
+                            modifyReply(r._id);
+                            console.log("here ", showReplyModifyInput, selectedId, r);
+                          }}
+                      ></input>
+                      <input type="button" className={styles.rdbtn} value="삭제" onClick={ deleteReply.bind(null, r._id) }></input>
+                      </div> ) : (
+                        <div className={styles.rdm_btn}>
+                          <form 
+                            onSubmit={(e) => modifyHandleSubmit(e, r._id)} 
+                          > 
+                            <div className={styles.handle}>
+                          
+                              <div className={styles.reply_choose}>
+                                <button className={styles.rrrr2} onClick={() => {setShowModifyReplyInput(null); setSelectedId(null);}}>취소</button>
+                                <input className={styles.rrrr} type="submit" value="등록"></input>
+                              </div>
+                            </div>
+                        </form>
+                        </div>
+                      )
+                    )}
+                </div>
+                <div className={styles.reply}>
+                {showReplyModifyInput === r._id ? (
+                  <form onSubmit={(e) => modifyHandleSubmit(e, r._id)}>
+                    <div className={styles.handle}>
+                    {selectedId === r._id ? (
+                      <textarea
+                        className={`${styles.reply_input} ${styles.reply_content}`}
+                        value={replyModifyInput}
+                        onChange={modifyReplyInputChangeHandler}
+                        ref={textareaRef}
+                        onInput={autoResize}
+                        style={{ width: "34rem" }}
+                        rows="5"
+                      />
+                    ) : null}
+                    </div>
+                  </form>
+                ) : (
+                  <div className={styles.reply_content}>
+                    {r.reply}
+                  </div>)}
+                </div>
+
+                <div>
+                  <div>
+                  {!showReplyList || showReplyList !== r._id ? (
+                    <button
+                      className={styles.asdf1}
+                      onClick={() => {
+                        setShowReplyList(r._id);
+                        setSelectedRId(r._id);
+                        fetchR_Reply(r._id);
+                        console.log("1", showReplyList === r._id);
+                      }}
+                    > 대댓글 목록 보기
+                    </button>
+                  ) : (
+                    <button
+                      className={styles.asdf1}
+                      onClick={() => {
+                        setShowReplyList(null);
+                        setSelectedRId(null);
+                        fetchR_Reply(r._id);
+                        console.log("2", showReplyList === r._id);
+                      }}
+                    >
+                      대댓글 목록 닫기
+                    </button>
+                  )}
+                </div>
+
+                <div>
                   {!showReplyInput && (
                     <button className={styles.asdf} onClick={() => {
                       setShowReplyInput(selectedRId === r._id ? null : r._id);
                       setSelectedRId(selectedRId === r._id ? null : r._id);
-                      setRWriter(selectedRId === r.rwriter ? null : r.rwriter);
+                      setRWriter(selectedRId === r._id ? null : r._id);
                     }}>대댓글 추가</button>
                   )}
                   {showReplyInput === r._id && (
                       <form onSubmit={rhandleSubmit}> 
                         <div className={styles.rhandle}>
                         
-                          <input
+                          <textarea
                             type="text"
                             className={styles.reply_input}
                             placeholder="대댓글 내용을 입력해주세요."
                             value={replyRInput}
                             onChange={replyInputRChangeHandler}
+                            ref={textareaRef}
+                            onInput={autoResize}   
                           />
                           <div className={styles.reply_choose}>
                             <input className={styles.asdf3} type="submit" value="대댓글 등록"></input>
@@ -585,121 +644,132 @@ const ViewReply = ({ write, setWrite, writer }) => {
                     </form>
                 
                   )}
-                  
-                  <div>
-                  {!showReplyList ? (
-                    <button className={styles.asdf1} onClick={() => {
-                      setShowReplyList(selectedRId === r._id ? null : r._id);
-                      setSelectedRId(selectedRId === r._id ? null : r._id);
-                      fetchR_Reply(r._id);
-                    }}>대댓글 목록 보기</button>
-                  ) : (
-                    selectedRId === r._id ? (
-                      <button className={styles.asdf1} onClick={() => {
-                        setShowReplyList(selectedRId === r._id ? null : r._id);
-                        setSelectedRId(selectedRId === r._id ? null : r._id);
-                        fetchR_Reply(r._id);
-                      }}>대댓글 목록 닫기</button>
-                    ) : (
-                      <button className={styles.asdf1} onClick={() => {
-                        setShowReplyList(selectedRId === r._id ? null : r._id);
-                        setSelectedRId(selectedRId === r._id ? null : r._id);
-                        fetchR_Reply(r._id);
-                      }}>대댓글 목록 보기</button>
-                    )
-                  )}
                   </div>
-                  {showReplyList === r._id && (
-                    
-                    <div className={styles.rr_reply2}>
-                      {/* 대댓글 목록 보여주는 코드 */}
-                      
-                        <table>
-                          <thead>
-                            <tr className={styles.ttrrr}>
-                              <td>닉네임</td>
-                              <td>대댓글 내용</td>
-                              <td>작성 날짜</td>
-                            </tr>
-                          </thead>
-                          {r_reply.map((rr, index) => (
-                          <tbody>
-                            <tr>
-                              <td key={rr._id} onClick={() => R_ReplyProfileClick(rr._user)} >
-                              <div>
-                                {!rPImg || !rPImg[index] ? (
-                                  <HiUserCircle
-                                    size="40"
-                                    color="#5a5a5a"
-                                    style={{ cursor: "pointer" }}
-                                  />
-                                ) : (
-                                  <img
-                                    className={styles.profile}
-                                    src={rPImg[index]}
-                                    alt="프로필 이미지"
-                                  />
-                                )}
-                                {rr.r_rwriter}
-                                </div>
-                              </td>
-                              <td>{rr.r_reply}</td>
-                              <td>{" "}{rr.r_rwriteDate !== undefined && formatDate(new Date(rr.r_rwriteDate))}</td>
+                </div>
 
-                             {/* 대댓글수정 */}
-                             {RsameUsers[index] && (
-                                <td>
-                                  <input type="button" className={styles.rrdbtn} value="삭제" onClick={() => handleRDelete(rr._id)}></input>
-                                  <input 
-                                    type="button" 
-                                    className={styles.rrmbtn} 
-                                    value="수정" 
-                                    onClick={ () => {
-                                      setShowRModifyReplyInput(selectedRId === rr._id ? null : rr._id);
-                                      setSelectedRId(selectedRId === rr._id ? null : rr._id);
-                                      modifyR_Reply(rr._id);
-                                    }}
-                                  ></input>
-                                  { showR_ReplyModifyInput === rr._id && (
-                                    <form onSubmit={(e) => modifyRHandleSubmit(e, rr.selectedRId, rr._id)}> 
+                {showReplyList === r._id && (
+                  <div className={styles.rr_reply}>
+                    <div>
+                      
+                        {r_reply.map((rr, index) => {
+                          return (
+                            <div className={styles.replies} key={rr._id}>
+                              <div className={styles.reply_package}>
+
+                                <div className={styles.rwriter_pack}>
+                                  <div key={rr._id} className={styles.reply_top} 
+                                    onClick={() => R_ReplyProfileClick(rr._user)}
+                                  >
+                                    {!rPImg || !rPImg[index] ? (
+                                      <HiUserCircle
+                                        size="40"
+                                        color="#5a5a5a"
+                                        style={{ cursor: "pointer" }}
+                                      />
+                                    ) : (
+                                      <img
+                                        className={styles.profile}
+                                        src={rPImg[index]}
+                                        alt="프로필 이미지"
+                                      />
+                                    )}
+                                    </div>
+
+                                    <div className={styles.rwriter}>
+                                      <div className={styles.rname}>
+                                        {rr.r_rwriter}
+                                      </div>
+                                      <div className={styles.rdate}>
+                                        {rr.r_rwriteDate !== undefined &&
+                                        formatDate(new Date(rr.r_rwriteDate))}
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {RsameUsers[index] && (
+                                     showR_ReplyModifyInput === rr._id ? (
+                                      
+                                      <div className={styles.rdm_btn}>
+                                        <input 
+                                          type="button" 
+                                          className={styles.rmbtn} 
+                                          value="수정" 
+                                          onClick={ () => {
+                                            setCanRRModify(selectedRId === rr._id ? null : rr._id);
+                                            setShowRModifyReplyInput(selectedRId === rr._id ? null : rr._id);
+                                            setSelectedRId(selectedRId === rr._id ? null : rr._id);
+                                            modifyR_Reply(rr._id);
+                                            console.log("here ", showR_ReplyModifyInput, selectedRId, rr._id);
+                                          }}
+                                        ></input>
+                                        <input 
+                                          type="button" 
+                                          className={styles.rdbtn} 
+                                          value="삭제" 
+                                          onClick={() => handleRDelete(rr._id)}
+                                        ></input>
+                                      </div>
+                                      ) : (
+                                        <div className={styles.rdm_btn}>
+                                          <form 
+                                            onSubmit={(e) => modifyRHandleSubmit(e, rr.selectedRId, rr._id)}
+                                          > 
                                         <div className={styles.handle}>
-                                        
-                                          <input
-                                            type="text"
-                                            className={styles.reply_input}
-                                            value={replyRModifyInput}
-                                            onChange={modifyR_ReplyInputChangeHandler}
-                                          />
-                                          <div className={styles.reply_choose}>
-                                            <input type="submit" value="대댓글수정"></input>
-                                            <button onClick={() => {setShowRModifyReplyInput(null); setSelectedRId(null);}}>대댓글수정 취소</button>
-                                          </div>
-                                        </div>
-                                    </form>
-                                  ) }
-                                </td>
-                              )}
-                            </tr>
-                          </tbody>
-                          ))}
-                        </table>
-                      
-                    </div>
-                  )}
-                </td>
-
-              </tr>
-              ))}
       
-            
-            </tbody>
-          </table>
-          <div className={styles.pagination}>
-            <ul className={styles.pageNumbers}>
-              {renderPageNumbers}
-            </ul>
+
+                                        <div className={styles.reply_choose}>
+                                            <button onClick={() => {setShowRModifyReplyInput(null); setSelectedRRId(null);}}>취소</button>
+                                            <input type="submit" value="등록"></input>
+                                        </div>
+                                    </div>
+                                    </form>
+                                    </div>
+                        ))}
+                                    </div>
+                                    <div className={styles.reply}>
+                                    { showR_ReplyModifyInput === rr._id || canRRModify === rr._id ? (
+                                        <form onSubmit={(e) => modifyRHandleSubmit(e, rr.selectedRId, r._id)}> 
+                                        
+                                          
+                                          <div className={styles.handle}>
+                                          {selectedRRId === rr._id ? (
+                                            <textarea
+                                              className={`${styles.reply_input} ${styles.reply_content}`}
+                                              value={replyRModifyInput}
+                                              onChange={modifyR_ReplyInputChangeHandler}
+                                              ref={textareaRef}
+                                              onInput={autoResize}
+                                              style={{ width: "34rem" }}
+                                              rows="5"
+                                            />
+                                          ) : null}
+                                          </div>
+                                        </form>
+                                        ) : null}
+                                        </div>
+                                        <div className={styles.reply_content}>
+                                          {rr.r_reply}
+                                        </div>
+                            </div>
+                          );
+                        })
+}
+                    </div>
+                  </div>
+                  )}
+
+
+
+              <hr/>
           </div>
-        </div>
+        ))}
+      </div>  
+            <div className={styles.pagination}>
+              <ul className={styles.pageNumbers}>
+                {renderPageNumbers}
+              </ul>
+            </div>
+          </div>
         </>
     );
 }

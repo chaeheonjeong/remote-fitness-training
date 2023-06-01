@@ -36,7 +36,7 @@ const Login = () => {
     <>
       <Header />
       <div className={styles.container}>
-        <div className={`${styles.authWrapper} pt-18`}>
+        <div className={`${styles.authWrapper} pt-20`}>
           <AuthForm onSubmit={submitHandler} name={"로그인"}>
             <div className={`${styles.inputWrapper}  w-[430px]`}>
               <div>

@@ -7,6 +7,7 @@ import userStore from "../../store/user.store";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_API_URI } from "../../util/common";
+import logo from "../../logo/logo.png"; // 이미지 파일 경로를 import 합니다.
 
 const Header = ({ ...props }) => {
   const [profileImg, setProfileImg] = useState(null);
@@ -39,32 +40,48 @@ const Header = ({ ...props }) => {
   return (
     <div className={`${styles.container} fixed w-full`}>
       {/* {console.log(profileImg)} */}
-      <label
-        className={styles.linkLabel}
-        onClick={() => {
-          hook.navigate("/");
-        }}
-      >
-        고습도치
-      </label>
+      <div style={{ position: "relative" }}>
+        <img
+          src={logo}
+          alt="logo"
+          style={{
+            position: "absolute",
+            width: "65px",
+            height: "70px",
+            marginLeft: "-62px",
+            marginTop: "-23px",
+          }}
+        />
+        <label
+          className={styles.linkLabel}
+          onClick={() => {
+            hook.navigate("/");
+          }}
+        >
+          고습도치
+        </label>
+      </div>
       <ul className={styles.nav}>
         <li>
-        <Link
+          <Link
             to="/Recruitment"
             style={{ textDecoration: "none", color: "black" }}
-            > 강사모집 </Link>
+            > 강사찾기 </Link>
         </li>
         <li>
-        <Link
+          <Link
             to="/detailsRecruitment"
             style={{ textDecoration: "none", color: "black" }}
-            > 학생모집 </Link>
+            > 레슨 </Link>
         </li>
         <li>
-        <Link
+          <Link
             to="/detailQuestion"
             style={{ textDecoration: "none", color: "black" }}
-            > 질문Q&A </Link>
+          >
+            {" "}
+            질문Q&A{" "}
+          </Link>
         </li>
       </ul>
       <div className={styles.smallContainer}>

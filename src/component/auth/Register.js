@@ -13,7 +13,7 @@ const Register = () => {
     <>
       <Header />
       <div className={styles.container}>
-        <div className={`${styles.authWrapper} pt-12`}>
+        <div className={`${styles.authWrapper}`} style={{ marginTop: "2rem" }}>
           <AuthForm onSubmit={hook.submitHandler} name={"회원가입"}>
             <div className={`${styles.emailWrapper} w-[430px]`}>
               <div style={{ marginBottom: "0.3rem" }}>

@@ -451,7 +451,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
             onChange={replyInputChangeHandler}
           />
           <div className={styles.reply_choose}>
-            <input type="submit" className={styles.sbtn} value="등록"></input>
+            <input type="submit" className={styles.sbtn} value="신청"></input>
           </div>
         </div>
       </form>
@@ -691,6 +691,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
                                         selectedRId === rr._id ? null : rr._id
                                       );
                                       modifyR_Reply(rr._id);
+                                              console.log("here ", showR_ReplyModifyInput, selectedRId, rr._id);
                                     }}
                                   ></input>
                                   {showR_ReplyModifyInput === rr._id && (

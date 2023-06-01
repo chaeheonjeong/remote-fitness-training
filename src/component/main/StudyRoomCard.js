@@ -59,7 +59,7 @@ function StudyRoomCard({ title, tags, id, onClick }) {
         <HiHeart
           className={styles.heart}
           alt="HiHeart"
-          style={{color: "#DD4A48" }}
+          style={{color: "#8ae52e" }}
           onClick={() => {
             changeHeart();
             clickHeart();
@@ -173,9 +173,9 @@ function StudyRoomCard({ title, tags, id, onClick }) {
         {<Hashtag />}
         <div className={styles.reaction}>
           <HiOutlineEye className={styles.view} alt="HiOutlineEye"/>
-          <a>{viewCount}</a>
+          <a style={{color:"#56776C", fontSize: ".8rem"}}>{viewCount}</a>
           <HiOutlineChat className={styles.comment} alt="HiOutlineChat"/>
-          <a>{commentCount}</a>
+          <a style={{color:"#56776C", fontSize: ".8rem"}}>{commentCount}</a>
         </div>
       </div>
     </div>

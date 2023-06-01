@@ -21,6 +21,7 @@ import { BASE_API_URI } from "../../util/common";
 import axios from "axios";
 import socket from "socket.io-client/lib/socket";
 import TimeoutModal from "./TimeoutModal";
+import { HiOutlinePhoneMissedCall } from "react-icons/hi";
 
 const pc_config = {
   iceServers: [
@@ -71,6 +72,27 @@ const RTCChat = () => {
   const handleModalConfirm = () => {
     // 모달 확인 버튼 클릭 시 수행되는 로직
     navigate("/MyCalendar"); // navigate 호출 예시
+  };
+
+  const meetingOffHandler = () => {
+    const confirmClose = window.confirm("화상미팅을 종료하시겠습니까?");
+    if (confirmClose) {
+      const closeData = {
+        room: roomTitle,
+      };
+      if (socketRef.current !== undefined) {
+        console.log(closeData.room);
+        socketRef.current.emit("close_meeting", roomTitle);
+      }
+      axios
+        .post(`${BASE_API_URI}/meetingClose`, {
+          roomTitle: roomTitle,
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      navigate("/MyCalendar");
+    }
   };
 
   useEffect(() => {
@@ -463,6 +485,10 @@ const RTCChat = () => {
       setHour(timeData.hour);
       setMinute(timeData.minute);
     });
+
+    socketRef.current.on("meeting_closed", (room) => {
+      setShowModal(true);
+    });
   }, [socketRef]);
 
   useEffect(() => {
@@ -640,33 +666,43 @@ const RTCChat = () => {
               </div>
             </div>
             <div
-              className="bg-white flex h-[90px]
-          w-full border border-[rgb(219,219,219)] gap-[30px] justify-center items-center"
+              className={`bg-white flex h-[90px]
+          w-full border border-[rgb(219,219,219)] gap-[30px] justify-center items-center `}
             >
-              <button onClick={toggleCamera} className={styles.camearButton}>
+              <button
+                onClick={toggleCamera}
+                className={`${styles.camearButton} ${
+                  visible ? styles.offStyle : ""
+                }`}
+              >
                 {visible ? (
-                  <BsCameraVideo
+                  <BsCameraVideoOff
                     size="25"
-                    color="#5a5a5a"
+                    color="white"
                     style={{ strokeWidth: "0.15px" }}
                   />
                 ) : (
-                  <BsCameraVideoOff
+                  <BsCameraVideo
                     size="25"
                     color="#5a5a5a"
                     style={{ strokeWidth: "0.15px" }}
                   />
                 )}
               </button>
-              <button onClick={toggleMic} className={styles.mikeButton}>
+              <button
+                onClick={toggleMic}
+                className={`${styles.mikeButton} ${
+                  muted ? styles.offStyle : ""
+                }`}
+              >
                 {muted ? (
-                  <BsMic
+                  <BsMicMute
                     size="24"
-                    color="#5a5a5a"
+                    color="white"
                     style={{ strokeWidth: "0.2px" }}
                   />
                 ) : (
-                  <BsMicMute
+                  <BsMic
                     size="24"
                     color="#5a5a5a"
                     style={{ strokeWidth: "0.2px" }}
@@ -698,6 +734,13 @@ const RTCChat = () => {
                   />
                 </button>
               </div>
+              <button onClick={meetingOffHandler} className={styles.closeCam}>
+                <HiOutlinePhoneMissedCall
+                  size="25"
+                  color="white"
+                  style={{ cursor: "pointer" }}
+                />
+              </button>
             </div>
           </div>
 
