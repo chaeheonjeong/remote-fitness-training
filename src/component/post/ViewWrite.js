@@ -39,7 +39,7 @@ const ViewWrite = () => {
       axios
         .delete(`${BASE_API_URI}/writeDelete/${id}`)
         .then((res) => {
-          navigate("/study");
+          navigate("/");
         })
         .catch((err) => console.log(err));
     }
