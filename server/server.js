@@ -1640,30 +1640,6 @@ app.delete("/postr_reply/:id/:rid/:rrid", async (req, res) => {
     res.status(500).json({ message: `서버오류` });
   }
 });
-app.get("/view/:id/modify/:selectedRId/:rrid", async (req, res) => {
-  const postId = req.params.id;
-  const selectedRId = req.params.selectedRId;
-  const rrid = req.params.rrid;
-
-  try {
-    const result = await R_Reply.find({
-      postRId: Number(postId),
-      selectedRId: Number(selectedRId),
-      _id: Number(rrid),
-    });
-    console.log(result);
-
-    if (result) {
-      return res.status(200).json({
-        result: result,
-        message: `댓글 id 가져오기 성공`,
-      });
-    } /* reply */
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
 
 /// 대댓글 작성 T
 app.post("/postTr_reply/:id/:rid", async (req, res) => {
@@ -1912,8 +1888,7 @@ app.delete("/view/:id/reply/:replyId", async (req, res) => {
     res.status(500).json({ message: "댓글삭제 실패" });
   }
 });
-
-app.post("/postAr_reply/:id/:rid", async (req, res) => {
+app.post("/postAr_reply/:id/:rid", auth, async (req, res) => {
   const { Ar_reply, isARSecret, Ar_rwriteDate, Ar_rwriter } = req.body;
   const { id, rid } = req.params;
   const userId = req.user.id;
@@ -4796,32 +4771,7 @@ app.post("/postr_reply/:id/:rid", async (req, res) => {
   }
 });
 
-app.get("/view/:id/modify/:selectedRId/:rrid", async (req, res) => {
-  const postId = req.params.id;
-  const selectedRId = req.params.selectedRId;
-  const rrid = req.params.rrid;
 
-  try {
-    const result = await R_Reply.find({
-      postRId: Number(postId),
-      selectedRId: Number(selectedRId),
-      _id: Number(rrid),
-    });
-    console.log(result);
-
-    if (result) {
-      return res.status(200).json({
-        questions: questions,
-        message: "스터디 모집글 목록 가져오기",
-        success: true,
-        hasMore: hasMore,
-      });
-    } /* reply */
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Server Error" });
-  }
-});
 
 app.post("/viewTReplyRModify", async (req, res) => {
   const { postRId, selectedRId, _id, r_rWriteDate, r_reply /* , isRSecret */ } =
@@ -5519,7 +5469,7 @@ app.post("/askviewReplyARModify", async (req, res) => {
   }
 });
 
-app.get("/getTApplicant/:id", async (req, res) => {
+/* app.get("/getTApplicant/:id", async (req, res) => {
   try {
     const applicants = await TApplicant.find({ postId: req.params.id });
     
@@ -5555,7 +5505,7 @@ app.post("/tApplicantSave", async (req, res) => {
     res.status(500).json({ message: `서버오류` });
   }
 });
-
+ */
 app.post("/get-time", async (req, res) => {
   const { roomTitle } = req.body;
 
