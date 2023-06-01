@@ -5133,7 +5133,7 @@ app.put("/likeAreply/:id", auth, async (req, res) => {
     }
 
     const likedByUser = reply.likes.includes(userId);
-    if (likedByUser) {0
+    if (likedByUser) {
       // 이미 좋아요한 상태라면 좋아요 취소
       reply.likes.pull(userId);
       reply.likesCount -= 1;
