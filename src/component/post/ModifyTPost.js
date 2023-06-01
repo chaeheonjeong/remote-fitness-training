@@ -7,7 +7,7 @@ import axios from "axios";
 import Header from "../main/Header";
 
 import SelectTModal from "./SelectTModal";
-import { BASE_API_URI } from "../../util/common";
+import { BASE_API_URI, scrollToTop } from "../../util/common";
 
 const ModifyTPost = () => {
   const hook = usePost();
@@ -16,6 +16,10 @@ const ModifyTPost = () => {
   const [modal, setModal] = useState(false);
 
   const imgLink = `${BASE_API_URI}/images`;
+  
+  useEffect(() => {
+    scrollToTop();
+  }, []);
 
   const customUploadAdapter = (loader) => {
     // (2)

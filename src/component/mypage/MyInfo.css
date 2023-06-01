@@ -1,15 +1,16 @@
 .title2 {
-  margin-top: 40px;
-  font-size: 25px;
-  font-weight: bold;
-  margin-left: 25%;
+    margin-top: 140px;
+    font-size: 25px;
+    font-weight: bold;
+    margin-left: 25%;
 }
-.MyInfo {
-  border: 1px solid #0b9e00;
-  background-color: rgb(240, 255, 237);
-  padding: 40px;
-  margin-left: 25%;
-  height: calc(53vh - 5rem);
+.MyInfo{
+    /* border: 1px solid #8AE52E; */
+    background-color: /* #eceff9; */#f8fff3;
+    border-radius: 30px;
+    padding: 40px;
+    margin-left: 25%;
+    height: calc(53vh - 5rem);
 
   margin-top: 2%;
   display: flex;
@@ -31,22 +32,24 @@
   font-size: 18px;
 }
 
-.Profile {
-  width: 150px;
-  height: 150px;
-  border-radius: 100%;
-  border: 1px solid #555555;
-  margin-bottom: 10px;
-  margin-top: 10px;
+.Profile{
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+    border: 1.5px solid #7f7b7b;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
-.img-btn {
-  border: none;
-  border-radius: 5px;
-  background-color: #f1e0ac;
-  padding: 4px;
-  margin-top: 10px;
-  margin-left: 20%;
+.img-btn{
+    border: none;
+    border-radius: 5px;
+    background-color:rgb(222, 235, 222);
+    padding: 4px;
+    margin-top: 10px;
+    margin-left: 20%;
+    
+
 }
 #ProfileImg {
   display: none;
@@ -63,44 +66,35 @@
   flex: 1;
 }
 
-.Input {
-  border: none;
-  border-bottom: 2px solid rgb(225, 225, 225);
-  align-items: left;
-  font-size: 20px;
-  padding: 5px;
-  width: 70%;
-  margin-top: 30px;
-  margin-left: 10px;
+.Btn{
+    border : none;
+    border-radius: 5px;
+    margin-left : 5px;
+    margin-top : 20px;
+    padding: 4px;
+    background-color: rgb(222, 235, 222);
 }
 
-.Btn {
-  border: none;
-  border-radius: 5px;
-  margin-left: 5px;
-  margin-top: 20px;
-  padding: 4px;
-  background-color: #f1e0ac;
+.CBtn{
+    border : none;
+    border-radius: 5px;
+    margin-left: 65px;
+    padding: 4px;
+    background-color: rgb(222, 235, 222);
+    margin-bottom: 10px;
+    margin-right: 10px;
 }
 
-.CBtn {
-  border: none;
-  border-radius: 5px;
-  margin-left: 65px;
-  padding: 4px;
-  background-color: #f1e0ac;
-  margin-bottom: 10px;
-  margin-right: 10px;
+.DBtn{
+    border : none;
+    margin-left: 5px;
+    padding: 4px;
+    border-radius: 5px;
+    background-color: rgb(222, 235, 222);
+    margin-bottom: 10px;
 }
 
-.DBtn {
-  border: none;
-  margin-left: 5px;
-  padding: 4px;
-  border-radius: 5px;
-  background-color: #f1e0ac;
-  margin-bottom: 10px;
-}
+ 
 
 .pwd {
   text-align: left;
@@ -157,6 +151,9 @@
 .password-not-match:focus {
   border-color: #cc3636;
 }
+._input:focus{
+    border-color:rgb(240, 255, 240);
+}
 
 ._input:focus {
   border-color: #f1e0ac;
@@ -165,17 +162,17 @@
 .nickname {
   word-spacing: 5px;
   /* margin-right: 10px;
-    font-family: 'Cafe24SsurroundAir';
     font-size: 20px; */
 }
 
-.changeBtn {
-  border-radius: 5px;
-  margin-left: 5px;
-  padding: 4px;
-  border: none;
-  background-color: #f1e0ac;
-  margin-top: 50px;
+.changeBtn{
+    border-radius: 5px;
+    margin-left: 5px;
+    padding: 4px;
+    border: none;
+    background-color: rgb(224, 233, 223);
+    margin-top: 50px;
+
 }
 
 .change {
@@ -194,10 +191,11 @@
 }
 
 .info1 {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-center;
+    margin-top: 30px;
 }
 
 .edit-button {

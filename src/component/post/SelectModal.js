@@ -30,7 +30,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
       const fetchWrite = async () => {
         try {
           const res = await axios.get(
-            `http://localhost:8080/getWrite/${hook.id}`,
+            `http://localhost:8080/getWrite/${id}`,
             {
               headers: { Authorization: `Bearer ${hook.user.token}` },
             }
@@ -48,29 +48,39 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
       fetchWrite();
     }, []);
 
-  useEffect(() => {
-    const fetchWrite = async () => {
-      try {
-        const data = {
-          host: host,
-          selectedStudent: selectedStudent,
-          roomTitle: roomTitle
+      // checkbox 변경 시 상태 업데이트
+      const handleChechboxChange = (e) => {
+          const applicant = e.target.name;
+          const isChecked = e.target.checked;
+          if(isChecked) {
+              setSelectedStudent([...selectedStudent, applicant]);
+          } else {
+              setSelectedStudent(selectedStudent.filter((name) => name !== applicant));
+          }
+      };
+
+      const createAlarm = async (host, selectedStudent, roomTitle) => {
+        try {
+          const data = {
+            host: host,
+            selectedStudent: selectedStudent,
+            roomTitle: roomTitle
+          }
+  
+          const response = await axios
+            .post(`http://localhost:8080/selectedAlarm`, data);
+  
+            console.log(response.data);
+        } catch(error) {
+          console.error(error);
         }
+      };
 
-        const response = await axios
-          .post(`http://localhost:8080/selectedAlarm`, data);
-
-          console.log(response.data);
-      } catch(error) {
-        console.error(error);
-      }
-    };
-
-    const handleRecruitChange = () => {
-      onRecruitChange(!hook.recruit);
-      hook.setRecruit(!hook.recruit);
-      console.log("modal- ", !hook.recruit);
-    }
+      const handleRecruitChange = () => {
+        onRecruitChange(!hook.recruit);
+        hook.setRecruit(!hook.recruit);
+        console.log("modal- ", !hook.recruit);
+      };
 
     // 저장 버튼 클릭 시 서버로 데이터 전송
     const handleSubmit = async (e) => {
@@ -95,10 +105,6 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
                 _id: postId,
                 recruit: !hook.recruit,
               });
-
-              console.log("here!!!!!~~~~~: ", !hook.recruit);
-
-              console.log("before-", ok);
               setOk(true);
 
               console.log(res.data.message);
@@ -115,13 +121,12 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
         } catch(error) {
             console.log(error);
         }
-    }
+    };
 
     const scheduleAdd = async () => {
 
       try{
-        const res = await axios.get(`${BASE_API_URI}/getWrite/${hook.id}`, {
-          headers: { Authorization: `Bearer ${hook.user.token}` },
+        const res = await axios.post(`http://localhost:8080/roomSchedule`,{
           host: host,
           applicant: selectedStudent,
           roomTitle: roomTitle,
@@ -135,118 +140,23 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
           setRunningTime(res.data.result[0].runningTime);
           setDate(res.data.result[0].date);
         }
-      } catch (err) {
-        console.error(err);
+        console.log(res.data.message);
+      }catch(err) {
+        console.error("An error occurred:", err);
       }
-    };
-    fetchWrite();
-  }, []);
-
-  // checkbox 변경 시 상태 업데이트
-  const handleChechboxChange = (e) => {
-    const applicant = e.target.name;
-    const isChecked = e.target.checked;
-    if (isChecked) {
-      setSelectedStudent([...selectedStudent, applicant]);
-    } else {
-      setSelectedStudent(selectedStudent.filter((name) => name !== applicant));
+      
     }
-  };
 
-  const createAlarm = async (host, selectedStudent, roomTitle) => {
-    try {
-      const data = {
-        host: host,
-        selectedStudent: selectedStudent,
-        roomTitle: roomTitle,
-      };
-
-      const response = await axios.post(`${BASE_API_URI}/selectedAlarm`, data);
-
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleRecruitChange = () => {
-    onRecruitChange(!hook.recruit);
-    hook.setRecruit(!hook.recruit);
-    console.log("modal- ", !hook.recruit);
-  };
-
-  // 저장 버튼 클릭 시 서버로 데이터 전송
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      if (selectedStudent.length === 1) {
-        if (roomTitle !== "") {
-          const res = await axios.post(`${BASE_API_URI}/selectionInfo`, {
-            host: host,
-            applicant: selectedStudent,
-            roomTitle: roomTitle,
-            runningTime: runningTime,
-            startTime: startTime,
-            date: date,
-          });
-
-          const res2 = await axios.post(`${BASE_API_URI}/recruitSave`, {
-            _id: postId,
-            recruit: !hook.recruit,
-          });
-
-          console.log("here!!!!!~~~~~: ", !hook.recruit);
-
-          console.log("before-", ok);
-          setOk(true);
-
-          console.log(res.data.message);
-          // 알림
-          createAlarm(host, selectedStudent, roomTitle);
-          handleRecruitChange();
-          scheduleAdd();
-
-          setModal(false);
-        }
-      } else {
-        setPCount(selectedStudent.length);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const scheduleAdd = async () => {
-    try {
-      const res = await axios.post(`${BASE_API_URI}/roomSchedule`, {
-        host: host,
-        applicant: selectedStudent,
-        roomTitle: roomTitle,
-        runningTime: runningTime,
-        startTime: startTime,
-        date: date,
-      });
-      console.log(res.data.message);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // 댓글작성자 불러오기
+  // 신청자 불러오기
   const getRWriter = async () => {
     try {
       const res = await axios.get(
-        `${BASE_API_URI}/getRWriter/${id}/${user.name}`
+        `${BASE_API_URI}/getTApplicant/${id}/${user.name}`
       );
-
-      console.log(user.name);
 
       if (res.data !== undefined) {
         console.log(res.data);
-        console.log("hi ", res.data.data);
         setRWriterList(res.data.data);
-        console.log("+++", res.data.postId);
         setPostId(res.data.postId);
       } else {
         console.log("아직 댓글작성자가 없습니다");
@@ -274,12 +184,6 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
       <div className={styles.closeBox} onClick={() => setModal(false)} />
       <div className={styles.modalWrapper}>
         <strong>채택</strong>
-        {/* <button
-          className={styles.ModalClose}
-          onClick={() => setModal(false)}
-        >
-          &times;
-        </button> */}
         <div className={styles.inputWrapper}>
           <form>
           <div className={styles.room_title}>
