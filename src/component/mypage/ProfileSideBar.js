@@ -38,7 +38,13 @@ function ProfileSideBar({ setNameHandler }) {
 
   return (
     <>
-      <div>
+      <div
+        style={{
+          overflowX:
+            "hidden" /* 가로로 넘치는 부분을 자르기 위해 overflow-x 속성을 hidden으로 설정 */,
+          overflowY: "hidden",
+        }}
+      >
         {profileImg ? (
           <img
             className={styles.profileImgBack}
