@@ -65,7 +65,7 @@ const MyGoal = () => {
             }}
           >
             <label style={{ fontWeight: "500", fontSize: "1.2rem" }}>
-              행복지수
+              별점지수
               <TbClover2 size="20" className={styles.clover} />
             </label>
             <label className={styles.progLabel1}>
