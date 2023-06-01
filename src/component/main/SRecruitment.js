@@ -160,13 +160,13 @@ function SRecruitment() {
         <div className={styles.menu}>
           <div className={styles.topRow}>
             <div className={styles.select}>
-              <Link to="/">
-                <button className={styles.tRecruitment}>강사모집</button>
+              <Link to="/Recruitment">
+                <button className={styles.tRecruitment}>강사찾기</button>
               </Link>
-              <Link to="/sRecruitment">
-                <button className={styles.sRecruitment}>학생모집</button>
+              <Link to="/detailSRecruitment">
+                <button className={styles.sRecruitment}>레슨</button>
               </Link>
-              <Link to="/question">
+              <Link to="/detailQuestion">
                 <button className={styles.question}>질문</button>
               </Link>
             </div>
@@ -183,6 +183,7 @@ function SRecruitment() {
                   name="searchInput"
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
+                  placeholder="검색어를 입력해주세요"
                 />
                 <button type="submit">검색</button>
               </form>
@@ -198,7 +199,7 @@ function SRecruitment() {
           </div>
         </div>
 
-        <h1>학생모집</h1>
+        <h1 className={styles.mainTxt}>레슨</h1>
 
         {/* 검색 */}
         {searching && !noResult && (

@@ -1,3 +1,11 @@
+@font-face {
+    font-family: "SUITE-Regular";
+    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2")
+      format("woff2");
+    font-weight: 600;
+    font-style: normal;
+  }
+
 .myhappiness {
     display: flex;
     padding: 5rem 6rem;
@@ -7,7 +15,7 @@
 
 .banner{
     display: flex;
-    padding: 6rem 6rem;
+    padding: 6rem 6rem 0rem 6rem;
 }
 
 .ranking{
@@ -15,4 +23,68 @@
     padding: 0 6rem;
     justify-content: center;
     align-items: center;
+}
+
+.findLink{
+    transition: transform 0.2s ease;
+}
+.findLink:hover{
+    transform: translateY(-5px);
+}
+
+.lessonLink{
+    transition: transform 0.2s ease;
+}
+.lessonLink:hover{
+    transform: translateY(-5px);
+}
+
+.questionLink{
+    transition: transform 0.2s ease;
+}
+.questionLink:hover{
+    transform: translateY(-5px);
+}
+
+.findT{
+    width: 70px;
+    margin-top: 5px;
+    margin-right: 40px;
+}
+.findtext{
+    text-align: center;
+    width: 70px;
+    font-family: "SUITE-Regular";
+}
+
+.question{
+    width: 70px;
+    height: 71px;
+    
+}
+.qtext{
+    width: 70px;
+    text-align: center;
+    font-family: "SUITE-Regular";
+}
+
+.lesson{
+    width: 70px;
+    height: 70px;
+    margin-right: 40px;
+    font-family: "SUITE-Regular";
+
+}
+.lessontext{
+    text-align: center;
+    width: 70px;
+}
+
+
+.link{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 2rem 6rem;
 }

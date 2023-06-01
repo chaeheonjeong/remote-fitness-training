@@ -21,7 +21,7 @@
 
 .banner {
   color: white;
-  background: url(https://i.imgur.com/1DRTAiD.jpg) top left/cover no-repeat,  rgba(0, 0, 0, 0.5);
+  background: url('C:\Users\chlrh\2023캡스톤\2023Capstone\2023-capstone\src\images\shutterstock_1918650986.jpg') top left/cover no-repeat,  rgba(0, 0, 0, 0.5);
   height: 500px;
   display: flex;
   justify-content: center;
@@ -69,7 +69,7 @@
 }
 
 .search button{
-    background-color: #16C79A;
+    background-color: #8ae52e;
     width:6rem;
     margin:4.5rem 0 2rem;
     border:0;

@@ -76,7 +76,7 @@ const MyGoal = () => {
           <div className={styles.progress}>
             <div
               style={{
-                backgroundColor: "rgb(43, 209, 151)",
+                backgroundColor: "#8ae52e",
                 height: "100%",
                 width: user.token !== null ? `${dealt}%` : `50%`,
                 borderRadius: "1rem",

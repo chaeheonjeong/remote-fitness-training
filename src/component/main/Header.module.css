@@ -108,34 +108,38 @@
 }
 
 .logButton {
-  height: 2.5rem;
-  font-size: 0.8rem;
-  border-radius: 0.8rem;
-  border: 2px solid transparent;
+  border-radius: 25px;
+  width: 104px;
+  height: 40px;
   background-color: #8ae52e;
-  color: black;
+  color: #454545;
   cursor: pointer;
+  outline: none;
+  box-shadow: 1px 4px 0 #56776C;
   padding: 0 0.75rem;
   font-family: "SUITE-Regular";
 }
-.logButton:hover {
-  filter: brightness(0.95);
-  background-color: #cfff8d;
+.logButton:active {
+  box-shadow: 1px 1px 0 #56776C;
+  position: relative;
+  top:2px;
 }
 
 .regiButton {
-  height: 2.5rem;
-  font-size: 0.8rem;
-  border-radius: 0.8rem;
-  border: 0.5px solid #cfff8d;
-  background-color: #cfff8d;
-  color: black;
-  cursor: pointer;
-  padding: 0 0.75rem;
-}
-.regiButton:hover {
-  filter: brightness(0.95);
+  font-size: .9rem;
+  border-radius: 25px;
+  width: 104px;
+  height: 40px;
   background-color: #8ae52e;
+  color: #454545;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 1px 4px 0 #56776C;
+}
+.regiButton:actvie {
+  box-shadow: 1px 1px 0 #56776C;
+  position: relative;
+  top:2px;
 }
 
 .notiCircle {

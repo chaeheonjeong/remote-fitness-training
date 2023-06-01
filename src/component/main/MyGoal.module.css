@@ -2,7 +2,7 @@
   font-family: "SUITE-Regular";
   src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2")
     format("woff2");
-  font-weight: 400;
+  font-weight: 500;
   font-style: normal;
 }
 
@@ -22,12 +22,11 @@
 }
 
 .content {
-  border: 1.5px solid #8ae52e;
   border-radius: 0.5rem;
   padding: 1.3rem 2rem;
   height: 9.5rem;
   font-family: 'SUITE-Regular';
-  background-color: #F4F9F4;
+  background-color: #F5F5F5;
   margin-left: 155px;
   justify-content: center;
   width: 76.3%;
@@ -63,7 +62,7 @@
   margin-left: auto;
   font-size: 0.8rem;
   align-self: flex-end;
-  color: #8ae52e;
+  color: #464F41;
   font-family: "SUITE-Regular";
 }
 

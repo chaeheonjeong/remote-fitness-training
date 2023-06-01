@@ -19,13 +19,15 @@ height: 25px;
 margin-left: 5px;
 margin-top: 5px;
 position: absolute;
+color:#56776C;
 }
 
 .studyTitle {
   margin-bottom: 50px;
   margin-top: 50px;
-  font-size: 30px;
+  font-size: 28px;
   display: inline-block;
+  color: #454545;
 }
 
 .tagPackage {
@@ -35,7 +37,8 @@ height: 35%;
 .studyTag {
   border: none;
   display: inline-block;
-  background-color: #CFFF8D;
+  background-color: #8ae52e;
+  color: #464F41;
   border-radius: 7px;
   text-align: center;
   padding: 0 0.5rem 0 0.5rem;
@@ -50,21 +53,22 @@ float: left;
 .view {
 width: 25px;
 height: 25px;
+color:#56776C;
 }
 
 .comment {
 margin-left: 5px;
 width: 25px;
 height: 25px;
+color:#56776C;
 }
 
 .questionBoxWrapper {
   padding: 2px;
   position: relative;
   display: flex;
-  border: 1.5px solid #8AE52E;
   border-radius: 7px;
-  background-color: #FAFAFA;
+  background-color: #F5F5F5;
   margin: 2px 2px;
   color: black;
   cursor: pointer;

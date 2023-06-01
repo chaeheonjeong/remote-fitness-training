@@ -31,16 +31,16 @@
 }
 
 .content {
-  height: 9.5rem;
+  height: 15rem;
   width: 38rem;
   z-index: 0;
   position: relative;
-  border: 1.5px solid #8ae52e;
-  border-bottom: 2px solid #8ae52e;
   border-radius: 0.5rem;
   font-family: "SUITE-Regular";
   margin-left: 155px;
   width: 76.3%;
+  border-color: none;
+  background-color: #F5F5F5;
 }
 
 .swiper {

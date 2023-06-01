@@ -11,12 +11,12 @@
 .medalWrapper {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .swiper {
-  height: 9.5rem;
-  width: 38rem;
+  height: 15rem;
+  width: 48rem;
   position: relative;
 }
 
@@ -24,8 +24,13 @@
   width: 30px;
   height: 30px;
   border-radius: 100%;
+  margin-right: 5px;
   border: 1px solid #555555;
   cursor: pointer;
+}
+
+.portfolio{
+  justify-content: center;
 }
 
 /* 이전 화살표 스타일 */
