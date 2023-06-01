@@ -371,6 +371,7 @@ function PortfolioModify() {
 
         <div className={styles.content}>
           <CKEditor
+            className={styles.aaab}
             editor={ClassicEditor}
             data={htmlString}
             config={{
@@ -395,13 +396,13 @@ function PortfolioModify() {
           <input
             type="submit"
             value="수정"
-            className="submitBtn"
+            className={styles.submitBtn}
             onClick={handleModify}
           />
           <input
             type="button"
             value="취소"
-            className="cancelBtn"
+            className={styles.cancelBtn}
             onClick={() => {
               navigate(`/Portfolio`);
             }}

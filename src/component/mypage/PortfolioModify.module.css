@@ -183,7 +183,8 @@
   width: 98%;
   text-align: center;
   margin-right: 0;
-  border: 1px solid #24B422;
+  /* border: 1px solid #24B422; */
+  background-color: #f8fff3;
   border-radius: 5px;
   font-weight: bolder;
   height: 3rem;
@@ -210,7 +211,8 @@
   align-items: start;
   justify-content: space-around;
   height: 5rem;
-  border: 1px solid #24B422;
+  /* border: 1px solid #24B422; */
+  background-color: #f8fff3;
   border-radius: 5px;
   margin-bottom: 10px;
 }
@@ -254,8 +256,8 @@ label {
   }
 
   .title_tinput {
-    border: 1px solid #24B422;
-    border-radius: 5px;
+    border: 1px solid #73fe70;
+    border-radius: 3px;
     width: 98%;
     height: 3rem;
     padding: 1rem;
@@ -270,11 +272,15 @@ label {
 
   .ck.ck-editor {
     border-radius: 5px;
-    border: 1px solid #24B422;
+    border: 1px solid #73fe70;
   }
 
 .ck.ck-editor__main>.ck-editor__editable {
   min-height: 30rem;
+  background-color: #73fe70;
+}
+.aaab {
+  background-color: #73fe70;
 }
 
 .btn {
@@ -327,7 +333,7 @@ label {
   .tag_input {
     width: 100%;
     border-radius: 20px;
-    border: solid 2px black;
+    /* border: solid 2px black; */
     
   }
   

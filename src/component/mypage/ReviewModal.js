@@ -3,6 +3,11 @@ import styles from "./ReviewModal.module.css";
 import axios from "axios";
 import userStore from "../../store/user.store";
 import { BsFillPencilFill } from "react-icons/bs";
+import { FaChalkboardTeacher } from "react-icons/fa";
+import { BiCameraHome, BiTimeFive } from "react-icons/bi";
+import { BsFillCalendarDateFill } from "react-icons/bs";
+import { GrAlarm } from "react-icons/gr";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { BASE_API_URI } from "../../util/common";
 
 export default function ReviewModal({ visible, setVisible }) {
@@ -81,10 +86,15 @@ export default function ReviewModal({ visible, setVisible }) {
         visible ? styles.ModalOpen : styles.ModalClose
       }`}
     >
+      <div className={styles.header}>
+      <button type="submit" onClick={backClickHandler} className={styles.btnCancle}>
+        X
+      </button>
+      
       <div className={styles.closeBox} onClick={backClickHandler} />
       <div className={styles.modalWrapper}>
         <BsFillPencilFill size="40" className={styles.clock} />
-        <div style={{ fontWeight: "700" }}>리뷰작성</div>
+        <div className={styles.reviewtitle} style={{ fontWeight: "700" }}>리뷰작성</div>
         <div className={styles.contentWrapper}>
           <div className={styles.inputWrapper}></div>
           {selectedItemIndex === null ? (
@@ -93,67 +103,83 @@ export default function ReviewModal({ visible, setVisible }) {
               <div
                 key={index}
                 onClick={() => handleItemClick(index)}
-                className={
-                  selectedItemIndex === index ? styles.selectedItem : ""
-                }
+                className={styles.selectedItemWrapper} // 수정: 항상 적용되도록 변경
               >
-                <div>강사 이름 : {item.userName}</div>
-                <div>방 이름 : {item.roomTitle}</div>
-                <div>날짜 : {item.date}</div>
-                <div>시작 시간: {item.startTime}</div>
-                -----------------------------------
+              
+                <div className={selectedItemIndex === index ? styles.selectedItem : ""}>
+                <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <FaChalkboardTeacher style={{ marginRight: '10px' }}/>강사 이름 : {item.userName}</div>
+                <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <BiCameraHome style={{ marginRight: '10px' }}/>방 이름 : {item.roomTitle}</div>
+                <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <BsFillCalendarDateFill style={{ marginRight: '10px' }}/>날짜 : {item.date}</div>
+                <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <BiTimeFive style={{ marginRight: '10px' }}/>시작 시간: {item.startTime}</div>
               </div>
+            </div>
+            
             ))
           ) : (
-            <div>
-              <div>
-                강사 이름 : {teacherRoomSchedules[selectedItemIndex]?.userName}
+            <div className={styles.abc}>
+              <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <FaChalkboardTeacher style={{ marginRight: '10px' }}/>강사 이름 : {teacherRoomSchedules[selectedItemIndex]?.userName}
               </div>
-              <div>
-                방 이름 : {teacherRoomSchedules[selectedItemIndex]?.roomTitle}
+              <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <BiCameraHome style={{ marginRight: '10px' }}/>방 이름 : {teacherRoomSchedules[selectedItemIndex]?.roomTitle}
               </div>
-              <div>날짜 : {teacherRoomSchedules[selectedItemIndex]?.date}</div>
-              <div>
-                시작 시간: {teacherRoomSchedules[selectedItemIndex]?.startTime}
+              <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <BsFillCalendarDateFill style={{ marginRight: '10px' }}/>날짜 : {teacherRoomSchedules[selectedItemIndex]?.date}</div>
+
+              <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <BiTimeFive style={{ marginRight: '10px' }}/>
+                시작 시간 : {teacherRoomSchedules[selectedItemIndex]?.startTime}
               </div>
-              <div>
-                미팅 시간:
-                {teacherRoomSchedules[selectedItemIndex]?.runningTime}분
+              <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <GrAlarm style={{ marginRight: '10px' }}/>
+                미팅 시간 : {teacherRoomSchedules[selectedItemIndex]?.runningTime}분
               </div>
-              <div>별점</div>
-              <div style={{ display: "flex" }}>
+              <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+              <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+                <AiOutlineStar style={{ marginRight: '10px' }}/>
+                별점 : </div>
+              <div style={{ display: "flex", marginLeft: "10px"}}>
                 <p
                   onClick={() => {
                     setStar(0);
                   }}
+                  style={{ marginRight: '5px' }}
                 >
-                  0
+                   0
                 </p>
                 <p
                   onClick={() => {
                     setStar(1);
                   }}
+                  style={{ marginRight: '5px' }}
                 >
-                  1
+                   1
                 </p>
                 <p
                   onClick={() => {
                     setStar(2);
                   }}
+                  style={{ marginRight: '5px' }}
                 >
-                  2
+                   2
                 </p>
                 <p
                   onClick={() => {
                     setStar(3);
                   }}
+                  style={{ marginRight: '5px' }}
                 >
-                  3
+                   3
                 </p>
                 <p
                   onClick={() => {
                     setStar(4);
                   }}
+                  style={{ marginRight: '5px' }}
                 >
                   4
                 </p>
@@ -161,15 +187,21 @@ export default function ReviewModal({ visible, setVisible }) {
                   onClick={() => {
                     setStar(5);
                   }}
+                  style={{ marginRight: '5px' }}
                 >
                   5
                 </p>
               </div>
-              <div> 선택한 별점 {star}</div>
+              </div>
+              <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <AiFillStar style={{ marginRight: '10px' }}/>
+                 선택한 별점 : {star}</div>
               <input
-                placeholder="input태그에요 리뷰를 작성해주세요"
+                className={styles.bbb}
+                placeholder="리뷰를 작성해주세요"
                 onChange={(e) => setReviewContent(e.target.value)}
               ></input>
+              <div>
               <button
                 className={styles.btnOk}
                 onClick={sendReviewHandler(
@@ -181,6 +213,7 @@ export default function ReviewModal({ visible, setVisible }) {
               >
                 리뷰 보내며 잔금 결제하러가기
               </button>
+              </div>
               {/* 추가적인 내용 표시 */}
             </div>
           )}
@@ -191,6 +224,7 @@ export default function ReviewModal({ visible, setVisible }) {
               >
                 취소
               </button> */}
+          </div>
           </div>
         </div>
       </div>
