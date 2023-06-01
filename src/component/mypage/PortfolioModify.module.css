@@ -136,7 +136,7 @@
   border: none;
   padding: 5px;
   border-radius: 200px;
-  background-color: green;
+  background-color: #8AE52A;
   color: white;
 }
 
@@ -207,6 +207,7 @@
   margin-bottom: 2rem;
 }
 .paypay {
+  font-weight: bold;
   display: flex;
   align-items: start;
   justify-content: space-around;
@@ -219,6 +220,7 @@
 
 .input[type="checkbox"] {
   transform: scale(0.3); 
+
 }
 
 input[type="checkbox"] {
@@ -283,6 +285,9 @@ label {
   background-color: #73fe70;
 }
 
+.pay5 {
+  margin-left: 13px;
+}
 .btn {
   margin: 2rem 1% 4rem 1%;
   text-align: end;
@@ -325,7 +330,7 @@ label {
     margin: 4px;
     font-size: 16px;
     font-weight: bold;
-    background-color: #8AE52A;
+    background-color: #ccf4a1;
     border-radius: 4px;
     padding-left: 0.5rem;
   }
@@ -362,7 +367,7 @@ label {
     border: none;
     padding: 5px;
     border-radius: 200px;
-    background-color: green;
+    background-color: #8AE52A;
     color: white;
     font-weight: bold;
     margin-bottom: 2rem;

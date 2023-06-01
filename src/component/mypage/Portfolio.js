@@ -468,7 +468,7 @@ function Portfolio() {
                     checked={paymentMethods.includes("현금 결제")}
                     onChange={(e) => handlePaymentMethodChange(e.target.value)}
                   />
-                  <span>현금</span></label>
+                  <span className={styles.pay5}>현금</span></label>
                 
                 </div>
               <div>
@@ -480,7 +480,7 @@ function Portfolio() {
                     checked={paymentMethods.includes("카드 결제")}
                     onChange={(e) => handlePaymentMethodChange(e.target.value)}
                   />
-                  <span>카드</span></label>
+                  <span className={styles.pay5}>카드</span></label>
                 
               </div>
               <div>  
@@ -492,7 +492,7 @@ function Portfolio() {
                     checked={paymentMethods.includes("계좌 이체")}
                     onChange={(e) => handlePaymentMethodChange(e.target.value)}
                   />
-                  <span>계좌 이체</span></label>
+                  <span className={styles.pay5}>계좌 이체</span></label>
                 
               </div>
               </div>

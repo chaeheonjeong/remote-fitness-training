@@ -287,7 +287,6 @@ function PortfolioModify() {
             <div className={styles.pay}>
               <text className={styles.ww}>결제 수단</text>
       
-                
                 <div className={styles.paypay}>        
                 <div>
                   <label>
@@ -296,10 +295,10 @@ function PortfolioModify() {
                     type="checkbox"
                     value="현금 결제"
                     /* className={styles.aaa} */
-                    checked={paymentMethods.includes("현금 결제")}
+                    checked={paymentMethods.includes(" 현금 결제")}
                     onChange={(e) => handlePaymentMethodChange(e.target.value)}
                   />
-                  <span>현금</span></label>
+                  <span className={styles.pay5}> 현금</span></label>
                 
                 </div>
               <div>
@@ -308,10 +307,10 @@ function PortfolioModify() {
                     type="checkbox"
                     value="카드 결제"
                     /* className={styles.aaa} */
-                    checked={paymentMethods.includes("카드 결제")}
+                    checked={paymentMethods.includes(" 카드 결제")}
                     onChange={(e) => handlePaymentMethodChange(e.target.value)}
                   />
-                  <span>카드</span></label>
+                  <span className={styles.pay5}> 카드</span></label>
                 
               </div>
               <div>  
@@ -320,10 +319,10 @@ function PortfolioModify() {
                     type="checkbox"
                     value="계좌 이체"
                     /* className={styles.aaa} */
-                    checked={paymentMethods.includes("계좌 이체")}
+                    checked={paymentMethods.includes(" 계좌 이체")}
                     onChange={(e) => handlePaymentMethodChange(e.target.value)}
                   />
-                  <span>계좌 이체</span></label>
+                  <span className={styles.pay5}> 계좌 이체</span></label>
                 
               </div>
               </div>
