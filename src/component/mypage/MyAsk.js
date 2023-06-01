@@ -89,9 +89,9 @@ const MyAsk = ({ activeButton }) => {
             navigate("/myPost");
           }}
         >
-          스터디
+          모집글
         </button>
-        <button className={styles.aask2}>질문</button>
+        <button className={styles.aask2}>질문글</button>
         {renderQ.length !== 0 ? (
           <InfiniteScroll
             dataLength={renderQ.length}

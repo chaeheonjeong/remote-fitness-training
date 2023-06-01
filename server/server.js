@@ -52,6 +52,9 @@ const TPostGood = require("./models/tPostGood");
 
 //const { dblClick } = require("@testing-library/user-event/dist/cjs/event/behavior/click");
 
+const TApplicant = require("./models/tApplicant");
+const SApplicant = require("./models/sApplicant");
+
 const OpenStudy = require("./models/openStudy");
 //const { default: StudyRoomCard } = require("../component/StudyRoomCard");
 const Schedule = require("./models/schedule");
@@ -4034,6 +4037,106 @@ app.get("/getTRWriter/:id/:nickname", async (req, res) => {
   }
 });
 
+// tView 스크랩 수 가져오기(모집글)
+app.get("/getTBookmarkCount/:id", async (req, res) => {
+  const postId = req.params.id;
+
+  try {
+    const result = await TPostGood.findOne({ _id: Number(postId) });
+
+    if (result) {
+      //console.log('result: ', result);
+      return res.status(200).json({
+        result: result,
+        message: `스크랩 수 가져오기 성공`,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/getSApplicant/:id", async (req, res) => {
+  try {
+    const applicants = await SApplicant.find({ postId: req.params.id });
+
+    const result = [...applicants.map((r) => r.userName)];
+
+    return res.status(200).json({
+      postId: req.params.id,
+      data: result,
+      message: `학생모집 신청자 가져오기 성공`,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.get("/getTApplicant/:id", async (req, res) => {
+  try {
+    const applicants = await TApplicant.find({ postId: req.params.id });
+
+    const result = [...applicants.map((r) => r.userName)];
+
+    return res.status(200).json({
+      postId: req.params.id,
+      data: result,
+      message: `강사모집 신청자 가져오기 성공`,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post("/tApplicantSave", async (req, res) => {
+  const { userName, postId } = req.body;
+
+  const userId = await User.findOne({ name: userName });
+
+  try {
+    console.log("신청전");
+
+    const newApplicant = new TApplicant({
+      userId: userId._id,
+      userName: userName,
+      postId: postId,
+    });
+    await newApplicant.save();
+
+    console.log("신청되었습니다.");
+
+    return res.status(200).json({ message: `applicant save successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
+app.post("/sApplicantSave", async (req, res) => {
+  const { userName, postId } = req.body;
+
+  const userId = await User.findOne({ name: userName });
+
+  try {
+    console.log("신청전");
+
+    const newApplicant = new SApplicant({
+      userId: userId._id,
+      userName: userName,
+      postId: postId,
+    });
+    await newApplicant.save();
+
+    console.log("신청되었습니다.");
+
+    return res.status(200).json({ message: `applicant save successfully` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
+  }
+});
+
 // 댓글 작성자
 app.get("/getRWriter/:id/:nickname", async (req, res) => {
   try {
@@ -4077,6 +4180,37 @@ app.get("/getRWriter/:id/:nickname", async (req, res) => {
   }
 });
 
+app.put("/likeAreply/:id", auth, async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const reply = await AReply.findById(id);
+    if (!reply) {
+      return res.status(404).json({ message: "Reply not found" });
+    }
+
+    const likedByUser = reply.likes.includes(userId);
+    if (likedByUser) {
+      0;
+      // 이미 좋아요한 상태라면 좋아요 취소
+      reply.likes.pull(userId);
+      reply.likesCount -= 1;
+    } else {
+      // 좋아요 추가
+      reply.likes.push(userId);
+      reply.likesCount += 1;
+    }
+
+    await reply.save();
+
+    return res.status(200).json({ message: "Like updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 app.patch("/updateRoomSchedule/:id", auth, async (req, res) => {
   const { id } = req.params;
   const { prepaymentBtn } = req.body;
@@ -4089,9 +4223,12 @@ app.patch("/updateRoomSchedule/:id", auth, async (req, res) => {
 
     if (alarm) {
       const content = alarm.content;
-      console.log(content);
+      //console.log(content);
       const clickAlarm = content.find((item) => item._id.toString() === id);
       if (clickAlarm) {
+        //console.log("@@", clickAlarm);
+        //console.log("$$", clickAlarm.message);
+
         const message = clickAlarm.message;
         /* const roomTitle = message.match(/(\w+)\s+방이 생성되었습니다\./i)[1]; */
         const roomTitle = message.match(/([\p{L}\w]+)\s+방이 생성되었습니다\./iu)[1];
@@ -4103,11 +4240,11 @@ app.patch("/updateRoomSchedule/:id", auth, async (req, res) => {
             roomTitle: roomTitle,
             userName: UserName,
           },
-          { $set: { prepaymentBtn: true } },
+          { $set: { prepaymentBtn: prepaymentBtn } },
           { new: true }
         );
 
-        console.log("선금버튼 표시: ", roomSchedule);
+        //console.log("선금버튼 표시: ", roomSchedule);
         return res.status(200).json({ message: "Update successful" });
       } else {
         console.log("clickAlarm not found");
@@ -4126,7 +4263,7 @@ app.get("/roomSchedules", auth, async (req, res) => {
   try {
     const roomSchedule = await RoomSchedule.find({ userId: req.user.id });
     res.status(200).json(roomSchedule);
-    console.log(roomSchedule);
+    //console.log(roomSchedule);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server Error" });
@@ -4876,11 +5013,28 @@ app.get("/tView/:id/modify/:selectedARId/:rrid", async (req, res) => {
   }
 });
 
-/* // 댓글삭제 T
-app.delete("/tView/:id/reply/:replyId", async(req, res) => {
+app.delete("/tView/:id/reply/:replyId", async (req, res) => {
   const postId = req.params.id;
-  const replyId = req.params.replyId; */
-// 대댓글 삭제T
+  const replyId = req.params.replyId;
+
+  try {
+    const reply = await TReply.findOne({ postId: postId, _id: replyId });
+
+    if (!reply) {
+      return res.status(404).json({ message: "댓글을 찾을 수 없습니다." });
+    }
+
+    console.log(reply);
+
+    await TReply.deleteOne({ postId: postId, _id: replyId });
+
+    res.status(200).json({ message: "댓글을 삭제하였습니다." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "댓글삭제 실패" });
+  }
+});
+
 app.delete("/postTr_reply/:id/:rid/:rrid", async (req, res) => {
   const { id, rid, rrid } = req.params;
 
@@ -5472,7 +5626,7 @@ app.post("/askviewReplyARModify", async (req, res) => {
 /* app.get("/getTApplicant/:id", async (req, res) => {
   try {
     const applicants = await TApplicant.find({ postId: req.params.id });
-    
+
     const result = [...applicants.map((r) => r.userName)];
 
     return res.status(200).json({
@@ -5486,7 +5640,7 @@ app.post("/askviewReplyARModify", async (req, res) => {
 });
 
 app.post("/tApplicantSave", async (req, res) => {
-  const {userName, postId} = req.body;
+  const { userName, postId } = req.body;
 
   const userId = await User.findOne({ name: userName });
 
@@ -5499,8 +5653,7 @@ app.post("/tApplicantSave", async (req, res) => {
     await newApplicant.save();
 
     return res.status(200).json({ message: `applicant save successfully` });
-
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     res.status(500).json({ message: `서버오류` });
   }

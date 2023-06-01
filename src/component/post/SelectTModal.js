@@ -31,7 +31,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
   useEffect(() => {
     const fetchWrite = async () => {
       try {
-        const res = await axios.get(`${BASE_API_URI}/getTWrite/${hook.id}`, {
+        const res = await axios.get(`${BASE_API_URI}/getTWrite/${id}`, {
           headers: { Authorization: `Bearer ${hook.user.token}` },
         });
         if (res.data !== undefined) {
@@ -138,22 +138,18 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
     }
   };
 
-  // 댓글작성자 불러오기
+  // 신청자 불러오기
   const getRWriter = async () => {
     try {
       const res = await axios.get(
-        `${BASE_API_URI}/getTRWriter/${id}/${user.name}`
+        `${BASE_API_URI}/getSApplicant/${id}/${user.name}`
       );
-
-      console.log(user.name);
 
       if (res.data !== undefined) {
         console.log(res.data.data);
         setRWriterList(res.data.data);
         setPostId(res.data.postId);
         setHostId(res.data.hostId);
-
-        console.log("$$$$$$$$$$$$$$$$$$ ", res.data);
       } else {
         console.log("아직 댓글작성자가 없습니다");
       }

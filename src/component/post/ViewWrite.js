@@ -212,11 +212,22 @@ const ViewWrite = () => {
                 <div
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
-                    className={styles.explanation}
+                    className={styles.explanation_pack}
                 >
                     <HiQuestionMarkCircle
                         className={styles.questionMark}
                     />
+                    {mouse && (
+                        <div
+                            className={styles.explanation}
+                        >
+                            <p>
+                                수정 클릭 후 
+                                왼쪽 상단에 있는 모집중 버튼을 누르면
+                                신청자 채택 가능합니다
+                            </p>
+                        </div>
+                    )}
                 </div>
                 
             </div>
