@@ -16,6 +16,7 @@ import { MdPayments } from "react-icons/md";
 import { FaHashtag } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
 import { FaTemperatureLow } from "react-icons/fa";
+import { TbStarsFilled } from "react-icons/tb";
 
 function PortfolioView() {
   const [portfolio, setPortfolio] = useState([]);
@@ -302,7 +303,7 @@ function PortfolioView() {
                   alignItems: "center",
                 }}
               >
-                <div className={styles.boxLabel2}>온도</div>
+                <div className={styles.boxLabel2}>별점지수</div>
                 <div
                   style={{
                     display: "flex",
@@ -312,7 +313,7 @@ function PortfolioView() {
                     alignItems: "center",
                   }}
                 >
-                  <FaTemperatureLow size="25" color="#8ae52e" />
+                  <FaStar size="25" color="#8ae52e" />
                   <div className={styles.boxLabel}>
                     {happiness !== "" ? happiness : `50.0`}
                   </div>

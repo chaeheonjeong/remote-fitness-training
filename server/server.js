@@ -4102,7 +4102,7 @@ app.get("/getRWriter/:id/:nickname", async (req, res) => {
   }
 });
 
-app.patch("/updateRoomSchedule/:id", auth, async (req, res) => {
+app.post("/updateRoomSchedule/:id", auth, async (req, res) => {
   const { id } = req.params;
   const { prepaymentBtn } = req.body;
   console.log(id);
@@ -4127,7 +4127,7 @@ app.patch("/updateRoomSchedule/:id", auth, async (req, res) => {
             roomTitle: roomTitle,
             userName: UserName,
           },
-          { $set: { prepaymentBtn: true } },
+          { $set: { prepaymentBtn: prepaymentBtn } },
           { new: true }
         );
 
