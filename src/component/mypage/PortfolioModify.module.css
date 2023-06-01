@@ -422,7 +422,7 @@ hr {
   display: flex;
   flex-direction: column;
   color: rgb(106, 106, 106);
-  font-weight: 600;
+  font-weight: 550;
 }
 
 .view {
