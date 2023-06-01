@@ -6,52 +6,7 @@
   font-style: normal;
 }
 
-/* .choose {
-  padding: 2rem;
-  /* border: 3px solid rgb(36, 140, 59); */
-/*   margin-right: 150px;
-  margin-top: 80px;
-  margin-bottom: 50px;
-  width: 60%;
-  float: right;
-  background-color: rgb(239, 250, 239);
-}  */
-/* 
-.ch1 {
-  font-size: 20px;
-  display: flex;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  border-bottom: 3px;
-  padding: 5px;
-}
 
-.ch2 {
-  font-size: 20px;
-  display: flex;
-
-  margin-bottom: 20px;
-  border-bottom: 3px;
-  padding: 5px;
-}
-
-.ch3 {
-  font-size: 20px;
-  display: flex;
-  margin-bottom: 50px;
-  border-bottom: 3px;
-  padding: 5px;
-}
-
-.title_input {
-  display: flex;
-  font-size: 20px;
-  margin-bottom: 10px;
-  border-bottom: 3px;
-  padding: 5px;
-  height: 40px;
-}
- */
 .runningTime {
   margin-right: 36.8%;
   border-radius: 20px;
@@ -69,7 +24,7 @@
 
 .number {
   margin-right: 35%;
-  margin-left: 2.5%;
+/*   margin-left: 2.5%; */
   border-radius: 20px;
   padding: 3px;
   /* border: solid 2px black; */
@@ -80,32 +35,7 @@
   padding: 3px;
   /* border: solid 2px black; */
 }
-/* 
-.nn {
-  margin-right: 30px;
-  position: relative;
-}
 
-
-
-.ss {
-  margin-right: 30px;
-}
-
-.cc {
-  margin-right: 30px;
-}
- */
-/* .tt {
-  margin-left: 70px;
-  margin-right: 30px;
-} */
-
-/* .btn2 {
-  /* text-align: end; */
-  /* background-color: green;
-  border-radius: 5px solid green;
-} */ 
 
 .submitBtn {
   border-radius: 5px /* solid green; */;
@@ -214,9 +144,9 @@
   margin-top: 30px;
 }
 
-.aaa {
+/* .aaa {
   margin-left: 10px;
-}
+} */
 
 .titleInput {
   border-radius: 7px solid white;
@@ -225,7 +155,7 @@
 }
 
 .all {
-  margin-top: 2rem;
+  margin-top: 6rem;
   display: flex;
   justify-content: center;
   width: auto;
@@ -236,6 +166,11 @@
   display: flex;
   justify-content: space-between;
   margin: 2rem 0 2rem 0;
+}
+.write_title {
+  font-size: 30px;
+  margin-bottom: 2rem;
+  font-weight: bold;
 }
 
 .left, .right {
@@ -263,7 +198,7 @@
 }
 
 .recruit_num, .running_time, .start_date,
-.start_time, .tags {
+.start_time {
   margin-bottom: 4rem;
 }
 
