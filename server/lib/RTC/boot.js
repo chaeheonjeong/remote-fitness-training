@@ -114,6 +114,10 @@ function boot() {
     socket.on("change_time", (timeData) => {
       socket.to(timeData.room).emit("time_changed", timeData);
     });
+
+    socket.on("close_meeting", (roomTitle) => {
+      socket.to(roomTitle).emit("meeting_closed");
+    });
   });
 
   server.listen(PORT, () => {

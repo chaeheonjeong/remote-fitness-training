@@ -1,15 +1,16 @@
 import React, { useRef, useState } from "react";
 import styles from "./SubStudentBanner.module.css";
-import useSearch from "../../hooks/useSearch";
+import useTSearch from "../../hooks/useTSearch";
 
 export default function SubSBanner() {
-   const hook = useSearch;
+   const hook = useTSearch;
+   
     
     return(
         <div class={styles.banner}>
             <div class={styles.bannertext}>
-                <h1>학생 모집</h1>
-                <h6>수업을 재밌게 즐길 수 있는 학생들을 구해보세요</h6>
+                <h1>레슨</h1>
+                <h6>재밌게 즐길 수 있는 레슨을 찾아보세요</h6>
             </div>
             <div className={styles.searchAndMake} onSubmit={hook.searchHandler}>
               <form className={styles.search}>

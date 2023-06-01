@@ -53,7 +53,7 @@ const MyGoal = () => {
   return (
     <>
       <div className={styles.wrapper}>
-        <div className={styles.title}>내 행복지수</div>
+        <div className={styles.title}>내가 받은 별점지수</div>
         <div className={styles.content}>
           <div style={{ display: "flex", alignItems: "center" }}></div>
           <div
@@ -65,7 +65,7 @@ const MyGoal = () => {
             }}
           >
             <label style={{ fontWeight: "500", fontSize: "1.2rem" }}>
-              행복지수
+              별점지수
               <TbClover2 size="20" className={styles.clover} />
             </label>
             <label className={styles.progLabel1}>
@@ -76,7 +76,7 @@ const MyGoal = () => {
           <div className={styles.progress}>
             <div
               style={{
-                backgroundColor: "rgb(43, 209, 151)",
+                backgroundColor: "#8ae52e",
                 height: "100%",
                 width: user.token !== null ? `${dealt}%` : `50%`,
                 borderRadius: "1rem",

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./SideBar.css";
 import { Link, NavLink } from "react-router-dom";
+import { GrCircleInformation, GrDocumentUser, GrDocumentText, GrCalendar } from "react-icons/gr";
+import { BsBookmarkHeartFill } from "react-icons/bs";
 import "./MyInfo";
 import "./MyCalendar";
 
@@ -19,57 +21,62 @@ function SideBar() {
           <ul className="SideBarList">
             <li className="SideBarListItem">
               <NavLink
-                exact
+                exact="true"
                 to="/MyInfo"
                 style={{ textDecoration: "none", color: "black" }}
-                activeClassName="active"
+                activeclassname="active"
                 onClick={() => handleItemClick("/MyInfo")}
               >
-                내 정보
+                <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <GrCircleInformation style={{ marginRight: '10px' }}/>내 정보</div>
               </NavLink>
             </li>
             <li className="SideBarListItem">
               <NavLink
-                exact
+                exact="true"
                 to="/Portfolio"
                 style={{ textDecoration: "none", color: "black" }}
-                activeClassName="active"
+                activeclassname="active"
                 onClick={() => handleItemClick("/Portfolio")}
               >
-                포트폴리오
+                <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <GrDocumentUser style={{ marginRight: '10px' }}/>포트폴리오</div>
               </NavLink>
             </li>
             <li className="SideBarListItem">
               <NavLink
-                exact
+                exact="true"
                 to="/myLikedPost"
                 style={{ textDecoration: "none", color: "black" }}
-                activeClassName="active"
+                activeclassname="active"
                 onClick={() => handleItemClick("/myLikedPost")}
               >
-                관심글
+                <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <BsBookmarkHeartFill style={{ marginRight: '10px' }}/>관심글</div>
               </NavLink>
             </li>
             <li className="SideBarListItem">
               <NavLink
-                exact
+                exact="true"
                 to="/myPost"
                 style={{ textDecoration: "none", color: "black" }}
-                activeClassName="active"
+                activeclassname="active"
                 onClick={() => handleItemClick("/myPost")}
               >
-                내가 쓴 글
+                <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <GrDocumentText style={{ marginRight: '10px' }}/>내가 쓴 글</div>
               </NavLink>
             </li>
             <li className="SideBarListItem">
               <NavLink
-                exact
+                exact="true"
                 to="/MyCalendar"
                 style={{ textDecoration: "none", color: "black" }}
-                activeClassName="active"
+                activeclassname="active"
                 onClick={() => handleItemClick("/MyCalendar")}
               >
-                캘린더
+                <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>
+                <GrCalendar style={{ marginRight: '10px' }}/>캘린더</div>
               </NavLink>
             </li>
           </ul>

@@ -460,7 +460,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
             onInput={autoResize}   
           />
           <div className={styles.reply_choose}>
-            <input type="submit" className={styles.sbtn} value="등록"></input>
+            <input type="submit" className={styles.sbtn} value="신청"></input>
           </div>
         </div>
       </form>

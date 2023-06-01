@@ -8,7 +8,7 @@ export default function SubBanner() {
     return(
         <div class={styles.banner}>
             <div class={styles.bannertext}>
-                <h1>강사 모집</h1>
+                <h1>강사 찾기</h1>
                 <h6>자신에게 맞는 강사님을 구해보세요</h6>
             </div>
             <div className={styles.searchAndMake} onSubmit={hook.searchHandler}>

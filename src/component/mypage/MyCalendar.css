@@ -1,32 +1,26 @@
-@font-face {
-  font-family: 'Cafe24SsurroundAir';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24SsurroundAir.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
 .mycalendar-container {
+  margin-top: 70px;
   overflow: hidden;
 }
 
-.MyCalendar{
+.MyCalendar {
   margin-top: 75px;
-  margin-left: 20%;
+  margin-left: 19%;
   position: relative;
 }
 
 .react-calendar {
-  width: 850px;
-  height: 600px;
+  width: 900px;
+  height: 650px;
   max-width: 100%;
-  background: #F0EBE3;
-  border: 1px solid #D0C9C0;
+  background: #fcfcff;
+  border: 1px solid #FAFAFA;
   line-height: 1.125em;
   border-radius: 10px;
   box-shadow: 0px 0px 20px #e0e0e0;
   margin: 100px;
   margin-top: 30px;
   margin-left: 200px;
-  font-family: 'Cafe24SsurroundAir';
   font-size: 15px;
 }
 .react-calendar--doubleView {
@@ -66,11 +60,10 @@
 .react-calendar__navigation button {
   min-width: 100px;
   background: none;
-  font-family: 'Cafe24SsurroundAir';
   font-size: 15px;
 }
 .react-calendar__navigation button:disabled {
-  background-color: #D0C9C0;
+  background-color: #FAFAFA;
 }
 .react-calendar__navigation button:enabled:hover,
 .react-calendar__navigation button:enabled:focus {
@@ -81,14 +74,12 @@
 .react-calendar__month-view__weekdays {
   text-align: center;
   /* text-transform: uppercase; */
-  font-family: 'Cafe24SsurroundAir';
   font-weight: bolder;
   margin-bottom: 10px;
   font-size: 1.05em;
 }
 .react-calendar__month-view__weekdays__weekday {
   padding: 0.5em;
-  
 }
 .react-calendar__month-view__weekNumbers .react-calendar__tile {
   display: flex;
@@ -98,10 +89,10 @@
   font-weight: bold;
 }
 .react-calendar__month-view__days__day--weekend {
-  color: #AA5656;
+  color: #17741f;
 }
 .react-calendar__month-view__days__day--neighboringMonth {
-  color: #CDC9C3;
+  color: #152560;
 }
 .react-calendar__year-view .react-calendar__tile,
 .react-calendar__decade-view .react-calendar__tile,
@@ -111,61 +102,62 @@
 .react-calendar__tile {
   position: relative;
   max-width: 100%;
-  background: #F0EBE3;
+  background: #fcfcff;
   text-align: start;
   line-height: 16px;
   width: 50px;
-  height: 80px;
+  height: 92px;
   font-size: 12px;
-  font-family: 'Cafe24SsurroundAir';
   border-right: 1px;
 }
 .react-calendar__tile:disabled {
-  background: #F0EBE3;
+  background: #e0e4f1;
 }
 .react-calendar__tile:enabled:hover,
 .react-calendar__tile:enabled:focus {
-  background-color: #D0C9C0;
+  background-color: #e0e4f1;
 }
 .react-calendar__tile--now {
-  background: #DFD3C3;
+  background: #f0f3ff;
 }
 .react-calendar__tile--now:enabled:hover,
 .react-calendar__tile--now:enabled:focus {
-  background: #DFD3C3;
+  background: #FAFAFA;
 }
 .react-calendar__tile--hasActive {
-  background: #D7C0AE;
+  background: #9bc2da;
 }
 .react-calendar__tile--hasActive:enabled:hover,
 .react-calendar__tile--hasActive:enabled:focus {
-  background: #D7C0AE;
+  background: #fcfcff;
 }
 .react-calendar__tile--active {
-  background: #b7cfbc;
-  color: white;
+  background: #d9e4eb;
+  color: rgb(20, 32, 21);
 }
 .react-calendar__tile--active:enabled:hover,
 .react-calendar__tile--active:enabled:focus {
-  background: #D7C0AE;
+  background: #fcfcff;
 }
 .react-calendar--selectRange .react-calendar__tile--hover {
-  background-color: #E6BA95;
+  background-color: #abe695;
 }
 
-.Modal{
+.Modal {
   position: absolute;
-  width: 300px;
-  height: 300px;
-  padding: 40px;
+  width: 25rem;
+  height: 35rem;
+  padding: 10px;
+  margin-left: 150px;
   text-align: center;
   /* background-color: #ffff; */
   border-radius: 10px;
+  background-color: #FAFAFA;
   box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
-  background-color: #b7cfbc;
+  /* background-color: #FAFAFA; */
 }
 
-.Overlay{
+.Overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -177,7 +169,7 @@
   align-items: center;
 }
 
-.ModalButton{
+.ModalButton {
   background: none;
   border: none;
   top: 15px;
@@ -185,22 +177,19 @@
   position: absolute;
   font-size: 20px;
   font-weight: bold;
-
 }
 
-.scheduleName{
-  font-family: 'Cafe24SsurroundAir';
+.scheduleName {
 }
 
-.schedlueContents{
-  font-family: 'Cafe24SsurroundAir';
+.schedlueContents {
 }
 
-.showSchedule{
+.showSchedule {
   list-style-type: none;
   text-align: center;
   border-radius: 5px;
-  background-color: #ABC4AA;
+  background-color: #daffcb;
   margin-top: 0.8px;
 }
 
@@ -208,7 +197,7 @@
     list-style-type: none;
     text-align: center;
     border-radius: 5px;
-    background-color: #66b460;
+    background-color: #afdaad;
     margin-top: 0.8px;
     font-weight: bolder;
     padding: 1px;
@@ -220,7 +209,6 @@ border: none;
 border-bottom: 1px solid #CCC;
 color: #555;
 box-sizing: border-box;
-font-family: 'Cafe24SsurroundAir';
 font-size: 18px;
 height: 30px;
 padding: 10px 0px;
@@ -231,89 +219,97 @@ margin-bottom: 10px;
 text-align: center;
 }
 
-.input:focus{
-outline: none;
+.input {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  color: #555;
+  box-sizing: border-box;
+  font-size: 18px;
+  height: 30px;
+  padding: 10px 0px;
+  position: relative;
+  top: 50%;
+  width: 200px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.input:focus {
+  outline: none;
 }
 
 .underline {
-display: inline-block;
-height: 2px;
-left: 50px;
-margin-top: -4px;
-position: absolute;
-top: 185px;
--webkit-transform: scale(0, 1);
-transform: scale(0, 1);
--webkit-transition: all 0.5s linear;
-transition: all 0.5s linear;
-width: 202px;
+  display: inline-block;
+  height: 2px;
+  left: 50px;
+  margin-top: -4px;
+  position: absolute;
+  top: 185px;
+  -webkit-transform: scale(0, 1);
+  transform: scale(0, 1);
+  -webkit-transition: all 0.5s linear;
+  transition: all 0.5s linear;
+  width: 202px;
 }
-.addSchedule{
-font-family: 'Cafe24SsurroundAir';
+.addSchedule {
 }
-.addBtn{
-top:15px;
-left: 15px;
-position: absolute;
-border-radius: 5px;
-border: none;
-font-family: 'Cafe24SsurroundAir';
+.addBtn {
+  top: 15px;
+  left: 15px;
+  position: absolute;
+  border-radius: 5px;
+  border: none;
 }
 
 .add{
 border-radius: 5px;
 border: none;
-font-family: 'Cafe24SsurroundAir';
-margin-top: 35px;
+margin-top: 25px;
 }
 
-.modify{
-border-radius: 5px;
-border: none;
-font-family: 'Cafe24SsurroundAir';
-margin-top: 30px;
-margin-left: 5px;
+.modify {
+  border-radius: 5px;
+  border: none;
+  margin-top: 30px;
+  margin-left: 5px;
 }
 
-.delete{
-border-radius: 5px;
-border: none;
-font-family: 'Cafe24SsurroundAir';
-margin-top: 30px;
-margin-left: 5px;
+.delete {
+  border-radius: 5px;
+  border: none;
+  margin-top: 30px;
+  margin-left: 5px;
 }
 
-.scheduleContents{
-font-family: 'Cafe24SsurroundAir';
+.scheduleContents {
 }
 
-.Contents{
+.Contents {
   width: 200px;
   height: 150px;
-  border:1px solid #CCC;
-  font-family: 'Cafe24SsurroundAir';
+  border: 1px solid #ccc;
 }
 
-.reviewBtn{
+/* .reviewBtn{
   margin-top: 50px;
   margin-left: 1175px;
 }
 
-.TreviewBtn{
+.TreviewBtn {
   margin-left: 855px;
   margin-top: 50px;
-}
+} */
 
 .starsub {
-  background-color: #f0ae16;
+  background-color: #b4ed7e;
   border-radius: 5px;
+  width: 100px;
   border: none;
-  font-family: 'Cafe24SsurroundAir';
-  margin-top: 35px;
-  margin-right: 50px;
-  padding : 10px;
+  margin-top: 80px;
+  margin-left: 500px;
+  padding : 8px;
 }
-  
 
 .roomListContainer {
   /* 모달 내용 스타일 */
@@ -347,8 +343,6 @@ font-family: 'Cafe24SsurroundAir';
   font-size: 26px;
   font-weight: bold;
 }
-
-
 
 .highlighted {
   background-color: lightblue;
@@ -389,16 +383,12 @@ font-family: 'Cafe24SsurroundAir';
   border: 2px solid rgb(0, 213, 68);
 }
 
-.Modal {
-  width: 30rem;
-  height: 40rem;
-}
+
 
 .writeReview {
   margin-top: 20px;
   font-weight: bold;
   font-size: 14px;
-  
 }
 
 .hhhh {
@@ -409,14 +399,13 @@ font-family: 'Cafe24SsurroundAir';
   margin-top: 5px;
   background-color: rgb(0, 213, 68);
   border-radius: 5px;
-  padding:3px;
+  padding: 3px;
   font-size: 17px;
   font-weight: bold;
 }
 
-
 .add {
-  background-color: #ABC4AA;
+  background-color: #abc4aa;
   padding: 4px;
 }
 
@@ -431,29 +420,32 @@ font-family: 'Cafe24SsurroundAir';
 
 .mmmdd {
   text-align: center;
-  background-color: #e3ebe2;
+  width: auto;
+  background-color: white;
+  margin-top: 20px;
 }
 
 .addadd2 {
   font-size: 18px;
   /*\ border-radius: 5px solid rgb(0, 213, 57); */
-  background-color: #66b460;
-  margin-bottom: 40px;
+  /* background-color: #ABC4AA; */
+  margin-bottom: 30px;
   padding: 3px;
+  margin-right: 300px;
+
 }
 
 .writewrite {
   /* border: 2px solid rgb(0, 213, 57); */
   padding-bottom: 25px;
-  padding-top: 50px;
-  background-color: #e3ebe2;
-  margin-top: 40px;
+  padding-top: 30px;
+  background-color: #FAFAFA;
+  margin-top: 20px;
 }
 
 .writewrite2 {
   width: 250px;
   height: 200px;
-  
 }
 
 .writewrite3 {
@@ -468,27 +460,29 @@ font-family: 'Cafe24SsurroundAir';
   margin-left: 80px;
 }
 
-
 .tttt {
   font-weight: bold;
   text-align: left;
   margin-left: 80px;
 }
 
-.modify{
-  background-color: #ABC4AA;
+.modify {
+  background-color: #abc4aa;
   padding: 4px;
-
 }
 
 .delete {
-  background-color: #ABC4AA;
+  background-color: #abc4aa;
   padding: 4px;
 }
 
 .ttt2 {
   margin-bottom: 30px;
-  font-size: 19px;
+  font-size: 21px;
+  width: 170px;
+  margin-left: 110px;
+
+  background-color: white;
 }
 
 .ttt4 {

@@ -53,7 +53,7 @@ const StudyRanking = () => {
           justifyContent: "space-between",
         }}
       >
-        <span className={styles.title}>행복지수왕 강사님</span>
+        <span className={styles.title}>별점지수왕 강사님</span>
         <span className={styles.date}>{formattedDate} 오전 12:00 기준</span>
       </div>
       <div className={styles.content}>

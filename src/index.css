@@ -24,3 +24,20 @@ code {
   border: none;
   outline: none;
 } */
+
+@font-face {
+  font-family: "GmarketSansTTFMedium";
+  src: url("../font/GmarketSansTTFMedium.ttf");
+}
+
+body {
+  font-family: "GmarketSansTTFMedium", sans-serif;
+}
+
+div {
+  font-family: "GmarketSansTTFMedium", sans-serif;
+}
+
+p {
+  font-family: "GmarketSansTTFMedium", sans-serif;
+}

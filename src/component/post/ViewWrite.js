@@ -79,7 +79,7 @@ const ViewWrite = () => {
   const getApplicants = async () => {
     try {
         const res = await axios.get(
-          `${BASE_API_URI}/getTApplicant/${id}/${user.name}`
+          `${BASE_API_URI}/getTApplicant/${id}`
         );
   
         if (res.data !== undefined) {
