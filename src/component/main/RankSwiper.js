@@ -101,6 +101,7 @@ function RankSwiper({ rankers }) {
         <Swiper
           style={{
             "--swiper-navigation-color": "#8ae52e",
+            "--swiper-pagination-margin-top": "10px",
             "--swiper-pagination-color": "#8ae52e",
             "--swiper-navigation-size": "30px"
           }}
