@@ -1,12 +1,13 @@
 @font-face {
-  font-family: 'SUITE-Regular';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
-  font-weight: 500;
+  font-family: 'GmarketSansMedium';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+  font-weight: normal;
   font-style: normal;
 }
 
 .body {
-  font-family: 'SUITE-Regular';
+  font-family: 'GmarketSansMedium';
+  font-weight: 300;
   padding: 2.8rem 6rem;
   width: 79.5%;
   justify-content: center;
@@ -30,7 +31,9 @@
 }
 
 .menu button {
-  font-family: 'SUITE-Regular';
+  font-family: 'GmarketSansMedium';
+  font-size: .9rem;
+  font-weight: 300;
   border-radius: 7px;
   padding: 3px 5px 3px 5px;
   height: 2rem;
@@ -38,7 +41,8 @@
 }
 
 .mainTxt{
-  font-weight: 600;
+  font-family: 'GmarketSansMedium';
+  font-weight: 700;
 }
 
 .select {
@@ -206,15 +210,15 @@
   border-radius: 25px;
   width: 104px;
   height: 40px;
-  background-color: #eee;
-  color: #5B8A72;
+  background-color: #8ae52e;
+  color: #454545;
   cursor: pointer;
   outline: none;
   margin-left: 3rem;
-  box-shadow: 1px 4px 0 rgb(0,0,0,0.5);
+  box-shadow: 1px 4px 0 #56776C;
 }
 .makeBtn:active{
-  box-shadow: 1px 1px 0 rgb(0,0,0,0.5);
+  box-shadow: 1px 1px 0 #56776C;
   position: relative;
   top:2px;
 }

@@ -173,9 +173,9 @@ function StudyRoomCard({ title, tags, id, onClick }) {
         {<Hashtag />}
         <div className={styles.reaction}>
           <HiOutlineEye className={styles.view} alt="HiOutlineEye"/>
-          <a style={{color:"#56776C"}}>{viewCount}</a>
+          <a style={{color:"#56776C", fontSize: ".8rem"}}>{viewCount}</a>
           <HiOutlineChat className={styles.comment} alt="HiOutlineChat"/>
-          <a style={{color:"#56776C"}}>{commentCount}</a>
+          <a style={{color:"#56776C", fontSize: ".8rem"}}>{commentCount}</a>
         </div>
       </div>
     </div>

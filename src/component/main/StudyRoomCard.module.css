@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'GmarketSansMedium';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 .studyBox {
   display: inline-block;
   /* border: 1.5px solid #8AE52E; */
@@ -19,13 +26,13 @@ height: 25px;
 margin-left: 5px;
 margin-top: 5px;
 position: absolute;
-color:#56776C;
+color:#7D8F69;
 }
 
 .studyTitle {
   margin-bottom: 50px;
   margin-top: 50px;
-  font-size: 28px;
+  font-size: 22px;
   display: inline-block;
   color: #454545;
 }
@@ -43,24 +50,26 @@ height: 35%;
   text-align: center;
   padding: 0 0.5rem 0 0.5rem;
   margin: 0 0.7rem 0.6rem 0;
+  font-size: .8rem;
 }
 
 .reaction {
 display: flex;
 float: left;
+margin-top: 17px;
 }
 
 .view {
-width: 25px;
-height: 25px;
-color:#56776C;
+width: 20px;
+height: 20px;
+color:#7D8F69;
 }
 
 .comment {
 margin-left: 5px;
-width: 25px;
-height: 25px;
-color:#56776C;
+width: 19px;
+height: 19px;
+color:#7D8F69;
 }
 
 .questionBoxWrapper {

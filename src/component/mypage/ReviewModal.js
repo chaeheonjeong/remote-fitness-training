@@ -2,13 +2,15 @@ import { useEffect, useState, useRef } from "react";
 import styles from "./ReviewModal.module.css";
 import axios from "axios";
 import userStore from "../../store/user.store";
+import { HiStar } from "react-icons/hi";
 import { BsFillPencilFill } from "react-icons/bs";
 import { BASE_API_URI } from "../../util/common";
 
 export default function ReviewModal({ visible, setVisible }) {
   const [teacherRoomSchedules, setTeacherRoomSchedules] = useState([]);
   const [selectedItemIndex, setSelectedItemIndex] = useState(null); // 선택된 항목의 index
-  const [star, setStar] = useState(5);
+  const [star, setStar] = useState(0);
+  const starIcons = [];
   const [reviewContent, setReviewContent] = useState("");
   const today = new Date();
   const formatDate = (today) => {
@@ -39,6 +41,10 @@ export default function ReviewModal({ visible, setVisible }) {
         console.error(error);
       });
   }, [visible]);
+
+  const handleStarClick = (selectedStar) => {
+    setStar(selectedStar === star ? 0 : selectedStar);
+  };
 
   const handleItemClick = (index) => {
     setSelectedItemIndex(index);
@@ -74,6 +80,17 @@ export default function ReviewModal({ visible, setVisible }) {
         console.error("리뷰 보내기 실패", error);
       }
     };
+
+    for (let i = 0; i < 5; i++) {
+      const starColor = i < star ? "#ffc107" : "#e4e5e9";
+      starIcons.push(
+        <HiStar
+          key={i}
+          color={starColor}
+          onClick={() => handleStarClick(i + 1)}
+        />
+      );
+    }
 
   return (
     <div
@@ -122,48 +139,7 @@ export default function ReviewModal({ visible, setVisible }) {
               </div>
               <div>별점</div>
               <div style={{ display: "flex" }}>
-                <p
-                  onClick={() => {
-                    setStar(0);
-                  }}
-                >
-                  0
-                </p>
-                <p
-                  onClick={() => {
-                    setStar(1);
-                  }}
-                >
-                  1
-                </p>
-                <p
-                  onClick={() => {
-                    setStar(2);
-                  }}
-                >
-                  2
-                </p>
-                <p
-                  onClick={() => {
-                    setStar(3);
-                  }}
-                >
-                  3
-                </p>
-                <p
-                  onClick={() => {
-                    setStar(4);
-                  }}
-                >
-                  4
-                </p>
-                <p
-                  onClick={() => {
-                    setStar(5);
-                  }}
-                >
-                  5
-                </p>
+                {starIcons}
               </div>
               <div> 선택한 별점 {star}</div>
               <input

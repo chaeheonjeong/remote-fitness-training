@@ -53,7 +53,7 @@ const MyGoal = () => {
   return (
     <>
       <div className={styles.wrapper}>
-        <div className={styles.title}>내 행복지수</div>
+        <div className={styles.title}>내가 받은 별점지수</div>
         <div className={styles.content}>
           <div style={{ display: "flex", alignItems: "center" }}></div>
           <div

@@ -1,8 +1,7 @@
 @font-face {
-  font-family: "SUITE-Regular";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2")
-    format("woff2");
-  font-weight: 400;
+  font-family: 'GmarketSansMedium';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+  font-weight: normal;
   font-style: normal;
 }
 
@@ -47,64 +46,33 @@
 
 .nav li{
   float: left;
-  font-family: 'SUITE-Regular';
+  font-family: 'GmarketSansMedium';
+  font-weight: 300;
+  font-size: .9rem;
 }
 
 .nav a{
   line-height: 40px;
   padding: 0 15px;
   text-decoration: none;
-  font-family: 'SUITE-Regular';
-}
-
-.nav{
-  float: left;
-  list-style: none;
-  width: 45%;
-}
-
-.nav li{
-  float: left;
-  font-family: 'SUITE-Regular';
-}
-
-.nav a{
-  line-height: 40px;
-  padding: 0 15px;
-  text-decoration: none;
-  font-family: 'SUITE-Regular';
-}
-
-.nav{
-  float: left;
-  list-style: none;
-  width: 45%;
-}
-
-.nav li{
-  float: left;
-  font-family: 'SUITE-Regular';
-}
-
-.nav a{
-  line-height: 40px;
-  padding: 0 15px;
-  text-decoration: none;
-  font-family: 'SUITE-Regular';
+  font-family: 'GmarketSansMedium';
+  font-weight: 300;
+  font-size: .9rem;
 }
 
 .linkLabel {
   padding-right: 15px;
   float: left;
   font-size: 1.5rem;
-  font-weight: bolder;
+  font-weight: 700;
   color: #8ae52e;
-  font-family: "SUITE-Regular";
+  font-family: 'GmarketSansMedium';
 }
 
 .welcomeLabel {
-  font-size: 0.9rem;
-  font-family: "SUITE-Regular";
+  font-size: .8rem;
+  font-family: 'GmarketSansMedium';
+  font-weight: 300;
 }
 
 .logButton {
@@ -117,7 +85,9 @@
   outline: none;
   box-shadow: 1px 4px 0 #56776C;
   padding: 0 0.75rem;
-  font-family: "SUITE-Regular";
+  font-family: 'GmarketSansMedium';
+  font-weight: 300;
+  font-size: .8rem;
 }
 .logButton:active {
   box-shadow: 1px 1px 0 #56776C;
@@ -126,7 +96,7 @@
 }
 
 .regiButton {
-  font-size: .9rem;
+  font-size: .8rem;
   border-radius: 25px;
   width: 104px;
   height: 40px;
@@ -135,6 +105,8 @@
   cursor: pointer;
   outline: none;
   box-shadow: 1px 4px 0 #56776C;
+  font-family: 'GmarketSansMedium';
+  font-weight: 300;
 }
 .regiButton:actvie {
   box-shadow: 1px 1px 0 #56776C;
@@ -181,8 +153,9 @@
   width: 100%;
   gap: 0.5rem;
   align-items: center;
-  font-size: 13px;
-  font-family: "SUITE-Regular";
+  font-size: .8rem;
+  font-weight: 300;
+  font-family: 'GmarketSansMedium';
 }
 .profileDropItem:hover {
   opacity: 0.6;

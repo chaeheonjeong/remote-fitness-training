@@ -10,6 +10,7 @@ import loadingImg from "../../images/loadingImg.gif";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TbCircleArrowUpFilled } from "react-icons/tb";
+import {HiSearch} from "react-icons/hi"
 import { scrollToTop } from "../../util/common";
 import { BASE_API_URI } from "../../util/common";
 
@@ -185,7 +186,7 @@ function MainQuestion() {
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="검색어를 입력해주세요"
               />
-              <button type="submit">검색</button>
+              <button type="submit"><HiSearch size={25} /></button>
             </form>
             <button
               className={styles.makeBtn}
