@@ -1,6 +1,7 @@
 .all {
   width: 70%;
   margin: auto;
+  margin-top: 6rem;
 }
 
 .write_title {
@@ -77,7 +78,9 @@ text {
   margin: 4px;
   font-size: 16px;
   font-weight: bold;
-  background-color: #8AE52A;
+  background-color: #f7fffa;
+  border: 1.5px solid #5aab04;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
   padding-left: 0.5rem;
 }

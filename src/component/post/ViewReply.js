@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import userStore from "../../store/user.store";
 import Header from "../main/Header";
-import { scrollToTop } from "../../util/common";
 import { HiUserCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import MyPAReviews from "../mypage/MyPAReviews";
@@ -313,7 +312,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
     };
 
 
-    const [showR_ReplyModifyInput, setShowRModifyReplyInput] = useState(false);
+    const [showR_ReplyModifyInput, setShowR_ReplyModifyInput] = useState(false);
     const [replyRModifyInput, setReplyRModifyInput] = useState("");
     const [rWriter, setRWriter] = useState("");
     const [rrTo, setRrTo] = useState([]);
@@ -326,6 +325,8 @@ const ViewReply = ({ write, setWrite, writer }) => {
         alert("내용을 작성해주세요.");
         return;
         }
+
+        console.log("++++++ ", selectedRId, rrid);
 
         try {
         const response = await axios.post(`${BASE_API_URI}/viewReplyRModify`, {
@@ -349,9 +350,10 @@ const ViewReply = ({ write, setWrite, writer }) => {
       try {
       const res = await axios
       .get(`${BASE_API_URI}/view/${id}/modify/${selectedRId}/${rrid}`)
-      
+
       if(res.data !== undefined) {
           setReplyRModifyInput(res.data.result[0].r_reply);
+          console.log("@@@@@@@ ", replyRModifyInput);
       }
       } catch(error) {
       console.log(error);
@@ -492,8 +494,9 @@ const ViewReply = ({ write, setWrite, writer }) => {
           </div>
         </form>
         
-
+        <p className={styles.reply_list}>댓글 목록</p>
         <div className={styles.rr_reply}>
+          
           <div>
             {currentReply.map((r, index) => (
               <div className={styles.replies} key={r._id}>
@@ -588,6 +591,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
                 </div>
 
                 <div>
+                <div className={styles.list}>
                   <div>
                   {!showReplyList || showReplyList !== r._id ? (
                     <button
@@ -614,8 +618,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
                     </button>
                   )}
                 </div>
-
-                <div>
+                
                   {!showReplyInput && (
                     <button className={styles.asdf} onClick={() => {
                       setShowReplyInput(selectedRId === r._id ? null : r._id);
@@ -648,12 +651,12 @@ const ViewReply = ({ write, setWrite, writer }) => {
                 </div>
 
                 {showReplyList === r._id && (
-                  <div className={styles.rr_reply}>
-                    <div>
                       
-                        {r_reply.map((rr, index) => {
+                        r_reply.map((rr, index) => {
                           return (
-                            <div className={styles.replies} key={rr._id}>
+                            <>
+                            <div className={styles.rr_reply}>
+                              <div className={styles.r_replies} key={rr._id}>
                               <div className={styles.reply_package}>
 
                                 <div className={styles.rwriter_pack}>
@@ -687,17 +690,23 @@ const ViewReply = ({ write, setWrite, writer }) => {
                                   </div>
 
                                   {RsameUsers[index] && (
-                                     showR_ReplyModifyInput === rr._id ? (
-                                      
+                                    selectedRId === rr._id && selectedRId === showR_ReplyModifyInput ? (
+                                      <div className={styles.rdm_btn}>
+                                          <button className={styles.rrrr2} onClick={() => { setShowR_ReplyModifyInput(null); setSelectedRId(null); }}>취소</button>
+                                              
+                                              <form onSubmit={(e) => modifyRHandleSubmit(e, selectedRId, rr._id)}>
+                                                <input className={styles.rrrr} type="submit" value="등록"></input>
+                                            </form>
+                                      </div>
+                                    ) : (
                                       <div className={styles.rdm_btn}>
                                         <input 
                                           type="button" 
                                           className={styles.rmbtn} 
                                           value="수정" 
-                                          onClick={ () => {
-                                            setCanRRModify(selectedRId === rr._id ? null : rr._id);
-                                            setShowRModifyReplyInput(selectedRId === rr._id ? null : rr._id);
-                                            setSelectedRId(selectedRId === rr._id ? null : rr._id);
+                                          onClick={() => {
+                                            setShowR_ReplyModifyInput(rr._id);
+                                            setSelectedRId(rr._id);
                                             modifyR_Reply(rr._id);
                                             console.log("here ", showR_ReplyModifyInput, selectedRId, rr._id);
                                           }}
@@ -709,30 +718,17 @@ const ViewReply = ({ write, setWrite, writer }) => {
                                           onClick={() => handleRDelete(rr._id)}
                                         ></input>
                                       </div>
-                                      ) : (
-                                        <div className={styles.rdm_btn}>
-                                          <form 
-                                            onSubmit={(e) => modifyRHandleSubmit(e, rr.selectedRId, rr._id)}
-                                          > 
-                                        <div className={styles.handle}>
-      
+                                    )
+                                  )}
 
-                                        <div className={styles.reply_choose}>
-                                            <button onClick={() => {setShowRModifyReplyInput(null); setSelectedRRId(null);}}>취소</button>
-                                            <input type="submit" value="등록"></input>
-                                        </div>
-                                    </div>
-                                    </form>
-                                    </div>
-                        ))}
                                     </div>
                                     <div className={styles.reply}>
-                                    { showR_ReplyModifyInput === rr._id || canRRModify === rr._id ? (
+                                    { showR_ReplyModifyInput === rr._id ? (
                                         <form onSubmit={(e) => modifyRHandleSubmit(e, rr.selectedRId, r._id)}> 
                                         
                                           
-                                          <div className={styles.handle}>
-                                          {selectedRRId === rr._id ? (
+                                          <div className={styles.handle}>{/* 
+                                          {selectedRId === rr._id ? ( */}
                                             <textarea
                                               className={`${styles.reply_input} ${styles.reply_content}`}
                                               value={replyRModifyInput}
@@ -741,25 +737,22 @@ const ViewReply = ({ write, setWrite, writer }) => {
                                               onInput={autoResize}
                                               style={{ width: "34rem" }}
                                               rows="5"
-                                            />
-                                          ) : null}
+                                            />{/* 
+                                          ) : null} */}
                                           </div>
                                         </form>
-                                        ) : null}
-                                        </div>
-                                        <div className={styles.reply_content}>
-                                          {rr.r_reply}
+                                        ) : (
+                                          <div className={styles.reply_content}>
+                                            {rr.r_reply}
+                                          </div>
+                                          )}
                                         </div>
                             </div>
+                            </div>
+                            </>
                           );
                         })
-}
-                    </div>
-                  </div>
                   )}
-
-
-
               <hr/>
           </div>
         ))}

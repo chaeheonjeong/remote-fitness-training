@@ -49,7 +49,8 @@ const Notification = () => {
                 {x.role === 'student' ? (
                   <div>
                      <button  onClick={() => {
-                      hook.handlePreBtn(x._id)/* hook.setReadComm(!hook.readComm) */;
+                      hook.handlePreBtn(x._id);
+                      console.log("클릭했어요");
                     }}>선금</button>
                   </div>
                 ) : (

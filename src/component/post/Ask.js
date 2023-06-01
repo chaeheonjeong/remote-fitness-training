@@ -5,8 +5,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "../main/Header";
 import userStore from "../../store/user.store";
-import { useState } from "react";
-import { BASE_API_URI } from "../../util/common";
+import { useState, useEffect } from "react";
+import { BASE_API_URI, scrollToTop } from "../../util/common";
 
 function Ask() {
   const today = new Date();
@@ -16,6 +16,11 @@ function Ask() {
   const [flag, setFlag] = useState(false);
   const navigate = useNavigate();
   const user = userStore();
+
+  
+  useEffect(() => {
+    scrollToTop();
+  }, []);
 
   const imgLink = `${BASE_API_URI}/images`;
 

@@ -4,14 +4,18 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Header from "../main/Header";
 import axios from "axios";
-import { useState } from "react";
-import { BASE_API_URI } from "../../util/common";
+import { useState, useEffect } from "react";
+import { BASE_API_URI, scrollToTop } from "../../util/common";
 
 const TWrite = () => {
   const [flag, setFlag] = useState(false);
   const hook = useTPost();
 
   const imgLink = `${BASE_API_URI}/images`;
+  
+  useEffect(() => {
+    scrollToTop();
+  }, []);
 
   const customUploadAdapter = (loader) => {
     // (2)

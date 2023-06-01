@@ -7,7 +7,7 @@ import axios from "axios";
 import Header from "../main/Header";
 import userStore from "../../store/user.store";
 import { useNavigate } from "react-router-dom";
-import { BASE_API_URI } from "../../util/common";
+import { BASE_API_URI, scrollToTop } from "../../util/common";
 
 const ModifyAsk = () => {
   const { id } = useParams();
@@ -20,6 +20,10 @@ const ModifyAsk = () => {
   const [flag, setFlag] = useState(false);
 
   const imgLink = `${BASE_API_URI}/images`;
+  
+  useEffect(() => {
+    scrollToTop();
+  }, []);
 
   const customUploadAdapter = (loader) => {
     // (2)
