@@ -6,17 +6,17 @@
 }
 .MyInfo{
     /* border: 1px solid #8AE52E; */
-    background-color: /* #eceff9; */#f8fff3;
+    background-color: /* #eceff9; *//* #f8fff3; */#f6f6f6;
     border-radius: 30px;
     padding: 40px;
     margin-left: 25%;
     height: calc(53vh - 5rem);
 
-  margin-top: 2%;
-  display: flex;
-  position: relative;
-  width: 1000px;
-  box-sizing: border-box;
+    margin-top: 2%;
+    display: flex;
+    position: relative;
+    width: 1000px;
+    box-sizing: border-box;
 }
 
 .profile-wrapper {
@@ -44,7 +44,7 @@
 .img-btn{
     border: none;
     border-radius: 5px;
-    background-color:rgb(222, 235, 222);
+    background-color:/* rgb(222, 235, 222) */rgb(165, 215, 169);
     padding: 4px;
     margin-top: 10px;
     margin-left: 20%;
@@ -72,7 +72,7 @@
     margin-left : 5px;
     margin-top : 20px;
     padding: 4px;
-    background-color: rgb(222, 235, 222);
+    background-color: /* rgb(222, 235, 222) */rgb(165, 215, 169);
 }
 
 .CBtn{
@@ -80,7 +80,7 @@
     border-radius: 5px;
     margin-left: 65px;
     padding: 4px;
-    background-color: rgb(222, 235, 222);
+    background-color: /* rgb(222, 235, 222); */rgb(165, 215, 169);
     margin-bottom: 10px;
     margin-right: 10px;
 }
@@ -90,7 +90,7 @@
     margin-left: 5px;
     padding: 4px;
     border-radius: 5px;
-    background-color: rgb(222, 235, 222);
+    background-color: /* rgb(222, 235, 222); */rgb(165, 215, 169);
     margin-bottom: 10px;
 }
 
@@ -170,7 +170,7 @@
     margin-left: 5px;
     padding: 4px;
     border: none;
-    background-color: rgb(224, 233, 223);
+    background-color: /* rgb(224, 233, 223) */rgb(165, 215, 169);;
     margin-top: 50px;
 
 }

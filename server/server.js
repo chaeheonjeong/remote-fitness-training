@@ -4118,7 +4118,8 @@ app.patch("/updateRoomSchedule/:id", auth, async (req, res) => {
       const clickAlarm = content.find((item) => item._id.toString() === id);
       if (clickAlarm) {
         const message = clickAlarm.message;
-        const roomTitle = message.match(/(\w+)\s+방이 생성되었습니다\./i)[1];
+        /* const roomTitle = message.match(/(\w+)\s+방이 생성되었습니다\./i)[1]; */
+        const roomTitle = message.match(/([\p{L}\w]+)\s+방이 생성되었습니다\./iu)[1];
 
         console.log(roomTitle);
 
@@ -4525,51 +4526,7 @@ app.post("/getTargetReview", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
-
-// 채택된 사람들에게 방 생성되었다는 알림
-app.post("/selectedAlarm", async (req, res) => {
-  try {
-    const { selectedStudent, roomTitle } = req.body;
-
-    //const alarms = await Alarm.find({ userName: { $in: selectedStudent } });
-
-    for (const student of selectedStudent) {
-      const user = await User.findOne({ name: student });
-      const userId = user._id;
-      console.log("@@@@: ", userId);
-      const alarm = await Alarm.findOneAndUpdate(
-        { userName: student },
-        {
-          $push: {
-            //userName: student,
-            content: {
-              $each: [
-                {
-                  title: "새로운 방이 생성되었습니다.",
-                  message: `${roomTitle} 방이 생성되었습니다.`,
-                  createdAt: new Date(),
-                  _id: new mongoose.mongo.ObjectId(),
-                },
-              ],
-            },
-          },
-          $setOnInsert: {
-            userName: student,
-            _user: String(userId),
-          },
-        },
-        { upsert: true, new: true }
-      );
-      console.log(alarm);
-    }
-
-    res.status(200).send("Alarm created successfully");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal server error");
-  }
-});
-
+/* 
 app.get("/getAlarm", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.split(" ")[1];
@@ -4592,14 +4549,14 @@ app.get("/getAlarm", async (req, res) => {
     /* else {
       return res.status(404).json({ message: "대댓글이 존재하지 않습니다." });
     } */
-  } catch (error) {
+/*   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
-});
+});  */
 
 app.post("/postAreply/:id", async (req, res) => {
-  const { Areply, /* isASecret, */ Arwriter, ArwriteDate } = req.body;
+  const { Areply, likes,  Arwriter, ArwriteDate } = req.body;
   const { id } = req.params;
 
   const post = await Ask.findOne({ _id: id });
@@ -4627,7 +4584,7 @@ app.post("/postAreply/:id", async (req, res) => {
       _user: ArwriterId._id,
       ArwriteDate: ArwriteDate,
       Areply: Areply,
-      //isASecret : isASecret
+      likes : likes,
     });
     await newAReply.save();
 
@@ -5058,6 +5015,36 @@ app.get("/users/:id/profileImage", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "서버 오류가 발생했습니다." });
+  }
+});
+
+app.put("/likeAreply/:id", auth, async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const reply = await AReply.findById(id);
+    if (!reply) {
+      return res.status(404).json({ message: "Reply not found" });
+    }
+
+    const likedByUser = reply.likes.includes(userId);
+    if (likedByUser) {0
+      // 이미 좋아요한 상태라면 좋아요 취소
+      reply.likes.pull(userId);
+      reply.likesCount -= 1;
+    } else {
+      // 좋아요 추가
+      reply.likes.push(userId);
+      reply.likesCount += 1;
+    }
+
+    await reply.save();
+
+    return res.status(200).json({ message: "Like updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
