@@ -1,9 +1,6 @@
 @font-face {
-  font-family: "SUITE-Regular";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2")
-    format("woff2");
-  font-weight: 400;
-  font-style: normal;
+  font-family: "GmarketSansTTFMedium";
+  src: url("../../../font/GmarketSansTTFMedium.ttf");
 }
 
 .container {
@@ -13,7 +10,7 @@
   top: 0;
   display: flex;
   border-bottom: 2px solid;
-  border-color: #FAFAFA;
+  border-color: #fafafa;
   justify-content: center;
   align-items: center;
   padding: 1.2rem 5rem;
@@ -39,72 +36,64 @@
   background-color: #fafafa;
 }
 
-.nav{
+.nav {
   float: left;
   list-style: none;
   width: 45%;
 }
 
-.nav li{
+.nav li {
   float: left;
-  font-family: 'SUITE-Regular';
 }
 
-.nav a{
+.nav a {
   line-height: 40px;
   padding: 0 15px;
   text-decoration: none;
-  font-family: 'SUITE-Regular';
 }
 
-.nav{
+.nav {
   float: left;
   list-style: none;
   width: 45%;
 }
 
-.nav li{
+.nav li {
   float: left;
-  font-family: 'SUITE-Regular';
 }
 
-.nav a{
+.nav a {
   line-height: 40px;
   padding: 0 15px;
   text-decoration: none;
-  font-family: 'SUITE-Regular';
 }
 
-.nav{
+.nav {
   float: left;
   list-style: none;
   width: 45%;
 }
 
-.nav li{
+.nav li {
   float: left;
-  font-family: 'SUITE-Regular';
 }
 
-.nav a{
+.nav a {
   line-height: 40px;
   padding: 0 15px;
   text-decoration: none;
-  font-family: 'SUITE-Regular';
 }
 
 .linkLabel {
   padding-right: 15px;
   float: left;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: bolder;
   color: #8ae52e;
-  font-family: "SUITE-Regular";
 }
 
 .welcomeLabel {
   font-size: 0.9rem;
-  font-family: "SUITE-Regular";
 }
 
 .logButton {
@@ -116,7 +105,6 @@
   color: black;
   cursor: pointer;
   padding: 0 0.75rem;
-  font-family: "SUITE-Regular";
 }
 .logButton:hover {
   filter: brightness(0.95);
@@ -140,7 +128,7 @@
 
 .notiCircle {
   position: absolute;
-  font-size: 0.8rem;
+  font-size: 0.5rem;
   color: white;
   background-color: #fa7070;
   border-radius: 50%;
@@ -171,14 +159,12 @@
 }
 .profileDropItem {
   padding: 0.4rem 0.5rem;
-  border: 1px solid transparent;
   background-color: transparent;
   display: flex;
   width: 100%;
   gap: 0.5rem;
   align-items: center;
   font-size: 13px;
-  font-family: "SUITE-Regular";
 }
 .profileDropItem:hover {
   opacity: 0.6;

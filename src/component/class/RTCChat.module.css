@@ -85,22 +85,31 @@
 .camearButton {
   background-color: #8ae52e;
   height: 60%;
-  border-radius: 20px;
-  padding: 10px 25px;
+  border-radius: 100%;
+  padding: 15px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mikeButton {
   background-color: #8ae52e;
   height: 60%;
-  border-radius: 20px;
-  padding: 10px 25px;
+  border-radius: 100%;
+  padding: 15px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .timeButton {
   background-color: #8ae52e;
   height: 60%;
-  border-radius: 20px;
-  padding: 10px 25px;
+  border-radius: 100%;
+  padding: 15px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .timeContainer {
@@ -122,19 +131,19 @@
 }
 
 .camearButton:hover {
-  filter: brightness(0.85);
+  filter: brightness(0.95);
 }
 
 .mikeButton:hover {
-  filter: brightness(0.85);
+  filter: brightness(0.95);
 }
 
 .timeButton:hover {
-  filter: brightness(0.85);
+  filter: brightness(0.95);
 }
 
 .buttonBox:hover {
-  filter: brightness(0.85);
+  filter: brightness(0.95);
 }
 
 .chatTextArea:focus {
@@ -145,4 +154,22 @@
 
 .chatBg {
   background-color: #f7f7f7;
+}
+
+.offStyle {
+  background-color: rgb(241, 53, 53);
+}
+
+.closeCam {
+  background-color: rgb(241, 53, 53);
+  height: 60%;
+  border-radius: 100%;
+  padding: 15px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.closeCam:hover {
+  filter: brightness(0.95);
 }

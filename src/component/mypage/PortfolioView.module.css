@@ -1,0 +1,127 @@
+/* .viewContent {
+  display: inline-block;
+  border: 1.5px solid #555;
+  border-radius: 7px;
+  width: 70%;
+  height: auto;
+  padding: 0.7rem;
+  margin-top: 20px;
+  margin-left: 370px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+}
+
+.view_title {
+  font-size: 20px;
+  border-bottom: 1.5px solid #555;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.reviewContent {
+  display: inline-block;
+  margin-top: 30px;
+  border-top: solid 1.5px #555;
+}
+
+.review {
+  font-size: 20px;
+  margin-top: 10px;
+  margin-left: 370px;
+}
+
+._registered {
+  margin-left: 770px;
+  font-size: 20px;
+  display: flex;
+  text-align: center;
+  margin-top: 200px;
+}
+
+/* .reviewContents {
+  display: inline-block;
+  border: 1.5px solid #555;
+  border-radius: 7px;
+  width: 70%;
+  height: auto;
+  padding: 0.7rem;
+  margin-top: 20px;
+  margin-left: 370px;
+  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+} */
+
+/* .pp {
+  margin-right: 7px;
+}
+
+.ppf {
+  margin-left: 10px;
+} */
+.viewContent {
+  padding: 4rem 15rem;
+}
+
+.nameLable {
+  font-size: 25px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.smallContainer {
+  display: flex;
+  flex-direction: row;
+  background-color: #f6f6f6;
+  width: 850px;
+  height: 100px;
+  border-radius: 10px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0rem 8rem;
+}
+
+.boxLabel {
+  font-size: 19px;
+  font-weight: 750;
+}
+.boxLabel2 {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.infoLabel {
+  font-size: 23px;
+  font-weight: 700;
+  margin-top: 50px;
+  margin-bottom: 0.9rem;
+}
+
+.infoWrapper {
+  gap: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  color: rgb(106, 106, 106);
+  font-weight: 600;
+}
+
+.view {
+  color: rgb(106, 106, 106);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.viewTitle {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.viewContents {
+}
+
+.reviewContent {
+  margin-top: 50px;
+}
+
+.reviewWrapper {
+  margin-top: 50px;
+}
