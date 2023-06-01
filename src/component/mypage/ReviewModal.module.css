@@ -7,7 +7,7 @@
   align-items: center;
   height: 100vh;
   width: 100%;
-  backdrop-filter: brightness(0.8);
+  /* backdrop-filter: brightness(0.8); */
   z-index: 10;
 }
 .closeBox {
@@ -105,20 +105,214 @@
   overflow: auto; /* 내용이 부모 요소를 넘치면 숨김 처리 */
 }
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
 
-@keyframes fadeOut {
-  0% {
-    opacity: 1;
+  
+  .container {
+    margin-top: 20px;
+    position: fixed; 
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin-left:7%;
+    width: 100%;
+    /* backdrop-filter: brightness(0.8); */
+    z-index: 10;
   }
-  100% {
-    opacity: 0;
+  .selectedItem {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    text-align: center;
+  
+    margin: 0 auto; /* 가운데로 정렬 */
+    width: 100%; /* 가로 너비 100%로 설정 */
   }
-}
+
+  .selectedItemWrapper {
+    background-color: #e1f9be !important;
+    border-radius: 7px;
+    padding: 20px;
+    align-items: center;
+    width: 300px;
+    position: relative;
+    justify-content: center;
+    margin-top: 5px;
+  }
+
+  .closeBox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+  }
+
+  .closeButton {
+    position: absolute;
+    margin-top: 410px;
+    margin-right: 210px;
+    font-size: 20px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+    position: relative;
+  }
+  
+  .modalWrapper {
+    background-color: #fafafa;
+    width: 400px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.7rem;
+    position: relative;
+  }
+
+  .abc {
+    border-radius: 7px;
+    background-color: #e6f4d0;
+    padding: 20px;
+    width: 300px;
+    position: relative;
+
+  }
+
+  .reviewtitle {
+    margin-bottom : 40px;
+  }
+  
+  .btnCancle {
+    z-index: 1; /* 다른 요소보다 더 위에 표시되도록 설정합니다 */
+    height: 1.8rem;
+    margin-left: auto;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 0.8rem;
+    border-radius: 0.5rem;
+    border: 0.5px solid rgb(203, 203, 203);
+    background-color: #ffffff;
+    color: rgb(49, 49, 49);
+    cursor: pointer;
+    padding: 0 0.5rem;
+    font-family: "SUITE-Regular";
+  }
+  
+  .btnCancle:hover {
+    filter: brightness(0.85);
+  }
+
+  .ModalButton {
+    float: right;
+
+  }
+
+  .bbb{
+    width: 260px;
+    padding:5px;
+    font-size: 14px;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+  
+  .btnOk {
+    height: 1.8rem;
+    font-size: 0.8rem;
+    border-radius: 0.5rem;
+    display: flex-start;
+    border: 0.5px solid #8ae52e;
+    background-color: #8ae52e;
+    margin-top: 30px;
+    color: rgb(49, 49, 49);
+    cursor: pointer;
+    align-items: center;
+    margin-left: 42px;
+    padding: 0 0.5rem;
+    font-family: "SUITE-Regular";
+  }
+  .btnOk:hover {
+    filter: brightness(0.85);
+    background-color: #cfff8d;
+    border-color: #cfff8d;
+  }
+  .buttonWrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    gap: 0.3rem;
+  }
+  .inputStyle {
+    width: 2.5rem;
+    height: 1.5rem;
+    margin: 0 0 0 0.5rem;
+    background-color: rgb(228, 228, 228);
+    border: none;
+    border-radius: 0.2rem;
+    padding-left: 0.3rem;
+  }
+  
+  .inputWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: "SUITE-Regular";
+  }
+  
+  .ModalClose {
+    transition: visibility 0.2s ease-out;
+    visibility: hidden;
+    animation: fadeOut 0.2s;
+  }
+  .ModalOpen {
+    visibility: visible;
+    animation: fadeIn 0.2s;
+  }
+  
+  .clock {
+    border-radius: 10rem;
+    padding: 0.6rem;
+    background-color: #8ae52e;
+    margin-top: 1rem;
+    color: #409969;
+  }
+  
+  .contentWrapper {
+    width: 400px;
+  height: 400px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  }
+  
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }

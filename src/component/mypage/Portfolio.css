@@ -1,0 +1,352 @@
+@font-face {
+    font-family: 'SUITE-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+  }
+/* 
+
+.title{
+    display: flex;
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom:10px;
+    margin-left: 370px;
+    border-bottom: 2px;
+    padding: 5px;
+    height: 40px;
+}
+
+.titleText{
+    font-size: 20px;
+    font-family: 'SUITE-Regular';
+    text-align: center;
+    margin-top: 10px;
+    margin-right: 5px;
+}
+
+.titleInput{
+    width: 88%;
+    padding: 5px;
+    border: none;
+    border-bottom: solid 1.6px rgb(69, 182, 71);
+    font-size: 20px;
+    font-family: 'SUITE-Regular';
+}
+
+.content{
+    width: 70%;
+    height: 50%;
+    margin-left: 370px;
+}
+
+
+.registered{
+    margin-top: 20px;
+    margin-left: 815px;
+    font-size: 11px;
+    display: flex;
+    text-align: center;
+}
+
+.modifyBtn{
+    margin-top: 0;
+    margin-left: 850px;
+    display: flex;
+    background-color:rgb(218, 232, 218);
+    border-radius: 7px;
+    padding: 4px;
+}
+
+.viewContent{
+    display: inline-block;
+    border: 1.5px solid lightskyblue;
+    border-radius: 7px;
+    /* background-color: rgb(242, 250, 255); */
+    /* width: 70%; 
+    height: auto;
+    padding: 0.7rem;
+    margin-top: 130px;
+    margin-left: 370px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+
+}
+
+.viewContent2 {
+    background-color: rgb(214, 236, 244);
+    padding: 1rem;
+}
+
+
+
+.viewTitle {
+    border-bottom: 2px solid #4e9343;
+}
+.review{
+    margin-bottom: 10px;
+    font-size: 20px;
+    margin-top: 40px;
+    margin-left: 370px;
+}
+
+.styles.css1_head {
+    background-color: lightskyblue;
+}
+
+.css1_head, .css2_head, 
+.css3_head, .css4_head {
+  margin-bottom: 2rem;
+}
+
+.css1, .css2, 
+.css3, .css4 {
+  margin-bottom: 2rem;
+}
+
+.css1, .css2, 
+.css3, .css4, .css5 {/* 
+  border: 1px solid #8AE52A; */
+ /*  background-color: #8AE52A;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.titltt {
+    background-color: rgb(214, 255, 218);
+    padding: 3px;
+    border-radius: 10px;
+    width: 48px;
+    margin-top: 25px;
+    font-weight: bold;
+    font-size: 17px;
+    text-align: center;
+}  */
+
+.submitBtn {
+    border-radius: 5px /* solid green; */;
+    background-color: #8AE52A;
+    padding: 4px;
+    width: 60px;
+    padding: 4px;
+    margin-right: 10px;
+}
+
+.submitBtn3 {
+    border-radius: 5px /* solid green; */;
+    background-color: #8AE52A;
+    padding: 4px;
+    width: 60px;
+    padding: 4px;
+    margin-top: 20px;
+    margin-right: 10px;
+}
+
+
+.cancelBtn {
+    border-radius: 5px /* solid green; */;
+    background-color: #8AE52A;
+    padding: 4px;
+    width: 60px;
+    padding: 4px;
+    margin-right: 20px;
+  }
+  .all {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .select {
+    display: flex;
+    justify-content: space-between;
+    margin: 2rem 0 2rem 0;
+  }
+  
+  .left, .right {
+    display: inline-block;
+    width: 50%;
+    margin-left: 1%;
+  }
+  
+  .left input, .right input, .left select {
+    width: 98%;
+    text-align: center;
+    margin-right: 0;
+    border: 1px solid #24B422;
+    border-radius: 5px;
+    font-weight: bolder;
+    height: 3rem;
+    padding: 0 1rem;
+  }
+  
+  .left text, .right text {
+    margin-bottom: 0.1rem;
+    display: block;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  .recruit_num, .running_time, .start_date,
+  .start_time, .pay, .tags {
+    margin-bottom: 4rem;
+  }
+  
+  
+  .choose {
+      margin-top: 10px;
+      width: 70%;
+    }
+  
+    .ch3 {
+      margin-top: 2rem;
+    }
+  
+    hr {
+      border: none;
+      border-top: 2px solid #e5e7eb;
+    }
+    .title_input {
+      margin-bottom: 1.5rem;
+    }
+  
+    .cc {
+      display: block;
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0 1% 0 1%;
+      margin-bottom: 0.2rem;
+    }
+  
+    .title_tinput {
+      border: 1px solid #24B422;
+      border-radius: 5px;
+      width: 98%;
+      height: 3rem;
+      padding: 1rem;
+      margin: 0 1% 0 1%;
+    }
+  
+    .content {
+      width: 98%;
+      margin-top: 20px;
+      margin-left: 1%;
+    }
+  
+    .ck.ck-editor {
+      border-radius: 5px;
+      border: 1px solid #24B422;
+    }
+  
+  .ck.ck-editor__main>.ck-editor__editable {
+    min-height: 30rem;
+  }
+  
+  .btn {
+    margin: 2rem 1% 4rem 1%;
+    text-align: end;
+  }
+  
+  .submit {
+    margin-left: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #1A8C4A;
+    background-color: #1A8C4A;
+    color: white;
+    font-weight: bold;
+    width: 4rem;
+    height: 2rem;
+  }
+  
+  .submit:hover {
+    filter: brightness(0.85);
+  }
+  
+  .cancel {
+    border-radius: 5px;
+    border: 1px solid #24B422;
+    width: 4rem;
+    height: 2rem;
+  }
+  
+  .cancel:hover {
+    filter: brightness(0.85);
+  }
+  
+    .tag_tagPackage {
+      margin-top: 1rem;
+    }
+  
+    .tag_tagindex {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 4px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #8AE52A;
+      border-radius: 4px;
+      padding-left: 0.5rem;
+    }
+    
+    .tag_input {
+      width: 100%;
+      border-radius: 20px;
+      border: solid 2px black;
+    }
+    
+    .tag_tagindex p {
+      display: inline-block;
+      margin: 8px 6px 8px 8px;
+    }
+  
+    .tag_Btn {
+      font-weight: bold;
+      width: 24px;
+      height: 40px;
+      border-radius: 0 3px;
+      font-size: 20px;
+      padding: 0 4px 0 4px;
+    }
+  
+    .tag_Btn:hover {
+      display: block;
+      background-color: #ea5a3e;
+      color: white;
+      font-size: 20px;
+    }
+    
+    .cbtn {
+      border: none;
+      padding: 5px;
+      border-radius: 200px;
+      background-color: green;
+      color: white;
+      font-weight: bold;
+      margin-bottom: 2rem;
+      margin-left: 1%;
+      width: 5rem;
+      height: 2.5rem;
+    }
+  
+    .cbtn:hover {
+      filter: brightness(0.85);
+    }
+    
+    .falseBtn {
+      border: none;
+      padding: 5px;
+      border-radius: 200px;
+      background-color: red;
+      color: white;
+      font-weight: bold;
+      margin-bottom: 2rem;
+      margin-left: 1%;
+      width: 5rem;
+      height: 2.5rem;
+    }
+  
+    .ck.ck-editor__editable {
+      z-index: 0; /* or other value lower than modal */
+    }
+  

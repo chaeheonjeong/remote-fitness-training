@@ -1,25 +1,34 @@
-.SideBar {
+@font-face {
+  font-family: 'SUITE-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+.SideBar{
   width: 20%;
   height: calc(100vh - 5rem);
 
   position: fixed;
   top: 5rem;
 
-  border-right: 2px solid rgb(225, 225, 225);
-  background-color: #fbf7f0;
+  border-right: 2px solid rgb(235, 244, 255);
+  background-color: rgb(235, 244, 255);
+
 }
 
-.SideBarWrapper {
+.SideBarWrapper{
   padding: 20px;
 }
 
-.SideBarMenu {
+.SideBarMenu{
   margin-bottom: 2rem;
 }
 
-.SideBarTitle {
+.SideBarTitle{
   margin-bottom: 50px;
   font-size: 1.9rem;
+  font-family: 'SUITE-Regular';
 }
 
 .SideBarList {
@@ -27,24 +36,26 @@
   padding: 0.5rem;
 }
 
-.SideBarListItem {
+.SideBarListItem{
   margin-bottom: 10px;
   padding: 5px;
   cursor: pointer;
   display: flex;
   align-items: center;
   border-radius: 10px;
+  font-family: 'SUITE-Regular';
   font-size: 20px;
 }
 .active,
 .active:hover {
-  background-color: #abc4aa;
-  transform: scale(1.1);
+background-color: #ABC4AA;
+transform: scale(1.1);
   padding: 5px;
   cursor: pointer;
   display: flex-end;
   width: 100%;
 
   border-radius: 10px;
+  font-family: 'SUITE-Regular';
   font-size: 23px;
 }

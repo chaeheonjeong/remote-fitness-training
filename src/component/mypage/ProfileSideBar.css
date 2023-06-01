@@ -1,0 +1,70 @@
+@font-face {
+    font-family: 'Cafe24SsurroundAir';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24SsurroundAir.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.SideBar{
+    width: 20%;
+    height: calc(100vh - 5rem);
+
+    position: fixed;
+    top: 5rem;
+    margin-left: 5;
+
+    border-right: 2px solid rgb(225, 225, 225);
+    background-color: #edf1f6;
+
+}
+
+.SideBarWrapper{
+    padding: 20px;
+}
+
+.SideBarMenu{
+    margin-bottom: 2rem;
+}
+
+.SideBarTitle{
+    margin-top: 10px;
+    font-size: 25px;
+    text-align: center;
+    font-family: 'Cafe24SsurroundAir';
+}
+
+.sidBarList{
+    list-style: style none;
+    padding: 0.5rem;
+}
+
+.SideBarListItem{
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 20px;
+}
+
+.SideBarListItem.active,
+.SideBarListItem:hover{
+    background-color:#B7C4CF;
+}
+
+.profileImg{
+    width: 150px;
+    height: 150px;
+    margin-left: 45px;
+    border-radius: 100%;
+    border: 1px solid #555555;
+    align-items: center;
+}
+
+.noneProfileImg{
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+    border: 1px solid #555555;
+}

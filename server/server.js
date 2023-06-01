@@ -1774,7 +1774,7 @@ app.delete("/postAr_reply/:id/:rid/:rrid", async (req, res) => {
   }
 });
 
-app.get("/view/:id/modify/:selectedRId/:rrid", async (req, res) => {
+/* app.get("/view/:id/modify/:selectedRId/:rrid", async (req, res) => {
   const postId = req.params.id;
   const selectedRId = req.params.selectedRId;
   const rrid = req.params.rrid;
@@ -1793,11 +1793,11 @@ app.get("/view/:id/modify/:selectedRId/:rrid", async (req, res) => {
         message: `댓글 id 가져오기 성공`,
       });
     } /* reply */
-  } catch (error) {
+/*   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server Error" });
   }
-});
+});  */
 
 /// 질문글 대댓글 수정
 app.get("/view/:id/modify/:selectedARId/:rrid", async (req, res) => {
@@ -5358,7 +5358,7 @@ app.get("/recommend", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
-
+/* 
 app.get("/search", async (req, res) => {
   const option = decodeURIComponent(req.query.selected);
   const value = decodeURIComponent(req.query.value);
@@ -5398,7 +5398,7 @@ app.get("/search", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
-});
+}); */
 
 app.get("/view/:id/modify/:selectedARId/:rrid", async (req, res) => {
   const postRId = req.params.id;
@@ -5529,6 +5529,43 @@ app.post("/askviewReplyARModify", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.get("/getTApplicant/:id", async (req, res) => {
+  try {
+    const applicants = await TApplicant.find({ postId: req.params.id });
+    
+    const result = [...applicants.map((r) => r.userName)];
+
+    return res.status(200).json({
+      postId: req.params.id,
+      data: result,
+      message: `강사모집 신청자 가져오기 성공`,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post("/tApplicantSave", async (req, res) => {
+  const {userName, postId} = req.body;
+
+  const userId = await User.findOne({ name: userName });
+
+  try {
+    const newApplicant = new TApplicant({
+      userId: userId._id,
+      userName: userName,
+      postId: postId,
+    });
+    await newApplicant.save();
+
+    return res.status(200).json({ message: `applicant save successfully` });
+
+  } catch(error) {
+    console.error(error);
+    res.status(500).json({ message: `서버오류` });
   }
 });
 
