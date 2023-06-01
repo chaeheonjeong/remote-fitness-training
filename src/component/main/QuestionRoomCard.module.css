@@ -16,10 +16,11 @@
 }
 
 .heart {
-width: 25px;
-height: 25px;
+width: 28px;
+height: 28px;
 position: absolute;
 color:#7D8F69;
+margin-left: 5px;
 /* display: inline; */
 }
 

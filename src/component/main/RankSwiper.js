@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import Portfolio from "../mypage/Portfolio";
 
 const medalColor = [
-  "rgba(247, 247, 35, 0.99)",
+  "#F9D949",
   "rgb(190, 190, 182)",
   "rgb(177, 148, 31)",
 ];
@@ -39,16 +39,18 @@ const RankRender = ({ ranker, index }) => {
       <span style={{
         width: "50px",
         marginLeft: "10px",
-        alignItems: "center",
+        textAlign: "center"
       }}>
         {ranker.name.length > 8
           ? ranker.name.substring(0, 8) + "..."
           : ranker.name}
       </span>
       <span style={{
-        marginRight: "15px",
-        
-      }}>{ranker.happiness}</span>
+        display: "flex",
+        textAlign: "center",
+        justifyContent: "center",
+        width: "200px"
+      }}>별점지수:{ranker.happiness}</span>
       {ranker.portfolio.length !== 0 && (
         <div className={styles.portfolio}>
           <span style={{
@@ -77,13 +79,10 @@ const RankRender = ({ ranker, index }) => {
             }}>
               결제수단:{" "}
               {ranker.portfolio.paymentMethods.map((payment, index) => (
-                <span style={{marginRight: "5px"}} key={index + "&*"}>{payment}</span>
+                <span style={{marginRight: "7px"}} key={index + "&*"}>{payment}</span>
               ))}
             </span>
           )}
-          <span style={{
-            display: "block"
-          }}>제목: {ranker.portfolio.title}</span>
         </div>
       )}
     </div>

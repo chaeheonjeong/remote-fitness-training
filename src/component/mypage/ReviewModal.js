@@ -82,7 +82,7 @@ export default function ReviewModal({ visible, setVisible }) {
     };
 
     for (let i = 0; i < 5; i++) {
-      const starColor = i < star ? "#ffc107" : "#e4e5e9";
+      const starColor = i < star ? "#8ae52e" : "#e4e5e9";
       starIcons.push(
         <HiStar
           key={i}
@@ -143,7 +143,7 @@ export default function ReviewModal({ visible, setVisible }) {
               </div>
               <div> 선택한 별점 {star}</div>
               <input
-                placeholder="input태그에요 리뷰를 작성해주세요"
+                placeholder="리뷰를 작성해주세요"
                 onChange={(e) => setReviewContent(e.target.value)}
               ></input>
               <button
