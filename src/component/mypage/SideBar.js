@@ -19,10 +19,10 @@ function SideBar() {
           <ul className="SideBarList">
             <li className="SideBarListItem">
               <NavLink
-                exact
+                exact="true"
                 to="/MyInfo"
                 style={{ textDecoration: "none", color: "black" }}
-                activeClassName="active"
+                activeclassname="active"
                 onClick={() => handleItemClick("/MyInfo")}
               >
                 내 정보
@@ -30,10 +30,10 @@ function SideBar() {
             </li>
             <li className="SideBarListItem">
               <NavLink
-                exact
+                exact="true"
                 to="/Portfolio"
                 style={{ textDecoration: "none", color: "black" }}
-                activeClassName="active"
+                activeclassname="active"
                 onClick={() => handleItemClick("/Portfolio")}
               >
                 포트폴리오
@@ -41,10 +41,10 @@ function SideBar() {
             </li>
             <li className="SideBarListItem">
               <NavLink
-                exact
+                exact="true"
                 to="/myLikedPost"
                 style={{ textDecoration: "none", color: "black" }}
-                activeClassName="active"
+                activeclassname="active"
                 onClick={() => handleItemClick("/myLikedPost")}
               >
                 관심글
@@ -52,10 +52,10 @@ function SideBar() {
             </li>
             <li className="SideBarListItem">
               <NavLink
-                exact
+                exact="true"
                 to="/myPost"
                 style={{ textDecoration: "none", color: "black" }}
-                activeClassName="active"
+                activeclassname="active"
                 onClick={() => handleItemClick("/myPost")}
               >
                 내가 쓴 글
@@ -63,10 +63,10 @@ function SideBar() {
             </li>
             <li className="SideBarListItem">
               <NavLink
-                exact
+                exact="true"
                 to="/MyCalendar"
                 style={{ textDecoration: "none", color: "black" }}
-                activeClassName="active"
+                activeclassname="active"
                 onClick={() => handleItemClick("/MyCalendar")}
               >
                 캘린더

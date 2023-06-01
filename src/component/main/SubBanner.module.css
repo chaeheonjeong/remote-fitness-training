@@ -1,10 +1,19 @@
-.banner h1 {
+@font-face {
+  font-family: 'GmarketSansMedium';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.banner h1{
+    font-family: 'GmarketSansMedium';
   margin: 0;
   font-size: 50px;
   text-align: center;
 }
 
-.banner h6 {
+.banner h6{
+    font-family: 'GmarketSansMedium';
   font-size: 16px;
   margin: 0;
   text-align: center;
@@ -12,9 +21,7 @@
 
 .banner {
   color: white;
-  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/409269/banner-flowers.jpg")
-      top left/cover no-repeat,
-    rgba(0, 0, 0, 0.5);
+  background: url("C:\Users\chlrh\2023캡스톤\2023Capstone\2023-capstone\src\images\1660419799-huge.jpg") top left/cover no-repeat,  rgba(0, 0, 0, 0.5);
   height: 500px;
   display: flex;
   justify-content: center;
@@ -23,51 +30,59 @@
   background-blend-mode: multiply;
 }
 
-.searchAndMake {
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  margin-top: 200px;
+.searchAndMake{
+    font-family: 'GmarketSansMedium';
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    margin-top: 200px;
 }
 
 .search {
   display: flex;
 }
 
-.search input {
-  display: block;
-  width: 26rem;
-  margin: 4.5rem 1rem 2rem;
-  border: 0;
-  font-size: 1.2rem;
-  padding: 0.75rem 1rem;
-  border-radius: 3px;
-  box-shadow: 0 1px 2px #aaa;
-  transition: 0.5s, margin-bottom 0.15s;
-  color: black;
+.search input{
+    display:block;
+    width:26rem;
+    margin:4.5rem 1rem 2rem;
+    border:0;
+    font-size:1.2rem;
+    padding:.75rem 1rem;
+    border-radius:3px;
+    box-shadow:0 1px 2px #aaa;
+    transition:.5s, margin-bottom .15s;
+    color: black;
+    font-weight: 300;
+    font-size: .9rem;
 }
 
-.search select {
-  display: block;
-  width: 6rem;
-  margin: 4.5rem 0 2rem;
-  border: 0;
-  font-size: 1.2rem;
-  padding: 0.75rem 1rem;
-  border-radius: 3px;
-  box-shadow: 0 1px 2px #aaa;
-  transition: 0.5s, margin-bottom 0.15s;
-  color: black;
+.search select{
+    display:block;
+    width:6rem;
+    margin:4.5rem 0 2rem;
+    border:0;
+    font-size:1.2rem;
+    padding:.75rem 1rem;
+    border-radius:3px;
+    box-shadow:0 1px 2px #aaa;
+    transition:.5s, margin-bottom .15s;
+    color: black;
+    font-weight: 300;
+    font-size: .9rem;
 }
 
-.search button {
-  background-color: #16c79a;
-  width: 6rem;
-  margin: 4.5rem 0 2rem;
-  border: 0;
-  font-size: 1.2rem;
-  padding: 0.75rem 1rem;
-  border-radius: 3px;
-  box-shadow: 0 1px 2px #aaa;
-  transition: 0.5s, margin-bottom 0.15s;
+.search button{
+    background-color: #8ae52e;
+    width:6rem;
+    margin:4.5rem 0 2rem;
+    border:0;
+    font-size:1.2rem;
+    padding:.75rem 1rem;
+    border-radius:3px;
+    box-shadow:0 1px 2px #aaa;
+    transition:.5s, margin-bottom .15s;
+    font-weight: 300;
+    font-size: .9rem;
+
 }

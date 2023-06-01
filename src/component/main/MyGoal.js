@@ -53,7 +53,7 @@ const MyGoal = () => {
   return (
     <>
       <div className={styles.wrapper}>
-        <div className={styles.title}>내 행복지수</div>
+        <div className={styles.title}>내가 받은 별점지수</div>
         <div className={styles.content}>
           <div style={{ display: "flex", alignItems: "center" }}></div>
           <div
@@ -76,7 +76,7 @@ const MyGoal = () => {
           <div className={styles.progress}>
             <div
               style={{
-                backgroundColor: "rgb(43, 209, 151)",
+                backgroundColor: "#8ae52e",
                 height: "100%",
                 width: user.token !== null ? `${dealt}%` : `50%`,
                 borderRadius: "1rem",

@@ -1,3 +1,56 @@
+@font-face {
+  font-family: "Cafe24SsurroundAir";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24SsurroundAir.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.choose {
+  padding: 2rem;
+  border: 1px solid rgb(36, 140, 59);
+  margin-right: 150px;
+  margin-top: 80px;
+  width: 60%;
+  float: right;
+  background-color: rgb(239, 250, 239);
+}
+
+.ch1 {
+  font-size: 20px;
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px;
+  padding: 5px;
+}
+
+.ch2 {
+  font-size: 20px;
+  display: flex;
+
+  margin-bottom: 20px;
+  border-bottom: 3px;
+  padding: 5px;
+}
+
+.ch3 {
+  font-size: 20px;
+  display: flex;
+  margin-bottom: 50px;
+  border-bottom: 3px;
+  padding: 5px;
+}
+
+.title_input {
+  display: flex;
+  font-size: 20px;
+  margin-bottom: 10px;
+  border-bottom: 3px;
+  padding: 5px;
+  height: 40px;
+}
+
 .runningTime {
   margin-right: 36.8%;
   border-radius: 20px;

@@ -10,6 +10,7 @@ import loadingImg from "../../images/loadingImg.gif";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TbCircleArrowUpFilled } from "react-icons/tb";
+import {HiSearch} from "react-icons/hi"
 import { scrollToTop } from "../../util/common";
 import { BASE_API_URI } from "../../util/common";
 
@@ -160,13 +161,13 @@ function MainStudy() {
         <div className={styles.menu}>
           <div className={styles.topRow}>
             <div className={styles.select}>
-              <Link to="/">
-              <button className={styles.tRecruitment}>강사모집</button>
+              <Link to="/Recruitment">
+              <button className={styles.tRecruitment}>강사찾기</button>
               </Link>
-              <Link to="/sRecruitment">
-              <button className={styles.sRecruitment}>학생모집</button>
+              <Link to="/detailSRecruitment">
+              <button className={styles.sRecruitment}>레슨</button>
               </Link>
-              <Link to="/question">
+              <Link to="/detailQuestion">
                 <button className={styles.question}>질문</button>
               </Link>
             </div>
@@ -185,7 +186,8 @@ function MainStudy() {
                   onChange={(e) => setSearchInput(e.target.value)}
                   placeholder="검색어를 입력해주세요"
                 />
-                <button type="submit">검색</button>
+                <button type="submit">
+                  <HiSearch size={25} /></button>
               </form>
               <button
                 className={styles.makeBtn}
@@ -199,7 +201,7 @@ function MainStudy() {
           </div>
         </div>
 
-        <h1>강사모집</h1>
+        <h1 className={styles.mainTxt}>강사찾기</h1>
 
         {/* 검색 */}
         {searching && !noResult && (

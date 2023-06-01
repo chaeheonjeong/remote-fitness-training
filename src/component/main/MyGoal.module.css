@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'GmarketSansMedium';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 .wrapper {
   display: flex;
   width: 100%;
@@ -9,15 +17,16 @@
 .title {
   font-size: 1.4rem;
   font-weight: 600;
+  font-family: 'GmarketSansMedium';
   margin-left: 155px;
 }
 
 .content {
-  border: 1.5px solid #8ae52e;
   border-radius: 0.5rem;
   padding: 1.3rem 2rem;
   height: 9.5rem;
-  background-color: #f4f9f4;
+  font-family: 'GmarketSansMedium';
+  background-color: #F5F5F5;
   margin-left: 155px;
   justify-content: center;
   width: 76.3%;
@@ -34,6 +43,7 @@
   cursor: pointer;
   padding: 0 0.5rem;
   margin-left: auto;
+  font-family: 'GmarketSansMedium';
 }
 
 .studyBtn:hover {
@@ -52,12 +62,14 @@
   margin-left: auto;
   font-size: 0.8rem;
   align-self: flex-end;
-  color: #8ae52e;
+  color: #464F41;
+  font-family: 'GmarketSansMedium';
 }
 
 .progLabel2 {
   font-size: 0.8rem;
   align-self: flex-end;
+  font-family: 'GmarketSansMedium';
 }
 
 .clover {

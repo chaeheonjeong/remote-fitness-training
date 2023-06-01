@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import Portfolio from "../mypage/Portfolio";
 
 const medalColor = [
-  "rgba(247, 247, 35, 0.99)",
+  "#F9D949",
   "rgb(190, 190, 182)",
   "rgb(177, 148, 31)",
 ];
@@ -36,19 +36,36 @@ const RankRender = ({ ranker, index }) => {
           />
         )}
       </span>
-      <span>
+      <span style={{
+        width: "50px",
+        marginLeft: "10px",
+        textAlign: "center"
+      }}>
         {ranker.name.length > 8
           ? ranker.name.substring(0, 8) + "..."
           : ranker.name}
       </span>
-      <span>{ranker.happiness}</span>
+      <span style={{
+        display: "flex",
+        textAlign: "center",
+        justifyContent: "center",
+        width: "200px"
+      }}>별점지수:{ranker.happiness}</span>
       {ranker.portfolio.length !== 0 && (
-        <div>
-          <span>성별: {ranker.portfolio.gender}</span>
-          <span>경력: {ranker.portfolio.career}</span>
-          <span>가격대: {ranker.portfolio.price}</span>
+        <div className={styles.portfolio}>
+          <span style={{
+            display: "block"
+          }}>성별: {ranker.portfolio.gender}</span>
+          <span style={{
+            display: "block"
+          }}>경력: {ranker.portfolio.career}</span>
+          <span style={{
+            display: "block"
+          }}>가격대: {ranker.portfolio.price}</span>
           {Array.isArray(ranker.portfolio.sports) && (
-            <span>
+            <span style={{
+              display: "block"
+            }}>
               종목:{" "}
               {ranker.portfolio.sports.map((sport, index) => (
                 <span key={index + "#$"}>{sport}</span>
@@ -56,14 +73,16 @@ const RankRender = ({ ranker, index }) => {
             </span>
           )}
           {Array.isArray(ranker.portfolio.paymentMethods) && (
-            <span>
+            <span style={{
+              display: "block",
+              width: "320px"
+            }}>
               결제수단:{" "}
               {ranker.portfolio.paymentMethods.map((payment, index) => (
-                <span key={index + "&*"}>{payment}</span>
+                <span style={{marginRight: "7px"}} key={index + "&*"}>{payment}</span>
               ))}
             </span>
           )}
-          <span>제목: {ranker.portfolio.title}</span>
         </div>
       )}
     </div>
@@ -81,8 +100,8 @@ function RankSwiper({ rankers }) {
       {rankers.length > 0 && (
         <Swiper
           style={{
-            "--swiper-navigation-color": "#16C79A",
-            "--swiper-pagination-color": "#16C79A",
+            "--swiper-navigation-color": "#8ae52e",
+            "--swiper-pagination-color": "#8ae52e",
             "--swiper-navigation-size": "30px"
           }}
           className={styles.swiper} // 수정된 부분
@@ -90,7 +109,7 @@ function RankSwiper({ rankers }) {
           slidesPerView={1}
           navigation
           pagination={{ clickable: true }}
-          autoplay={{ delay: 2000, disableOnInteraction: false }}
+          autoplay={{ delay: 2500, disableOnInteraction: false }}
           loop={true}
         >
           {rankers.map((ranker, index) => {

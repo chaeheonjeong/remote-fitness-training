@@ -230,7 +230,7 @@ function Ask() {
             />
             <input
               type="submit"
-              value="등록"
+              value="신청"
               className={styles.submit}
               onClick={handleSubmit}
             />

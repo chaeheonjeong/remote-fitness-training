@@ -1,6 +1,8 @@
 @font-face {
-  font-family: "GmarketSansTTFMedium";
-  src: url("../../../font/GmarketSansTTFMedium.ttf");
+  font-family: 'GmarketSansMedium';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
 }
 
 .container {
@@ -44,86 +46,69 @@
 
 .nav li {
   float: left;
+  
+  font-weight: 300;
+  font-size: .9rem;
 }
 
 .nav a {
   line-height: 40px;
   padding: 0 15px;
   text-decoration: none;
-}
-
-.nav {
-  float: left;
-  list-style: none;
-  width: 45%;
-}
-
-.nav li {
-  float: left;
-}
-
-.nav a {
-  line-height: 40px;
-  padding: 0 15px;
-  text-decoration: none;
-}
-
-.nav {
-  float: left;
-  list-style: none;
-  width: 45%;
-}
-
-.nav li {
-  float: left;
-}
-
-.nav a {
-  line-height: 40px;
-  padding: 0 15px;
-  text-decoration: none;
+  font-weight: 300;
+  font-size: .9rem;
 }
 
 .linkLabel {
   padding-right: 15px;
   float: left;
-  font-size: 1.2rem;
-  font-weight: bolder;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: #8ae52e;
+  
 }
 
 .welcomeLabel {
-  font-size: 0.9rem;
+  font-size: .8rem;
+  font-weight: 300;
 }
 
 .logButton {
-  height: 2.5rem;
-  font-size: 0.8rem;
-  border-radius: 0.8rem;
-  border: 2px solid transparent;
+  border-radius: 25px;
+  width: 104px;
+  height: 40px;
   background-color: #8ae52e;
-  color: black;
+  color: #454545;
   cursor: pointer;
+  outline: none;
+  box-shadow: 1px 4px 0 #56776C;
   padding: 0 0.75rem;
+  
+  font-weight: 300;
+  font-size: .8rem;
 }
-.logButton:hover {
-  filter: brightness(0.95);
-  background-color: #cfff8d;
+.logButton:active {
+  box-shadow: 1px 1px 0 #56776C;
+  position: relative;
+  top:2px;
 }
 
 .regiButton {
-  height: 2.5rem;
-  font-size: 0.8rem;
-  border-radius: 0.8rem;
-  border: 0.5px solid #cfff8d;
-  background-color: #cfff8d;
-  color: black;
-  cursor: pointer;
-  padding: 0 0.75rem;
-}
-.regiButton:hover {
-  filter: brightness(0.95);
+  font-size: .8rem;
+  border-radius: 25px;
+  width: 104px;
+  height: 40px;
   background-color: #8ae52e;
+  color: #454545;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 1px 4px 0 #56776C;
+  font-weight: 300;
+}
+.regiButton:actvie {
+  box-shadow: 1px 1px 0 #56776C;
+  position: relative;
+  top:2px;
 }
 
 .notiCircle {
@@ -164,7 +149,9 @@
   width: 100%;
   gap: 0.5rem;
   align-items: center;
-  font-size: 13px;
+  font-size: .8rem;
+  font-weight: 300;
+  
 }
 .profileDropItem:hover {
   opacity: 0.6;
