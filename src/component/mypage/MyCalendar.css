@@ -11,7 +11,7 @@
 
 .MyCalendar{
   margin-top: 75px;
-  margin-left: 20%;
+  margin-left: 19%;
   position: relative;
 }
 
@@ -19,7 +19,7 @@
   width: 900px;
   height: 650px;
   max-width: 100%;
-  background: #FAFAFA;
+  background: #fcfcff;
   border: 1px solid #FAFAFA;
   line-height: 1.125em;
   border-radius: 10px;
@@ -99,10 +99,10 @@
   font-weight: bold;
 }
 .react-calendar__month-view__days__day--weekend {
-  color: #AA5656;
+  color: #17741f;
 }
 .react-calendar__month-view__days__day--neighboringMonth {
-  color: #76a6c9;
+  color: #152560;
 }
 .react-calendar__year-view .react-calendar__tile,
 .react-calendar__decade-view .react-calendar__tile,
@@ -112,7 +112,7 @@
 .react-calendar__tile {
   position: relative;
   max-width: 100%;
-  background: #f4f6ff;
+  background: #fcfcff;
   text-align: start;
   line-height: 16px;
   width: 50px;
@@ -122,14 +122,14 @@
   border-right: 1px;
 }
 .react-calendar__tile:disabled {
-  background: #e3ebf0;
+  background: #e0e4f1;
 }
 .react-calendar__tile:enabled:hover,
 .react-calendar__tile:enabled:focus {
-  background-color: #FAFAFA;
+  background-color: #e0e4f1;
 }
 .react-calendar__tile--now {
-  background: #FAFAFA;
+  background: #f0f3ff;
 }
 .react-calendar__tile--now:enabled:hover,
 .react-calendar__tile--now:enabled:focus {
@@ -140,7 +140,7 @@
 }
 .react-calendar__tile--hasActive:enabled:hover,
 .react-calendar__tile--hasActive:enabled:focus {
-  background: #d9e4eb;
+  background: #fcfcff;
 }
 .react-calendar__tile--active {
   background: #d9e4eb;
@@ -148,7 +148,7 @@
 }
 .react-calendar__tile--active:enabled:hover,
 .react-calendar__tile--active:enabled:focus {
-  background: #D7C0AE;
+  background: #fcfcff;
 }
 .react-calendar--selectRange .react-calendar__tile--hover {
   background-color: #abe695;
@@ -202,7 +202,7 @@
   list-style-type: none;
   text-align: center;
   border-radius: 5px;
-  background-color: #e8ffe7;
+  background-color: #daffcb;
   margin-top: 0.8px;
 }
 
@@ -210,7 +210,7 @@
     list-style-type: none;
     text-align: center;
     border-radius: 5px;
-    background-color: #ceefcd;
+    background-color: #afdaad;
     margin-top: 0.8px;
     font-weight: bolder;
     padding: 1px;
@@ -296,7 +296,7 @@ font-family: 'Cafe24SsurroundAir';
   font-family: 'Cafe24SsurroundAir';
 }
 
-.reviewBtn{
+/* .reviewBtn{
   margin-top: 50px;
   margin-left: 1175px;
 }
@@ -304,16 +304,17 @@ font-family: 'Cafe24SsurroundAir';
 .TreviewBtn{
   margin-left: 855px;
   margin-top: 50px;
-}
+} */
 
 .starsub {
   background-color: #b4ed7e;
   border-radius: 5px;
+  width: 100px;
   border: none;
   font-family: 'Cafe24SsurroundAir';
-  margin-top: 35px;
-  margin-right: 50px;
-  padding : 10px;
+  margin-top: 80px;
+  margin-left: 500px;
+  padding : 8px;
 }
   
 

@@ -34,7 +34,7 @@ function ProfileSideBar() {
     <div className="SideBar">
       <div className="SideBarWrapper">
         <div className="SideBarMenu">
-          <h3 className="SideBarTitle">{user?.name}님의 포트폴리오</h3>
+          <h3 className="SideBarTitle">{user?.name}님의 <br></br>포트폴리오</h3>
           <ul className="SideBarList">
             <li className="SideBarListItem">
               {profileImg ? (

@@ -108,38 +108,42 @@ function PortfolioView() {
       <Header />
       <ProfileSideBar />
       <div className="viewContent">
-        <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
-        <BsGenderAmbiguous style={{ marginRight: '5px' }}/>성별 {portfolio[0]?.gender}</div>
-        <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
-        <BsFillTrophyFill style={{ marginRight: '5px' }}/>경력 {portfolio[0]?.career}</div>
-        <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
-        <MdAttachMoney style={{ marginRight: '5px' }}/>가격대 {portfolio[0]?.price}</div>
-        <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}><FcSportsMode style={{ marginRight: '5px' }}/>운동종목 {portfolio[0]?.sports}</div>
+      <div className="viewContent2">
+        <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+        <BsGenderAmbiguous style={{ marginRight: '1rem'  }}/>{/* 성별  */}{portfolio[0]?.gender}</div>
+        <div className="styles.css1_head"  style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+        <BsFillTrophyFill style={{ marginRight: '1rem' }}/>{/* 경력 */}{portfolio[0]?.career}</div>
+        <div className="styles.css1_head"  style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+        <MdAttachMoney style={{ marginRight: '1rem' }}/>{/* 가격대 */}{portfolio[0]?.price}원</div>
+        <div className="styles.css1_head"  style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}><FcSportsMode style={{ marginRight: '1rem' }}/>{/* 운동종목 */} {portfolio[0]?.sports}</div>
 
         {/* <div>
           {portfolio[0]?.paymentMethods.map((method, index) => (
             <div key={index}>가능결제수단 {method}</div>
           ))}
         </div> */}
-        <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}><MdPayment style={{ marginRight: '5px' }}/>
-            가능결제수단 {portfolio[0]?.paymentMethods.map((method, index) => (
-              <text key={index} className="pp">{method}</text>
+        <div className="styles.css1_head"  style={{ marginRight: "1rem", textDecoration: "none", display: 'flex', alignItems: 'center'}}><MdPayment style={{ marginRight: '1rem' }}/>
+            {/* 가능결제수단 */}{portfolio[0]?.paymentMethods.map((method, index) => (
+              <div className="styles.css1_head" style={{ marginleft: "5rem", textDecoration: "none", display: 'flex', alignItems: 'center'}}key={index}>{method}</div>
             ))}
           </div>
-        <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
-        <AiFillTag style={{ marginRight: '5px' }}/>
+        <div className="styles.css1_head"  style={{ marginRight: "1rem", textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+        <AiFillTag style={{ marginRight: '1rem' }}/>
           {portfolio[0]?.tags.map((tag, index) => (
-            <div key={index}>태그 {tag}</div>
+            <div className="styles.css1_head2" style={{ marginleft: "5rem", textDecoration: "none", display: 'flex', alignItems: 'center'}}key={index}>{/* 태그 */} {tag}</div>
           ))}
-        </div>
+        </div></div>
+        <div className="titltt">제목</div>
         <div className="view_title">
-          <div className="viewTitle">제목 {portfolio[0]?.title}</div>
-        </div>
+          
+          <div className="viewTitle">{portfolio[0]?.title}</div>
+        
         <div className="view_contents">
           <div
             className="viewContents"
             dangerouslySetInnerHTML={{ __html: contents }}
           />
+        </div>
         </div>
       </div>
       <div className="reviewContent">

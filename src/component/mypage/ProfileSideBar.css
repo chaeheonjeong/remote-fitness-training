@@ -14,7 +14,7 @@
     margin-left: 5;
 
     border-right: 2px solid rgb(225, 225, 225);
-    background-color: #FBF7F0;
+    background-color: #edf1f6;
 
 }
 
@@ -27,6 +27,7 @@
 }
 
 .SideBarTitle{
+    margin-top: 10px;
     font-size: 25px;
     text-align: center;
     font-family: 'Cafe24SsurroundAir';
@@ -55,8 +56,10 @@
 .profileImg{
     width: 150px;
     height: 150px;
+    margin-left: 45px;
     border-radius: 100%;
     border: 1px solid #555555;
+    align-items: center;
 }
 
 .noneProfileImg{

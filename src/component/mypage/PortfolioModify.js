@@ -241,7 +241,7 @@ function PortfolioModify() {
           />
         </div>
         <div className={styles.ch2}>
-          <text className={styles.ww}>가격대</text>
+          <text className={styles.ww444}>가격대</text>
           <input
             className={styles.estimatedAmount_input}
             onChange={(event) => {
@@ -360,24 +360,26 @@ function PortfolioModify() {
               // console.log("Focus.", editor);
             }}
           />
+
+        <div className={styles.btn}>
+          <input
+            type="submit"
+            value="수정"
+            className="submitBtn"
+            onClick={handleModify}
+          />
+          <input
+            type="button"
+            value="취소"
+            className="cancelBtn"
+            onClick={() => {
+              navigate(`/Portfolio`);
+            }}
+          />
+      </div>
         </div>
       </div>
-      <div className={styles.btn}>
-        <input
-          type="submit"
-          value="수정"
-          className="submitBtn"
-          onClick={handleModify}
-        />
-        <input
-          type="button"
-          value="취소"
-          className="cancelBtn"
-          onClick={() => {
-            navigate(`/Portfolio`);
-          }}
-        />
-      </div>
+      
     </div>
   );
 }

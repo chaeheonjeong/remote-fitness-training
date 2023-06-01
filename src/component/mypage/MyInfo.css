@@ -14,7 +14,7 @@
 }
 .MyInfo{
     /* border: 1px solid #8AE52E; */
-    background-color: #FAFAFA;
+    background-color: #eceff9;
     border-radius: 30px;
     padding: 40px;
     margin-left: 25%;
@@ -53,7 +53,7 @@
     font-family: 'Cafe24SsurroundAir';
     border: none;
     border-radius: 5px;
-    background-color:aliceblue;
+    background-color:rgb(222, 235, 222);
     padding: 4px;
     margin-top: 10px;
     margin-left: 20%;
@@ -96,7 +96,7 @@
     margin-left : 5px;
     margin-top : 20px;
     padding: 4px;
-    background-color: aliceblue;
+    background-color: rgb(222, 235, 222);
 }
 
 .CBtn{
@@ -105,7 +105,7 @@
     border-radius: 5px;
     margin-left: 65px;
     padding: 4px;
-    background-color: aliceblue;
+    background-color: rgb(222, 235, 222);
     margin-bottom: 10px;
     margin-right: 10px;
 }
@@ -116,7 +116,7 @@
     margin-left: 5px;
     padding: 4px;
     border-radius: 5px;
-    background-color: aliceblue;
+    background-color: rgb(222, 235, 222);
     margin-bottom: 10px;
 }
 
@@ -183,7 +183,7 @@
 }
 
 ._input:focus{
-    border-color:aliceblue;
+    border-color:rgb(240, 255, 240);
 }
 
 .nickname{
@@ -199,7 +199,7 @@
     margin-left: 5px;
     padding: 4px;
     border: none;
-    background-color: aliceblue;
+    background-color: rgb(224, 233, 223);
     margin-top: 50px;
 
 }

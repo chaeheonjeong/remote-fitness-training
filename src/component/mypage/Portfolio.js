@@ -6,11 +6,14 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import SideBar from "./SideBar";
 import Header from "../main/Header";
 import userStore from "../../store/user.store";
-import "./Portfolio.css";
+import styles from "./PortfolioModify.module.css";
+import { FcSportsMode, FcCancel } from "react-icons/fc";
+import { MdPayment, MdAttachMoney} from "react-icons/md";
 import { BsFillTrophyFill, BsGenderAmbiguous } from "react-icons/bs";
+import { AiFillTag } from "react-icons/ai";
 import { FcOk } from "react-icons/fc";
 import { BASE_API_URI } from "../../util/common";
-import styles from "./PortfolioModify.module.css";
+
 
 function Portfolio() {
   const today = new Date();
@@ -131,32 +134,48 @@ function Portfolio() {
           <FcOk size={18} /> 등록이 완료되었습니다.{" "}
         </p>
         <div className="viewContent">
-          
-        <div style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
-        <BsGenderAmbiguous style={{ marginRight: '5px' }}/>성별 {gender}</div>
-          <div>경력 {career}</div>
-          <div>가격대 {price}</div>
-          <div>운동종목 {sports}</div>
-          <div>
-            가능결제수단 {paymentMethods.map((method, index) => (
-              <text key={index}>{method}</text>
-            ))}
-          </div>
-          <div>
+        <div className="viewContent2">
+        <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+        <BsGenderAmbiguous style={{ marginRight: '1.5rem' }}/>{/* 성별 */} {gender}</div>
+
+        <div className="styles.css1_head"  style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+          <BsFillTrophyFill style={{ marginRight: '1.5rem' }}/>{/* 경력 */} {career}</div>
+
+        <div className="styles.css1_head"  style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+          <MdAttachMoney style={{ marginRight: '1.5rem' }}/>{/* 가격대 */} {price}원</div>
+
+        <div className="styles.css1_head"  style={{ textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+          <FcSportsMode style={{ marginRight: '1.5rem' }}/>{/* 운동종목 */} {sports}</div>
+
+        <div className="styles.css1_head"  style={{ marginRight: "1.5rem", textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+          <MdPayment style={{ marginRight: '1.5rem' }}/>
+            {/* 가능결제수단 */} {paymentMethods.map((method, index) => (
+              <div className="styles.css1_head" style={{ marginleft: "5rem", textDecoration: "none", display: 'flex', alignItems: 'center'}}key={index}>{method}</div>
+              ))}
+            </div>
+
+        <div className="styles.css1_head"  style={{ marginRight: "1.5rem", textDecoration: "none", display: 'flex', alignItems: 'center'}}>
+          <AiFillTag style={{ marginRight: '1.5rem' }}/>
             {tags.map((tag, index) => (
-              <div key={index}>태그 {tag}</div>
-            ))}
-          </div>
-          <div className="view_title">
-            <div className="viewTitle">제목 {title}</div>
-          </div>
-          <div className="view_contents">
+              <div className="styles.css1_head2" style={{ marginleft: "5rem", textDecoration: "none", display: 'flex', alignItems: 'center'}}key={index}>{/* 태그 */} {tag}</div>
+              ))}
+            </div>
+            </div>
+
+
+            <div className="titltt">제목</div>
+            <div className="view_title">
+              
+              <div className="viewTitle">{title}</div>
             
-            <div
-              className="viewContents"
-              dangerouslySetInnerHTML={{ __html: htmlString }}
-            />
-          </div>
+            <div className="view_contents">
+              <div
+                className="viewContents"
+                dangerouslySetInnerHTML={{ __html: htmlString }}
+              />
+            </div>
+            
+            </div>  
         </div>
         <button
           type="submit"
@@ -360,133 +379,159 @@ function Portfolio() {
     <div>
       <Header />
       <SideBar />
-      <div className={styles.choose}>
-        <div className={styles.ch1}>
-          <p className={styles.nn}>성별</p>
-          <select
-            name="gender"
-            className={styles.number}
-            defaultValue="default"
-            onChange={(e) => {
-              setGender(e.target.value);
-            }}
-          >
-            <option value="default" disabled hidden>
-              성별 선택
-            </option>
-            <option value="남자">남자</option>
-            <option value="여자">여자</option>
-          </select>
+      <div className={styles.all}>
+        <div className={styles.choose}>
+        <div className={styles.write_title}>나의 포트폴리오 작성</div>
+        <hr />
+        <div className={styles.select}>
+          <div className={styles.left}>
+            <div className={styles.recruit_num}>
+            
+              <text className={styles.nn}>성별</text>
+              <select
+                name="gender"
+                className={styles.number}
+                defaultValue="default"
+                onChange={(e) => {
+                  setGender(e.target.value);
+                }}
+              >
+                <option value="default" disabled hidden>
+                  성별 선택
+                </option>
+                <option value="남자">남자</option>
+                <option value="여자">여자</option>
+              </select>
+            </div>
 
-          <p className={styles.ww1}>경력</p>
-          <input
-            className={styles.estimatedAmount_input2}
-            onChange={(event) => {
-              setCareer(event.target.value);
-            }}
-            type="text"
-            id="career"
-            name="career"
-            value={career}
-          />
-        </div>
-        <div className={styles.ch2}>
-          <text className={styles.ww}>가격대</text>
-          <input
-            className={styles.estimatedAmount_input}
-            onChange={(event) => {
-              setPrice(event.target.value);
-            }}
-            type="currency"
-            pattern="[0-9]+"
-            id="estimatedAmount"
-            name="estimatedAmount"
-            min="0"
-            step="100"
-            value={price}
-          ></input>{" "}
-          원<p className={styles.ww3}>운동 종목</p>
-          <input
-            className={styles.estimatedAmount_input}
-            onChange={(event) => {
-              setSports(event.target.value);
-            }}
-            type="text"
-            id="sports"
-            name="sports"
-            value={sports}
-          />
-        </div>
+            <div className={styles.running_time}>
+              <text className={styles.ww}>경력</text>
+              <input
+                className={styles.runningTime}
+                onChange={(event) => {
+                  setCareer(event.target.value);
+                }}
+                type="text"
+                id="career"
+                name="career"
+                value={career}
+              />
+            </div>
 
-        <div className={styles.ch3}>
-          <p className={styles.nn}>결제 수단</p>
-          <div>
-            <label>
+            <div className={styles.pay}>
+              <text className={styles.ww}>가격대</text>
               <input
-                type="checkbox"
-                value="현금 결제"
-                /* className={styles.aaa} */
-                checked={paymentMethods.includes("현금 결제")}
-                onChange={(e) => handlePaymentMethodChange(e.target.value)}
-              />
-              현금 결제
-            </label>
+                className={styles.estimatedAmount_input}
+                onChange={(event) => {
+                  setPrice(event.target.value);
+                }}
+                type="currency"
+                pattern="[0-9]+"
+                id="estimatedAmount"
+                name="estimatedAmount"
+                min="0"
+                step="100"
+                value={price}
+              />{" "}
+            </div>
+            
           </div>
-          <div>
-            <label>
+            
+          <div className={styles.right}>
+            <div className={styles.start_time}>
+              <text className={styles.ww}>운동 종목</text>
               <input
-                type="checkbox"
-                value="카드 결제"
-                className={styles.aaa}
-                checked={paymentMethods.includes("카드 결제")}
-                onChange={(e) => handlePaymentMethodChange(e.target.value)}
+                className={styles.startTime_input}
+                onChange={(event) => {
+                  setSports(event.target.value);
+                }}
+                type="text"
+                id="sports"
+                name="sports"
+                value={sports}
               />
-              카드 결제
-            </label>
-          </div>
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                value="계좌 이체"
-                className={styles.aaa}
-                checked={paymentMethods.includes("계좌 이체")}
-                onChange={(e) => handlePaymentMethodChange(e.target.value)}
-              />
-              계좌 이체
-            </label>
-          </div>
-          <p className={styles.tt}>태그</p>
-          <div>
-            <input
-              className={styles.tag_input}
-              onKeyPress={handleKeyPress}
-              type="text"
-              placeholder="해시태그 입력(최대 5개)"
-            />
-            <div className={styles.tag_tagPackage}>
-              {tags.map((tag, index) => (
-                <span key={index} className={styles.tag_tagindex}>
-                  {tag}
-                  <button
-                    className={styles.tag_Btn}
-                    onClick={() => {
-                      setTags(tags.filter((tag, i) => i !== index));
-                    }}
-                  >
-                    &times;
-                  </button>
-                </span>
-              ))}
+            </div>
+
+            <div className={styles.pay}>
+              <text className={styles.ww}>결제 수단</text>
+      
+                
+                <div className={styles.paypay}>        
+                <div>
+                  <label>
+                  <input
+                  
+                    type="checkbox"
+                    value="현금 결제"
+                    /* className={styles.aaa} */
+                    checked={paymentMethods.includes("현금 결제")}
+                    onChange={(e) => handlePaymentMethodChange(e.target.value)}
+                  />
+                  <span>현금</span></label>
+                
+                </div>
+              <div>
+                <label>
+                  <input
+                    type="checkbox"
+                    value="카드 결제"
+                    /* className={styles.aaa} */
+                    checked={paymentMethods.includes("카드 결제")}
+                    onChange={(e) => handlePaymentMethodChange(e.target.value)}
+                  />
+                  <span>카드</span></label>
+                
+              </div>
+              <div>  
+              <label>
+                  <input
+                    type="checkbox"
+                    value="계좌 이체"
+                    /* className={styles.aaa} */
+                    checked={paymentMethods.includes("계좌 이체")}
+                    onChange={(e) => handlePaymentMethodChange(e.target.value)}
+                  />
+                  <span>계좌 이체</span></label>
+                
+              </div>
+              </div>
+            </div>
+              <div className={styles.tags}>
+              <text className={styles.tt}>태그</text>
+          
+                <input
+                  className={styles.tag_input}
+                  onKeyPress={handleKeyPress}
+                  type="text"
+                  placeholder="해시태그 입력(최대 5개)"
+                />
+                <div className={styles.tag_tagPackage}>
+                  {tags.map((tag, index) => (
+                    <span key={index} className={styles.tag_tagindex}>
+                      {tag}
+                      <button
+                        className={styles.tag_Btn}
+                        onClick={() => {
+                          setTags(tags.filter((tag, i) => i !== index));
+                        }}
+                      >
+                      &times;
+                    </button>
+                  </span>
+                ))}
             </div>
           </div>
         </div>
+        </div>
+        <hr />
+        
+      <div className={styles.ch3}>
 
         <div className={styles.title_input}>
           <text className={styles.cc}>제목</text>
           <input
             onChange={handleTitle}
-            className={styles.titleInput}
+            className={styles.title_tinput}
             value={title}
             placeholder="제목을 입력하세요."
           />
@@ -513,17 +558,20 @@ function Portfolio() {
               // console.log("Focus.", editor);
             }}
           />
+
+          <div className={styles.btn2}>
+            <input
+              type="submit"
+              value="등록"
+              className={styles.submitBtn3}
+              onClick={handleSubmit}
+            />
+          </div>
         </div>
-        <div className={styles.btn2}>
-          <input
-            type="submit"
-            value="등록"
-            className={styles.submitBtn}
-            onClick={handleSubmit}
-          />
+        
       </div>
       </div>
-      
+    </div>
     </div>
   );
 }
