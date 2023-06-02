@@ -1466,7 +1466,7 @@ app.post("/postreply/:id", async (req, res) => {
   );
   const 총댓글수 = replycounter.totalReply + 1;
 
-  const rwriterId = await User.FindOne({ name: rwriter });
+  const rwriterId = await User.findOne({ name: rwriter });
 
   if (!replycounter) {
     return res.status(500).json({ message: "Counter not found" });
@@ -4085,9 +4085,9 @@ app.get("/getTBookmarkCount/:id", async(req, res) => {
 app.get("/getSApplicant/:id", async (req, res) => {
   try {
     const applicants = await SApplicant.find({ postId: req.params.id });
-    
-    const result = [...applicants.map((r) => r.userName)];
 
+    const result = [...applicants.map((r) => r.userName)];
+    console.log(result);
     return res.status(200).json({
       postId: req.params.id,
       data: result,
@@ -4098,10 +4098,11 @@ app.get("/getSApplicant/:id", async (req, res) => {
   }
 });
 
+
 app.get("/getTApplicant/:id", async (req, res) => {
   try {
     const applicants = await TApplicant.find({ postId: req.params.id });
-    
+
     const result = [...applicants.map((r) => r.userName)];
 
     return res.status(200).json({
@@ -4114,13 +4115,14 @@ app.get("/getTApplicant/:id", async (req, res) => {
   }
 });
 
+
+
 app.post("/tApplicantSave", async (req, res) => {
-  const {userName, postId} = req.body;
+  const { userName, postId } = req.body;
 
   const userId = await User.findOne({ name: userName });
 
   try {
-    
     console.log("신청전");
 
     const newApplicant = new TApplicant({
@@ -4133,22 +4135,21 @@ app.post("/tApplicantSave", async (req, res) => {
     console.log("신청되었습니다.");
 
     return res.status(200).json({ message: `applicant save successfully` });
-
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     res.status(500).json({ message: `서버오류` });
   }
 });
 
+
 app.post("/sApplicantSave", async (req, res) => {
-  const {userName, postId} = req.body;
+  const { userName, postId } = req.body;
 
   const userId = await User.findOne({ name: userName });
 
   try {
-
     console.log("신청전");
-    
+
     const newApplicant = new SApplicant({
       userId: userId._id,
       userName: userName,
@@ -4158,10 +4159,8 @@ app.post("/sApplicantSave", async (req, res) => {
 
     console.log("신청되었습니다.");
 
-
     return res.status(200).json({ message: `applicant save successfully` });
-
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     res.status(500).json({ message: `서버오류` });
   }
@@ -5688,43 +5687,6 @@ app.post("/askviewReplyARModify", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server Error" });
-  }
-});
-
-app.get("/getTApplicant/:id", async (req, res) => {
-  try {
-    const applicants = await TApplicant.find({ postId: req.params.id });
-    
-    const result = [...applicants.map((r) => r.userName)];
-
-    return res.status(200).json({
-      postId: req.params.id,
-      data: result,
-      message: `강사모집 신청자 가져오기 성공`,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-app.post("/tApplicantSave", async (req, res) => {
-  const {userName, postId} = req.body;
-
-  const userId = await User.findOne({ name: userName });
-
-  try {
-    const newApplicant = new TApplicant({
-      userId: userId._id,
-      userName: userName,
-      postId: postId,
-    });
-    await newApplicant.save();
-
-    return res.status(200).json({ message: `applicant save successfully` });
-
-  } catch(error) {
-    console.error(error);
-    res.status(500).json({ message: `서버오류` });
   }
 });
 

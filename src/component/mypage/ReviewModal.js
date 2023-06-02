@@ -92,6 +92,7 @@ export default function ReviewModal({ visible, setVisible }) {
         <HiStar
           key={i}
           color={starColor}
+          size={20}
           onClick={() => handleStarClick(i + 1)}
         />
       );
@@ -160,54 +161,7 @@ export default function ReviewModal({ visible, setVisible }) {
                 <AiOutlineStar style={{ marginRight: '10px' }}/>
                 별점 : </div>
               <div style={{ display: "flex", marginLeft: "10px"}}>
-                <p
-                  onClick={() => {
-                    setStar(0);
-                  }}
-                  style={{ marginRight: '5px' }}
-                >
-                   0
-                </p>
-                <p
-                  onClick={() => {
-                    setStar(1);
-                  }}
-                  style={{ marginRight: '5px' }}
-                >
-                   1
-                </p>
-                <p
-                  onClick={() => {
-                    setStar(2);
-                  }}
-                  style={{ marginRight: '5px' }}
-                >
-                   2
-                </p>
-                <p
-                  onClick={() => {
-                    setStar(3);
-                  }}
-                  style={{ marginRight: '5px' }}
-                >
-                   3
-                </p>
-                <p
-                  onClick={() => {
-                    setStar(4);
-                  }}
-                  style={{ marginRight: '5px' }}
-                >
-                  4
-                </p>
-                <p
-                  onClick={() => {
-                    setStar(5);
-                  }}
-                  style={{ marginRight: '5px' }}
-                >
-                  5
-                </p>
+                {starIcons}
               </div>
               </div>
               <div className="styles.css1_head" style={{ textDecoration: "none", display: 'flex', alignItems: 'center', marginBottom:"10px"}}>

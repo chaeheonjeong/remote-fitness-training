@@ -142,7 +142,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
   const getRWriter = async () => {
     try {
       const res = await axios.get(
-        `${BASE_API_URI}/getSApplicant/${id}/${user.name}`
+        `${BASE_API_URI}/getSApplicant/${id}`
       );
 
       if (res.data !== undefined) {
@@ -209,6 +209,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
                                 name={rWriter}
                                 onChange={handleChechboxChange}  
                             />
+                            console.log(rWriter);
                             <label>{rWriter}</label>
                         </div>
                     ))}
