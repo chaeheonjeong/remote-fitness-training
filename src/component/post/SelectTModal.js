@@ -168,7 +168,7 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
       화상캠 방 제목 예상 시간 적을 수 있도록
       수강생이면 선금 내는
     */
-      <div
+    <div
       className={`${styles.container} ${
         modal ? styles.ModalOpen : styles.ModalClose
       }`}
@@ -185,70 +185,67 @@ const SelectTModal = ({ modal, setModal, onRecruitChange, participate }) => {
         <div className={styles.inputWrapper}>
           <form>
             <div className={styles.room_title}>
-                <a>방 제목</a>
-                <input
-                    type="text"
-                    name="title"
-                    onChange={ (e) => setRoomTitle(e.target.value) }
-                    autoFocus
-                />
-                { 
-                  click !== 0 && roomTitle === "" ? (
-                    <div id={styles.message}>방 제목을 입력하세요</div>
-                  ) : null 
-                }
+              <a>방 제목</a>
+              <input
+                type="text"
+                name="title"
+                onChange={(e) => setRoomTitle(e.target.value)}
+                autoFocus
+              />
+              {click !== 0 && roomTitle === "" ? (
+                <div id={styles.message}>방 제목을 입력하세요</div>
+              ) : null}
             </div>
-            
+
             <div className={styles.pick_teacher}>
-                <a>수강생 선택</a>
-                <div className={styles.select_teacher}>
-                    {rWriterList.map((rWriter) => (
-                        <div key={rWriter}>
-                            <input
-                                type="checkbox"
-                                name={rWriter}
-                                onChange={handleChechboxChange}  
-                            />
-                            <label>{rWriter}</label>
-                        </div>
-                    ))}
-                    <div>
-                      {click !== 0 && pCount === 0 ? (
-                        <div id={styles.message}>수강생을 선택하세요.</div>
-                      ) : (
-                        selectedStudent.length !== Number(participate.charAt()) ? (
-                          <div id={styles.message}>{`${participate}`} 선택 가능합니다.</div>
-                        ) : null
-                      )}
+              <a>수강생 선택</a>
+              <div className={styles.select_teacher}>
+                {rWriterList.map((rWriter) => (
+                  <div key={rWriter}>
+                    <input
+                      type="checkbox"
+                      name={rWriter}
+                      onChange={handleChechboxChange}
+                    />
+                    <label>{rWriter}</label>
+                  </div>
+                ))}
+                <div>
+                  {click !== 0 && pCount === 0 ? (
+                    <div id={styles.message}>수강생을 선택하세요.</div>
+                  ) : selectedStudent.length !==
+                    Number(participate.charAt()) ? (
+                    <div id={styles.message}>
+                      {`${participate}`} 선택 가능합니다.
                     </div>
+                  ) : null}
                 </div>
+              </div>
             </div>
-            
+
             <div className={styles.start_time}>
-                <a>예상시작시간</a>
-                <input  
-                    type="time"
-                    name="startTime"
-                    onChange={ (e) => setStartTime(e.target.value) }
-                    value={startTime}
-                />
-                { 
-                  click !== 0 && startTime === "" ? (
-                    <div id={styles.message}>예상시작시간을 설정하세요</div>
-                  ) : null 
-                }
+              <a>예상시작시간</a>
+              <input
+                type="time"
+                name="startTime"
+                onChange={(e) => setStartTime(e.target.value)}
+                value={startTime}
+              />
+              {click !== 0 && startTime === "" ? (
+                <div id={styles.message}>예상시작시간을 설정하세요</div>
+              ) : null}
             </div>
             <div className={styles.running_time}>
-                <a>예상진행시간 (분)</a>
-                <input  
-                    type="number" 
-                    min="0" 
-                    max="1440" 
-                    step="1"
-                    name="runningTime"
-                    onChange={ (e) => setRunningTime(e.target.value) }
-                    value={runningTime}
-                />
+              <a>예상진행시간 (분)</a>
+              <input
+                type="number"
+                min="0"
+                max="1440"
+                step="1"
+                name="runningTime"
+                onChange={(e) => setRunningTime(e.target.value)}
+                value={runningTime}
+              />
             </div>
             <div className={styles.start_date}>
               <a>시작예정일</a>
