@@ -167,7 +167,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
       setReply([...reply, replyInput]);
       setReplyInput(""); // 댓글 입력창을 초기화합니다.
 
-      navigate("/");
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
@@ -226,7 +226,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
       setR_Reply([...r_reply, replyRInput]);
       setReplyRInput(""); // 대댓글 입력창을 초기화합니다.
 
-      navigate("/");
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
@@ -285,7 +285,8 @@ const TViewReply = ({ write, setWrite, writer }) => {
         );
         console.log(response.data);
         alert("대댓글이 삭제되었습니다.");
-        setR_Reply(r_reply.filter((r) => r._id !== rrid)); // 삭제된 대댓글을 제외하고 대댓글 목록을 업데이트합니다.
+        window.location.reload();
+        //setR_Reply(r_reply.filter((r) => r._id !== rrid)); // 삭제된 대댓글을 제외하고 대댓글 목록을 업데이트합니다.
       } catch (error) {
         console.error(error);
       }
@@ -304,6 +305,8 @@ const TViewReply = ({ write, setWrite, writer }) => {
       return;
     }
 
+    console.log(replyRModifyInput);
+
     try {
       const response = await axios.post(`${BASE_API_URI}/viewTReplyRModify`, {
         postRId: id,
@@ -315,7 +318,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
       });
 
       alert("대댓글 수정이 완료되었습니다.");
-      navigate(`/view/${id}`);
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
@@ -350,13 +353,14 @@ const TViewReply = ({ write, setWrite, writer }) => {
           setReply(reply.filter((reply) => reply._id !== replyId));
           console.log("data", res.data);
           alert("댓글이 삭제되었습니다.");
+          window.location.reload();
         })
         .catch((err) => console.log(err));
     }
   };
   const [showReplyModifyInput, setShowModifyReplyInput] = useState(false);
   const [replyModifyInput, setReplyModifyInput] = useState("");
-
+  const [selectedRRId, setSelectedRRId] = useState();
   const [replies, setReplies] = useState([]); // 수정된 댓글 가져올 때
 
   // 댓글수정
@@ -377,7 +381,7 @@ const TViewReply = ({ write, setWrite, writer }) => {
       });
 
       alert("수정이 완료되었습니다.");
-      navigate(`/view/${id}`);
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
@@ -665,11 +669,11 @@ const TViewReply = ({ write, setWrite, writer }) => {
                                   </div>
 
                                   {RsameUsers[index] && (
-                                    selectedRId === rr._id && selectedRId === showR_ReplyModifyInput ? (
+                                    selectedRId === rr.selectedRId && selectedRRId === rr._id ? (
                                       <div className={styles.rdm_btn}>
                                           <button className={styles.rrrr2} onClick={() => { setShowRModifyReplyInput(null); setSelectedRId(null); }}>취소</button>
                                               
-                                              <form onSubmit={(e) => modifyRHandleSubmit(e, selectedRId, rr._id)}>
+                                              <form onSubmit={(e) => modifyRHandleSubmit(e, rr.selectedRId, rr._id)}>
                                                 <input className={styles.rrrr} type="submit" value="등록"></input>
                                             </form>
                                       </div>
@@ -681,7 +685,8 @@ const TViewReply = ({ write, setWrite, writer }) => {
                                           value="수정" 
                                           onClick={() => {
                                             setShowRModifyReplyInput(rr._id);
-                                            setSelectedRId(rr._id);
+                                            setSelectedRId(rr.selectedRId);
+                                            setSelectedRRId(rr._id);
                                             modifyR_Reply(rr._id);
                                             console.log("here ", showR_ReplyModifyInput, selectedRId, rr._id);
                                           }}

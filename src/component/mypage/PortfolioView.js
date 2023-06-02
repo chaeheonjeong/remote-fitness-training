@@ -7,7 +7,7 @@ import userStore from "../../store/user.store";
 import styles from "./PortfolioView.module.css";
 import ProfileSideBar from "./ProfileSideBar";
 import { FcSportsMode, FcCancel } from "react-icons/fc";
-import { MdPayment, MdAttachMoney} from "react-icons/md";
+import { MdPayment, MdAttachMoney } from "react-icons/md";
 import { BsFillTrophyFill, BsGenderAmbiguous } from "react-icons/bs";
 import { AiFillTag } from "react-icons/ai";
 import { BASE_API_URI } from "../../util/common";
@@ -159,7 +159,7 @@ function PortfolioView() {
     return (
       <>
         <Header />
-        <div style={{ marginTop: "100px" }}>
+        <div style={{ marginTop: "80px" }}>
           <ProfileSideBar setNameHandler={setName} />
           <div
             style={{
@@ -481,8 +481,7 @@ function PortfolioView() {
             </div>
           </div>
         </div>
-        </div>
-  
+      </div>
     </>
   );
 }

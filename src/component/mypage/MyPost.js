@@ -82,7 +82,7 @@ const MyPost = ({ activeButton }) => {
       <Header />
       <SideBar activeButton={activeButton} />
       <div className={styles.contentWrapper}>
-        <button className={styles.sstudy1}>스터디</button>
+        <button className={styles.sstudy1}>모집글</button>
         <button
           className={styles.aask1}
           onClick={() => {
@@ -90,7 +90,7 @@ const MyPost = ({ activeButton }) => {
             
           }}
         >
-          질문
+          질문글
         </button>
         {renderQ.length !== 0 ? (
           <InfiniteScroll
