@@ -167,6 +167,7 @@ const AskViewReply = ({ write, setWrite, writer }) => {
   };
   const [replyARInput, setReplyARInput] = useState("");
   const [selectedARId, setSelectedARId] = useState();
+  const [selectedARRId, setSelectedARRId] = useState();
 
   const ArhandleSubmit = async (e) => {
     e.preventDefault();

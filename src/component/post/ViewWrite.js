@@ -74,6 +74,7 @@ const ViewWrite = () => {
     }
 
     setShowModal(false);
+    window.location.reload();
   }
 
   const getApplicants = async () => {

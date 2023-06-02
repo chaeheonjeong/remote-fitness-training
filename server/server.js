@@ -1466,7 +1466,7 @@ app.post("/postreply/:id", async (req, res) => {
   );
   const 총댓글수 = replycounter.totalReply + 1;
 
-  const rwriterId = await User.FindOne({ name: rwriter });
+  const rwriterId = await User.findOne({ name: rwriter });
 
   if (!replycounter) {
     return res.status(500).json({ message: "Counter not found" });
@@ -1490,17 +1490,65 @@ app.post("/postreply/:id", async (req, res) => {
   }
 });
 
+//ask 대댓글
+app.get("/getAR_Reply/:id/:rid", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader.split(" ")[1];
+  const decodedToken = jwt.verify(token, mysecretkey);
+  const userId = decodedToken.id;
+  
+  const postRId = req.params.id;
+  const selectedARId = req.params.rid;
+
+  try {
+    const result = await AR_Reply.find({ postRId : Number(postRId), selectedARId : Number(selectedARId) })
+    if (result) {
+      const RsameUsers = result.map((reply) => reply._user === userId);
+
+      // 사용자 프로필 이미지 반환
+      const profileImgs = await Promise.all(
+        result.map(async (Ar_reply) => {
+          const user = await User.findOne({ name: Ar_reply.Ar_rwriter });
+
+          if(!user) {
+            throw new Error(`User with name "${Ar_reply.Ar_rwriter}" not found`);
+          }
+
+          return user.image;
+        })
+      );
+
+      return res.status(200).json({
+        data: result,
+        RsameUsers: RsameUsers,
+        profileImgs: profileImgs,
+        message: ` ${typeof selectedARId}대댓글 가져오기 성공`,
+      });
+    } 
+    /* else {
+      return res.status(404).json({ message: "대댓글이 존재하지 않습니다." });
+    } */
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 app.post("/viewReplyRModify", async (req, res) => {
-  const { postRId, selectedRId, _id, r_rWriteDate, r_reply, isRSecret } =
+  const { postRId, selectedRId, _id, r_rWriteDate, r_reply/* , isRSecret */ } =
     req.body;
 
   try {
     const updatedViewReplyRModify = await R_Reply.findOneAndUpdate(
       { postRId, selectedRId, _id },
       {
-        $set: { r_rWriteDate, r_reply, isRSecret },
-      }
+        $set: { r_rWriteDate, r_reply/* , isRSecret */ },
+      },
+      { new: true }
     );
+
+      console.log(r_reply);
 
     return res.status(200).json({
       message: `r_reply ${_id} updated successfully`,

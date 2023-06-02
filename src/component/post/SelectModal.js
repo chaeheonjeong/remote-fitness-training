@@ -151,7 +151,7 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
   const getRWriter = async () => {
     try {
       const res = await axios.get(
-        `${BASE_API_URI}/getTApplicant/${id}/${user.name}`
+        `${BASE_API_URI}/getTApplicant/${id}`
       );
 
       if (res.data !== undefined) {

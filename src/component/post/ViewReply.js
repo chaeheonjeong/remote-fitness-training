@@ -195,7 +195,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
           setReply([...reply, replyInput]);
           setReplyInput(""); // 댓글 입력창을 초기화합니다.
 
-          navigate("/");
+          window.location.reload();
         } catch (error) {
         console.log(error);
         }
@@ -251,7 +251,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
         setR_Reply([...r_reply, replyRInput]);
         setReplyRInput(""); // 대댓글 입력창을 초기화합니다.
 
-        navigate("/");
+        window.location.reload();
         } catch (error) {
         console.log(error);
         }
@@ -304,7 +304,9 @@ const ViewReply = ({ write, setWrite, writer }) => {
             });
             console.log(response.data);
             alert("대댓글이 삭제되었습니다.");
-            setR_Reply(r_reply.filter((r) => r._id !== rrid)); // 삭제된 대댓글을 제외하고 대댓글 목록을 업데이트합니다.
+            
+          window.location.reload();
+            //setR_Reply(r_reply.filter((r) => r._id !== rrid)); // 삭제된 대댓글을 제외하고 대댓글 목록을 업데이트합니다.
         } catch (error) {
             console.error(error);
         }
@@ -319,14 +321,14 @@ const ViewReply = ({ write, setWrite, writer }) => {
 
     // 대댓글수정
     const modifyRHandleSubmit = async (e, selectedRId, rrid) => {
-        e.preventDefault();
+        //e.preventDefault();
 
         if(replyRModifyInput === "") {
         alert("내용을 작성해주세요.");
         return;
         }
 
-        console.log("++++++ ", selectedRId, rrid);
+        console.log("++++++ ", replyRModifyInput);
 
         try {
         const response = await axios.post(`${BASE_API_URI}/viewReplyRModify`, {
@@ -339,7 +341,8 @@ const ViewReply = ({ write, setWrite, writer }) => {
         });
 
         alert("대댓글 수정이 완료되었습니다.");
-        navigate(`/view/${id}`);
+        //navigate(`/view/${id}`);
+        window.location.reload();
 
         } catch(error) {
         console.log(error);
@@ -375,6 +378,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
             setReply(reply.filter(reply => reply._id !== replyId));
             console.log("data", res.data);
             alert("댓글이 삭제되었습니다.");
+          window.location.reload();
             })
             .catch((err) => console.log(err));
         }
@@ -403,7 +407,8 @@ const ViewReply = ({ write, setWrite, writer }) => {
         });
 
         alert("수정이 완료되었습니다.");
-        navigate(`/view/${id}`);
+        //navigate(`/view/${id}`);
+          window.location.reload();
 
         } catch(error) {
         console.log(error);
@@ -641,7 +646,7 @@ const ViewReply = ({ write, setWrite, writer }) => {
                           />
                           <div className={styles.reply_choose}>
                             <input className={styles.asdf3} type="submit" value="대댓글 등록"></input>
-                            <button className={styles.reply_choose2} onClick={() => {setShowReplyInput(null); setSelectedRId(null);}}>대댓글 작성 취소</button>
+                            <button className={styles.reply_choose2} onClick={() => {setShowReplyInput(null); setSelectedRId(null); setSelectedRRId(null);}}>대댓글 작성 취소</button>
                           </div>
                         </div>
                     </form>
@@ -690,11 +695,11 @@ const ViewReply = ({ write, setWrite, writer }) => {
                                   </div>
 
                                   {RsameUsers[index] && (
-                                    selectedRId === rr._id && selectedRId === showR_ReplyModifyInput ? (
+                                    selectedRId === rr.selectedRId && selectedRRId === rr._id ? (
                                       <div className={styles.rdm_btn}>
-                                          <button className={styles.rrrr2} onClick={() => { setShowR_ReplyModifyInput(null); setSelectedRId(null); }}>취소</button>
+                                          <button className={styles.rrrr2} onClick={() => { setShowR_ReplyModifyInput(null); setSelectedRId(null); setSelectedRRId(null) }}>취소</button>
                                               
-                                              <form onSubmit={(e) => modifyRHandleSubmit(e, selectedRId, rr._id)}>
+                                              <form onSubmit={(e) => modifyRHandleSubmit(rr.selectedRId, rr._id)}>
                                                 <input className={styles.rrrr} type="submit" value="등록"></input>
                                             </form>
                                       </div>
@@ -706,7 +711,8 @@ const ViewReply = ({ write, setWrite, writer }) => {
                                           value="수정" 
                                           onClick={() => {
                                             setShowR_ReplyModifyInput(rr._id);
-                                            setSelectedRId(rr._id);
+                                            setSelectedRId(rr.selectedRId);
+                                            setSelectedRRId(rr._id);
                                             modifyR_Reply(rr._id);
                                             console.log("here ", showR_ReplyModifyInput, selectedRId, rr._id);
                                           }}

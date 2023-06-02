@@ -6,6 +6,11 @@ footer {
     gap: 0.1rem;
     margin-top: 2rem;
   }
+
+  input[type="checkbox"] {
+    width: 60px; /* 가로 크기 조정 */
+    height: 60px; /* 세로 크기 조정 */
+  }
   
   footer button {
     border-radius: 7px;
