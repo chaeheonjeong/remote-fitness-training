@@ -318,7 +318,7 @@ function PortfolioModify() {
                   <input
                     type="checkbox"
                     value="계좌 이체"
-                    /* className={styles.aaa} */
+                    className={styles.aaac}
                     checked={paymentMethods.includes(" 계좌 이체")}
                     onChange={(e) => handlePaymentMethodChange(e.target.value)}
                   />

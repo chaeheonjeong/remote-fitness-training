@@ -4312,6 +4312,7 @@ app.patch("/updateRoomSchedule/:id", auth, async (req, res) => {
       //console.log(content);
       const clickAlarm = content.find((item) => item._id.toString() === id);
       if (clickAlarm) {
+
         //console.log("@@", clickAlarm);
         //console.log("$$", clickAlarm.message);
 
@@ -4325,7 +4326,7 @@ app.patch("/updateRoomSchedule/:id", auth, async (req, res) => {
             roomTitle: roomTitle,
             userName: UserName,
           },
-          { $set: { prepaymentBtn: prepaymentBtn } },
+          { $set: { prepaymentBtn: true } },
           { new: true }
         );
 

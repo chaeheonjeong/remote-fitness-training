@@ -76,7 +76,7 @@ const ViewTWrite = () => {
     } catch (error) {
         console.log(error);
     }
-
+    window.location.reload();
     setShowModal(false);
   }
 
@@ -92,7 +92,6 @@ const ViewTWrite = () => {
         } else {
           console.log("아직 신청자가 없습니다");
         }
-        window.location.reload();
       } catch (error) {
         console.log(error);
       }

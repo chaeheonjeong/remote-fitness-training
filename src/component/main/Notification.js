@@ -77,6 +77,16 @@ const Notification = () => {
                   )}
                 </div>
                 <div className={styles.time}>{x.createAt}</div>
+                {x.role === 'student' ? (
+                  <div>
+                     <button  onClick={() => {
+                      hook.handlePreBtn(x._id);
+                      console.log("클릭했어요");
+                    }}>선금</button>
+                  </div>
+                ) : (
+                  <div></div>
+                )}
               </div>
             );
           })

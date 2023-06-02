@@ -231,12 +231,6 @@
 }
 
 
-
-input[type="checkbox"] {
-  transform: scale(0.3); 
-}
-
-
 label {
   justify-content: space-around
 }
@@ -472,5 +466,9 @@ label {
   
   .reviewWrapper {
     margin-top: 50px;
+  }
+
+  .aaac{
+    transform: scale(0.3);
   }
   

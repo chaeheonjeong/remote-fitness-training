@@ -31,7 +31,7 @@
 
 .writer_info {
   border-radius: 20px;
-  border: 2px solid #24B422;
+  border: 1px solid #c8c8c8;
   margin-bottom: 2rem;
   height: 5.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -39,7 +39,7 @@
 
 .info {
   border-radius: 20px;
-  border: 2px solid #24B422;
+  border: 1px solid #c8c8c8;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 

@@ -105,7 +105,7 @@ const TWrite = () => {
       <Header />
       <div className={styles.all}>
       <div className={styles.choose}>
-        <div className={styles.write_title}>학생 모집글 작성</div>
+        <div className={styles.write_title}>레슨 작성</div>
         <hr />
         
         <div className={styles.select}>

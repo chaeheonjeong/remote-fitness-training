@@ -72,7 +72,6 @@ const ViewWrite = () => {
     } catch (error) {
         console.log(error);
     }
-
     setShowModal(false);
     window.location.reload();
   }

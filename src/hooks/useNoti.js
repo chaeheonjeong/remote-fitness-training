@@ -66,7 +66,7 @@ export default function useNoti() {
   const handlePreBtn = async (id) => {
     console.log("id: ", id);
     try {
-      const res = await axios.post(
+      const res = await axios.patch(
         `${BASE_API_URI}/updateRoomSchedule/${id}`,
         {
           prepaymentBtn: true,
