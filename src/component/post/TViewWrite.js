@@ -83,7 +83,7 @@ const ViewTWrite = () => {
   const getApplicants = async () => {
     try {
         const res = await axios.get(
-          `${BASE_API_URI}/getSApplicant/${id}//${user.name}`
+          `${BASE_API_URI}/getSApplicant/${id}`
         );
   
         if (res.data !== undefined) {
@@ -92,6 +92,7 @@ const ViewTWrite = () => {
         } else {
           console.log("아직 신청자가 없습니다");
         }
+        window.location.reload();
       } catch (error) {
         console.log(error);
       }

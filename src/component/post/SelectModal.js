@@ -144,12 +144,16 @@ const SelectModal = ({ modal, setModal, onRecruitChange }) => {
 
   const getRWriter = async () => {
     try {
-      const res = await axios.get(`${BASE_API_URI}/getTApplicant/${id}`);
+      const res = await axios.get(
+        `${BASE_API_URI}/getTApplicant/${id}`
+      );
 
       if (res.data !== undefined) {
         console.log(res.data);
         setRWriterList(res.data.data);
+        console.log(res.data.data);
         setPostId(res.data.postId);
+        console.log(res.data.postId);
       } else {
         console.log("아직 댓글작성자가 없습니다");
       }

@@ -95,7 +95,6 @@
 
 .tag_tagindex {
   font-size: 15px;
-  color: blue;
 }
 /*
   .tag_Btn {
@@ -268,7 +267,7 @@ label {
   }
 
   .title_tinput {
-    border: 1px solid #73fe70;
+    border: 1px solid #c8c8c8;
     border-radius: 3px;
     width: 98%;
     height: 3rem;
@@ -284,15 +283,15 @@ label {
 
   .ck.ck-editor {
     border-radius: 5px;
-    border: 1px solid #73fe70;
+    border: 1px solid #c8c8c8;
   }
 
 .ck.ck-editor__main>.ck-editor__editable {
   min-height: 30rem;
-  background-color: #73fe70;
+  background-color: #c8c8c8;
 }
 .aaab {
-  background-color: #73fe70;
+  background-color: #c8c8c8;
 }
 
 .pay5 {

@@ -4144,7 +4144,7 @@ app.get("/getSApplicant/:id", async (req, res) => {
     const applicants = await SApplicant.find({ postId: req.params.id });
 
     const result = [...applicants.map((r) => r.userName)];
-
+    console.log(result);
     return res.status(200).json({
       postId: req.params.id,
       data: result,
@@ -4154,6 +4154,7 @@ app.get("/getSApplicant/:id", async (req, res) => {
     console.log(error);
   }
 });
+
 
 app.get("/getTApplicant/:id", async (req, res) => {
   try {
@@ -4170,6 +4171,8 @@ app.get("/getTApplicant/:id", async (req, res) => {
     console.log(error);
   }
 });
+
+
 
 app.post("/tApplicantSave", async (req, res) => {
   const { userName, postId } = req.body;
@@ -4194,6 +4197,7 @@ app.post("/tApplicantSave", async (req, res) => {
     res.status(500).json({ message: `서버오류` });
   }
 });
+
 
 app.post("/sApplicantSave", async (req, res) => {
   const { userName, postId } = req.body;
@@ -5681,42 +5685,6 @@ app.post("/askviewReplyARModify", async (req, res) => {
   }
 });
 
-/* app.get("/getTApplicant/:id", async (req, res) => {
-  try {
-    const applicants = await TApplicant.find({ postId: req.params.id });
-
-    const result = [...applicants.map((r) => r.userName)];
-
-    return res.status(200).json({
-      postId: req.params.id,
-      data: result,
-      message: `강사모집 신청자 가져오기 성공`,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-app.post("/tApplicantSave", async (req, res) => {
-  const { userName, postId } = req.body;
-
-  const userId = await User.findOne({ name: userName });
-
-  try {
-    const newApplicant = new TApplicant({
-      userId: userId._id,
-      userName: userName,
-      postId: postId,
-    });
-    await newApplicant.save();
-
-    return res.status(200).json({ message: `applicant save successfully` });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: `서버오류` });
-  }
-});
- */
 app.post("/get-time", async (req, res) => {
   const { roomTitle } = req.body;
 
