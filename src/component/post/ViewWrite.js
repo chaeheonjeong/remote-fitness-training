@@ -52,7 +52,6 @@ const ViewWrite = () => {
 
   function handleApply() {
     setShowModal(true);
-    window.location.reload();
   }
 
   function handleCancel() {
