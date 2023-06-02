@@ -296,7 +296,7 @@ function Portfolio() {
                   alignItems: "center",
                 }}
               >
-                <div className={styles.boxLabel2}>온도</div>
+                <div className={styles.boxLabel2}>별점지수</div>
                 <div
                   style={{
                     display: "flex",
@@ -306,7 +306,7 @@ function Portfolio() {
                     alignItems: "center",
                   }}
                 >
-                  <FaTemperatureLow size="25" color="#8ae52e" />
+                  <FaStar size="25" color="#8ae52e" />
                   <div className={styles.boxLabel}>{happiness}</div>
                 </div>
               </div>

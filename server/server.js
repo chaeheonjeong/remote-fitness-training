@@ -1691,30 +1691,6 @@ app.delete("/postr_reply/:id/:rid/:rrid", async (req, res) => {
     res.status(500).json({ message: `서버오류` });
   }
 });
-app.get("/view/:id/modify/:selectedRId/:rrid", async (req, res) => {
-  const postId = req.params.id;
-  const selectedRId = req.params.selectedRId;
-  const rrid = req.params.rrid;
-
-  try {
-    const result = await R_Reply.find({
-      postRId: Number(postId),
-      selectedRId: Number(selectedRId),
-      _id: Number(rrid),
-    });
-    console.log(result);
-
-    if (result) {
-      return res.status(200).json({
-        result: result,
-        message: `댓글 id 가져오기 성공`,
-      });
-    } /* reply */
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
 
 /// 대댓글 작성 T
 app.post("/postTr_reply/:id/:rid", async (req, res) => {
@@ -1963,8 +1939,7 @@ app.delete("/view/:id/reply/:replyId", async (req, res) => {
     res.status(500).json({ message: "댓글삭제 실패" });
   }
 });
-
-app.post("/postAr_reply/:id/:rid", async (req, res) => {
+app.post("/postAr_reply/:id/:rid", auth, async (req, res) => {
   const { Ar_reply, isARSecret, Ar_rwriteDate, Ar_rwriter } = req.body;
   const { id, rid } = req.params;
   const userId = req.user.id;
@@ -4111,20 +4086,20 @@ app.get("/getTRWriter/:id/:nickname", async (req, res) => {
 });
 
 // tView 스크랩 수 가져오기(모집글)
-app.get("/getTBookmarkCount/:id", async(req, res) => {
+app.get("/getTBookmarkCount/:id", async (req, res) => {
   const postId = req.params.id;
-  
+
   try {
     const result = await TPostGood.findOne({ _id: Number(postId) });
 
-    if(result) {
+    if (result) {
       //console.log('result: ', result);
       return res.status(200).json({
         result: result,
         message: `스크랩 수 가져오기 성공`,
       });
     }
-  } catch(error) {
+  } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server Error" });
   }
@@ -4133,7 +4108,7 @@ app.get("/getTBookmarkCount/:id", async(req, res) => {
 app.get("/getSApplicant/:id", async (req, res) => {
   try {
     const applicants = await SApplicant.find({ postId: req.params.id });
-    
+
     const result = [...applicants.map((r) => r.userName)];
 
     return res.status(200).json({
@@ -4149,7 +4124,7 @@ app.get("/getSApplicant/:id", async (req, res) => {
 app.get("/getTApplicant/:id", async (req, res) => {
   try {
     const applicants = await TApplicant.find({ postId: req.params.id });
-    
+
     const result = [...applicants.map((r) => r.userName)];
 
     return res.status(200).json({
@@ -4163,12 +4138,11 @@ app.get("/getTApplicant/:id", async (req, res) => {
 });
 
 app.post("/tApplicantSave", async (req, res) => {
-  const {userName, postId} = req.body;
+  const { userName, postId } = req.body;
 
   const userId = await User.findOne({ name: userName });
 
   try {
-    
     console.log("신청전");
 
     const newApplicant = new TApplicant({
@@ -4181,22 +4155,20 @@ app.post("/tApplicantSave", async (req, res) => {
     console.log("신청되었습니다.");
 
     return res.status(200).json({ message: `applicant save successfully` });
-
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     res.status(500).json({ message: `서버오류` });
   }
 });
 
 app.post("/sApplicantSave", async (req, res) => {
-  const {userName, postId} = req.body;
+  const { userName, postId } = req.body;
 
   const userId = await User.findOne({ name: userName });
 
   try {
-
     console.log("신청전");
-    
+
     const newApplicant = new SApplicant({
       userId: userId._id,
       userName: userName,
@@ -4206,10 +4178,8 @@ app.post("/sApplicantSave", async (req, res) => {
 
     console.log("신청되었습니다.");
 
-
     return res.status(200).json({ message: `applicant save successfully` });
-
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     res.status(500).json({ message: `서버오류` });
   }
@@ -4269,7 +4239,8 @@ app.put("/likeAreply/:id", auth, async (req, res) => {
     }
 
     const likedByUser = reply.likes.includes(userId);
-    if (likedByUser) {0
+    if (likedByUser) {
+      0;
       // 이미 좋아요한 상태라면 좋아요 취소
       reply.likes.pull(userId);
       reply.likesCount -= 1;
@@ -4303,11 +4274,11 @@ app.patch("/updateRoomSchedule/:id", auth, async (req, res) => {
       //console.log(content);
       const clickAlarm = content.find((item) => item._id.toString() === id);
       if (clickAlarm) {
-
         //console.log("@@", clickAlarm);
         //console.log("$$", clickAlarm.message);
 
         const message = clickAlarm.message;
+        /* const roomTitle = message.match(/(\w+)\s+방이 생성되었습니다\./i)[1]; */
         const roomTitle = message.match(/([\p{L}\w]+)\s+방이 생성되었습니다\./iu)[1];
 
         console.log(roomTitle);
@@ -4317,7 +4288,7 @@ app.patch("/updateRoomSchedule/:id", auth, async (req, res) => {
             roomTitle: roomTitle,
             userName: UserName,
           },
-          { $set: { prepaymentBtn: true } },
+          { $set: { prepaymentBtn: prepaymentBtn } },
           { new: true }
         );
 
@@ -4715,51 +4686,7 @@ app.post("/getTargetReview", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
-
-// 채택된 사람들에게 방 생성되었다는 알림
-app.post("/selectedAlarm", async (req, res) => {
-  try {
-    const { selectedStudent, roomTitle } = req.body;
-
-    //const alarms = await Alarm.find({ userName: { $in: selectedStudent } });
-
-    for (const student of selectedStudent) {
-      const user = await User.findOne({ name: student });
-      const userId = user._id;
-      console.log("@@@@: ", userId);
-      const alarm = await Alarm.findOneAndUpdate(
-        { userName: student },
-        {
-          $push: {
-            //userName: student,
-            content: {
-              $each: [
-                {
-                  title: "새로운 방이 생성되었습니다.",
-                  message: `${roomTitle} 방이 생성되었습니다.`,
-                  createdAt: new Date(),
-                  _id: new mongoose.mongo.ObjectId(),
-                },
-              ],
-            },
-          },
-          $setOnInsert: {
-            userName: student,
-            _user: String(userId),
-          },
-        },
-        { upsert: true, new: true }
-      );
-      //console.log(alarm);
-    }
-
-    res.status(200).send("Alarm created successfully");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal server error");
-  }
-});
-
+/* 
 app.get("/getAlarm", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.split(" ")[1];
@@ -4782,14 +4709,14 @@ app.get("/getAlarm", async (req, res) => {
     /* else {
       return res.status(404).json({ message: "대댓글이 존재하지 않습니다." });
     } */
-  } catch (error) {
+/*   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
-});
+});  */
 
 app.post("/postAreply/:id", async (req, res) => {
-  const { Areply, /* isASecret, */ Arwriter, ArwriteDate } = req.body;
+  const { Areply, likes,  Arwriter, ArwriteDate } = req.body;
   const { id } = req.params;
 
   const post = await Ask.findOne({ _id: id });
@@ -4817,7 +4744,7 @@ app.post("/postAreply/:id", async (req, res) => {
       _user: ArwriterId._id,
       ArwriteDate: ArwriteDate,
       Areply: Areply,
-      //isASecret : isASecret
+      likes : likes,
     });
     await newAReply.save();
 
@@ -5029,32 +4956,7 @@ app.post("/postr_reply/:id/:rid", async (req, res) => {
   }
 });
 
-app.get("/view/:id/modify/:selectedRId/:rrid", async (req, res) => {
-  const postId = req.params.id;
-  const selectedRId = req.params.selectedRId;
-  const rrid = req.params.rrid;
 
-  try {
-    const result = await R_Reply.find({
-      postRId: Number(postId),
-      selectedRId: Number(selectedRId),
-      _id: Number(rrid),
-    });
-    console.log(result);
-
-    if (result) {
-      return res.status(200).json({
-        questions: questions,
-        message: "스터디 모집글 목록 가져오기",
-        success: true,
-        hasMore: hasMore,
-      });
-    } /* reply */
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Server Error" });
-  }
-});
 
 app.post("/viewTReplyRModify", async (req, res) => {
   const { postRId, selectedRId, _id, r_rWriteDate, r_reply /* , isRSecret */ } =
@@ -5159,14 +5061,14 @@ app.get("/tView/:id/modify/:selectedARId/:rrid", async (req, res) => {
   }
 });
 
-app.delete("/tView/:id/reply/:replyId", async(req, res) => {
+app.delete("/tView/:id/reply/:replyId", async (req, res) => {
   const postId = req.params.id;
   const replyId = req.params.replyId;
 
   try {
     const reply = await TReply.findOne({ postId: postId, _id: replyId });
 
-    if(!reply) {
+    if (!reply) {
       return res.status(404).json({ message: "댓글을 찾을 수 없습니다." });
     }
 
@@ -5175,7 +5077,7 @@ app.delete("/tView/:id/reply/:replyId", async(req, res) => {
     await TReply.deleteOne({ postId: postId, _id: replyId });
 
     res.status(200).json({ message: "댓글을 삭제하였습니다." });
-  } catch(error) {
+  } catch (error) {
     console.log(error);
     res.status(500).json({ message: "댓글삭제 실패" });
   }
@@ -5265,6 +5167,36 @@ app.get("/users/:id/profileImage", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "서버 오류가 발생했습니다." });
+  }
+});
+
+app.put("/likeAreply/:id", auth, async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const reply = await AReply.findById(id);
+    if (!reply) {
+      return res.status(404).json({ message: "Reply not found" });
+    }
+
+    const likedByUser = reply.likes.includes(userId);
+    if (likedByUser) {
+      // 이미 좋아요한 상태라면 좋아요 취소
+      reply.likes.pull(userId);
+      reply.likesCount -= 1;
+    } else {
+      // 좋아요 추가
+      reply.likes.push(userId);
+      reply.likesCount += 1;
+    }
+
+    await reply.save();
+
+    return res.status(200).json({ message: "Like updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
@@ -5739,10 +5671,10 @@ app.post("/askviewReplyARModify", async (req, res) => {
   }
 });
 
-app.get("/getTApplicant/:id", async (req, res) => {
+/* app.get("/getTApplicant/:id", async (req, res) => {
   try {
     const applicants = await TApplicant.find({ postId: req.params.id });
-    
+
     const result = [...applicants.map((r) => r.userName)];
 
     return res.status(200).json({
@@ -5756,7 +5688,7 @@ app.get("/getTApplicant/:id", async (req, res) => {
 });
 
 app.post("/tApplicantSave", async (req, res) => {
-  const {userName, postId} = req.body;
+  const { userName, postId } = req.body;
 
   const userId = await User.findOne({ name: userName });
 
@@ -5769,13 +5701,12 @@ app.post("/tApplicantSave", async (req, res) => {
     await newApplicant.save();
 
     return res.status(200).json({ message: `applicant save successfully` });
-
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     res.status(500).json({ message: `서버오류` });
   }
 });
-
+ */
 app.post("/get-time", async (req, res) => {
   const { roomTitle } = req.body;
 
