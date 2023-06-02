@@ -5,6 +5,7 @@ import './MyCalendar.css';
 import moment from 'moment';
 import { IconName } from "react-icons/go";
 import axios from "axios";
+import { FcPlus } from "react-icons/fc";
 //import styles from "./SelectModal.module.css";
 import usePost from "../../hooks/usePost";
 import Modal from "react-modal";
@@ -665,8 +666,7 @@ function MyCalendar() {
                         <div className='tttt'>내용</div>
                         <input type="text" placeholder='내용을 입력해주세요' value={contents} className='writewrite2' onChange={handleContentsChange} />
                     </label>
-                    <div>
-                        <button type="submit" className='add'>추가</button>
+                    <div> 
                     </div>
                     </div>
                 </form>
@@ -681,8 +681,8 @@ function MyCalendar() {
                             setSelectedSchedule(null);
                             setDetailModalIsOpen(false);
                             setAddModalIsOpen(true);
-                        }} >새 일정 추가</button>
-                        <div className='ttt2'> 날짜 : {moment(selectedSchedule.date).format("YYYY-MM-DD")} </div>
+                        }} ><FcPlus size="30px"/></button>
+                        <div className='ttt2'>{moment(selectedSchedule.date).format("YYYY-MM-DD")} </div>
                         <div className='ttt5'>제목</div>
                         <input className='writewrite4' type="text" value={selectedSchedule.title} onChange={(e) => setSelectedSchedule({ ...selectedSchedule, title: e.target.value })} />
                         <div className='ttt4'>내용</div> 

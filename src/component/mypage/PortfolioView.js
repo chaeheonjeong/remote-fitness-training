@@ -7,6 +7,8 @@ import userStore from "../../store/user.store";
 import styles from "./PortfolioView.module.css";
 import ProfileSideBar from "./ProfileSideBar";
 import { FcSportsMode, FcCancel } from "react-icons/fc";
+import { MdPayment, MdAttachMoney } from "react-icons/md";
+import { BsFillTrophyFill, BsGenderAmbiguous } from "react-icons/bs";
 import { AiFillTag } from "react-icons/ai";
 import { BASE_API_URI } from "../../util/common";
 import { GiRoundStar } from "react-icons/gi";
@@ -16,6 +18,7 @@ import { MdPayments } from "react-icons/md";
 import { FaHashtag } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
 import { FaTemperatureLow } from "react-icons/fa";
+import { TbStarsFilled } from "react-icons/tb";
 
 function PortfolioView() {
   const [portfolio, setPortfolio] = useState([]);
@@ -156,7 +159,7 @@ function PortfolioView() {
     return (
       <>
         <Header />
-        <div style={{ marginTop: "100px" }}>
+        <div style={{ marginTop: "80px" }}>
           <ProfileSideBar setNameHandler={setName} />
           <div
             style={{
@@ -302,7 +305,7 @@ function PortfolioView() {
                   alignItems: "center",
                 }}
               >
-                <div className={styles.boxLabel2}>온도</div>
+                <div className={styles.boxLabel2}>별점지수</div>
                 <div
                   style={{
                     display: "flex",
@@ -312,7 +315,7 @@ function PortfolioView() {
                     alignItems: "center",
                   }}
                 >
-                  <FaTemperatureLow size="25" color="#8ae52e" />
+                  <FaStar size="25" color="#8ae52e" />
                   <div className={styles.boxLabel}>
                     {happiness !== "" ? happiness : `50.0`}
                   </div>

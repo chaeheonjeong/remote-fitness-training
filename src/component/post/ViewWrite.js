@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import userStore from "../../store/user.store";
 import Header from "../main/Header";
 import { scrollToTop } from "../../util/common";
-import { HiUserCircle } from "react-icons/hi";
+import { HiUserCircle, HiQuestionMarkCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import MyPAReviews from "../mypage/MyPAReviews";
 /* import response from "http-browserify/lib/response"; */
@@ -18,6 +18,9 @@ const ViewWrite = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const user = userStore();
+
+  const [mouse, setMouse] = useState(false);
+  const [rWriterList, setRWriterList] = useState([]);
   const [write, setWrite] = useState([]);
   const [htmlString, setHtmlString] = useState();
   const [sameUser, setSameUser] = useState(false);
@@ -26,6 +29,8 @@ const ViewWrite = () => {
   const [good, setGood] = useState(false);
   const [bookmarkCount, setBookmarkCount] = useState(0);
   const [profileImg, setProfileImg] = useState(null);
+  const [application, setApplication] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const hook = usePost();
 
@@ -44,6 +49,54 @@ const ViewWrite = () => {
         .catch((err) => console.log(err));
     }
   };
+
+  function handleApply() {
+    setShowModal(true);
+  }
+
+  function handleCancel() {
+    setShowModal(false);
+  }
+
+  const applicantSave = async (e) => {
+    e.preventDefault();
+    
+    try {
+        const response = await axios.post(`${BASE_API_URI}/tApplicantSave`, {
+            userName: user.name,
+            postId: id,
+        }, {
+            headers: { Authorization: `Bearer ${user.token}` },
+        });
+        setApplication(true);
+    } catch (error) {
+        console.log(error);
+    }
+
+    setShowModal(false);
+    window.location.reload();
+  }
+
+  const getApplicants = async () => {
+    try {
+        const res = await axios.get(
+          `${BASE_API_URI}/getTApplicant/${id}`
+        );
+  
+        if (res.data !== undefined) {
+          console.log("hi ", res.data.data);
+          setRWriterList(res.data.data);
+        } else {
+          console.log("아직 신청자가 없습니다");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+  useEffect(() => {
+    getApplicants();
+  }, []);
 
   // 스크랩 수
   const getBookmarkCount = () => {
@@ -134,6 +187,14 @@ const ViewWrite = () => {
     return formattedDate;
   };
 
+  const handleMouseEnter = () => {
+    setMouse(true);
+  }
+
+  const handleMouseLeave = () => {
+    setMouse(false);
+  }
+
   return(
     <>
         <Header />
@@ -149,6 +210,27 @@ const ViewWrite = () => {
                         {write.recruit ? "모집중" : "모집완료"}
                     </button>
                 </div>
+                <div
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    className={styles.explanation_pack}
+                >
+                    <HiQuestionMarkCircle
+                        className={styles.questionMark}
+                    />
+                    {mouse && (
+                        <div
+                            className={styles.explanation}
+                        >
+                            <p>
+                                수정 클릭 후 
+                                왼쪽 상단에 있는 모집중 버튼을 누르면
+                                신청자 채택 가능합니다
+                            </p>
+                        </div>
+                    )}
+                </div>
+                
             </div>
             <div className={styles.content_1}>
             <div className={styles.content_1_1}>
@@ -204,10 +286,10 @@ const ViewWrite = () => {
 
 
                     <div className={styles.scrap}>
-                    <span className={good ? styles.goodBtn : null}>
-                    스크랩 {bookmarkCount}
-                    </span>
-                    <span className={styles.views}>조회수 {write.views}</span>
+                        <span className={good ? styles.goodBtn : null}>
+                        스크랩 {bookmarkCount}
+                        </span>
+                        <span className={styles.views}>조회수 {write.views}</span>
                 </div>
             </div>       
     </div>
@@ -221,14 +303,53 @@ const ViewWrite = () => {
     </div>
 
     <div className={styles.info_all}>
-        <div className={styles.noti_pack}>
-            <p className={styles.emoji}>💡</p>
-            <p className={styles.noti}>댓글 작성시 신청완료 (대댓글 제외)</p>
+        {!sameUser && (
+        <div className={styles.apply}>
+            {write.recruit ? (
+                    rWriterList.includes(user.name) ? (
+                        <button
+                            className={styles.noti_pack_complete}
+                            disabled={false}
+                        > 신청완료 </button>
+                    ) : (
+                        <>
+                        <button
+                            onClick={handleApply}
+                            className={styles.noti_pack}
+                        >신청</button>
+        
+                        {showModal && (
+                            <div 
+                            className={`${styles.container} ${
+                                showModal ? styles.ModalOpen : styles.ModalClose
+                            }`}
+                            >
+                            <div className={styles.modal_wrapper}>
+                                <p>정말로 신청하시겠습니까?</p>
+                                <footer>
+                                    <button className={styles.cancle} onClick={handleCancel}>취소</button>
+                                    <button className={styles.make} onClick={applicantSave}>확인</button>
+                                </footer>
+                            </div>
+                            </div>
+                        )}
+                        <div className={styles.message}>신청 버튼을 누르면 신청이 완료됩니다</div>
+                        </>
+                    )
+            ) : (
+                <button
+                    className={styles.noti_pack_complete}
+                    disabled={false}
+                > 신청마감 </button>
+            )}
+
+            
         </div>
+        )}
 
         <div className={styles.writer_info}>
         <div className={styles.content_2}>
-                <div>작성자</div>
+                <div>학생</div>
                 <div className={styles.profile1} onClick={() => {passHandler(write._user)}} 
                     style={{ marginRight: "0.8rem"}}>
                     {profileImg === null ? (

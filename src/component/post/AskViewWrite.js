@@ -125,7 +125,7 @@ const AskViewWrite = () => {
                     <div className={styles.detail}>
 
                         <div className={styles.content_4_a}>
-                            <input type='button' value='목록' id='view_list_button1' onClick={() => {
+                            <input type='button' value='목록' id={styles.view_list_button1} onClick={() => {
                                 navigate("/question");
                             }}/>
                         </div>

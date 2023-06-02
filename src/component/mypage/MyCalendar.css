@@ -1,19 +1,20 @@
 .mycalendar-container {
+  margin-top: 70px;
   overflow: hidden;
 }
 
 .MyCalendar {
   margin-top: 75px;
-  margin-left: 20%;
+  margin-left: 19%;
   position: relative;
 }
 
 .react-calendar {
-  width: 850px;
-  height: 600px;
+  width: 900px;
+  height: 650px;
   max-width: 100%;
-  background: #f0ebe3;
-  border: 1px solid #d0c9c0;
+  background: #fcfcff;
+  border: 1px solid #FAFAFA;
   line-height: 1.125em;
   border-radius: 10px;
   box-shadow: 0px 0px 20px #e0e0e0;
@@ -62,7 +63,7 @@
   font-size: 15px;
 }
 .react-calendar__navigation button:disabled {
-  background-color: #d0c9c0;
+  background-color: #FAFAFA;
 }
 .react-calendar__navigation button:enabled:hover,
 .react-calendar__navigation button:enabled:focus {
@@ -88,10 +89,10 @@
   font-weight: bold;
 }
 .react-calendar__month-view__days__day--weekend {
-  color: #aa5656;
+  color: #17741f;
 }
 .react-calendar__month-view__days__day--neighboringMonth {
-  color: #cdc9c3;
+  color: #152560;
 }
 .react-calendar__year-view .react-calendar__tile,
 .react-calendar__decade-view .react-calendar__tile,
@@ -101,57 +102,59 @@
 .react-calendar__tile {
   position: relative;
   max-width: 100%;
-  background: #f0ebe3;
+  background: #fcfcff;
   text-align: start;
   line-height: 16px;
   width: 50px;
-  height: 80px;
+  height: 92px;
   font-size: 12px;
   border-right: 1px;
 }
 .react-calendar__tile:disabled {
-  background: #f0ebe3;
+  background: #e0e4f1;
 }
 .react-calendar__tile:enabled:hover,
 .react-calendar__tile:enabled:focus {
-  background-color: #d0c9c0;
+  background-color: #e0e4f1;
 }
 .react-calendar__tile--now {
-  background: #dfd3c3;
+  background: #f0f3ff;
 }
 .react-calendar__tile--now:enabled:hover,
 .react-calendar__tile--now:enabled:focus {
-  background: #dfd3c3;
+  background: #FAFAFA;
 }
 .react-calendar__tile--hasActive {
-  background: #d7c0ae;
+  background: #9bc2da;
 }
 .react-calendar__tile--hasActive:enabled:hover,
 .react-calendar__tile--hasActive:enabled:focus {
-  background: #d7c0ae;
+  background: #fcfcff;
 }
 .react-calendar__tile--active {
-  background: #b7cfbc;
-  color: white;
+  background: #d9e4eb;
+  color: rgb(20, 32, 21);
 }
 .react-calendar__tile--active:enabled:hover,
 .react-calendar__tile--active:enabled:focus {
-  background: #d7c0ae;
+  background: #fcfcff;
 }
 .react-calendar--selectRange .react-calendar__tile--hover {
-  background-color: #e6ba95;
+  background-color: #abe695;
 }
 
 .Modal {
   position: absolute;
-  width: 300px;
-  height: 300px;
-  padding: 40px;
+  width: 25rem;
+  height: 35rem;
+  padding: 10px;
+  margin-left: 150px;
   text-align: center;
   /* background-color: #ffff; */
   border-radius: 10px;
+  background-color: #FAFAFA;
   box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
-  background-color: #b7cfbc;
+  /* background-color: #FAFAFA; */
 }
 
 .Overlay {
@@ -186,18 +189,34 @@
   list-style-type: none;
   text-align: center;
   border-radius: 5px;
-  background-color: #abc4aa;
+  background-color: #daffcb;
   margin-top: 0.8px;
 }
 
-.showRoomSchedule {
-  list-style-type: none;
-  text-align: center;
-  border-radius: 5px;
-  background-color: #66b460;
-  margin-top: 0.8px;
-  font-weight: bolder;
-  padding: 1px;
+  .showRoomSchedule{
+    list-style-type: none;
+    text-align: center;
+    border-radius: 5px;
+    background-color: #afdaad;
+    margin-top: 0.8px;
+    font-weight: bolder;
+    padding: 1px;
+  }
+
+.input{
+background-color: transparent;
+border: none;
+border-bottom: 1px solid #CCC;
+color: #555;
+box-sizing: border-box;
+font-size: 18px;
+height: 30px;
+padding: 10px 0px;
+position: relative;
+top: 50%;
+width: 200px;
+margin-bottom: 10px;
+text-align: center;
 }
 
 .input {
@@ -243,10 +262,10 @@
   border: none;
 }
 
-.add {
-  border-radius: 5px;
-  border: none;
-  margin-top: 35px;
+.add{
+border-radius: 5px;
+border: none;
+margin-top: 25px;
 }
 
 .modify {
@@ -272,7 +291,7 @@
   border: 1px solid #ccc;
 }
 
-.reviewBtn {
+/* .reviewBtn{
   margin-top: 50px;
   margin-left: 1175px;
 }
@@ -280,15 +299,16 @@
 .TreviewBtn {
   margin-left: 855px;
   margin-top: 50px;
-}
+} */
 
 .starsub {
-  background-color: #f0ae16;
+  background-color: #b4ed7e;
   border-radius: 5px;
+  width: 100px;
   border: none;
-  margin-top: 35px;
-  margin-right: 50px;
-  padding: 10px;
+  margin-top: 80px;
+  margin-left: 500px;
+  padding : 8px;
 }
 
 .roomListContainer {
@@ -363,10 +383,7 @@
   border: 2px solid rgb(0, 213, 68);
 }
 
-.Modal {
-  width: 30rem;
-  height: 40rem;
-}
+
 
 .writeReview {
   margin-top: 20px;
@@ -403,23 +420,27 @@
 
 .mmmdd {
   text-align: center;
-  background-color: #e3ebe2;
+  width: auto;
+  background-color: white;
+  margin-top: 20px;
 }
 
 .addadd2 {
   font-size: 18px;
   /*\ border-radius: 5px solid rgb(0, 213, 57); */
-  background-color: #66b460;
-  margin-bottom: 40px;
+  /* background-color: #ABC4AA; */
+  margin-bottom: 30px;
   padding: 3px;
+  margin-right: 300px;
+
 }
 
 .writewrite {
   /* border: 2px solid rgb(0, 213, 57); */
   padding-bottom: 25px;
-  padding-top: 50px;
-  background-color: #e3ebe2;
-  margin-top: 40px;
+  padding-top: 30px;
+  background-color: #FAFAFA;
+  margin-top: 20px;
 }
 
 .writewrite2 {
@@ -457,7 +478,11 @@
 
 .ttt2 {
   margin-bottom: 30px;
-  font-size: 19px;
+  font-size: 21px;
+  width: 170px;
+  margin-left: 110px;
+
+  background-color: white;
 }
 
 .ttt4 {
